@@ -1,5 +1,6 @@
 package ru.sincore;
 
-public class Messages {
-	
+public class Messages
+{
+
 }
