@@ -1,4 +1,5 @@
 *.class
+*.iws
 bin
 target
 log
