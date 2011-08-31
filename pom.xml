@@ -44,10 +44,6 @@
   			<groupId>org.apache.maven.plugins</groupId>
   			<artifactId>maven-resources-plugin</artifactId>
   			<version>2.5</version>
-  			<configuration>
-  				<encoding>UTF-8</encoding>
-  				<includeEmptyDirs>true</includeEmptyDirs>
-  			</configuration>
   		</plugin>
   		<plugin>
   			<groupId>org.apache.maven.plugins</groupId>
@@ -57,25 +53,9 @@
   				<execution>
             		<id>copy-dependencies</id>
             		<phase>package</phase>
-            			<goals>
-              				<goal>copy-dependencies</goal>
-            			</goals>
             		<inherited>false</inherited>
-           	 	<configuration>
-            		<outputDirectory>target/lib</outputDirectory>
-            	</configuration>
           		</execution>
   			</executions>
-  		</plugin>
-  		<plugin>
-  			<groupId>org.apache.maven.plugins</groupId>
-  			<artifactId>maven-eclipse-plugin</artifactId>
-  			<version>2.8</version>
-  			<configuration>
-  				<downloadJavadocs>true</downloadJavadocs>
-  				<addVersionToProjectName>true</addVersionToProjectName>
-  				<forceRecheck>true</forceRecheck>
-  			</configuration>
   		</plugin>
   	</plugins>
   </build>
