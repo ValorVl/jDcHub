@@ -3,25 +3,28 @@ package ru.sincore;
 public class Port
 {
 
-    public int portVlue;
+    public  int     portVlue;
     private boolean portStatus;
-    public String MSG;
+    public  String  MSG;
+
 
     public Port(int port)
     {
-	portVlue = port;
-	setStatus(true);
-	MSG = "Unknown";
+        portVlue = port;
+        setStatus(true);
+        MSG = "Unknown";
     }
+
 
     public void setStatus(boolean st)
     {
-	portStatus = st;
+        portStatus = st;
     }
+
 
     public boolean getStatus()
     {
-	return this.portStatus;
+        return this.portStatus;
     }
 
 }

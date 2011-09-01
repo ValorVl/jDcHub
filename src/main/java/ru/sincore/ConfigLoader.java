@@ -14,18 +14,18 @@ public class ConfigLoader
     private static final Logger _log = Logger.getLogger(ConfigLoader.class);
 
     private static String DATABASE_CONFIG = "./etc/database.properties";
-    private static String HUB_CONFIG = "./etc/hub.properties";
+    private static String HUB_CONFIG      = "./etc/hub.properties";
 
     /**
      * Database connectivity properties
      */
 
-    public static URL DB_CONNECTION_DSN;
-    public static String DB_USER_NAME;
-    public static String DB_PASSPWORD;
-    public static int DB_PORT;
-    public static int DB_PULL_MIN;
-    public static int DB_PULL_MAX;
+    public static URL     DB_CONNECTION_DSN;
+    public static String  DB_USER_NAME;
+    public static String  DB_PASSPWORD;
+    public static int     DB_PORT;
+    public static int     DB_PULL_MIN;
+    public static int     DB_PULL_MAX;
     public static boolean DB_KEEP_ALIVE;
 
     /**
@@ -97,69 +97,73 @@ public class ConfigLoader
     public static int FSUP;
     public static int HSUP;
 
+
     public ConfigLoader()
     {
     }
 
+
     public static void init()
     {
-	initDb();
-	initHub();
+        initDb();
+        initHub();
     }
+
 
     private static void initDb()
     {
 
-	try
-	{
-	    File databasePropertiesFile = new File(DATABASE_CONFIG);
-	    FileInputStream fileInput = new FileInputStream(
-		    databasePropertiesFile);
-	    BufferedInputStream buffInput = new BufferedInputStream(fileInput);
-	    Properties prop = new Properties();
+        try
+        {
+            File databasePropertiesFile = new File(DATABASE_CONFIG);
+            FileInputStream fileInput = new FileInputStream(
+                    databasePropertiesFile);
+            BufferedInputStream buffInput = new BufferedInputStream(fileInput);
+            Properties prop = new Properties();
 
-	    prop.load(buffInput);
+            prop.load(buffInput);
 
-	    _log.info("=== Load database properties >>>");
+            _log.info("=== Load database properties >>>");
 
-	    DB_CONNECTION_DSN = new URL(prop.getProperty(""));
-	    DB_USER_NAME = prop.getProperty("");
-	    DB_PASSPWORD = prop.getProperty("");
-	    DB_PORT = Integer.parseInt(prop.getProperty(""));
-	    DB_PULL_MIN = Integer.parseInt(prop.getProperty(""));
-	    DB_PULL_MAX = Integer.parseInt(prop.getProperty(""));
-	    DB_KEEP_ALIVE = Boolean.valueOf(prop.getProperty(""));
+            DB_CONNECTION_DSN = new URL(prop.getProperty(""));
+            DB_USER_NAME = prop.getProperty("");
+            DB_PASSPWORD = prop.getProperty("");
+            DB_PORT = Integer.parseInt(prop.getProperty(""));
+            DB_PULL_MIN = Integer.parseInt(prop.getProperty(""));
+            DB_PULL_MAX = Integer.parseInt(prop.getProperty(""));
+            DB_KEEP_ALIVE = Boolean.valueOf(prop.getProperty(""));
 
-	    buffInput.close();
-	}
-	catch (Exception e)
-	{
-	    _log.fatal("Fatal error >>>", e);
-	}
+            buffInput.close();
+        }
+        catch (Exception e)
+        {
+            _log.fatal("Fatal error >>>", e);
+        }
 
     }
+
 
     private static void initHub()
     {
 
-	try
-	{
-	    File databasePropertiesFile = new File(HUB_CONFIG);
-	    FileInputStream fileInput = new FileInputStream(
-		    databasePropertiesFile);
-	    BufferedInputStream buffInput = new BufferedInputStream(fileInput);
-	    Properties prop = new Properties();
+        try
+        {
+            File databasePropertiesFile = new File(HUB_CONFIG);
+            FileInputStream fileInput = new FileInputStream(
+                    databasePropertiesFile);
+            BufferedInputStream buffInput = new BufferedInputStream(fileInput);
+            Properties prop = new Properties();
 
-	    prop.load(buffInput);
+            prop.load(buffInput);
 
-	    _log.info("=== Load hub properties >>>");
+            _log.info("=== Load hub properties >>>");
 
-	    buffInput.close();
-	}
-	catch (Exception e)
-	{
-	    _log.fatal("Fatak error >>>", e);
-	}
+            buffInput.close();
+        }
+        catch (Exception e)
+        {
+            _log.fatal("Fatak error >>>", e);
+        }
     }
 
 }

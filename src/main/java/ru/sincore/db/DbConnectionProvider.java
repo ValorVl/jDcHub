@@ -8,12 +8,14 @@ public class DbConnectionProvider
     private static volatile DbConnectionProvider instance = new DbConnectionProvider();
 
     private static final Logger _log = Logger
-	    .getLogger(DbConnectionProvider.class);
+            .getLogger(DbConnectionProvider.class);
+
 
     public static DbConnectionProvider getInstance()
     {
-	return instance;
+        return instance;
     }
+
 
     private DbConnectionProvider()
     {
