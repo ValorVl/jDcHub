@@ -39,7 +39,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>ru.sincore.Main</mainClass>
+                            <mainClass>ru.ru.sincore.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

@@ -21,21 +21,20 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dshub.gui;
+package ru.sincore.gui;
 
-import dshub.*;
-import dshub.Modules.Modulator;
-import dshub.Modules.Module;
-import dshub.python.*;
-import dshub.util.ADC;
-import dshub.util.HostTester;
-import dshub.util.TimeConv;
-import dshub.adcs.*;
-import dshub.banning.Ban;
-import dshub.banning.BanList;
-import dshub.conf.Port;
-import dshub.conf.Vars;
-import dshub.i18n.Translation;
+import ru.sincore.Modules.Modulator;
+import ru.sincore.Modules.Module;
+import ru.sincore.python.*;
+import ru.sincore.util.ADC;
+import ru.sincore.util.HostTester;
+import ru.sincore.util.TimeConv;
+import ru.sincore.banning.Ban;
+import ru.sincore.banning.BanList;
+import ru.sincore.conf.Port;
+import ru.sincore.conf.Vars;
+import ru.sincore.i18n.Translation;
+import ru.sincore.*;
 
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -44,7 +43,6 @@ import java.net.Proxy;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Map;
 import java.util.ResourceBundle;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;

@@ -21,11 +21,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dshub;
+package ru.sincore;
 
 import java.io.Serializable;
 
-import dshub.conf.Vars;
+import ru.sincore.conf.Vars;
 
 /**
  * Help File generator class, dynamically.

@@ -21,13 +21,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dshub.ProtoCmds;
+package ru.sincore.ProtoCmds;
 
-import dshub.*;
-import dshub.Exceptions.STAException;
-import dshub.conf.Vars;
-import dshub.util.Constants;
-import dshub.util.STAError;
+import ru.sincore.Exceptions.STAException;
+import ru.sincore.conf.Vars;
+import ru.sincore.util.Constants;
+import ru.sincore.util.STAError;
+import ru.sincore.BannedWord;
+import ru.sincore.Broadcast;
+import ru.sincore.ClientHandler;
+import ru.sincore.Main;
 
 import java.util.StringTokenizer;
 

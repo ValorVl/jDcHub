@@ -22,8 +22,8 @@
  */
 
 package dshub.plugin;
-import dshub.Modules.DSHubModule;
-import dshub.*;
+import ru.sincore.Modules.DSHubModule;
+
 import javax.swing.JFrame;
 
 /**

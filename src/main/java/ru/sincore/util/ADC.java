@@ -1,4 +1,4 @@
-package dshub.util;
+package ru.sincore.util;
 /*
  * ADC.java
  *
@@ -22,10 +22,10 @@ package dshub.util;
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import dshub.Main;
-import dshub.SimpleHandler;
-import dshub.TigerImpl.Base32;
-import dshub.conf.Vars;
+import ru.sincore.Main;
+import ru.sincore.SimpleHandler;
+import ru.sincore.TigerImpl.Base32;
+import ru.sincore.conf.Vars;
 
 /**
  * This class is the main storage place for ADC command that hub has to send.

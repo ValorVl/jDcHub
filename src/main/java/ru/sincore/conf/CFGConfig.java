@@ -21,21 +21,20 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dshub.conf;
+package ru.sincore.conf;
 
 import java.net.InetSocketAddress;
 import java.net.Proxy;
-import java.util.Map;
 import java.util.StringTokenizer;
 
-import dshub.Broadcast;
-import dshub.ClientHandler;
-import dshub.ClientNod;
-import dshub.HubServer;
-import dshub.Main;
-import dshub.SimpleHandler;
-import dshub.util.ADC;
-import dshub.util.HostTester;
+import ru.sincore.Broadcast;
+import ru.sincore.ClientHandler;
+import ru.sincore.ClientNod;
+import ru.sincore.HubServer;
+import ru.sincore.Main;
+import ru.sincore.util.ADC;
+import ru.sincore.util.HostTester;
+import ru.sincore.SimpleHandler;
 
 /**
  * The main hub configuration utility, is called when via command or tty a configuration wants changed.

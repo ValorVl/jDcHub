@@ -1,4 +1,4 @@
-package dshub;
+package ru.sincore;
 /*
  * Command.java
  *
@@ -23,27 +23,26 @@ package dshub;
  */
 
 
-import dshub.Exceptions.CommandException;
-import dshub.Exceptions.STAException;
-import dshub.Modules.Modulator;
-import dshub.Modules.Module;
-import dshub.ProtoCmds.CTM;
-import dshub.ProtoCmds.MSG;
-import dshub.ProtoCmds.RCM;
-import dshub.ProtoCmds.RES;
-import dshub.ProtoCmds.SCH;
-import dshub.ProtoCmds.STA;
-import dshub.ProtoCmds.SUP;
-import dshub.TigerImpl.Base32;
-import dshub.TigerImpl.Tiger;
-import dshub.banning.BanList;
-import dshub.conf.Vars;
-import dshub.util.ADC;
-import dshub.util.Constants;
-import dshub.util.STAError;
+import ru.sincore.Exceptions.CommandException;
+import ru.sincore.Exceptions.STAException;
+import ru.sincore.Modules.Modulator;
+import ru.sincore.Modules.Module;
+import ru.sincore.ProtoCmds.CTM;
+import ru.sincore.ProtoCmds.MSG;
+import ru.sincore.ProtoCmds.RCM;
+import ru.sincore.ProtoCmds.RES;
+import ru.sincore.ProtoCmds.SCH;
+import ru.sincore.ProtoCmds.STA;
+import ru.sincore.ProtoCmds.SUP;
+import ru.sincore.TigerImpl.Base32;
+import ru.sincore.TigerImpl.Tiger;
+import ru.sincore.banning.BanList;
+import ru.sincore.conf.Vars;
+import ru.sincore.util.ADC;
+import ru.sincore.util.Constants;
+import ru.sincore.util.STAError;
 
 import java.util.*;
-import java.io.*;
 
 /**
  * Provides a parsing for each ADC command received from client, and makes the states transitions

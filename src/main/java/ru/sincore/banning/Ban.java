@@ -21,11 +21,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dshub.banning;
+package ru.sincore.banning;
 
 import java.io.Serializable;
 
-import dshub.util.TimeConv;
+import ru.sincore.util.TimeConv;
 
 /**
  * Serializable ban class that allows bans to be kept in linked list in memory

@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dshub.TigerImpl;
+package ru.sincore.TigerImpl;
 
 /**
  * Conversions from bytearray to base32 and viceversa

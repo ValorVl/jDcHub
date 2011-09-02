@@ -22,9 +22,11 @@
  */
 
 package dshub.plugin;
-import dshub.Modules.DSHubModule;
-import dshub.*;
-import dshub.util.*;
+import ru.sincore.Modules.DSHubModule;
+import ru.sincore.util.*;
+import ru.sincore.ClientHandler;
+import ru.sincore.Main;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;

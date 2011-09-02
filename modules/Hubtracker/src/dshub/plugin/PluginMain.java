@@ -23,8 +23,9 @@
 
 package dshub.plugin;
 
-import dshub.Modules.*;
-import dshub.*;
+import ru.sincore.Modules.*;
+import ru.sincore.ClientHandler;
+
 import javax.swing.JFrame;
 
 /**

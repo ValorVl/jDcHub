@@ -21,11 +21,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dshub;
+package ru.sincore;
 
-import java.util.Map;
-
-import dshub.conf.Vars;
+import ru.sincore.conf.Vars;
 
 /**
  * Permanent thread that keeps clients connected ( meaning killing the ones who

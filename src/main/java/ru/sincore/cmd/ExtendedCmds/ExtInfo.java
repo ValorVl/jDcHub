@@ -21,13 +21,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dshub.cmd.ExtendedCmds;
+package ru.sincore.cmd.ExtendedCmds;
 
-import dshub.*;
-import dshub.TigerImpl.Base32;
-import dshub.util.ADC;
+import ru.sincore.TigerImpl.Base32;
+import ru.sincore.util.ADC;
+import ru.sincore.ClientHandler;
+import ru.sincore.ClientNod;
+import ru.sincore.SimpleHandler;
 
-import java.util.Map;
 import java.util.StringTokenizer;
 
 /**

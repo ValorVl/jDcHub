@@ -22,11 +22,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dshub.cmd;
+package ru.sincore.cmd;
 
-import dshub.ClientHandler;
-import dshub.Modules.Modulator;
-import dshub.Modules.Module;
+import ru.sincore.ClientHandler;
+import ru.sincore.Modules.Modulator;
+import ru.sincore.Modules.Module;
 
 import java.util.StringTokenizer;
 

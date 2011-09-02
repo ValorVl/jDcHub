@@ -20,14 +20,13 @@
  *
  */
 
-package dshub.gui;
+package ru.sincore.gui;
 
-import dshub.*;
-import dshub.conf.Vars;
-import dshub.util.TimeConv;
+import ru.sincore.conf.Vars;
+import ru.sincore.util.TimeConv;
+import ru.sincore.*;
 
 import java.util.Date;
-import java.util.Map;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;

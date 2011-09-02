@@ -21,11 +21,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dshub;
+package ru.sincore;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -35,12 +33,12 @@ import org.apache.mina.core.session.IoSession;
 import org.apache.mina.core.session.IdleStatus;
 
 
-import dshub.Exceptions.CommandException;
-import dshub.Exceptions.STAException;
-import dshub.Modules.Modulator;
-import dshub.Modules.Module;
-import dshub.TigerImpl.Base32;
-import dshub.util.STAError;
+import ru.sincore.Exceptions.CommandException;
+import ru.sincore.Exceptions.STAException;
+import ru.sincore.Modules.Modulator;
+import ru.sincore.Modules.Module;
+import ru.sincore.TigerImpl.Base32;
+import ru.sincore.util.STAError;
 
 /**
  * @author Pietricica

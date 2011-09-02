@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dshub.adcs;
+package ru.sincore.adcs;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -29,7 +29,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 
-import dshub.*;
+import ru.sincore.Main;
 
 /**
  * @author Eugen Hristev

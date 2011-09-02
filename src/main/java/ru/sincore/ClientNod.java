@@ -21,14 +21,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dshub;
+package ru.sincore;
 
 import org.apache.mina.core.future.IoFutureListener;
 import org.apache.mina.core.future.WriteFuture;
 
-import dshub.banning.BanList;
-import dshub.conf.Vars;
-import dshub.util.ADC;
+import ru.sincore.banning.BanList;
+import ru.sincore.conf.Vars;
+import ru.sincore.util.ADC;
 
 
 /**

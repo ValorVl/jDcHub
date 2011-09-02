@@ -23,8 +23,9 @@
 
 package dshub.plugin;
 
-import dshub.ClientHandler;
+import ru.sincore.ClientHandler;
 import dshub.Vars;
+
 import javax.swing.JOptionPane;
 
 /**

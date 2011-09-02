@@ -21,14 +21,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dshub.cmd;
+package ru.sincore.cmd;
 
 import java.util.StringTokenizer;
 
-import dshub.ClientHandler;
-import dshub.Main;
-import dshub.conf.Port;
-import dshub.conf.Vars;
+import ru.sincore.ClientHandler;
+import ru.sincore.Main;
+import ru.sincore.conf.Port;
+import ru.sincore.conf.Vars;
 
 /**
  * @author Pietricica

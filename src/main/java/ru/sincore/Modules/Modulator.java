@@ -21,10 +21,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dshub.Modules;
+package ru.sincore.Modules;
 
 
-import dshub.*;
+import ru.sincore.Main;
 
 import java.io.File;
 import java.lang.NoClassDefFoundError;

@@ -21,12 +21,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dshub.conf;
+package ru.sincore.conf;
 
-import dshub.Main;
-import dshub.TigerImpl.Base32;
-import dshub.TigerImpl.Tiger;
-import dshub.util.ADC;
+import ru.sincore.Main;
+import ru.sincore.TigerImpl.Base32;
+import ru.sincore.TigerImpl.Tiger;
+import ru.sincore.util.ADC;
 
 import java.util.LinkedList;
 

@@ -21,13 +21,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dshub.python;
+package ru.sincore.python;
 
-import dshub.Main;
+import ru.sincore.Main;
 
 import java.io.File;
 import java.util.LinkedList;
-import java.util.Properties;
 
 import org.python.core.*;
 import org.python.util.*;

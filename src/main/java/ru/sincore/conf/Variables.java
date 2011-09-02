@@ -1,4 +1,4 @@
-package dshub.conf;
+package ru.sincore.conf;
 /*
  * Variables.java
  *

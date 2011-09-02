@@ -23,7 +23,8 @@
 
 package dshub.plugin;
 
-import dshub.ClientHandler;
+import ru.sincore.ClientHandler;
+
 import java.util.StringTokenizer;
 
 /**

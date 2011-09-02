@@ -21,9 +21,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dshub.util;
+package ru.sincore.util;
 
-import dshub.Exceptions.NotCompatibleStringException;
+import ru.sincore.Exceptions.NotCompatibleStringException;
 
 
 /**

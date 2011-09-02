@@ -1,4 +1,4 @@
-package dshub;
+package ru.sincore;
 /*
  * ClientHandler.java
  *
@@ -22,15 +22,12 @@ package dshub;
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import java.net.*;
-import java.io.*;
-
 import org.apache.mina.core.future.WriteFuture;
 import org.apache.mina.core.session.IoSession;
 
-import dshub.banning.Ban;
-import dshub.conf.Vars;
-import dshub.util.ADC;
+import ru.sincore.banning.Ban;
+import ru.sincore.conf.Vars;
+import ru.sincore.util.ADC;
 
 
 /**

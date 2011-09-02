@@ -19,20 +19,19 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dshub.cmd;
+package ru.sincore.cmd;
 
-import java.util.Map;
 import java.util.StringTokenizer;
 
-import dshub.AccountsConfig;
-import dshub.Broadcast;
-import dshub.ClientHandler;
-import dshub.ClientNod;
-import dshub.HubServer;
-import dshub.Main;
-import dshub.Nod;
-import dshub.SimpleHandler;
-import dshub.util.ADC;
+import ru.sincore.AccountsConfig;
+import ru.sincore.Broadcast;
+import ru.sincore.ClientHandler;
+import ru.sincore.ClientNod;
+import ru.sincore.HubServer;
+import ru.sincore.Main;
+import ru.sincore.Nod;
+import ru.sincore.util.ADC;
+import ru.sincore.SimpleHandler;
 
 /**
  * The grant command, that is called either via client , either via tty.

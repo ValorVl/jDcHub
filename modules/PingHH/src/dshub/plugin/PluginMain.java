@@ -22,8 +22,10 @@
  */
 
 package dshub.plugin;
-import dshub.Modules.DSHubModule;
-import dshub.*;
+import ru.sincore.Modules.DSHubModule;
+import ru.sincore.ClientHandler;
+import ru.sincore.Main;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;

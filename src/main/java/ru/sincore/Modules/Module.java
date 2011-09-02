@@ -21,12 +21,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dshub.Modules;
+package ru.sincore.Modules;
 
 
-import dshub.ClientHandler;
-import dshub.Main;
-import dshub.conf.Vars;
+import ru.sincore.ClientHandler;
+import ru.sincore.Main;
+import ru.sincore.conf.Vars;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

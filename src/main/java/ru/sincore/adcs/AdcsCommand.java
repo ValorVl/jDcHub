@@ -21,14 +21,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dshub.adcs;
+package ru.sincore.adcs;
 
 import java.util.StringTokenizer;
 
-import javax.swing.JOptionPane;
-
-import dshub.*;
-import dshub.conf.Vars;
+import ru.sincore.conf.Vars;
+import ru.sincore.ClientHandler;
+import ru.sincore.HubServer;
+import ru.sincore.Main;
 
 /**
  * @author Eugen Hristev

@@ -2,7 +2,8 @@ package dshub.plugin;
 /* RSS Feed Plugin 0.02 
  * Cleaned up on the reader
  */
-import dshub.*;
+import ru.sincore.ClientHandler;
+
 import java.util.StringTokenizer;
 
 

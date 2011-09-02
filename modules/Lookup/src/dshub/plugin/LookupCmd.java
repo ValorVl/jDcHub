@@ -1,9 +1,11 @@
 package dshub.plugin;
-import dshub.*;
+import ru.sincore.ClientHandler;
+import ru.sincore.ClientNod;
+import ru.sincore.SimpleHandler;
+
 import java.util.StringTokenizer;
 import java.net.*;
 import java.io.*;
-import java.util.*;
 import java.io.DataInputStream;
 import java.io.PrintStream;
 import java.net.Socket;

@@ -22,7 +22,7 @@
  */
 
 
-package dshub.adcs;
+package ru.sincore.adcs;
 
 import java.security.KeyStore;
 import java.security.KeyStoreException;

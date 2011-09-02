@@ -1,4 +1,4 @@
-package dshub;
+package ru.sincore;
 /*
  * Main.java
  *
@@ -22,25 +22,21 @@ package dshub;
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import dshub.Modules.Modulator;
-import dshub.Modules.Module;
-import dshub.TigerImpl.Base32;
-import dshub.banning.BanList;
-import dshub.cmd.GrantCmd;
-import dshub.cmd.PortCmd;
-import dshub.conf.Vars;
-import dshub.gui.TestFrame;
-import dshub.i18n.Translation;
-import dshub.python.*;
-import dshub.util.ADC;
-import dshub.util.HostTester;
-import dshub.util.TimeConv;
+import ru.sincore.TigerImpl.Base32;
+import ru.sincore.banning.BanList;
+import ru.sincore.cmd.GrantCmd;
+import ru.sincore.cmd.PortCmd;
+import ru.sincore.conf.Vars;
+import ru.sincore.gui.TestFrame;
+import ru.sincore.i18n.Translation;
+import ru.sincore.python.*;
+import ru.sincore.util.ADC;
+import ru.sincore.util.HostTester;
+import ru.sincore.util.TimeConv;
 
 import java.io.*;
 import java.util.*;
 import java.net.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;

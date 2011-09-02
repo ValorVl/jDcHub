@@ -22,9 +22,7 @@
  *
  */
 
-package dshub.banning;
-
-import java.io.Serializable;
+package ru.sincore.banning;
 
 /**
  * A non serialisable list of bans

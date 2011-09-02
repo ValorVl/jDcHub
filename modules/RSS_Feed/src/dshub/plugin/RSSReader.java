@@ -2,7 +2,7 @@ package dshub.plugin;
 /* RSS Feed Plugin 0.02
  * Orginal Idea grabbed from http://forum.java.sun.com/thread.jspa?threadID=5275485
  */
-import dshub.ClientHandler;
+import ru.sincore.ClientHandler;
 import java.net.URL;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -11,7 +11,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
- 
+
 public class RSSReader {
         
 	private static RSSReader instance = null;

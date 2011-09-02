@@ -21,12 +21,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dshub.i18n;
+package ru.sincore.i18n;
 
 import java.text.MessageFormat;
 import java.util.*;
 
-import dshub.conf.Vars;
+import ru.sincore.conf.Vars;
 
 /**
  * @author Pietricica

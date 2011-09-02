@@ -22,7 +22,7 @@
  *
  */
 
-package dshub.banning;
+package ru.sincore.banning;
 
 import java.io.Serializable;
 

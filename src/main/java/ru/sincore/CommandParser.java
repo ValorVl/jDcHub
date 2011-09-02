@@ -21,34 +21,32 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dshub;
+package ru.sincore;
 
-import dshub.Modules.Modulator;
-import dshub.Modules.Module;
-import dshub.TigerImpl.Base32;
-import dshub.adcs.AdcsCommand;
-import dshub.banning.Ban;
-import dshub.banning.BanList;
-import dshub.cmd.BackupCmd;
-import dshub.cmd.ChatControlCmd;
-import dshub.cmd.GrantCmd;
-import dshub.cmd.PlugminCmd;
-import dshub.cmd.PortCmd;
-import dshub.cmd.ExtendedCmds.ExtDrop;
-import dshub.cmd.ExtendedCmds.ExtInfo;
-import dshub.cmd.ExtendedCmds.ExtKick;
-import dshub.cmd.ExtendedCmds.ExtMass;
-import dshub.cmd.ExtendedCmds.ExtRedirect;
-import dshub.conf.CFGConfig;
-import dshub.conf.Vars;
-import dshub.gui.TestFrame;
-import dshub.util.ADC;
-import dshub.util.TimeConv;
+import ru.sincore.Modules.Modulator;
+import ru.sincore.Modules.Module;
+import ru.sincore.TigerImpl.Base32;
+import ru.sincore.adcs.AdcsCommand;
+import ru.sincore.banning.Ban;
+import ru.sincore.banning.BanList;
+import ru.sincore.cmd.BackupCmd;
+import ru.sincore.cmd.ChatControlCmd;
+import ru.sincore.cmd.GrantCmd;
+import ru.sincore.cmd.PlugminCmd;
+import ru.sincore.cmd.PortCmd;
+import ru.sincore.cmd.ExtendedCmds.ExtDrop;
+import ru.sincore.cmd.ExtendedCmds.ExtInfo;
+import ru.sincore.cmd.ExtendedCmds.ExtKick;
+import ru.sincore.cmd.ExtendedCmds.ExtMass;
+import ru.sincore.cmd.ExtendedCmds.ExtRedirect;
+import ru.sincore.conf.CFGConfig;
+import ru.sincore.conf.Vars;
+import ru.sincore.gui.TestFrame;
+import ru.sincore.util.ADC;
+import ru.sincore.util.TimeConv;
 
 import java.util.Calendar;
 import java.util.StringTokenizer;
-import java.net.*;
-import java.util.Map;
 
 /**
  * Basic client commands sent to hub via mainchat or pm to hub bot.

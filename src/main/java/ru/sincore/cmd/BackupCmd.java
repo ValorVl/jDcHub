@@ -21,12 +21,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package dshub.cmd;
+package ru.sincore.cmd;
 
 import java.util.StringTokenizer;
 
-import dshub.ClientHandler;
-import dshub.Main;
+import ru.sincore.ClientHandler;
+import ru.sincore.Main;
 
 /**
  * A class that implements the backup command

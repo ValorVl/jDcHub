@@ -1,4 +1,4 @@
-package dshub;
+package ru.sincore;
 /*
  * HubServer.java
  *
@@ -53,16 +53,16 @@ import org.apache.mina.filter.logging.LoggingFilter;
 import org.apache.mina.filter.ssl.SslFilter;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 
-import dshub.Modules.Modulator;
-import dshub.adcs.CertManager;
-import dshub.adcs.SSLManager;
-import dshub.banning.BanList;
-import dshub.banning.bans;
-import dshub.conf.Port;
-import dshub.conf.Variables;
-import dshub.conf.Vars;
-import dshub.i18n.Translation;
-import dshub.util.ADC;
+import ru.sincore.Modules.Modulator;
+import ru.sincore.adcs.CertManager;
+import ru.sincore.adcs.SSLManager;
+import ru.sincore.banning.BanList;
+import ru.sincore.banning.bans;
+import ru.sincore.conf.Port;
+import ru.sincore.conf.Variables;
+import ru.sincore.conf.Vars;
+import ru.sincore.i18n.Translation;
+import ru.sincore.util.ADC;
 
 
 /**
