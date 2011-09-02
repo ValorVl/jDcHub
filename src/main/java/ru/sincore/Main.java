@@ -1,6 +1,7 @@
 package ru.sincore;
 
 import org.apache.log4j.Logger;
+import ru.sincore.db.dao.StubDAO;
 
 public class Main extends Thread
 {
@@ -18,7 +19,16 @@ public class Main extends Thread
     {
         setName("core-main");
         setPriority(NORM_PRIORITY);
-        ConfigLoader.init();
+		ConfigLoader.init();
+
+		StubDAO st = new StubDAO();
+
+		System.out.println(ConfigLoader.DB_ENGINE);
+
+		st.del(248L);
+
+
+
     }
 
 

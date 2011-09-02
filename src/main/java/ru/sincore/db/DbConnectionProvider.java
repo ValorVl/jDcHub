@@ -1,25 +1,35 @@
 package ru.sincore.db;
 
-import org.apache.log4j.Logger;
+import ru.sincore.ConfigLoader;
+
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DbConnectionProvider
 {
+//	private static final Map<String,String> properties = new HashMap<String, String>();
 
-    private static volatile DbConnectionProvider instance = new DbConnectionProvider();
+	private static volatile EntityManagerFactory instance;
 
-    private static final Logger _log = Logger
-            .getLogger(DbConnectionProvider.class);
+	static {
+		Map<String,String> properties = new HashMap<String, String>();
 
+		properties.put("hibernate.connection.username", ConfigLoader.DB_USER_NAME);
+		properties.put("hibernate.connection.password",ConfigLoader.DB_PASSPWORD);
+		properties.put("hibernate.connection.url", ConfigLoader.DB_CONNECTION_DSN.toString());
+		properties.put("hibernate.connection.driver_class",ConfigLoader.DB_ENGINE);
+		properties.put("hibernate.dialect",ConfigLoader.DB_DIALECT);
+		properties.put("hibernate.c3p0.min_size", String.valueOf(ConfigLoader.DB_PULL_MIN));
+		properties.put("hibernate.c3p0.max_size", String.valueOf(ConfigLoader.DB_PULL_MAX));
+		properties.put("hibernate.c3p0.timeout",String.valueOf(ConfigLoader.DB_TIMEOUT));
 
-    public static DbConnectionProvider getInstance()
-    {
-        return instance;
-    }
+		instance = Persistence.createEntityManagerFactory("jdchub", properties);
+	}
 
-
-    private DbConnectionProvider()
-    {
-
-    }
-
+	public static EntityManagerFactory getFactory()
+	{
+		return instance;
+	}
 }

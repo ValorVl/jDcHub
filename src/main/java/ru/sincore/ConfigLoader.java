@@ -1,32 +1,38 @@
 package ru.sincore;
 
+import org.apache.log4j.Logger;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.net.URL;
 import java.util.Properties;
-
-import org.apache.log4j.Logger;
 
 public class ConfigLoader
 {
 
     private static final Logger _log = Logger.getLogger(ConfigLoader.class);
 
-    private static String DATABASE_CONFIG = "./etc/database.properties";
-    private static String HUB_CONFIG      = "./etc/hub.properties";
+    private static final String DATABASE_CONFIG;
+	private static final String HUB_CONFIG;
 
-    /**
+	static
+	{
+		HUB_CONFIG = "./etc/hub.properties";
+		DATABASE_CONFIG = "./etc/database.properties";
+	}
+
+	/**
      * Database connectivity properties
      */
 
-    public static URL     DB_CONNECTION_DSN;
+    public static String  DB_CONNECTION_DSN;
+	public static String  DB_ENGINE;
+	public static String  DB_DIALECT;
     public static String  DB_USER_NAME;
     public static String  DB_PASSPWORD;
-    public static int     DB_PORT;
     public static int     DB_PULL_MIN;
     public static int     DB_PULL_MAX;
-    public static boolean DB_KEEP_ALIVE;
+    public static int 	  DB_TIMEOUT;
 
     /**
      * Hub properties
@@ -98,72 +104,85 @@ public class ConfigLoader
     public static int HSUP;
 
 
-    public ConfigLoader()
-    {
-    }
-
-
     public static void init()
     {
-        initDb();
+		initDb();
         initHub();
     }
 
 
     private static void initDb()
     {
+		File databasePropertiesFile;
+		FileInputStream fileInput;
+		BufferedInputStream buffInput;
+		Properties prop;
 
-        try
-        {
-            File databasePropertiesFile = new File(DATABASE_CONFIG);
-            FileInputStream fileInput = new FileInputStream(
-                    databasePropertiesFile);
-            BufferedInputStream buffInput = new BufferedInputStream(fileInput);
-            Properties prop = new Properties();
+		try
+		{
+			databasePropertiesFile = new File(DATABASE_CONFIG);
+			fileInput = new FileInputStream(databasePropertiesFile);
+			buffInput = new BufferedInputStream(fileInput);
+			prop = new Properties();
 
-            prop.load(buffInput);
+			prop.load(buffInput);
 
-            _log.info("=== Load database properties >>>");
+			_log.info("=== Load database properties >>>");
 
-            DB_CONNECTION_DSN = new URL(prop.getProperty(""));
-            DB_USER_NAME = prop.getProperty("");
-            DB_PASSPWORD = prop.getProperty("");
-            DB_PORT = Integer.parseInt(prop.getProperty(""));
-            DB_PULL_MIN = Integer.parseInt(prop.getProperty(""));
-            DB_PULL_MAX = Integer.parseInt(prop.getProperty(""));
-            DB_KEEP_ALIVE = Boolean.valueOf(prop.getProperty(""));
+			DB_CONNECTION_DSN 									= prop.getProperty("database.dsn");
+			DB_ENGINE											= prop.getProperty("database.driver.class");
+			DB_DIALECT											= prop.getProperty("database.dialect");
+			DB_USER_NAME 										= prop.getProperty("database.user");
+			DB_PASSPWORD 										= prop.getProperty("database.password");
+			DB_PULL_MIN 										= Integer.parseInt(prop.getProperty("database.pool.min"));
+			DB_PULL_MAX 										= Integer.parseInt(prop.getProperty("database.pool.max"));
+			DB_TIMEOUT											= Integer.parseInt(prop.getProperty("database.pool.timeout"));
 
-            buffInput.close();
-        }
-        catch (Exception e)
-        {
-            _log.fatal("Fatal error >>>", e);
-        }
+			buffInput.close();
+		}
+		catch (Exception e)
+		{
+			_log.fatal("Fatal error >>>", e);
+		}
 
     }
 
 
     private static void initHub()
     {
+		File hubPropertiesFile;
+		FileInputStream fileInput;
+		BufferedInputStream buffInput = null;
+		Properties prop;
 
         try
         {
-            File databasePropertiesFile = new File(HUB_CONFIG);
-            FileInputStream fileInput = new FileInputStream(
-                    databasePropertiesFile);
-            BufferedInputStream buffInput = new BufferedInputStream(fileInput);
-            Properties prop = new Properties();
+            hubPropertiesFile 		= new File(HUB_CONFIG);
+            fileInput 				= new FileInputStream(hubPropertiesFile);
+            buffInput 				= new BufferedInputStream(fileInput);
+            prop 					= new Properties();
 
             prop.load(buffInput);
 
             _log.info("=== Load hub properties >>>");
 
-            buffInput.close();
+
+
         }
         catch (Exception e)
         {
-            _log.fatal("Fatak error >>>", e);
-        }
+            _log.fatal("Fatal error >>>", e);
+        }finally {
+			try{
+				if (buffInput.available() > 0)
+				{
+					buffInput.close();
+				}
+			}catch (Exception ex)
+			{
+				_log.fatal(ex);
+			}
+		}
     }
 
 }
