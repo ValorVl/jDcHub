@@ -208,11 +208,8 @@ public class HubServer extends Thread
             }
             else
             {
-                Main.GUI
-                        .SetStatus(
-                                "Couldn't find suitable keys and certificate.\nPlease load them or regenerate.\n" +
-                                "ADC Secure mode has been disabled.",
-                                JOptionPane.WARNING_MESSAGE);
+                System.out.println("Couldn't find suitable keys and certificate.\nPlease load them or regenerate.\n" +
+                                "ADC Secure mode has been disabled.");
                 Vars.adcs_mode = false;
             }
 
@@ -261,21 +258,6 @@ public class HubServer extends Thread
         }
 
 
-        if (Main.GUIok)
-        {
-            if (pop.equals(""))
-            {
-                Main.GUI.SetStatus("Couldn't start server on any set ports.");
-            }
-            else
-
-            {
-                Main.GUI.SetStatus("Server created. Listening on ports: " + pop + ".");
-            }
-
-        }
-
-
         Date d = new Date(Main.curtime);
         Main.PopMsg("Start Time:" + d.toString());
         System.out.print("\n>");
@@ -301,15 +283,11 @@ public class HubServer extends Thread
             Main.PopMsg("Network problem. Unable to listen on port " + port.portValue + "." + jbe);
             port.setStatus(false);
             port.MSG = jbe.toString();
-            if (Main.GUIok)
-            {
-                Main.GUI
-                        .SetStatus("Network problem. Unable to listen on port " +
-                                   port.portValue +
-                                   "." +
-                                   jbe, JOptionPane.ERROR_MESSAGE);
 
-            }
+            //TODO replace by logger
+            System.out.println("Network problem. Unable to listen on port " +
+                               port.portValue +
+                               ".");
             return false;
         }
         catch (java.lang.IllegalArgumentException ee)
@@ -317,13 +295,10 @@ public class HubServer extends Thread
             Main.PopMsg("Invalid port " + port.portValue + "." + ee);
             port.setStatus(false);
             port.MSG = ee.toString();
-            if (Main.GUIok)
-            {
-                Main.GUI
-                        .SetStatus("invalid port " + port.portValue + "." + ee,
-                                   JOptionPane.ERROR_MESSAGE);
 
-            }
+            //TODO replace by logger
+            System.out.println("invalid port " + port.portValue + "." + ee);
+
             return false;
         }
         catch (IOException ex)
@@ -352,8 +327,6 @@ public class HubServer extends Thread
 
             exception.printStackTrace();
         }
-
-        //    System.out.println("hmm");
     }
 
 

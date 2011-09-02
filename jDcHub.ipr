@@ -298,17 +298,6 @@
         <root url="jar://$MAVEN_REPOSITORY$/dom4j/dom4j/1.6.1/dom4j-1.6.1-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: javassist:javassist:3.3.GA">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/javassist/javassist/3.3.GA/javassist-3.3.GA.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/javassist/javassist/3.3.GA/javassist-3.3.GA-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/javassist/javassist/3.3.GA/javassist-3.3.GA-sources.jar!/" />
-      </SOURCES>
-    </library>
     <library name="Maven: javax.persistence:persistence-api:1.0">
       <CLASSES>
         <root url="jar://$MAVEN_REPOSITORY$/javax/persistence/persistence-api/1.0/persistence-api-1.0.jar!/" />
@@ -340,6 +329,17 @@
       </JAVADOC>
       <SOURCES>
         <root url="jar://$MAVEN_REPOSITORY$/javax/javaee-api/6.0/javaee-api-6.0-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: jboss:javassist:3.3.ga">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/jboss/javassist/3.3.ga/javassist-3.3.ga.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/jboss/javassist/3.3.ga/javassist-3.3.ga-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/jboss/javassist/3.3.ga/javassist-3.3.ga-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: jboss:jboss-common-core:2.0.4.GA">

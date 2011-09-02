@@ -27,7 +27,6 @@ import ru.sincore.banning.BanList;
 import ru.sincore.cmd.GrantCmd;
 import ru.sincore.cmd.PortCmd;
 import ru.sincore.conf.Vars;
-import ru.sincore.gui.TestFrame;
 import ru.sincore.i18n.Translation;
 import ru.sincore.python.*;
 import ru.sincore.util.ADC;
@@ -37,14 +36,9 @@ import ru.sincore.util.TimeConv;
 import java.io.*;
 import java.util.*;
 import java.net.*;
-import javax.swing.JOptionPane;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-
 
 /**
  * DSHub main class, contains main function ( to call when start application )
- * Provides registration functions, calls the GUI.
  * Listens to System.in in tty for commands ( if run via java command line )
  *
  * @author Pietricica
@@ -53,34 +47,21 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 public class Main extends Thread
 {
+    public static HubServer     Server;
+    public static Properties    Proppies;
+    public static String        auxhelp;
+    public static BanWordsList  listaBanate;
 
-    /**
-     * Creates a new instance of Main
-     */
-
-
-    public static HubServer    Server;
-    public static Properties   Proppies;
-    public static String       auxhelp;
-    public static BanWordsList listaBanate;
-
-    public static String MOTD = "";
-    public static long      curtime;
-    public static TestFrame GUI;
-    public static String    myPath;
-    public static boolean GUIok      = true;
-    public static boolean GUIshowing = false;
-    static        boolean nogui      = false;
+    public static String        MOTD = "";
+    public static long          curtime;
+    public static String        myPath;
     public static PythonManager pManager;
 
 
     public static void PopMsg(String bla)
     {
         System.out.println(bla);
-        if (Main.GUIok)
-        {
-            Main.GUI.insertLog(bla);
-        }
+
         Date d = new Date(Main.curtime);
         if (Vars.savelogs == 1)
         {
@@ -120,24 +101,23 @@ public class Main extends Thread
     }
 
 
-    @SuppressWarnings("empty-statement")
     public static void init()
     {
         ClassLoader cl = ClassLoader.getSystemClassLoader();
-        String bla = System.getProperty("java.class.path");
-        String bla2 = System.getProperty("user.dir");
+        String javaClassPath = System.getProperty("java.class.path");
+        String userDirectory = System.getProperty("user.dir");
 
         String separator = System.getProperty("file.separator");
-        String pathsep = System.getProperty("path.separator");
+        String pathSeparator = System.getProperty("path.separator");
 
-        bla = bla.replace('\\', separator.charAt(0));
-        bla = bla.replace('/', separator.charAt(0));
-        if (!bla2.endsWith(separator))
+        javaClassPath = javaClassPath.replace('\\', separator.charAt(0));
+        javaClassPath = javaClassPath.replace('/', separator.charAt(0));
+        if (!userDirectory.endsWith(separator))
         {
-            bla2 = bla2 + separator;
+            userDirectory = userDirectory + separator;
         }
 
-        myPath = bla2 + bla;
+        myPath = userDirectory + javaClassPath;
         // System.out.println (myPath);
 
         int x = myPath.lastIndexOf(separator.charAt(0));
@@ -149,16 +129,16 @@ public class Main extends Thread
 
         //if("c:\\blaaa".matches("[a-zA-Z]:\\\\.*"))
         //System.out.println("ok");
-        if (bla.matches("[a-zA-Z]:\\\\.*"))
+        if (javaClassPath.matches("[a-zA-Z]:\\\\.*"))
         {
-            int y = bla.indexOf(';');
+            int y = javaClassPath.indexOf(';');
             while (y != -1)
             {
-                bla = bla.substring(y + 1, bla.length());
-                y = bla.indexOf(';');
+                javaClassPath = javaClassPath.substring(y + 1, javaClassPath.length());
+                y = javaClassPath.indexOf(';');
             }
 
-            myPath = bla;
+            myPath = javaClassPath;
             if (myPath.endsWith(".jar") || myPath.endsWith(".jar" + separator))
             {
                 myPath = myPath.substring(0, myPath.lastIndexOf(separator));
@@ -175,9 +155,9 @@ public class Main extends Thread
         }
         if (System.getProperty("os.name").equalsIgnoreCase("Linux"))
         {
-            if (!bla.startsWith(separator))
+            if (!javaClassPath.startsWith(separator))
             {
-                StringTokenizer st1 = new StringTokenizer(myPath, pathsep);
+                StringTokenizer st1 = new StringTokenizer(myPath, pathSeparator);
                 String aux = st1.nextToken();
                 //System.out.println(myPath);
                 while (!(aux.toLowerCase().contains("dshub.jar".toLowerCase())) &&
@@ -194,13 +174,13 @@ public class Main extends Thread
             }
             else
             {
-                if (bla.toLowerCase().endsWith("/dshub.jar"))
+                if (javaClassPath.toLowerCase().endsWith("/dshub.jar"))
                 {
-                    myPath = bla.substring(0, bla.length() - 9);
+                    myPath = javaClassPath.substring(0, javaClassPath.length() - 9);
                 }
                 else
                 {
-                    myPath = bla;
+                    myPath = javaClassPath;
                 }
             }
 
@@ -208,15 +188,15 @@ public class Main extends Thread
 
         if (System.getProperty("os.name").equalsIgnoreCase("sunos"))
         {
-            if (bla.startsWith(separator))
+            if (javaClassPath.startsWith(separator))
             {
-                if (bla.toLowerCase().endsWith("/dshub.jar"))
+                if (javaClassPath.toLowerCase().endsWith("/dshub.jar"))
                 {
-                    myPath = bla.substring(0, bla.length() - 9);
+                    myPath = javaClassPath.substring(0, javaClassPath.length() - 9);
                 }
                 else
                 {
-                    myPath = bla;
+                    myPath = javaClassPath;
                 }
             }
         }
@@ -262,13 +242,9 @@ public class Main extends Thread
         BanList.First = null;
         SimpleHandler.Users.clear();
 
-        //  System.out.println("ok1");
-
         Server.shutdown();
         System.gc(); //calling garbage collectors
-        // System.out.println("ok2");
         Main.Server = new HubServer();
-        //   System.out.println("ok3");
         Main.curtime = System.currentTimeMillis();
         Main.Proppies = System.getProperties();
     }
@@ -292,12 +268,7 @@ public class Main extends Thread
                 {
 
                     System.out.println(AccountsConfig.getnod(aux).getRegInfo());
-                    if (Main.GUIok)
-                    {
-                        Main.GUI
-                                .SetStatus(Translation.getString("already_regged"),
-                                           JOptionPane.WARNING_MESSAGE);
-                    }
+
                     return;
                 }
 
@@ -321,7 +292,6 @@ public class Main extends Thread
                             {
                                 temp.cur_client.CT = "2";
                             }
-                            ;
 
 
                             Broadcast.getInstance()
@@ -333,10 +303,6 @@ public class Main extends Thread
                             temp.cur_client.reg.LastIP = temp.cur_client.RealIP;
                             temp.cur_client.reg.isreg = true;
                             temp.cur_client.LoggedAt = System.currentTimeMillis();
-                            if (Main.GUIok)
-                            {
-                                Main.GUI.SetStatus(Translation.getFoundCid(temp.cur_client.NI));
-                            }
 
 
                             Main.Server.rewriteregs();
@@ -349,11 +315,6 @@ public class Main extends Thread
                 Nod x = AccountsConfig.getnod(aux);
                 x.isreg = true;
                 PopMsg(Translation.getString("regged_cid"));
-                if (Main.GUIok)
-                {
-                    Main.GUI.SetStatus(Translation.getString("regged_cid_status"));
-                }
-
 
             }
             catch (IllegalArgumentException iae)
@@ -370,12 +331,7 @@ public class Main extends Thread
                                 System.out
                                         .println(AccountsConfig.getnod(temp.cur_client.ID)
                                                                .getRegInfo());
-                                if (Main.GUIok)
-                                {
-                                    Main.GUI
-                                            .SetStatus(Translation.getString("already_regged"),
-                                                       JOptionPane.WARNING_MESSAGE);
-                                }
+
                                 return;
                             }
                             AccountsConfig.addReg(temp.cur_client.ID, temp.cur_client.NI, "Server");
@@ -392,7 +348,7 @@ public class Main extends Thread
                             {
                                 temp.cur_client.CT = "2";
                             }
-                            ;
+
 
                             Broadcast.getInstance()
                                      .broadcast("BINF " +
@@ -407,10 +363,7 @@ public class Main extends Thread
                                    "\n" +
                                    Translation.getUserRegged(temp.cur_client.NI,
                                                              temp.cur_client.ID));
-                            if (Main.GUIok)
-                            {
-                                Main.GUI.SetStatus(Translation.getString("found_user"));
-                            }
+
                             Main.Server.rewriteregs();
                             return;
                         }
@@ -418,14 +371,6 @@ public class Main extends Thread
                 }
 
                 PopMsg(Translation.getNotCid(aux) + "\n" + Translation.getString("no_user"));
-                if (Main.GUIok)
-                {
-                    Main.GUI
-                            .SetStatus(Translation.getString("no_cid_no_user"),
-                                       JOptionPane.WARNING_MESSAGE);
-                }
-
-
             }
             catch (Exception e)
             {
@@ -447,12 +392,7 @@ public class Main extends Thread
                             System.out
                                     .println(AccountsConfig.getnod(temp.cur_client.ID)
                                                            .getRegInfo());
-                            if (Main.GUIok)
-                            {
-                                Main.GUI
-                                        .SetStatus(Translation.getString("already_regged"),
-                                                   JOptionPane.WARNING_MESSAGE);
-                            }
+
                             return;
                         }
                         AccountsConfig.addReg(temp.cur_client.ID, temp.cur_client.NI, "Server");
@@ -468,7 +408,7 @@ public class Main extends Thread
                         {
                             temp.cur_client.CT = "2";
                         }
-                        ;
+
 
                         Broadcast.getInstance()
                                  .broadcast("BINF " +
@@ -482,10 +422,7 @@ public class Main extends Thread
                         PopMsg(Translation.getNotCid(aux) +
                                "\n" +
                                Translation.getUserRegged(temp.cur_client.NI, temp.cur_client.ID));
-                        if (Main.GUIok)
-                        {
-                            Main.GUI.SetStatus(Translation.getString("found_user"));
-                        }
+
                         Main.Server.rewriteregs();
                         return;
                     }
@@ -493,16 +430,6 @@ public class Main extends Thread
             }
 
             PopMsg(Translation.getNotCid(aux) + "\n" + Translation.getString("no_user"));
-
-
-            if (Main.GUIok)
-            {
-                Main.GUI
-                        .SetStatus(Translation.getString("no_cid_no_user"),
-                                   JOptionPane.WARNING_MESSAGE);
-            }
-
-
         }
 
         Main.Server.rewriteregs();
@@ -521,29 +448,6 @@ public class Main extends Thread
         curtime = System.currentTimeMillis();
         init();
         System.out.println(Translation.getString("startup"));
-
-        if (args.length == 1 && args[0].equalsIgnoreCase("-nogui"))
-        {
-            nogui = true;
-            GUIok = false;
-        }
-
-
-        try
-        {
-
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-
-        }
-        catch (UnsupportedLookAndFeelException ex)
-        {
-            System.out.println("Unable to load native look and feel");
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-
 
         //init banned words list
         Main.listaBanate = new BanWordsList();
@@ -586,23 +490,6 @@ public class Main extends Thread
         
         ;}catch(Exception e){System.out.println(e);}
         */
-        if (!nogui)
-        {
-            try
-            {
-                javax.swing.JFrame.setDefaultLookAndFeelDecorated(true);
-                GUI = new TestFrame();
-                GUIok = true;
-                GUIshowing = true;
-
-            }
-            catch (Exception e)
-            {
-                System.out.println(Translation.getString("gui_error") + e);
-                GUIok = false;
-            }
-        }
-
 
         Server = new HubServer();
 
@@ -613,21 +500,7 @@ public class Main extends Thread
                Translation.getString("gpl4"));
 
         Proppies = System.getProperties();
-        //  GUI.setExtendedState(javax.swing.JFrame.ICONIFIED);
-        if (GUIok)
-        {
-            if (GUI.isDisplayable() && !GUI.isShowing())
-            {
-                GUI.setVisible(true);
-                System.out.println(Translation.getString("gui_launched"));
 
-            }
-            else
-            {
-                System.out.println(Translation.getString("gui_not_viewable"));
-                GUIok = false;
-            }
-        }
         PopMsg(Translation.getString("done"));
         System.out.println(Translation.getString("command_mode"));
 
@@ -654,7 +527,6 @@ public class Main extends Thread
                     }
                     catch (InterruptedException ex)
                     {
-                        ;
                     }
                     continue;
                 }
@@ -675,43 +547,6 @@ public class Main extends Thread
                             Proppies.getProperty("os.version"),
                             Proppies.getProperty("os.arch"));
 
-                }
-                else if (recvbuf.toLowerCase().equals("gui"))
-                {
-                    if (nogui)
-                    {
-                        System.out.println("GUI disabled.");
-                        ;
-                    }
-                    else if (!Main.GUI.isDisplayable())
-                    {
-                        try
-                        {
-                            Main.GUI = new TestFrame();
-                            Main.GUIok = true;
-                            Main.GUIshowing = true;
-                            Main.GUI.SetStatus(Translation.getString("gui_restored"));
-
-                        }
-                        catch (Exception e)
-                        {
-                            System.out.println(Translation.getString("gui_not_viewable"));
-                            Main.GUIok = false;
-                        }
-                    }
-                    if (GUIok)
-                    {
-                        if (GUI.isDisplayable() && !GUI.isShowing())
-                        {
-                            GUI.setVisible(true);
-                            System.out.println(Translation.getString("gui_launched"));
-                            //GUIok=true;
-                        }
-                        else
-                        {
-                            System.out.println(Translation.getString("gui_not_viewable"));
-                        }
-                    }
                 }
                 else if (recvbuf.toLowerCase().equals("restart"))
                 {
