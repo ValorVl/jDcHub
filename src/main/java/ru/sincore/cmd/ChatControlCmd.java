@@ -324,10 +324,12 @@ public class ChatControlCmd
                 }
 
             }
-            if (Main.GUIok)
-            {
-                Main.GUI.refreshListaBanate();
-            }
+
+			//TODO выпилить GUI
+            //if (Main.GUIok)
+            //{
+            //    Main.GUI.refreshListaBanate();
+            //}
 
 
         }

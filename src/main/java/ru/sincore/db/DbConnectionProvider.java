@@ -7,9 +7,11 @@ import javax.persistence.Persistence;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ *  This sigleton
+ */
 public class DbConnectionProvider
 {
-//	private static final Map<String,String> properties = new HashMap<String, String>();
 
 	private static volatile EntityManagerFactory instance;
 

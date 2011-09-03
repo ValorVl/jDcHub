@@ -567,6 +567,7 @@ public class BanWordsList
             }
             catch (Exception e)
             {
+				//TODO add logoig
                 //System.out.println(e.toString());
             }
         }
@@ -583,12 +584,12 @@ public class BanWordsList
         {
 
             v += "\"" +
-                 ((BannedWord) bannedWords.elementAt(i)).getWord() +
+                 (bannedWords.elementAt(i)).getWord() +
                  "\"  flags " +
-                 ((BannedWord) bannedWords.elementAt(i)).getFlags();
-            if ((((BannedWord) bannedWords.elementAt(i)).getFlags() & BannedWord.modified) != 0)
+                 bannedWords.elementAt(i).getFlags();
+            if (((bannedWords.elementAt(i)).getFlags() & BannedWord.modified) != 0)
             {
-                v += "  replacement " + ((BannedWord) bannedWords.elementAt(i)).getReplacement();
+                v += "  replacement " + (bannedWords.elementAt(i)).getReplacement();
             }
             v += "    ID " + i + "\n";
 
@@ -601,12 +602,14 @@ public class BanWordsList
     /**
      * -1 if string passes all checks
      * index otherwise
-     */
+	 * @param str string matches value
+	 * @return -1 if string pass
+	 */
     public int isOK(String str)
     {
         for (int i = 0; i < size(); i++)
         {
-            if (str.matches(".*" + ((BannedWord) (bannedWords.elementAt(i))).cuvant + ".*"))
+            if (str.matches(".*" + ((bannedWords.elementAt(i))).cuvant + ".*"))
             {
                 return i;
             }

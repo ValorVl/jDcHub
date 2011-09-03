@@ -182,7 +182,7 @@ public class CommandParser
         String recvbuf = ADC.retNormStr(cmd.substring(1));
         //	String STR = cmd;
         //	String NI = cur_client.NI;
-        ;
+
 
         if (recvbuf.toLowerCase().equals("quit"))
         {
@@ -315,6 +315,7 @@ public class CommandParser
                 done = true;
                 return;
             }
+			//TODO выпилить остатки GUI
             if (Main.nogui)
             {
                 cur_client.sendFromBot("GUI disabled.");
