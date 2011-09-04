@@ -28,7 +28,17 @@
     <annotationProcessing enabled="false" useClasspath="true" />
   </component>
   <component name="CopyrightManager" default="">
+    <copyright>
+      <option name="notice" value="/********************************************************************************&#10; * Copyright (c) &amp;#36;{YEAR}  &amp;#36;{USER}.&#10; * All rights reserved. This program and the accompanying materials&#10; * are made available under the terms of the GNU Public License v2.0&#10; * which accompanies this distribution, and is available at&#10; * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html&#10; * &#10; * Package : &amp;#36;{PACKAGE_NAME}&#10; *&#10; * Date: &amp;#36;{DATE}&#10; * Time: &amp;#36;{TIME}&#10; *&#10; * Contributors:&#10; *     &amp;#36;{USER} - initial API and implementation&#10; ******************************************************************************/" />
+      <option name="keyword" value="Copyright" />
+      <option name="allowReplaceKeyword" value="" />
+      <option name="myName" value="GPL" />
+      <option name="myLocal" value="true" />
+    </copyright>
     <module2copyright />
+    <LanguageOptions name="JAVA">
+      <option name="fileTypeOverride" value="3" />
+    </LanguageOptions>
   </component>
   <component name="DependencyValidationManager">
     <option name="SKIP_IMPORT_STATEMENTS" value="false" />
@@ -478,17 +488,6 @@
       </JAVADOC>
       <SOURCES>
         <root url="jar://$MAVEN_REPOSITORY$/org/hibernate/hibernate/3.2.4.ga/hibernate-3.2.4.ga-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.igniterealtime:openfire:3.6.4">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/igniterealtime/openfire/3.6.4/openfire-3.6.4.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/igniterealtime/openfire/3.6.4/openfire-3.6.4-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/igniterealtime/openfire/3.6.4/openfire-3.6.4-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.jvnet.hudson.plugins:jython:1.1">

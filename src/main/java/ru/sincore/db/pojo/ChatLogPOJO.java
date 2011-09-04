@@ -1,9 +1,5 @@
 package ru.sincore.db.pojo;
 
-import javax.persistence.*;
-import java.io.Serializable;
-import java.util.Date;
-
 /**
  * *****************************************************************************
  * Copyright (c) 2011  valor.
@@ -22,6 +18,10 @@ import java.util.Date;
  * ****************************************************************************
  */
 
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Date;
+
 @Entity
 @Table(name = "chat_log")
 public class ChatLogPOJO implements Serializable
@@ -31,8 +31,10 @@ public class ChatLogPOJO implements Serializable
 	@Column(name = "id", nullable = false)
 	private Long id;
 
+	@Column(name = "nickname", nullable = false)
+	private String nickName;
 
-	private String nikName;
+	@Column()
 	private Date sendDate;
 	private String message;
 
