@@ -25,8 +25,6 @@ package ru.sincore.Modules;
 
 import ru.sincore.ClientHandler;
 
-import javax.swing.JFrame;
-
 /**
  * Interface designed for plugins to implement
  * The implementing classes shouldnt have a complicated constructor since a new
@@ -108,13 +106,6 @@ public interface DSHubModule
      * Should clear everything up.
      */
     public void close();
-
-    /**
-     * Called by main GUI thread when users wants to click the plugin allocated button
-     *
-     * @argument parent = the main GUI Frame that calls this function
-     */
-    public void onGUIClick(JFrame parent);
 
     /**
      * Must return the module name, String

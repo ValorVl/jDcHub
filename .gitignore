@@ -1,5 +1,6 @@
 *.class
 *.iws
+*.iml
 *.ipr
 bin
 target

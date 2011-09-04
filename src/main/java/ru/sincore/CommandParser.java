@@ -41,7 +41,6 @@ import ru.sincore.cmd.ExtendedCmds.ExtMass;
 import ru.sincore.cmd.ExtendedCmds.ExtRedirect;
 import ru.sincore.conf.CFGConfig;
 import ru.sincore.conf.Vars;
-import ru.sincore.gui.TestFrame;
 import ru.sincore.util.ADC;
 import ru.sincore.util.TimeConv;
 
@@ -315,43 +314,6 @@ public class CommandParser
                 done = true;
                 return;
             }
-			//TODO выпилить остатки GUI
-            if (Main.nogui)
-            {
-                cur_client.sendFromBot("GUI disabled.");
-                return;
-            }
-            if (!Main.GUI.isDisplayable())
-            {
-                try
-                {
-                    Main.GUI = new TestFrame();
-                    Main.GUIok = true;
-                    Main.GUIshowing = true;
-
-                }
-                catch (Exception e)
-                {
-                    cur_client.sendFromBot("GUI not viewable.");
-                    Main.GUIok = false;
-                }
-            }
-            if (Main.GUIok)
-            {
-                if (Main.GUI.isDisplayable() && !Main.GUI.isShowing())
-                {
-                    Main.GUI.setVisible(true);
-                    cur_client.sendFromBot("GUI launched...");
-                    //GUIok=true;
-                    Main.PopMsg("GUI was launched by " + cur_client.NI);
-                    Main.GUI.SetStatus("GUI restored...");
-                }
-                else
-                {
-                    cur_client.sendFromBot("GUI not viewable.");
-                }
-            }
-
         }
         else if (recvbuf.toLowerCase().startsWith("hideme"))
         {

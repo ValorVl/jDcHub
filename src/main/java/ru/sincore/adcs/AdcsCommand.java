@@ -75,10 +75,6 @@ public class AdcsCommand
                 cur_client.sendFromBot(
                         "New pair of keys and certificate were created and saved into key.crt");
                 Main.Server.adcs_ok = true;
-                if (!Vars.adcs_mode)
-                {
-                    Main.GUI.getEnableadcs().setEnabled(true);
-                }
             }
             else
             {

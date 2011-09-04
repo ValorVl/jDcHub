@@ -324,14 +324,6 @@ public class ChatControlCmd
                 }
 
             }
-
-			//TODO выпилить GUI
-            //if (Main.GUIok)
-            //{
-            //    Main.GUI.refreshListaBanate();
-            //}
-
-
         }
         else if (what.equalsIgnoreCase("mod"))
         {
@@ -512,12 +504,6 @@ public class ChatControlCmd
                 }
 
             }
-            if (Main.GUIok)
-            {
-                Main.GUI.refreshListaBanate();
-            }
-
-
         }
         else if (what.equalsIgnoreCase("del"))
         {
@@ -566,10 +552,6 @@ public class ChatControlCmd
                 return;
             }
             cur_client.sendFromBot("Successfully deleted.");
-            if (Main.GUIok)
-            {
-                Main.GUI.refreshListaBanate();
-            }
         }
         else if (what.equalsIgnoreCase("save"))
         {

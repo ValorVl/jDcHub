@@ -28,12 +28,6 @@ import ru.sincore.ClientHandler;
 import ru.sincore.Main;
 import ru.sincore.conf.Vars;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JFrame;
-
 /**
  * @author Pietricica
  */
@@ -50,10 +44,6 @@ public class Module
     private String moduleName;
 
     private DSHubModule curModule;
-
-    private JCheckBox enableCheck;
-
-    private JButton guiButton;
 
 
     /**
@@ -82,59 +72,6 @@ public class Module
     }
 
 
-    public void setCheckBox(JCheckBox cb1)
-    {
-        this.enableCheck = cb1;
-        this.enableCheck.setSelected(isEnabled());
-
-        enableCheck.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent e)
-            {
-                if (enableCheck.isSelected())
-                {
-                    setEnabled(true);
-                }
-                else
-                {
-                    setEnabled(false);
-                }
-            }
-        });
-
-    }
-
-
-    public void setButton(JButton b1)
-    {
-        this.guiButton = b1;
-        this.guiButton.setEnabled(this.isEnabled());
-        guiButton.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent e)
-            {
-                if (Main.GUIok)
-                {
-                    onGUIClick(Main.GUI);
-                }
-            }
-        });
-
-    }
-
-
-    public JCheckBox getCheckBox()
-    {
-        return this.enableCheck;
-    }
-
-
-    public JButton getGUIButton()
-    {
-        return this.guiButton;
-    }
-
-
     public boolean isOK()
     {
         return this.isok;
@@ -144,23 +81,6 @@ public class Module
     public String getName()
     {
         return this.moduleName;
-    }
-
-
-    public void onGUIClick(JFrame parent)
-    {
-        if (isOK() && isEnabled())
-        {
-            try
-            {
-                this.curModule.onGUIClick(parent);
-            }
-            catch (AbstractMethodError abe)
-            {
-                isok = false;
-            }
-        }
-
     }
 
 
@@ -287,14 +207,6 @@ public class Module
         Vars.activePlugins = Vars.activePlugins.substring(0, index - 1) +
                              (this.isEnabled() ? "+" : "-") +
                              Vars.activePlugins.substring(index);
-        if (this.enableCheck != null)
-        {
-            this.enableCheck.setSelected(this.enabled);
-        }
-        if (this.guiButton != null)
-        {
-            this.guiButton.setEnabled(this.isEnabled());
-        }
     }
 
 
@@ -316,10 +228,6 @@ public class Module
         else
         {
             this.setEnabled(true);
-        }
-        if (this.enableCheck != null)
-        {
-            this.enableCheck.setSelected(this.enabled);
         }
     }
 

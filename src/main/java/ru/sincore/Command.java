@@ -1408,7 +1408,7 @@ public class Command
      * Function throws CommandException if smth is wrong.
      */
     public Command(ClientHandler CH, String Issued_command)
-            throws ClientFailedException, STAException, CommandException
+            throws STAException, CommandException
     {
         cur_client = CH;
         // System.out.printf("["+cur_client.NI+"]:%s\n",Issued_command);
