@@ -42,6 +42,7 @@ import ru.sincore.util.ADC;
 import ru.sincore.util.Constants;
 import ru.sincore.util.STAError;
 
+import javax.swing.*;
 import java.util.*;
 
 /**
@@ -1288,14 +1289,9 @@ public class Command
                 byte[] result = new byte[pas.length + random.length];
                 //for(int i=0;i<bytecid.length;i++)
                 //   result[i]=bytecid[i];
-                for (int i = 0; i < pas.length; i++)
-                {
-                    result[i] = pas[i];
-                }
-                for (int i = pas.length; i < random.length + pas.length; i++)
-                {
-                    result[i] = random[i - pas.length];
-                }
+
+                System.arraycopy(pas,    0, result,          0, pas.length   );
+                System.arraycopy(random, 0, result, pas.length, random.length);
 
                 myTiger.engineUpdate(result, 0, result.length);
 

@@ -25,6 +25,7 @@ package ru.sincore.adcs;
 
 import java.util.StringTokenizer;
 
+import org.apache.log4j.Logger;
 import ru.sincore.conf.Vars;
 import ru.sincore.ClientHandler;
 import ru.sincore.HubServer;
@@ -36,6 +37,7 @@ import ru.sincore.Main;
 
 public class AdcsCommand
 {
+    public static final Logger log = Logger.getLogger(AdcsCommand.class);
 
     public AdcsCommand(ClientHandler cur_client, String cmd)
     {
@@ -71,14 +73,14 @@ public class AdcsCommand
             //        Vars.HubName,JOptionPane.OK_OPTION,JOptionPane.INFORMATION_MESSAGE);
             if (keygenerated)
             {
-                Main.PopMsg("New pair of keys and certificate were created and saved into key.crt");
+                log.info("New pair of keys and certificate were created and saved into key.crt");
                 cur_client.sendFromBot(
                         "New pair of keys and certificate were created and saved into key.crt");
                 Main.Server.adcs_ok = true;
             }
             else
             {
-                Main.PopMsg("Error creating keys and certificates. Check the log for details.");
+                log.warn("Error creating keys and certificates. Check the log for details.");
 
                 cur_client.sendFromBot(
                         "Error creating keys and certificates. Check the log for details.");
@@ -95,7 +97,7 @@ public class AdcsCommand
             }
             Vars.adcs_mode = true;
             Main.Restart();
-            Main.PopMsg("ADC Secure mode has been enabled");
+            log.info("ADC Secure mode has been enabled");
             return;
         }
 
@@ -105,7 +107,7 @@ public class AdcsCommand
             cur_client.sendFromBot("Disabling ADCS.... ( Hub will restart )...");
             Vars.adcs_mode = false;
             Main.Restart();
-            Main.PopMsg("ADC Secure mode has been disabled");
+            log.warn("ADC Secure mode has been disabled");
         }
         cur_client.sendFromBot("Unknown switch. Try to use with no parameters for details.");
 

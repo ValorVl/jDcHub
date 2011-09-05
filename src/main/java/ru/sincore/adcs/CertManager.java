@@ -40,6 +40,7 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import org.apache.log4j.Logger;
 import org.bouncycastle.asn1.DERBMPString;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.asn1.x509.BasicConstraints;
@@ -59,6 +60,8 @@ import ru.sincore.conf.Vars;
 
 public class CertManager
 {
+    public static final Logger log = Logger.getLogger(CertManager.class);
+
     static char[] passwd = { 'd', 's', 'h', 'u', 'b' };
 
     static X509V3CertificateGenerator v1CertGen = new X509V3CertificateGenerator();
@@ -402,8 +405,7 @@ public class CertManager
         catch (Exception e)
         {
             // TODO Auto-generated catch block
-            e.printStackTrace();
-            Main.PopMsg(e.getMessage());
+            log.debug(e);
         }
 
         try
@@ -413,8 +415,7 @@ public class CertManager
         catch (Exception e)
         {
             // TODO Auto-generated catch block
-            e.printStackTrace();
-            Main.PopMsg(e.getMessage());
+            log.debug(e);
         }
 
         //
@@ -428,8 +429,7 @@ public class CertManager
         catch (KeyStoreException e)
         {
             // TODO Auto-generated catch block
-            e.printStackTrace();
-            Main.PopMsg(e.getMessage());
+            log.debug(e.getMessage());
         }
 
         return store;
@@ -453,7 +453,7 @@ public class CertManager
 
         try
         {
-            Main.PopMsg("Creating hub certificate...");
+            log.info("Creating hub certificate...");
             chain[0] = createMasterCert(pubkey, privkey);
             //createIntermediateCert(km.getPublicKey(), km.getPrivateKey(), (X509Certificate)x);
             //   chain[0] = createCert(km.getPublicKey(), km.getPrivateKey(), km.getPublicKey());
@@ -461,8 +461,7 @@ public class CertManager
         catch (Exception e)
         {
             // TODO Auto-generated catch block
-            e.printStackTrace();
-            Main.PopMsg(e.getMessage());
+            log.debug(e);
             return false;
         }
 
@@ -487,7 +486,6 @@ public class CertManager
                       PKCSObjectIdentifiers.pkcs_9_at_localKeyId,
                       new SubjectKeyIdentifierStructure(km.getPublicKey()));
               } catch (CertificateParsingException e1) {
-                  // TODO Auto-generated catch block
                   e1.printStackTrace();
               }
         */
@@ -495,14 +493,7 @@ public class CertManager
 
         //this.ks=ks;
         ks = genKeyStore();
-        if (ks != null)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return (ks != null);
     }
 
 
@@ -518,9 +509,8 @@ public class CertManager
         }
         else
         {
-            ; //this.ks=genKeyStore();
+            //this.ks=genKeyStore();
         }
-
     }
 }
 

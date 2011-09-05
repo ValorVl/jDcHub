@@ -29,13 +29,14 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 
-import ru.sincore.Main;
+import org.apache.log4j.Logger;
 
 /**
  * @author Eugen Hristev
  */
 public class KeyManager
 {
+    public static final Logger log = Logger.getLogger(KeyManager.class);
 
     private PrivateKey privateKey;
     private PublicKey  publicKey;
@@ -45,9 +46,7 @@ public class KeyManager
     {
         String keyAlgorithm = "RSA";
         int numBits = 2048;
-        Main.PopMsg(
-                "\n" +
-                "Generating new key/value pair using " +
+        log.info("Generating new key/value pair using " +
                 keyAlgorithm +
                 " algorithm....");
         // Get the public/private key pair
@@ -58,8 +57,7 @@ public class KeyManager
         }
         catch (NoSuchAlgorithmException e)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            log.debug(e);
             return false;
         }
 
@@ -68,9 +66,7 @@ public class KeyManager
         privateKey = keyPair.getPrivate();
         publicKey = keyPair.getPublic();
 
-
         return true;
-
     }
 
 

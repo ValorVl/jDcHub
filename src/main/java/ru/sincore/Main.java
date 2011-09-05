@@ -22,6 +22,7 @@ package ru.sincore;
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import org.apache.log4j.Logger;
 import ru.sincore.TigerImpl.Base32;
 import ru.sincore.banning.BanList;
 import ru.sincore.cmd.GrantCmd;
@@ -47,6 +48,8 @@ import java.net.*;
 
 public class Main extends Thread
 {
+    public static final Logger log = Logger.getLogger(Main.class);
+
     public static HubServer     Server;
     public static Properties    Proppies;
     public static String        auxhelp;
@@ -56,50 +59,6 @@ public class Main extends Thread
     public static long          curtime;
     public static String        myPath;
     public static PythonManager pManager;
-
-
-    public static void PopMsg(String bla)
-    {
-        System.out.println(bla);
-
-        Date d = new Date(Main.curtime);
-        if (Vars.savelogs == 1)
-        {
-            File logTest = new File((Main.myPath.equals("") ? "" : (Main.myPath + "/")) + "log");
-            boolean result = true;
-            if (!logTest.exists())
-            {
-                result = logTest.mkdir();
-            }
-            if (result)
-            {
-                File logFile = new File((Main.myPath.equals("") ? "" : (Main.myPath + "/")) +
-                                        "log/" +
-                                        d.toString().replaceAll(" ", "_").replaceAll(":", "_") +
-                                        ".log");
-                FileOutputStream logOutput = null;
-                try
-                {
-                    logOutput = new FileOutputStream(logFile, true);
-                }
-                catch (Exception e)
-                {
-                    System.out.println(e);
-                }
-                DataOutputStream out = new DataOutputStream(logOutput);
-
-                try
-                {
-                    out.writeBytes(bla + "\r\n");
-                    out.close();
-                }
-                catch (Exception e)
-                {
-                }
-            }
-        }
-    }
-
 
     public static void init()
     {
@@ -118,7 +77,7 @@ public class Main extends Thread
         }
 
         myPath = userDirectory + javaClassPath;
-        // System.out.println (myPath);
+        log.debug(myPath);
 
         int x = myPath.lastIndexOf(separator.charAt(0));
         if (x != -1)
@@ -127,8 +86,6 @@ public class Main extends Thread
         }
 
 
-        //if("c:\\blaaa".matches("[a-zA-Z]:\\\\.*"))
-        //System.out.println("ok");
         if (javaClassPath.matches("[a-zA-Z]:\\\\.*"))
         {
             int y = javaClassPath.indexOf(';');
@@ -147,7 +104,8 @@ public class Main extends Thread
             {
                 myPath = myPath + separator;
             }
-            //Main.PopMsg(myPath);
+
+            log.debug(myPath);
             if (myPath.equals("\\"))
             {
                 myPath = "";
@@ -159,7 +117,7 @@ public class Main extends Thread
             {
                 StringTokenizer st1 = new StringTokenizer(myPath, pathSeparator);
                 String aux = st1.nextToken();
-                //System.out.println(myPath);
+                log.debug(myPath);
                 while (!(aux.toLowerCase().contains("dshub.jar".toLowerCase())) &&
                        st1.hasMoreTokens())
                 {
@@ -200,7 +158,7 @@ public class Main extends Thread
                 }
             }
         }
-        //  System.out.println(myPath);
+        log.debug(myPath);
 
         pManager = new PythonManager();
 
@@ -217,7 +175,8 @@ public class Main extends Thread
         //save Banned Words List
         listaBanate.printFile(Main.myPath + "banwlist.txt");
 
-        PopMsg(Translation.getString("close_hub"));
+        log.warn(Translation.getString("close_hub"));
+
         try
         {
             sleep(500);
@@ -232,7 +191,7 @@ public class Main extends Thread
 
     public void run()
     {
-        PopMsg(Translation.getString("restart_hub"));
+        log.warn(Translation.getString("restart_hub"));
         Main.Server.rewriteregs();
         Main.Server.rewriteconfig();
         Main.Server.rewritebans();
@@ -280,7 +239,7 @@ public class Main extends Thread
                         {
                             AccountsConfig.addReg(temp.cur_client.ID, temp.cur_client.NI, "Server");
                             temp.cur_client.reg = AccountsConfig.getnod(temp.cur_client.ID);
-                            PopMsg(Translation.getUserRegged(temp.cur_client.NI, aux));
+                            log.info(Translation.getUserRegged(temp.cur_client.NI, aux));
                             temp.cur_client.can_receive_cmds = true;
                             temp.cur_client.sendFromBot(Translation.getString("reg_msg"));
                             temp.cur_client.putOpchat(true);
@@ -314,7 +273,7 @@ public class Main extends Thread
                 AccountsConfig.addReg(aux, null, "Server");
                 Nod x = AccountsConfig.getnod(aux);
                 x.isreg = true;
-                PopMsg(Translation.getString("regged_cid"));
+                log.info(Translation.getString("regged_cid"));
 
             }
             catch (IllegalArgumentException iae)
@@ -359,7 +318,7 @@ public class Main extends Thread
                             temp.cur_client.reg.isreg = true;
                             temp.cur_client.LoggedAt = System.currentTimeMillis();
                             temp.cur_client.reg.LastIP = temp.cur_client.RealIP;
-                            PopMsg(Translation.getNotCid(aux) +
+                            log.info(Translation.getNotCid(aux) +
                                    "\n" +
                                    Translation.getUserRegged(temp.cur_client.NI,
                                                              temp.cur_client.ID));
@@ -370,7 +329,7 @@ public class Main extends Thread
                     }
                 }
 
-                PopMsg(Translation.getNotCid(aux) + "\n" + Translation.getString("no_user"));
+                log.info(Translation.getNotCid(aux) + "\n" + Translation.getString("no_user"));
             }
             catch (Exception e)
             {
@@ -419,7 +378,7 @@ public class Main extends Thread
                         temp.cur_client.LoggedAt = System.currentTimeMillis();
                         temp.cur_client.reg.isreg = true;
                         temp.cur_client.reg.LastIP = temp.cur_client.RealIP;
-                        PopMsg(Translation.getNotCid(aux) +
+                        log.info(Translation.getNotCid(aux) +
                                "\n" +
                                Translation.getUserRegged(temp.cur_client.NI, temp.cur_client.ID));
 
@@ -429,7 +388,7 @@ public class Main extends Thread
                 }
             }
 
-            PopMsg(Translation.getNotCid(aux) + "\n" + Translation.getString("no_user"));
+            log.info(Translation.getNotCid(aux) + "\n" + Translation.getString("no_user"));
         }
 
         Main.Server.rewriteregs();
@@ -494,14 +453,14 @@ public class Main extends Thread
         Server = new HubServer();
 
 
-        PopMsg(Translation.getString("gpl1") + "\r\n" +
+        log.info(Translation.getString("gpl1") + "\r\n" +
                Translation.getString("gpl2") + "\r\n" +
                Translation.getString("gpl3") + "\r\n" +
                Translation.getString("gpl4"));
 
         Proppies = System.getProperties();
 
-        PopMsg(Translation.getString("done"));
+        log.info(Translation.getString("done"));
         System.out.println(Translation.getString("command_mode"));
 
 

@@ -23,6 +23,7 @@
 
 package ru.sincore;
 
+import org.apache.log4j.Logger;
 import org.apache.mina.core.future.IoFutureListener;
 import org.apache.mina.core.future.WriteFuture;
 
@@ -38,13 +39,9 @@ import ru.sincore.util.ADC;
  */
 public class ClientNod implements IoFutureListener<WriteFuture>
 {
+    public static final Logger log = Logger.getLogger(ClientNod.class);
 
     public ClientHandler cur_client;
-    //  public ClientNod NextClient;
-    //  public ClientNod PrevClient;
-
-    //  public static ClientNod FirstClient;
-
 
     /**
      * Creates a new instance of ClientNod
@@ -155,7 +152,7 @@ public class ClientNod implements IoFutureListener<WriteFuture>
                               " with CID " +
                               cur_client.ID +
                               " out in flames.");
-        Main.PopMsg(whokicked.NI +
+        log.info(whokicked.NI +
                     " kicked user " +
                     cur_client.NI +
                     " with CID " +
@@ -225,7 +222,7 @@ public class ClientNod implements IoFutureListener<WriteFuture>
         this.cur_client.mySession.close();
 
 
-        Main.PopMsg(Vars.bot_name +
+        log.info(Vars.bot_name +
                     " kicked user " +
                     cur_client.NI +
                     " with CID " +

@@ -23,6 +23,7 @@
 
 package ru.sincore;
 
+import org.apache.log4j.Logger;
 import ru.sincore.Modules.Modulator;
 import ru.sincore.Modules.Module;
 import ru.sincore.TigerImpl.Base32;
@@ -55,6 +56,7 @@ import java.util.StringTokenizer;
  */
 public class CommandParser
 {
+    public static final Logger log = Logger.getLogger(CommandParser.class);
     ClientHandler cur_client;
     String        cmd;
     /**
@@ -200,7 +202,7 @@ public class CommandParser
             //save Banned Words List
             //Main.listaBanate.printFile(Main.myPath + "banwlist.txt");
 
-            Main.PopMsg("Hub is being shut down by " + cur_client.NI);
+            log.warn("Hub is being shut down by " + cur_client.NI);
 
             for (Module x : Modulator.myModules)
             {
@@ -234,7 +236,7 @@ public class CommandParser
             //	BanList.First = null;
 
             //SimpleHandler.Users.clear();
-            Main.PopMsg("Hub restarted by " + cur_client.NI);
+            log.warn("Hub restarted by " + cur_client.NI);
 
             for (Module x : Modulator.myModules)
             {
@@ -478,7 +480,7 @@ public class CommandParser
                     }
 
                     cur_client.sendFromBot("Reg deleted.");
-                    Main.PopMsg(cur_client.NI + " deleted the reg " + aux);
+                    log.info(cur_client.NI + " deleted the reg " + aux);
 
                 }
                 else
@@ -505,7 +507,7 @@ public class CommandParser
                             else
                             {
                                 AccountsConfig.unreg(temp.cur_client.ID);
-                                Main.PopMsg(cur_client.NI + " deleted the reg "
+                                log.info(cur_client.NI + " deleted the reg "
                                             + temp.cur_client.ID);
                                 cur_client.sendFromBot("User "
                                                        + temp.cur_client.NI + " deleted.");
@@ -609,7 +611,7 @@ public class CommandParser
                             .sendFromBot(
                                     "CID added. No password set, login does not require pass, however, its recomandable to set one...");
 
-                    Main.PopMsg(cur_client.NI + " regged the CID " + aux);
+                    log.info(cur_client.NI + " regged the CID " + aux);
 
                 }
                 catch (IllegalArgumentException iae)
@@ -662,7 +664,7 @@ public class CommandParser
                                 temp.cur_client.LoggedAt = System
                                         .currentTimeMillis();
                                 temp.cur_client.reg.LastIP = temp.cur_client.RealIP;
-                                Main.PopMsg(cur_client.NI + " regged the CID "
+                                log.info(cur_client.NI + " regged the CID "
                                             + temp.cur_client.ID);
                                 Main.Server.rewriteregs();
                                 return;
@@ -727,7 +729,7 @@ public class CommandParser
                             temp.cur_client.LoggedAt = System
                                     .currentTimeMillis();
                             temp.cur_client.reg.LastIP = temp.cur_client.RealIP;
-                            Main.PopMsg(cur_client.NI + " regged the CID "
+                            log.info(cur_client.NI + " regged the CID "
                                         + temp.cur_client.ID);
                             Main.Server.rewriteregs();
                             return;

@@ -28,6 +28,7 @@ import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
 
 
+import org.apache.log4j.Logger;
 import org.apache.mina.core.future.WriteFuture;
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.core.session.IdleStatus;
@@ -45,6 +46,8 @@ import ru.sincore.util.STAError;
  */
 public class SimpleHandler extends org.apache.mina.core.service.IoHandlerAdapter
 {
+    public static final Logger log = Logger.getLogger(SimpleHandler.class);
+
     public static ConcurrentHashMap<String, ClientNod> Users;
 
 
@@ -60,14 +63,12 @@ public class SimpleHandler extends org.apache.mina.core.service.IoHandlerAdapter
      */
     public SimpleHandler()
     {
-        //ClientNod.FirstClient=new ClientNod(1);
-
     }
 
 
     public void Disconnect(IoSession session)
     {
-        ClientHandler cur_client = ((ClientHandler) (session.getAttachment()));
+        ClientHandler cur_client = ((ClientHandler) (session.getAttribute("")));
         if (cur_client.closingwrite != null)
         {
             try
@@ -107,14 +108,14 @@ public class SimpleHandler extends org.apache.mina.core.service.IoHandlerAdapter
             }
             if (t.getMessage().contains("java.nio.charset.MalformedInputException"))
             {
-                ((ClientHandler) (session.getAttachment()))
+                ((ClientHandler) (session.getAttribute("")))
                         .sendFromBot(
                                 "Unicode Exception. Your client sent non-Unicode chars. Ignored.");
                 return;
             }
             if ((t.getMessage().contains("BufferDataException: Line is too long")))
             {
-                new STAError((ClientHandler) (session.getAttachment()), 100,
+                new STAError((ClientHandler) (session.getAttribute("")), 100,
                              "Message exceeds buffer." + t.getMessage());
                 // t.printStackTrace();
             }
@@ -123,9 +124,7 @@ public class SimpleHandler extends org.apache.mina.core.service.IoHandlerAdapter
                 t.printStackTrace();
                 // Main.PopMsg(t.printStackTrace()getMessage());
                 //session.close(false);
-                return;
             }
-            ;
         }
         catch (Exception e)
         {
@@ -143,7 +142,7 @@ public class SimpleHandler extends org.apache.mina.core.service.IoHandlerAdapter
         //System.out.println("Message received... "+str);
         try
         {
-            new Command((ClientHandler) (session.getAttachment()), str);
+            new Command((ClientHandler) (session.getAttribute("")), str);
         }
         catch (STAException stex)
         {
@@ -180,19 +179,18 @@ public class SimpleHandler extends org.apache.mina.core.service.IoHandlerAdapter
             throws Exception
     {
         //ok, we're in idle
-        ClientHandler cur_client = (ClientHandler) (session.getAttachment());
+        ClientHandler cur_client = (ClientHandler) (session.getAttribute(""));
         // WriteFuture future=session.write("");
         //  future.addListener(cur_client.myNod );
 
         //cur_client.sendToClient("");
-
     }
 
 
     public void sessionClosed(IoSession session)
             throws Exception
     {
-        ClientHandler cur_client = (ClientHandler) (session.getAttachment());
+        ClientHandler cur_client = (ClientHandler) (session.getAttribute(""));
         //  System.out.printf("quitting via session closed nick =%s\n",cur_client.NI);
 
         /*synchronized(FirstClient)
@@ -238,7 +236,7 @@ public class SimpleHandler extends org.apache.mina.core.service.IoHandlerAdapter
 
         ClientHandler cur_client = (ClientHandler) HubServer.AddClient().cur_client;
 
-        session.setAttachment(cur_client);
+        session.setAttribute("", cur_client);
         //session.setIdleTime(IdleStatus.READER_IDLE, 120);
 
         cur_client.mySession = session;
@@ -284,7 +282,7 @@ public class SimpleHandler extends org.apache.mina.core.service.IoHandlerAdapter
                     }
                 }
             }
-            catch (NumberFormatException nfe)
+            catch (NumberFormatException ignored)
             {
             }
         }
@@ -308,7 +306,7 @@ public class SimpleHandler extends org.apache.mina.core.service.IoHandlerAdapter
                     }
                 }
             }
-            catch (NumberFormatException nfe)
+            catch (NumberFormatException ignored)
             {
             }
         }

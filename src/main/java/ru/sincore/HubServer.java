@@ -45,6 +45,7 @@ import java.util.zip.GZIPOutputStream;
 
 import javax.swing.JOptionPane;
 
+import org.apache.log4j.Logger;
 import org.apache.mina.core.service.IoAcceptor;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
@@ -73,6 +74,7 @@ import ru.sincore.util.ADC;
  */
 public class HubServer extends Thread
 {
+    public static final Logger log = Logger.getLogger(HubServer.class);
 
     /**
      * Server main socket
@@ -114,19 +116,8 @@ public class HubServer extends Thread
      */
     public HubServer()
     {
-
-        //myPath="";
-        //System.out.println (myPath);
-        org.apache
-                .log4j
-                .PropertyConfigurator
-                .configure(getClass().getResource("/log4j.properties"));
-        //                Main.myPath+"log4j.properties");
         start();
-        setPriority(NORM_PRIORITY + 1);
-
     }
-
 
     public void run()
     {
@@ -247,19 +238,19 @@ public class HubServer extends Thread
                 pop += port.portValue + " ";
             }
         }
+
         if (pop.equals(""))
         {
-            Main.PopMsg("Couldn't start server on any set ports.");
+            log.error("Couldn't start server on any set ports.");
         }
         else
-
         {
-            Main.PopMsg("Server created. Listening on ports: " + pop + ".");
+            log.info("Server created. Listening on ports: " + pop + ".");
         }
 
 
         Date d = new Date(Main.curtime);
-        Main.PopMsg("Start Time:" + d.toString());
+        log.info("Start Time:" + d.toString());
         System.out.print("\n>");
 
         myAssasin = new ClientAssasin();//temporary removed
@@ -280,30 +271,22 @@ public class HubServer extends Thread
         }
         catch (java.net.BindException jbe)
         {
-            Main.PopMsg("Network problem. Unable to listen on port " + port.portValue + "." + jbe);
+            log.warn("Network problem. Unable to listen on port " + port.portValue + "." + jbe);
             port.setStatus(false);
             port.MSG = jbe.toString();
-
-            //TODO replace by logger
-            System.out.println("Network problem. Unable to listen on port " +
-                               port.portValue +
-                               ".");
             return false;
         }
         catch (java.lang.IllegalArgumentException ee)
         {
-            Main.PopMsg("Invalid port " + port.portValue + "." + ee);
+            log.error("Invalid port " + port.portValue + "." + ee);
             port.setStatus(false);
             port.MSG = ee.toString();
-
-            //TODO replace by logger
-            System.out.println("invalid port " + port.portValue + "." + ee);
-
             return false;
         }
         catch (IOException ex)
         {
-            // ex.printStackTrace();
+            log.debug(ex);
+
             port.setStatus(false);
             port.MSG = ex.toString();
             return false;
@@ -342,27 +325,22 @@ public class HubServer extends Thread
     }
 
 
+    // TODO Realize client add method
     public static ClientNod AddClient()
     {
-        //ClientHandler ret;
         if (restart)
         {
             return null;
         }
 
         ClientNod newclient = new ClientNod();
+
         /*synchronized ( SimpleHandler.Users)
         {
         SimpleHandler.Users.add(newclient);
-        }/*
-       /*newclient.NextClient=ClientNod.FirstClient.NextClient;
-       ClientNod.FirstClient.NextClient=newclient;
-       newclient.PrevClient=ClientNod.FirstClient;
-       if(newclient.NextClient!=null)
-       newclient.NextClient.PrevClient=newclient;*/
+        }*/
+
         return newclient;
-
-
     }
 
 
@@ -389,7 +367,7 @@ public class HubServer extends Thread
         }
         catch (IOException e)
         {
-            Main.PopMsg(e.toString());
+            log.debug(e);
             return false;
         }
         return true;
@@ -419,7 +397,7 @@ public class HubServer extends Thread
         }
         catch (IOException e)
         {
-            Main.PopMsg(e.toString());
+            log.debug(e);
             return false;
         }
         return true;
@@ -450,13 +428,14 @@ public class HubServer extends Thread
         }
         catch (IOException e)
         {
-            Main.PopMsg(e.toString());
+            log.debug(e);
             return false;
         }
         return true;
     }
 
 
+    // TODO move it to ru.sincore.ConfigLoader
     public void reloadconfig()
     {
         File MainConfigFile;
@@ -611,22 +590,19 @@ public class HubServer extends Thread
         catch (FileNotFoundException fnfe)
         {
             //file not found so were gonna make it
-            Main.PopMsg("Generated new PID/CID for OpChat and Hub Security.");
+            log.warn("Generated new PID/CID for OpChat and Hub Security.");
             rewriteconfig();
-
-
         }
         catch (IOException e)
         {
-            Main.PopMsg("Error accesing config files.Attempting overwrite with default values.");
-            Main.PopMsg("Generated new PID/CID for OpChat and Hub Security.");
+            log.warn("Error accesing config files. Attempting overwrite with default values.");
+            log.warn("Generated new PID/CID for OpChat and Hub Security.");
             rewriteconfig();
         }
         catch (ClassNotFoundException e)
         {
-            Main.PopMsg("Internal Error Config Corrupted Files. FAIL.");
+            log.error("Internal Error Config Corrupted Files. FAIL.");
         }
-
     }
 
 
@@ -657,19 +633,16 @@ public class HubServer extends Thread
         {
             //file not found so were gonna make it
             rewriteregs();
-
-
         }
         catch (IOException e)
         {
-            Main.PopMsg("Error accesing regs files.Attempting overwrite with default values.");
+            log.warn("Error accesing regs files.Attempting overwrite with default values.");
             rewriteregs();
         }
         catch (ClassNotFoundException e)
         {
-            Main.PopMsg("Internal Error Corrupted Regs File. FAIL.");
+            log.error("Internal Error Corrupted Regs File. FAIL.");
         }
-
     }
 
 
@@ -706,12 +679,12 @@ public class HubServer extends Thread
         }
         catch (IOException e)
         {
-            Main.PopMsg("Error accesing bans files.Attempting overwrite with default values.");
+            log.warn("Error accessing bans files.Attempting overwrite with default values.");
             rewriteregs();
         }
         catch (ClassNotFoundException e)
         {
-            Main.PopMsg("Internal Error Corrupted Bans File. FAIL.");
+            log.error("Internal Error Corrupted Bans File. FAIL.");
         }
 
     }
