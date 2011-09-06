@@ -23,7 +23,7 @@ package ru.sincore.util;
  */
 
 import ru.sincore.Main;
-import ru.sincore.SimpleHandler;
+import ru.sincore.SessionManager;
 import ru.sincore.TigerImpl.Base32;
 import ru.sincore.conf.Vars;
 
@@ -156,8 +156,8 @@ abstract public class ADC
 
     public static String getPingString()
     {
-        return " HH" + Vars.Hub_Host + " UC" + SimpleHandler.getUserCount() + " SS" +
-               SimpleHandler.getTotalShare() + " SF" + SimpleHandler.getTotalFileCount() +
+        return " HH" + Vars.Hub_Host + " UC" + SessionManager.getUserCount() + " SS" +
+               SessionManager.getTotalShare() + " SF" + SessionManager.getTotalFileCount() +
                " MS" + 1024 * 1024 * Vars.min_share + " XS" + 1024 * 1024 * Vars.max_share +
                " ML" + Vars.min_sl + " XL" + Vars.max_sl + " XU" + Vars.max_hubs_user +
                " XR" + Vars.max_hubs_reg + " XO" + Vars.max_hubs_op +

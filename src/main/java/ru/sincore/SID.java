@@ -55,11 +55,11 @@ public class SID
             x.nextBytes(cursid);
             ok = 1;
 
-            for (ClientNod temp : SimpleHandler.getUsers())
+            for (Client temp : SessionManager.getUsers())
             {
 
 
-                if (cursid.equals(temp.cur_client.sid))
+                if (cursid.equals(temp.handler.sid))
                 {
                     ok = 0;
                     continue;

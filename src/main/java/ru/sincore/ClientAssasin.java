@@ -27,7 +27,7 @@ import ru.sincore.conf.Vars;
 
 /**
  * Permanent thread that keeps clients connected ( meaning killing the ones who
- * are disconnected). Also sends delayed searches and will be used for cronlike jobs.
+ * are disconnected). Also sends delayed searches and will be used for cron-like jobs.
  *
  * @author Pietricica
  */
@@ -46,13 +46,14 @@ public class ClientAssasin extends Thread
     }
 
 
+    @Override
     public void run()
     {
 
         while (!Main.Server.restart)
         {
 
-            if (SimpleHandler.Users.isEmpty())
+            if (SessionManager.Users.isEmpty())
             {
                 try
                 {
@@ -65,55 +66,55 @@ public class ClientAssasin extends Thread
                 continue;
             }
 
-            for (ClientNod temp : SimpleHandler.getUsers())
+            for (Client client : SessionManager.getUsers())
             {
 
-                long curtime = System.currentTimeMillis();
-                ClientNod x = temp;
-                /*  synchronized (temp.cur_client.cur_inf)
+                long currentTime = System.currentTimeMillis();
+
+                /*  synchronized (temp.handler.cur_inf)
                 {
-                if (((temp.cur_client.userok==1)
-                        && (temp.cur_client.cur_inf!=null))
-                        && (curtime-temp.cur_client.LastINF>(1000*120L)))
+                if (((temp.handler.userok==1)
+                        && (temp.handler.cur_inf!=null))
+                        && (curtime-temp.handler.LastINF>(1000*120L)))
                 {
-                    Broadcast.getInstance().broadcast(temp.cur_client.cur_inf);
-                    temp.cur_client.LastINF=curtime;
-                    temp.cur_client.cur_inf=null;
+                    Broadcast.getInstance().broadcast(temp.handler.cur_inf);
+                    temp.handler.LastINF=curtime;
+                    temp.handler.cur_inf=null;
         }
                 }
                 */
 
-                if (((x.cur_client.kicked != 1)
-                     && (x.cur_client.InQueueSearch != null))
-                    && (x.cur_client.userok == 1))
+                if (((client.handler.kicked != 1)
+                     && (client.handler.InQueueSearch != null))
+                    && (client.handler.userok == 1))
                 {
 
                     double xy = 1;
-                    for (int i = 0; i < x.cur_client.search_step; i++)
+                    for (int i = 0; i < client.handler.search_step; i++)
                     {
                         xy *= ((double) Vars.search_log_base) / 1000;
                     }
                     xy *= 1000;
                     long xx = (long) xy;
-                    if (x.cur_client.search_step >= Vars.search_steps)
+                    if (client.handler.search_step >= Vars.search_steps)
                     {
                         xx = Vars.search_spam_reset * 1000;
                     }
                     // System.out.println(xx);
-                    if ((curtime - x.cur_client.Lastsearch) > xx)
+                    if ((currentTime - client.handler.Lastsearch) > xx)
                     {
 
-                        if (x.cur_client.InQueueSearch.startsWith("B"))
+                        if (client.handler.InQueueSearch.startsWith("B"))
                         {
-                            Broadcast.getInstance().broadcast(x.cur_client.InQueueSearch);
+                            Broadcast.getInstance().broadcast(client.handler.InQueueSearch);
                         }
                         else
                         {
                             Broadcast.getInstance()
-                                     .broadcast(x.cur_client.InQueueSearch, Broadcast.STATE_ACTIVE);
+                                     .broadcast(client.handler.InQueueSearch, Broadcast.STATE_ACTIVE);
                         }
-                        x.cur_client.InQueueSearch = null;
-                        x.cur_client.Lastsearch = curtime;
+                        client.handler.InQueueSearch = null;
+                        client.handler.Lastsearch = currentTime;
                     }
 
                 }

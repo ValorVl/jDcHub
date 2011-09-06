@@ -48,7 +48,7 @@ public class HubtrackerConnection extends Thread
         this.e_mail=e_mail;
         this.curCmd=curCmd;
         this.pass=pass;
-         //curCmd.cur_client.sendFromBot("ok now");
+         //curCmd.handler.sendFromBot("ok now");
         start();
     }
     public void run ()

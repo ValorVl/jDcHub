@@ -43,8 +43,6 @@ import java.util.ResourceBundle;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import javax.swing.JOptionPane;
-
 import org.apache.log4j.Logger;
 import org.apache.mina.core.service.IoAcceptor;
 import org.apache.mina.core.session.IdleStatus;
@@ -71,6 +69,9 @@ import ru.sincore.util.ADC;
  * Handles the hub databases kept in files ( regs, config and bans).
  *
  * @author Pietricica
+ *
+ * @author Alexey 'lh' Antonov
+ * @since 2011-09-06
  */
 public class HubServer extends Thread
 {
@@ -119,6 +120,7 @@ public class HubServer extends Thread
         start();
     }
 
+    @Override
     public void run()
     {
 
@@ -170,7 +172,7 @@ public class HubServer extends Thread
         {
         }
 
-        //   new ClientNod();
+        //   new Client();
         // ByteBuffer.setUseDirectBuffers(false);
         //   ByteBuffer.setAllocator(new PooledByteBufferAllocator());
 
@@ -219,7 +221,7 @@ public class HubServer extends Thread
         acceptor.getSessionConfig().setReadBufferSize(64 * 1024);
         //acceptor.getSessionConfig().WriteBufferSize( 2048000 );
         acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 50);
-        acceptor.setHandler(new SimpleHandler());
+        acceptor.setHandler(new SessionManager());
 //System.out.println(acceptor.getSessionConfig().getWriteTimeout());
         // acceptor.setCloseOnDeactivation(true);
         //cfg.getSessionConfig().
@@ -233,7 +235,7 @@ public class HubServer extends Thread
         String pop = "";
         for (Port port : Vars.activePorts)
         {
-            if (this.addPort(port) == true)
+            if (this.addPort(port))
             {
                 pop += port.portValue + " ";
             }
@@ -326,19 +328,19 @@ public class HubServer extends Thread
 
 
     // TODO Realize client add method
-    public static ClientNod AddClient()
+    public static Client AddClient()
     {
         if (restart)
         {
             return null;
         }
 
-        ClientNod newclient = new ClientNod();
+        Client newclient = new Client();
 
-        /*synchronized ( SimpleHandler.Users)
+        synchronized (SessionManager.Users)
         {
-        SimpleHandler.Users.add(newclient);
-        }*/
+            SessionManager.Users.put(newclient.getClientHandler().ID, newclient);
+        }
 
         return newclient;
     }

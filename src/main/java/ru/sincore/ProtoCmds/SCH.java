@@ -214,7 +214,7 @@ public class SCH
                 //System.out.println(xx+ "ok");
                 if (curtime - cur_client.Lastsearch < xx)
                 {
-                    //cur_client.sendToClient (Issued_Command);
+                    //handler.sendToClient (Issued_Command);
                     String[] Messages = Vars.Msg_Search_Spam.split("\\\n");
                     for (int j = 0; j < Messages.length; j++)
                     {
@@ -230,7 +230,7 @@ public class SCH
                     if (cur_client.InQueueSearch == null)
                     {
                         cur_client.search_step++;
-                        // cur_client.Lastsearch=System.currentTimeMillis ();
+                        // handler.Lastsearch=System.currentTimeMillis ();
                     }
 
                     cur_client.InQueueSearch = Issued_Command;
@@ -246,7 +246,7 @@ public class SCH
                 //System.out.println(xx);
                 if (curtime - cur_client.Lastsearch < xx)
                 {
-                    //cur_client.sendToClient (Issued_Command);
+                    //handler.sendToClient (Issued_Command);
                     String[] Messages = Vars.Msg_Search_Spam.split("\\\n");
                     for (int j = 0; j < Messages.length; j++)
                     {
@@ -262,7 +262,7 @@ public class SCH
                     if (cur_client.InQueueSearch == null)
                     {
                         cur_client.search_step++;
-                        //cur_client.Lastsearch=System.currentTimeMillis ();
+                        //handler.Lastsearch=System.currentTimeMillis ();
                     }
                     cur_client.InQueueSearch = Issued_Command;
                     return;

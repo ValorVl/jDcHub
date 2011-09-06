@@ -23,9 +23,9 @@
 
 package ru.sincore.cmd.ExtendedCmds;
 
+import ru.sincore.Client;
 import ru.sincore.ClientHandler;
-import ru.sincore.ClientNod;
-import ru.sincore.SimpleHandler;
+import ru.sincore.SessionManager;
 
 import java.util.StringTokenizer;
 import java.util.regex.PatternSyntaxException;
@@ -84,13 +84,13 @@ public class ExtKick
         {
             kickmsg = kickmsg.substring(0, kickmsg.length() - 1);
         }
-        for (ClientNod temp : SimpleHandler.getUsers())
+        for (Client temp : SessionManager.getUsers())
         {
-            if (temp.cur_client.userok == 1)
+            if (temp.handler.userok == 1)
             {
-                if ((temp.cur_client.NI.toLowerCase().equals(aux.toLowerCase())))
+                if ((temp.handler.NI.toLowerCase().equals(aux.toLowerCase())))
                 {
-                    if (!temp.cur_client.reg.kickable)
+                    if (!temp.handler.reg.kickable)
                     {
                         cur_client.sendFromBot("This user is unkickable.");
                         cur_client.sendFromBot("Done.");
@@ -118,11 +118,11 @@ public class ExtKick
             // System.out.println (aux);
             "".matches(aux);
 
-            for (ClientNod temp : SimpleHandler.getUsers())
+            for (Client temp : SessionManager.getUsers())
             {
-                if (temp.cur_client.userok == 1)
+                if (temp.handler.userok == 1)
                 {
-                    if ((temp.cur_client.NI.toLowerCase().matches(aux.toLowerCase())))
+                    if ((temp.handler.NI.toLowerCase().matches(aux.toLowerCase())))
                     {
                         temp.kickMeOut(cur_client, kickmsg, 3);
                     }
@@ -137,7 +137,7 @@ public class ExtKick
         }
         catch (PatternSyntaxException pse)
         {
-            //cur_client.sendFromBot("Not a valid Regular Expression...");
+            //handler.sendFromBot("Not a valid Regular Expression...");
             /***********ok now must pass to field [share|sl|..][>|<|=|!=][number]*/
 
             int mark = aux.indexOf('>');
@@ -156,13 +156,13 @@ public class ExtKick
                         cur_client.sendFromBot("Done.");
                         return;
                     }
-                    // cur_client.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");cur_client.sendFromBot("Done.");
+                    // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");handler.sendFromBot("Done.");
                     //kick all shared > number
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (Long.parseLong(tempz.cur_client.SS) / 1024 / 1024 > Number)
+                            if (Long.parseLong(tempz.handler.SS) / 1024 / 1024 > Number)
                             {
                                 tempz.kickMeOut(cur_client, kickmsg, 3);
                             }
@@ -190,13 +190,13 @@ public class ExtKick
                         cur_client.sendFromBot("Done.");
                         return;
                     }
-                    // cur_client.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");cur_client.sendFromBot("Done.");
+                    // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");handler.sendFromBot("Done.");
                     //kick all shared > number
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (Long.parseLong(tempz.cur_client.HN) > Number)
+                            if (Long.parseLong(tempz.handler.HN) > Number)
                             {
                                 tempz.kickMeOut(cur_client, kickmsg, 3);
                             }
@@ -224,13 +224,13 @@ public class ExtKick
                         cur_client.sendFromBot("Done.");
                         return;
                     }
-                    // cur_client.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");cur_client.sendFromBot("Done.");
+                    // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");handler.sendFromBot("Done.");
                     //kick all shared > number
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (Long.parseLong(tempz.cur_client.HR) > Number)
+                            if (Long.parseLong(tempz.handler.HR) > Number)
                             {
                                 tempz.kickMeOut(cur_client, kickmsg, 3);
                             }
@@ -258,13 +258,13 @@ public class ExtKick
                         cur_client.sendFromBot("Done.");
                         return;
                     }
-                    // cur_client.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");cur_client.sendFromBot("Done.");
+                    // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");handler.sendFromBot("Done.");
                     //kick all shared > number
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (Long.parseLong(tempz.cur_client.HO) > Number)
+                            if (Long.parseLong(tempz.handler.HO) > Number)
                             {
                                 tempz.kickMeOut(cur_client, kickmsg, 3);
                             }
@@ -292,13 +292,13 @@ public class ExtKick
                         cur_client.sendFromBot("Done.");
                         return;
                     }
-                    // cur_client.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");cur_client.sendFromBot("Done.");
+                    // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");handler.sendFromBot("Done.");
                     //kick all shared > number
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (Long.parseLong(tempz.cur_client.SS) > Number)
+                            if (Long.parseLong(tempz.handler.SS) > Number)
                             {
                                 tempz.kickMeOut(cur_client, kickmsg, 3);
                             }
@@ -326,13 +326,13 @@ public class ExtKick
                         cur_client.sendFromBot("Done.");
                         return;
                     }
-                    // cur_client.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");cur_client.sendFromBot("Done.");
+                    // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");handler.sendFromBot("Done.");
                     //kick all shared > number
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (tempz.cur_client.NI.length() > Number)
+                            if (tempz.handler.NI.length() > Number)
                             {
                                 tempz.kickMeOut(cur_client, kickmsg, 3);
                             }
@@ -364,13 +364,13 @@ public class ExtKick
                         cur_client.sendFromBot("Done.");
                         return;
                     }
-                    // cur_client.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");cur_client.sendFromBot("Done.");
+                    // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");handler.sendFromBot("Done.");
                     //kick all shared > number
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (Long.parseLong(tempz.cur_client.SS) / 1024 / 1024 <
+                            if (Long.parseLong(tempz.handler.SS) / 1024 / 1024 <
                                 Number)//&& tempz.userok==1)
                             {
                                 tempz.kickMeOut(cur_client, kickmsg, 3);
@@ -399,13 +399,13 @@ public class ExtKick
                         cur_client.sendFromBot("Done.");
                         return;
                     }
-                    // cur_client.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");cur_client.sendFromBot("Done.");
+                    // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");handler.sendFromBot("Done.");
                     //kick all shared > number
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (Long.parseLong(tempz.cur_client.HN) < Number)
+                            if (Long.parseLong(tempz.handler.HN) < Number)
                             {
                                 tempz.kickMeOut(cur_client, kickmsg, 3);
                             }
@@ -433,13 +433,13 @@ public class ExtKick
                         cur_client.sendFromBot("Done.");
                         return;
                     }
-                    // cur_client.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");cur_client.sendFromBot("Done.");
+                    // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");handler.sendFromBot("Done.");
                     //kick all shared > number
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (Long.parseLong(tempz.cur_client.HO) < Number)
+                            if (Long.parseLong(tempz.handler.HO) < Number)
                             {
                                 tempz.kickMeOut(cur_client, kickmsg, 3);
                             }
@@ -467,13 +467,13 @@ public class ExtKick
                         cur_client.sendFromBot("Done.");
                         return;
                     }
-                    // cur_client.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");cur_client.sendFromBot("Done.");
+                    // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");handler.sendFromBot("Done.");
                     //kick all shared > number
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (Long.parseLong(tempz.cur_client.HR) < Number)
+                            if (Long.parseLong(tempz.handler.HR) < Number)
                             {
                                 tempz.kickMeOut(cur_client, kickmsg, 3);
                             }
@@ -501,13 +501,13 @@ public class ExtKick
                         cur_client.sendFromBot("Done.");
                         return;
                     }
-                    // cur_client.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");cur_client.sendFromBot("Done.");
+                    // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");handler.sendFromBot("Done.");
                     //kick all shared > number
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (tempz.cur_client.NI.length() < Number)
+                            if (tempz.handler.NI.length() < Number)
                             {
                                 tempz.kickMeOut(cur_client, kickmsg, 3);
                             }
@@ -535,13 +535,13 @@ public class ExtKick
                         cur_client.sendFromBot("Done.");
                         return;
                     }
-                    // cur_client.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");cur_client.sendFromBot("Done.");
+                    // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");handler.sendFromBot("Done.");
                     //kick all shared > number
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (Long.parseLong(tempz.cur_client.SL) < Number)
+                            if (Long.parseLong(tempz.handler.SL) < Number)
                             {
                                 tempz.kickMeOut(cur_client, kickmsg, 3);
                             }
@@ -573,14 +573,14 @@ public class ExtKick
                         cur_client.sendFromBot("Done.");
                         return;
                     }
-                    // cur_client.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");cur_client.sendFromBot("Done.");
+                    // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");handler.sendFromBot("Done.");
                     //kick all shared > number
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (Long.parseLong(tempz.cur_client.SS) / 1024 / 1024 ==
-                                Number)//&& tempz.cur_client.userok==1)
+                            if (Long.parseLong(tempz.handler.SS) / 1024 / 1024 ==
+                                Number)//&& tempz.handler.userok==1)
                             {
                                 tempz.kickMeOut(cur_client, kickmsg, 3);
                             }
@@ -608,13 +608,13 @@ public class ExtKick
                         cur_client.sendFromBot("Done.");
                         return;
                     }
-                    // cur_client.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");cur_client.sendFromBot("Done.");
+                    // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");handler.sendFromBot("Done.");
                     //kick all shared > number
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (Long.parseLong(tempz.cur_client.HO) == Number)
+                            if (Long.parseLong(tempz.handler.HO) == Number)
                             {
                                 tempz.kickMeOut(cur_client, kickmsg, 3);
                             }
@@ -642,15 +642,15 @@ public class ExtKick
                         cur_client.sendFromBot("Done.");
                         return;
                     }
-                    // cur_client.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");cur_client.sendFromBot("Done.");
+                    // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");handler.sendFromBot("Done.");
                     //kick all shared > number
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
                             if (Number == 1)
                             {
-                                if (Long.parseLong(tempz.cur_client.CT) == 2)
+                                if (Long.parseLong(tempz.handler.CT) == 2)
 
                                 {
                                     tempz.kickMeOut(cur_client, kickmsg, 3);
@@ -659,7 +659,7 @@ public class ExtKick
                             else if (Number == 0)
 
                             {
-                                if (Long.parseLong(tempz.cur_client.CT) != 2)
+                                if (Long.parseLong(tempz.handler.CT) != 2)
 
                                 {
                                     tempz.kickMeOut(cur_client, kickmsg, 3);
@@ -687,13 +687,13 @@ public class ExtKick
                         cur_client.sendFromBot("Done.");
                         return;
                     }
-                    // cur_client.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");cur_client.sendFromBot("Done.");
+                    // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");handler.sendFromBot("Done.");
                     //kick all shared > number
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (Long.parseLong(tempz.cur_client.HR) == Number)
+                            if (Long.parseLong(tempz.handler.HR) == Number)
                             {
                                 tempz.kickMeOut(cur_client, kickmsg, 3);
                             }
@@ -719,15 +719,15 @@ public class ExtKick
                         cur_client.sendFromBot("Done.");
                         return;
                     }
-                    // cur_client.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");cur_client.sendFromBot("Done.");
+                    // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");handler.sendFromBot("Done.");
                     //kick all shared > number
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
                             if (Number == 1)
                             {
-                                if (Long.parseLong(tempz.cur_client.CT) == 4)
+                                if (Long.parseLong(tempz.handler.CT) == 4)
 
                                 {
                                     tempz.kickMeOut(cur_client, kickmsg, 3);
@@ -736,7 +736,7 @@ public class ExtKick
                             else if (Number == 0)
 
                             {
-                                if (Long.parseLong(tempz.cur_client.CT) != 4)
+                                if (Long.parseLong(tempz.handler.CT) != 4)
 
                                 {
                                     tempz.kickMeOut(cur_client, kickmsg, 3);
@@ -764,13 +764,13 @@ public class ExtKick
                         cur_client.sendFromBot("Done.");
                         return;
                     }
-                    // cur_client.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");cur_client.sendFromBot("Done.");
+                    // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");handler.sendFromBot("Done.");
                     //kick all shared > number
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (Long.parseLong(tempz.cur_client.HR) == Number)
+                            if (Long.parseLong(tempz.handler.HR) == Number)
                             {
                                 tempz.kickMeOut(cur_client, kickmsg, 3);
                             }
@@ -798,13 +798,13 @@ public class ExtKick
                         cur_client.sendFromBot("Done.");
                         return;
                     }
-                    // cur_client.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");cur_client.sendFromBot("Done.");
+                    // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");handler.sendFromBot("Done.");
                     //kick all shared > number
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (Long.parseLong(tempz.cur_client.HN) == Number)
+                            if (Long.parseLong(tempz.handler.HN) == Number)
                             {
                                 tempz.kickMeOut(cur_client, kickmsg, 3);
                             }
@@ -825,16 +825,16 @@ public class ExtKick
 
                     Number = aux.substring(mark + 1, aux.length());
 
-                    // cur_client.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");cur_client.sendFromBot("Done.");
+                    // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");handler.sendFromBot("Done.");
                     //kick all shared > number
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (tempz.cur_client
+                            if (tempz.handler
                                     .SU
                                     .toLowerCase()
-                                    .contains(Number.toLowerCase()))//&& tempz.cur_client.userok==1)
+                                    .contains(Number.toLowerCase()))//&& tempz.handler.userok==1)
                             {
                                 tempz.kickMeOut(cur_client, kickmsg, 3);
                             }
@@ -860,13 +860,13 @@ public class ExtKick
                         cur_client.sendFromBot("Done.");
                         return;
                     }
-                    // cur_client.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");cur_client.sendFromBot("Done.");
+                    // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");handler.sendFromBot("Done.");
                     //kick all shared > number
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (tempz.cur_client.NI.length() == Number)
+                            if (tempz.handler.NI.length() == Number)
                             {
                                 tempz.kickMeOut(cur_client, kickmsg, 3);
                             }
@@ -894,13 +894,13 @@ public class ExtKick
                         cur_client.sendFromBot("Done.");
                         return;
                     }
-                    // cur_client.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");cur_client.sendFromBot("Done.");
+                    // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");handler.sendFromBot("Done.");
                     //kick all shared > number
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (Long.parseLong(tempz.cur_client.SL) == Number)
+                            if (Long.parseLong(tempz.handler.SL) == Number)
                             {
                                 tempz.kickMeOut(cur_client, kickmsg, 3);
                             }
@@ -933,14 +933,14 @@ public class ExtKick
                         cur_client.sendFromBot("Done.");
                         return;
                     }
-                    // cur_client.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");cur_client.sendFromBot("Done.");
+                    // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");handler.sendFromBot("Done.");
                     //kick all shared > number
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (Long.parseLong(tempz.cur_client.SS) / 1024 / 1024 !=
-                                Number)//&& tempz.cur_client.userok==1)
+                            if (Long.parseLong(tempz.handler.SS) / 1024 / 1024 !=
+                                Number)//&& tempz.handler.userok==1)
                             {
                                 tempz.kickMeOut(cur_client, kickmsg, 3);
                             }
@@ -968,15 +968,15 @@ public class ExtKick
                         cur_client.sendFromBot("Done.");
                         return;
                     }
-                    // cur_client.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");cur_client.sendFromBot("Done.");
+                    // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");handler.sendFromBot("Done.");
                     //kick all shared > number
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
                             if (Number == 1)
                             {
-                                if (Long.parseLong(tempz.cur_client.CT) == 2)
+                                if (Long.parseLong(tempz.handler.CT) == 2)
 
                                 {
                                     tempz.kickMeOut(cur_client, kickmsg, 3);
@@ -985,7 +985,7 @@ public class ExtKick
                             else if (Number == 0)
 
                             {
-                                if (Long.parseLong(tempz.cur_client.CT) != 2)
+                                if (Long.parseLong(tempz.handler.CT) != 2)
 
                                 {
                                     tempz.kickMeOut(cur_client, kickmsg, 3);
@@ -1013,13 +1013,13 @@ public class ExtKick
                         cur_client.sendFromBot("Done.");
                         return;
                     }
-                    // cur_client.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");cur_client.sendFromBot("Done.");
+                    // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");handler.sendFromBot("Done.");
                     //kick all shared > number
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (Long.parseLong(tempz.cur_client.AW) != Number)
+                            if (Long.parseLong(tempz.handler.AW) != Number)
                             {
                                 tempz.kickMeOut(cur_client, kickmsg, 3);
                             }
@@ -1045,15 +1045,15 @@ public class ExtKick
                         cur_client.sendFromBot("Done.");
                         return;
                     }
-                    // cur_client.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");cur_client.sendFromBot("Done.");
+                    // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");handler.sendFromBot("Done.");
                     //kick all shared > number
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
                             if (Number == 1)
                             {
-                                if (Long.parseLong(tempz.cur_client.CT) == 4)
+                                if (Long.parseLong(tempz.handler.CT) == 4)
 
                                 {
                                     tempz.kickMeOut(cur_client, kickmsg, 3);
@@ -1061,7 +1061,7 @@ public class ExtKick
                             }
                             else if (Number == 0)
                             {
-                                if (Long.parseLong(tempz.cur_client.CT) != 4)
+                                if (Long.parseLong(tempz.handler.CT) != 4)
 
                                 {
                                     tempz.kickMeOut(cur_client, kickmsg, 3);
@@ -1089,13 +1089,13 @@ public class ExtKick
                         cur_client.sendFromBot("Done.");
                         return;
                     }
-                    // cur_client.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");cur_client.sendFromBot("Done.");
+                    // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");handler.sendFromBot("Done.");
                     //kick all shared > number
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (Long.parseLong(tempz.cur_client.HO) != Number)
+                            if (Long.parseLong(tempz.handler.HO) != Number)
                             {
                                 tempz.kickMeOut(cur_client, kickmsg, 3);
                             }
@@ -1123,13 +1123,13 @@ public class ExtKick
                         cur_client.sendFromBot("Done.");
                         return;
                     }
-                    // cur_client.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");cur_client.sendFromBot("Done.");
+                    // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");handler.sendFromBot("Done.");
                     //kick all shared > number
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (Long.parseLong(tempz.cur_client.HR) != Number)
+                            if (Long.parseLong(tempz.handler.HR) != Number)
                             {
                                 tempz.kickMeOut(cur_client, kickmsg, 3);
                             }
@@ -1157,13 +1157,13 @@ public class ExtKick
                         cur_client.sendFromBot("Done.");
                         return;
                     }
-                    // cur_client.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");cur_client.sendFromBot("Done.");
+                    // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");handler.sendFromBot("Done.");
                     //kick all shared > number
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (Long.parseLong(tempz.cur_client.HN) != Number)
+                            if (Long.parseLong(tempz.handler.HN) != Number)
                             {
                                 tempz.kickMeOut(cur_client, kickmsg, 3);
                             }
@@ -1184,16 +1184,16 @@ public class ExtKick
 
                     Number = aux.substring(mark + 1, aux.length());
 
-                    // cur_client.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");cur_client.sendFromBot("Done.");
+                    // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");handler.sendFromBot("Done.");
                     //kick all shared > number
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (!tempz.cur_client
+                            if (!tempz.handler
                                     .SU
                                     .toLowerCase()
-                                    .contains(Number.toLowerCase()))//&& tempz.cur_client.userok==1)
+                                    .contains(Number.toLowerCase()))//&& tempz.handler.userok==1)
                             {
                                 tempz.kickMeOut(cur_client, kickmsg, 3);
                             }
@@ -1219,13 +1219,13 @@ public class ExtKick
                         cur_client.sendFromBot("Done.");
                         return;
                     }
-                    // cur_client.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");cur_client.sendFromBot("Done.");
+                    // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");handler.sendFromBot("Done.");
                     //kick all shared > number
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (tempz.cur_client.NI.length() != Number)
+                            if (tempz.handler.NI.length() != Number)
                             {
                                 tempz.kickMeOut(cur_client, kickmsg, 3);
                             }
@@ -1253,13 +1253,13 @@ public class ExtKick
                         cur_client.sendFromBot("Done.");
                         return;
                     }
-                    // cur_client.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");cur_client.sendFromBot("Done.");
+                    // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Kick ...\");handler.sendFromBot("Done.");
                     //kick all shared > number
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (Long.parseLong(tempz.cur_client.SL) != Number)
+                            if (Long.parseLong(tempz.handler.SL) != Number)
                             {
                                 tempz.kickMeOut(cur_client, kickmsg, 3);
                             }

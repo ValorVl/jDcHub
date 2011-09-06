@@ -1,7 +1,7 @@
 package dshub.plugin;
+import ru.sincore.Client;
 import ru.sincore.ClientHandler;
-import ru.sincore.ClientNod;
-import ru.sincore.SimpleHandler;
+import ru.sincore.SessionManager;
 
 import java.util.StringTokenizer;
 import java.net.*;
@@ -49,10 +49,10 @@ import java.net.UnknownHostException;
             //and 2)we have an output because we have another token, otherwise we would have exited via //2
             
             String input= ST.nextToken();
-            ClientNod user = null;
-            for ( ClientNod x : SimpleHandler.getUsers() )
+            Client user = null;
+            for ( Client x : SessionManager.getUsers() )
         {
-            if( x .cur_client.NI.equalsIgnoreCase(input ))
+            if( x .handler.NI.equalsIgnoreCase(input ))
             user=x;
              
         }
@@ -62,7 +62,7 @@ import java.net.UnknownHostException;
                 return;
             }
             try {
-            InetAddress addr = InetAddress.getByName(user.cur_client.RealIP);
+            InetAddress addr = InetAddress.getByName(user.handler.RealIP);
             cur_client.sendFromBot("Fetching Reverse DNS Information... (please be patient)");
             cur_client.sendFromBot(addr.getHostName());
             }
@@ -83,10 +83,10 @@ import java.net.UnknownHostException;
                
             String input = ST.nextToken();
             
-            ClientNod user = null;
-            for ( ClientNod x : SimpleHandler.getUsers() )
+            Client user = null;
+            for ( Client x : SessionManager.getUsers() )
         {
-            if( x .cur_client.NI.equalsIgnoreCase(input ))
+            if( x .handler.NI.equalsIgnoreCase(input ))
             user=x;
              
         }
@@ -104,7 +104,7 @@ import java.net.UnknownHostException;
             theSocket = new Socket("whois.ripe.net", 43);
             ps = new PrintStream(theSocket.getOutputStream());
       
-            ps.print(user.cur_client.RealIP+"\r\n");
+            ps.print(user.handler.RealIP+"\r\n");
             theWhoisStream = new DataInputStream(theSocket.getInputStream());
             String s;
             while ((s = theWhoisStream.readLine()) != null) {
@@ -126,10 +126,10 @@ import java.net.UnknownHostException;
                
             String input = ST.nextToken();
             
-            ClientNod user = null;
-            for ( ClientNod x : SimpleHandler.getUsers() )
+            Client user = null;
+            for ( Client x : SessionManager.getUsers() )
         {
-            if( x .cur_client.NI.equalsIgnoreCase(input ))
+            if( x .handler.NI.equalsIgnoreCase(input ))
             user=x;
              
         }
@@ -139,7 +139,7 @@ import java.net.UnknownHostException;
                 return;
             }
             cur_client.sendFromBot("Fetching Traceroute Information... (please be patient)");
-            cur_client.sendFromBot(TraceRoute.Trace(user.cur_client.RealIP));
+            cur_client.sendFromBot(TraceRoute.Trace(user.handler.RealIP));
                         
             }   
             else if( carrier.equalsIgnoreCase("nslookup")) // Begining of NSLookup Code
@@ -176,10 +176,10 @@ import java.net.UnknownHostException;
                     }
                
             String input = ST.nextToken();
-                        ClientNod user = null;
-            for ( ClientNod x : SimpleHandler.getUsers() )
+                        Client user = null;
+            for ( Client x : SessionManager.getUsers() )
         {
-            if( x .cur_client.NI.equalsIgnoreCase(input ))
+            if( x .handler.NI.equalsIgnoreCase(input ))
             user=x;
              
         }
@@ -195,7 +195,7 @@ import java.net.UnknownHostException;
             int i=0;
            
             String ip;
-            ip = user.cur_client.RealIP;
+            ip = user.handler.RealIP;
             String pingResult = "";
             String pingCmd = "ping " + ip;
             

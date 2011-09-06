@@ -23,13 +23,13 @@
 
 package ru.sincore.ProtoCmds;
 
+import ru.sincore.Client;
 import ru.sincore.Exceptions.STAException;
 import ru.sincore.conf.Vars;
 import ru.sincore.util.Constants;
 import ru.sincore.util.STAError;
 import ru.sincore.ClientHandler;
-import ru.sincore.ClientNod;
-import ru.sincore.SimpleHandler;
+import ru.sincore.SessionManager;
 
 import java.util.StringTokenizer;
 
@@ -93,14 +93,14 @@ public class STA
                 return;
             }
             String dsid = TK.nextToken();
-            for (ClientNod target : SimpleHandler.getUsers())
+            for (Client target : SessionManager.getUsers())
             {
-                if (target.cur_client.userok == 1)
+                if (target.handler.userok == 1)
                 {
-                    if (target.cur_client.SessionID.equals(dsid))
+                    if (target.handler.SessionID.equals(dsid))
 
                     {
-                        target.cur_client.sendToClient(recvbuf);
+                        target.handler.sendToClient(recvbuf);
                         return;
                     }
                 }
@@ -144,13 +144,13 @@ public class STA
                 return;
             }
             String esid = TK.nextToken();
-            for (ClientNod target : SimpleHandler.getUsers())
+            for (Client target : SessionManager.getUsers())
             {
-                if (target.cur_client.userok == 1)
+                if (target.handler.userok == 1)
                 {
-                    if (target.cur_client.SessionID.equals(esid))
+                    if (target.handler.SessionID.equals(esid))
                     {
-                        target.cur_client.sendToClient(recvbuf);
+                        target.handler.sendToClient(recvbuf);
                         cur_client.sendToClient(recvbuf);
                     }
                 }

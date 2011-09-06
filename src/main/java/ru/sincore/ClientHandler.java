@@ -29,13 +29,8 @@ import ru.sincore.banning.Ban;
 import ru.sincore.conf.Vars;
 import ru.sincore.util.ADC;
 
+import java.util.Queue;
 
-/**
- * Main client class, keeps all info regarding a client, also provides forward and backlinks to other clients.
- * Also implements disconnecting methods.
- *
- * @author Pietricica
- */
 
 class ClientFailedException extends Exception
 {
@@ -49,19 +44,19 @@ class ClientFailedException extends Exception
     {
         super(s);
     }
-};
+}
 
-
+/**
+ * Main client class, keeps all info regarding a client.
+ * Also implements disconnecting methods.
+ *
+ * @author Pietricica
+ *
+ * @author Alexey 'lh' Antonov
+ * @since 2011-09-06
+ */
 public class ClientHandler
 {
-    /**
-     * main client socket
-     */
-    //Socket ClientSock;
-
-
-    public ClientNod myNod;
-
     public int logged_in = 0;
     public int userok    = 0;
     public int ACTIVE    = 0;
@@ -89,7 +84,7 @@ public class ClientHandler
 
     public boolean CIDsecure = false;
 
-    public ClientQueue Queue;
+    public Queue<String> Queue;
 
     /**
      * The CID of the client. Mandatory for C-C connections.
@@ -259,13 +254,8 @@ public class ClientHandler
     public ClientHandler()
     {
         ClientHandler.user_count++;
-        // myNod=my;
         base = 0;
         ucmd = 0;
-        // ClientSock=s;
-        // Queue=new ClientQueue(this);
-
-
         sid = null;
         myban = null;
         LastChatMsg = 0;
@@ -279,19 +269,16 @@ public class ClientHandler
 
 
     /**
-     * sends the bla String in RAW to client.
+     * sends the message String in RAW to client.
      * adds the \n ending char ;)
+     * @param message Message string to client
+     * @return WriteFuture indicates when message was really sent
      */
-
-
-    public WriteFuture sendToClient(String bla)
+    public WriteFuture sendToClient(String message)
     {
-
+        // TODO Add queueing outgoing messages
         //this.Queue.addMsg (bla);
-        //System.out.println("[sent]: "+bla);
-        return mySession.write(bla);
-
-
+        return mySession.write(message);
     }
 
 
@@ -497,9 +484,9 @@ public class ClientHandler
 
     public void putOpchat(boolean x)
     {
-        if (x == true)
+        if (x)
         {
-            if (this.reg.isreg && this.reg.opchataccess == true)
+            if (this.reg.isreg && this.reg.opchataccess)
             {
                 this.sendToClient("BINF ABCD ID" +
                                   Vars.OpChatCid +
@@ -511,7 +498,7 @@ public class ClientHandler
         }
         else
         {
-            if (this.reg.isreg && this.reg.opchataccess == true)
+            if (this.reg.isreg && this.reg.opchataccess)
             {
                 this.sendToClient("IQUI ABCD");
             }

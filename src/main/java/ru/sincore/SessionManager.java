@@ -29,7 +29,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 
 import org.apache.log4j.Logger;
-import org.apache.mina.core.future.WriteFuture;
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.core.session.IdleStatus;
 
@@ -43,25 +42,28 @@ import ru.sincore.util.STAError;
 
 /**
  * @author Pietricica
+ *
+ * @author Alexey 'lh' Antonov
+ * @since 2011-09-06
  */
-public class SimpleHandler extends org.apache.mina.core.service.IoHandlerAdapter
+public class SessionManager extends org.apache.mina.core.service.IoHandlerAdapter
 {
-    public static final Logger log = Logger.getLogger(SimpleHandler.class);
+    public static final Logger log = Logger.getLogger(SessionManager.class);
 
-    public static ConcurrentHashMap<String, ClientNod> Users;
+    public static ConcurrentHashMap<String, Client> Users;
 
 
     static
     {
-        Users = new ConcurrentHashMap<String, ClientNod>(3000,
+        Users = new ConcurrentHashMap<String, Client>(3000,
                                                          (float) 0.75);
     }
 
 
     /**
-     * Creates a new instance of SimpleHandler
+     * Creates a new instance of SessionManager
      */
-    public SimpleHandler()
+    public SessionManager()
     {
     }
 
@@ -85,7 +87,7 @@ public class SimpleHandler extends org.apache.mina.core.service.IoHandlerAdapter
     }
 
 
-    public static synchronized Collection<ClientNod> getUsers()
+    public static synchronized Collection<Client> getUsers()
     {
         return Users.values();
     }
@@ -117,19 +119,16 @@ public class SimpleHandler extends org.apache.mina.core.service.IoHandlerAdapter
             {
                 new STAError((ClientHandler) (session.getAttribute("")), 100,
                              "Message exceeds buffer." + t.getMessage());
-                // t.printStackTrace();
             }
             else
             {
-                t.printStackTrace();
-                // Main.PopMsg(t.printStackTrace()getMessage());
+                log.debug(t);
                 //session.close(false);
             }
         }
         catch (Exception e)
         {
-            System.out.println("Funny exception in exceptionCaught(), here is the stack trace:");
-            e.printStackTrace();
+            log.debug("Funny exception in exceptionCaught(), here is the stack trace:" + e);
         }
     }
 
@@ -150,24 +149,24 @@ public class SimpleHandler extends org.apache.mina.core.service.IoHandlerAdapter
             {
                 return;
             }
-            /* ClientHandler cur_client=(ClientHandler)(session.getAttachment());
-                 if(cur_client.userok==1)
+            /* ClientHandler handler=(ClientHandler)(session.getAttachment());
+                 if(handler.userok==1)
                 {
-                     new Broadcast("IQUI "+cur_client.SessionID,cur_client.myNod);
+                     new Broadcast("IQUI "+handler.SessionID,handler.myNod);
                  }
-                cur_client.myNod.killMe();*/
+                handler.myNod.killMe();*/
             //  System.out.println("sta exception");
             session.close(false);
             //Disconnect(session);
         }
         catch (CommandException cfex)
         {
-            /* ClientHandler cur_client=(ClientHandler)(session.getAttachment());
-                 if(cur_client.userok==1)
+            /* ClientHandler handler=(ClientHandler)(session.getAttachment());
+                 if(handler.userok==1)
                  {
-                      new Broadcast("IQUI "+cur_client.SessionID,cur_client.myNod);
+                      new Broadcast("IQUI "+handler.SessionID,handler.myNod);
                  }
-                 cur_client.myNod.killMe();*/
+                 handler.myNod.killMe();*/
 
             session.close(false);
         }
@@ -181,17 +180,19 @@ public class SimpleHandler extends org.apache.mina.core.service.IoHandlerAdapter
         //ok, we're in idle
         ClientHandler cur_client = (ClientHandler) (session.getAttribute(""));
         // WriteFuture future=session.write("");
-        //  future.addListener(cur_client.myNod );
+        //  future.addListener(handler.myNod );
 
-        //cur_client.sendToClient("");
+        //handler.sendToClient("");
     }
 
 
     public void sessionClosed(IoSession session)
             throws Exception
     {
-        ClientHandler cur_client = (ClientHandler) (session.getAttribute(""));
-        //  System.out.printf("quitting via session closed nick =%s\n",cur_client.NI);
+        Client currentClient = (Client) (session.getAttribute(""));
+        ClientHandler currentClientHandler = currentClient.getClientHandler();
+
+        //  System.out.printf("quitting via session closed nick =%s\n",handler.NI);
 
         /*synchronized(FirstClient)
           {
@@ -201,26 +202,27 @@ public class SimpleHandler extends org.apache.mina.core.service.IoHandlerAdapter
           // System.out.println("killed");
           }*/
 
-        if (cur_client.userok == 1 && cur_client.kicked != 1)
+        if (currentClientHandler.userok == 1 && currentClientHandler.kicked != 1)
         {
-            Broadcast.getInstance().broadcast("IQUI " + cur_client.SessionID, cur_client.myNod);
+            Broadcast.getInstance().broadcast("IQUI " + currentClientHandler.SessionID, currentClient);
         }
         /** calling plugins...*/
 
         for (Module myMod : Modulator.myModules)
         {
-            myMod.onClientQuit(cur_client);
+            myMod.onClientQuit(currentClientHandler);
         }
-        cur_client.reg.TimeOnline += System.currentTimeMillis()
-                                     - cur_client.LoggedAt;
-        //  Main.PopMsg(cur_client.NI+" with SID " + cur_client.SessionID+" just quited.");
-        if (cur_client.inside)
-        {
-            SimpleHandler.Users.remove(cur_client.ID);
-            //	System.out.println("a intrat "+cur_client.ID);
-        }
-        cur_client = null;
+        currentClientHandler.reg.TimeOnline += System.currentTimeMillis()
+                                     - currentClientHandler.LoggedAt;
 
+        log.info(currentClientHandler.NI+" with SID " + currentClientHandler.SessionID + " just quited.");
+
+        // TODO watch what 'inside' means
+        if (currentClientHandler.inside)
+        {
+            SessionManager.Users.remove(currentClientHandler.ID);
+        }
+        currentClientHandler = null;
     }
 
 
@@ -234,19 +236,19 @@ public class SimpleHandler extends org.apache.mina.core.service.IoHandlerAdapter
         //((SocketSessionConfig) session.getConfig() ).
         //   session.
 
-        ClientHandler cur_client = (ClientHandler) HubServer.AddClient().cur_client;
+        Client currentClient = (Client) HubServer.AddClient();
+        ClientHandler currentClientHandler = (ClientHandler) currentClient.getClientHandler();
 
-        session.setAttribute("", cur_client);
+        session.setAttribute("", currentClient);
         //session.setIdleTime(IdleStatus.READER_IDLE, 120);
 
-        cur_client.mySession = session;
-        StringTokenizer ST = new StringTokenizer(cur_client.mySession
+        currentClientHandler.mySession = session;
+        StringTokenizer ST = new StringTokenizer(currentClientHandler.mySession
                                                          .getRemoteAddress().toString(), "/:");
-        cur_client.RealIP = ST.nextToken();
-        //System.out.println(cur_client.RealIP);
-        SID cursid = new SID(cur_client);
-        cur_client.SessionID = Base32.encode(cursid.cursid).substring(0, 4);
-        cur_client.sid = cursid.cursid;
+        currentClientHandler.RealIP = ST.nextToken();
+        SID cursid = new SID(currentClientHandler);
+        currentClientHandler.SessionID = Base32.encode(cursid.cursid).substring(0, 4);
+        currentClientHandler.sid = cursid.cursid;
 
     }
 
@@ -254,10 +256,10 @@ public class SimpleHandler extends org.apache.mina.core.service.IoHandlerAdapter
     public static int getUserCount()
     {
         int ret = 0;
-        for (ClientNod x : SimpleHandler.getUsers())
+        for (Client client : SessionManager.getUsers())
         {
 
-            if (x.cur_client.userok == 1)
+            if (client.getClientHandler().userok == 1)
             {
                 ret++;
             }
@@ -269,16 +271,16 @@ public class SimpleHandler extends org.apache.mina.core.service.IoHandlerAdapter
     public static long getTotalShare()
     {
         long ret = 0;
-        for (ClientNod x : SimpleHandler.getUsers())
+        for (Client client : SessionManager.getUsers())
         {
 
             try
             {
-                if (x.cur_client.userok == 1)
+                if (client.getClientHandler().userok == 1)
                 {
-                    if (x.cur_client.SS != null)
+                    if (client.getClientHandler().SS != null)
                     {
-                        ret += Long.parseLong(x.cur_client.SS);
+                        ret += Long.parseLong(client.getClientHandler().SS);
                     }
                 }
             }
@@ -293,16 +295,16 @@ public class SimpleHandler extends org.apache.mina.core.service.IoHandlerAdapter
     public static long getTotalFileCount()
     {
         long ret = 0;
-        for (ClientNod x : SimpleHandler.getUsers())
+        for (Client client : SessionManager.getUsers())
         {
 
             try
             {
-                if (x.cur_client.userok == 1)
+                if (client.getClientHandler().userok == 1)
                 {
-                    if (x.cur_client.SF != null)
+                    if (client.getClientHandler().SF != null)
                     {
-                        ret += Long.parseLong(x.cur_client.SF);
+                        ret += Long.parseLong(client.getClientHandler().SF);
                     }
                 }
             }

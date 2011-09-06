@@ -29,12 +29,12 @@ import java.util.StringTokenizer;
 
 import ru.sincore.Broadcast;
 import ru.sincore.ClientHandler;
-import ru.sincore.ClientNod;
+import ru.sincore.Client;
 import ru.sincore.HubServer;
 import ru.sincore.Main;
 import ru.sincore.util.ADC;
 import ru.sincore.util.HostTester;
-import ru.sincore.SimpleHandler;
+import ru.sincore.SessionManager;
 
 /**
  * The main hub configuration utility, is called when via command or tty a configuration wants changed.
@@ -482,10 +482,10 @@ public class CFGConfig
                     return;
                 }
 
-                for (ClientNod tempy : SimpleHandler.getUsers())
+                for (Client tempy : SessionManager.getUsers())
                 {
-                    if ((tempy.cur_client.userok == 1)
-                        && ((tempy.cur_client.NI.toLowerCase()
+                    if ((tempy.handler.userok == 1)
+                        && ((tempy.handler.NI.toLowerCase()
                                                 .equals(new_name.toLowerCase()))))
                     {
                         cur_client
@@ -517,10 +517,10 @@ public class CFGConfig
                     return;
                 }
 
-                for (ClientNod tempy : SimpleHandler.getUsers())
+                for (Client tempy : SessionManager.getUsers())
                 {
-                    if ((tempy.cur_client.userok == 1)
-                        && ((tempy.cur_client.NI.toLowerCase()
+                    if ((tempy.handler.userok == 1)
+                        && ((tempy.handler.NI.toLowerCase()
                                                 .equals(new_name.toLowerCase()))))
                     {
                         cur_client

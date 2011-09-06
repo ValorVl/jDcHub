@@ -161,14 +161,14 @@ public class SUP
         if (cur_client.bas0)
         {
             //System.out.println("bas0");
-            /* cur_client. sendToClient(ADC.Init);
+            /* handler. sendToClient(ADC.Init);
 
 
-              cur_client.sendToClient(ADC.ISID+" "+cur_client.SessionID);
+              handler.sendToClient(ADC.ISID+" "+handler.SessionID);
              if(Vars.HubDE.equals (""))
-                 cur_client.sendToClient("IINF CT32 VE"+ADC.retADCStr (Vars.HubVersion)+" NI"+ADC.retADCStr(Vars.HubName));
+                 handler.sendToClient("IINF CT32 VE"+ADC.retADCStr (Vars.HubVersion)+" NI"+ADC.retADCStr(Vars.HubName));
              else
-                cur_client. sendToClient("IINF CT32 VE"+ADC.retADCStr (Vars.HubVersion)+" NI"+ADC.retADCStr(Vars.HubName)+ " DE"+ADC.retADCStr(Vars.HubDE));
+                handler. sendToClient("IINF CT32 VE"+ADC.retADCStr (Vars.HubVersion)+" NI"+ADC.retADCStr(Vars.HubName)+ " DE"+ADC.retADCStr(Vars.HubDE));
             */
             new STAError(cur_client,
                          100 + Constants.STA_GENERIC_PROTOCOL_ERROR,
@@ -262,7 +262,7 @@ public class SUP
                                             .toString()
                                             .replaceAll(" ", "\\\\s"));
 
-            //cur_client. sendToClient("ISTA 000 "+
+            //handler. sendToClient("ISTA 000 "+
             //    "Running\\Iota\\sVersion\\sof\\sDSHub.\nISTA 000 Hub\\sis\\sup\\ssince\\s"+ Main.Server.MyCalendar.getTime ().toString ().replaceAll (" ","\\\\s"));
 
         }

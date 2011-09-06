@@ -24,12 +24,12 @@
 package ru.sincore.ProtoCmds;
 
 import ru.sincore.Exceptions.STAException;
+import ru.sincore.SessionManager;
 import ru.sincore.conf.Vars;
 import ru.sincore.util.Constants;
 import ru.sincore.util.STAError;
 import ru.sincore.ClientHandler;
-import ru.sincore.ClientNod;
-import ru.sincore.SimpleHandler;
+import ru.sincore.Client;
 
 import java.util.StringTokenizer;
 
@@ -104,16 +104,16 @@ public class CTM
             }
         }
 
-        /*  if(System.currentTimeMillis()-cur_client.LastCTM<1000*30)
+        /*  if(System.currentTimeMillis()-handler.LastCTM<1000*30)
     {
-    if(!(cur_client.reg.overridespam))
+    if(!(handler.reg.overridespam))
     {
-        new STAError(cur_client,0,"CTM spam.");
+        new STAError(handler,0,"CTM spam.");
         return;
     }
     }
     else
-        cur_client.LastCTM=System.currentTimeMillis();*/
+        handler.LastCTM=System.currentTimeMillis();*/
 
         if (Issued_Command.charAt(0) == 'D' || Issued_Command.charAt(0) == 'E')
         {
@@ -129,16 +129,16 @@ public class CTM
             }
             aux = tok.nextToken();
             //now must look for the aux SID...
-            for (ClientNod temp : SimpleHandler.getUsers())
+            for (Client temp : SessionManager.getUsers())
             {
-                if (temp.cur_client.userok == 1)
+                if (temp.handler.userok == 1)
                 {
-                    if (temp.cur_client.SessionID.equals(aux))
+                    if (temp.handler.SessionID.equals(aux))
                     {
                         aux =
                                 tok.nextToken(); // this is the string representing protocol, next token is port, next token is TO
 
-                        temp.cur_client.sendToClient(Issued_Command);
+                        temp.handler.sendToClient(Issued_Command);
                         if (Issued_Command.charAt(0) == 'E')
                         {
                             cur_client.sendToClient(Issued_Command);

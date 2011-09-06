@@ -33,41 +33,50 @@ import ru.sincore.util.ADC;
 
 
 /**
- * A class that keeps a ClientHandler thread instance and connections to other nods
+ * A class that contains client information and provides
+ * functions to work with client.
+ * Contains client information in {@link ru.sincore.ClientHandler}  class instance.
  *
  * @author Pietricica
+ *
+ * @author Alexey 'lh' Antonov
+ * @since 2011-09-06
  */
-public class ClientNod implements IoFutureListener<WriteFuture>
+public class Client implements IoFutureListener<WriteFuture>
 {
-    public static final Logger log = Logger.getLogger(ClientNod.class);
-
-    public ClientHandler cur_client;
+    public static final Logger log = Logger.getLogger(Client.class);
 
     /**
-     * Creates a new instance of ClientNod
+     * Handler to client info
      */
-    public ClientNod()
-    {
-        //  NextClient=null;
-        cur_client = new ClientHandler();
-        //  if(FirstClient==null)
-        //      FirstClient=this;
-        cur_client.myNod = this;
+    private ClientHandler handler;
 
+    /**
+     * Creates a new instance of Client
+     */
+    public Client()
+    {
+        handler = new ClientHandler();
     }
 
 
-    public ClientNod(int x)
+    /**
+     * Return ClientHandler
+     * @return handler
+     */
+    public ClientHandler getClientHandler()
     {
-
+        return handler;
     }
 
 
     public void operationComplete(WriteFuture future)
     {
+        // if data was not written
         if (!future.isWritten())
         {
-            cur_client.mySession.close();
+            // close connection immediately
+            handler.mySession.close(true);
         }
     }
 
@@ -85,9 +94,9 @@ public class ClientNod implements IoFutureListener<WriteFuture>
                           String extraStr)
     {
         kickmsg = ADC.retNormStr(kickmsg);
-        if (!cur_client.reg.kickable)
+        if (!handler.reg.kickable)
         {
-            whokicked.sendFromBot("" + cur_client.NI + " is unkickable.");
+            whokicked.sendFromBot("" + handler.NI + " is unkickable.");
             return;
         }
         //ClientHandler tempy=FirstClient;
@@ -98,15 +107,15 @@ public class ClientNod implements IoFutureListener<WriteFuture>
         {
             if (bantype == 3)
             {
-                BanList.addban(bantype, cur_client.ID, 1000 * kicktime, whokicked.NI, kickmsg);
+                BanList.addban(bantype, handler.ID, 1000 * kicktime, whokicked.NI, kickmsg);
             }
             else if (bantype == 2)
             {
-                BanList.addban(bantype, cur_client.RealIP, 1000 * kicktime, whokicked.NI, kickmsg);
+                BanList.addban(bantype, handler.RealIP, 1000 * kicktime, whokicked.NI, kickmsg);
             }
             else if (bantype == 1)
             {
-                BanList.addban(bantype, cur_client.NI, 1000 * kicktime, whokicked.NI, kickmsg);
+                BanList.addban(bantype, handler.NI, 1000 * kicktime, whokicked.NI, kickmsg);
             }
         }
         else
@@ -114,25 +123,25 @@ public class ClientNod implements IoFutureListener<WriteFuture>
 
             if (bantype == 3)
             {
-                BanList.addban(bantype, cur_client.ID, kicktime, whokicked.NI, kickmsg);
+                BanList.addban(bantype, handler.ID, kicktime, whokicked.NI, kickmsg);
             }
             else if (bantype == 2)
             {
-                BanList.addban(bantype, cur_client.RealIP, kicktime, whokicked.NI, kickmsg);
+                BanList.addban(bantype, handler.RealIP, kicktime, whokicked.NI, kickmsg);
             }
             else if (bantype == 1)
             {
-                BanList.addban(bantype, cur_client.NI, kicktime, whokicked.NI, kickmsg);
+                BanList.addban(bantype, handler.NI, kicktime, whokicked.NI, kickmsg);
             }
 
         }
         String brcast = "IQUI " +
-                        cur_client.SessionID +
+                        handler.SessionID +
                         " ID" +
                         whokicked.SessionID +
                         " TL" +
                         Long.toString(kicktime);
-        cur_client.reg.TimeOnline += System.currentTimeMillis() - cur_client.LoggedAt;
+        handler.reg.TimeOnline += System.currentTimeMillis() - handler.LoggedAt;
         if (!kickmsg.equals(""))
         {
             brcast = brcast + " MS" + ADC.retADCStr(kickmsg);
@@ -143,20 +152,20 @@ public class ClientNod implements IoFutureListener<WriteFuture>
         }
         Broadcast.getInstance().broadcast(brcast);
 
-        cur_client.kicked = 1;
-        this.cur_client.mySession.close();
+        handler.kicked = 1;
+        this.handler.mySession.close();
 
 
         whokicked.sendFromBot("Kicked user " +
-                              cur_client.NI +
+                              handler.NI +
                               " with CID " +
-                              cur_client.ID +
+                              handler.ID +
                               " out in flames.");
         log.info(whokicked.NI +
                     " kicked user " +
-                    cur_client.NI +
+                    handler.NI +
                     " with CID " +
-                    cur_client.ID +
+                    handler.ID +
                     " out in flames.");
         Main.Server.rewritebans();
     }
@@ -165,7 +174,7 @@ public class ClientNod implements IoFutureListener<WriteFuture>
     public void kickMeByBot(String kickmsg, int bantype, Long kicktime)
     {
         kickmsg = ADC.retNormStr(kickmsg);
-        if (!cur_client.reg.kickable)
+        if (!handler.reg.kickable)
         {
 
             return;
@@ -178,15 +187,15 @@ public class ClientNod implements IoFutureListener<WriteFuture>
         {
             if (bantype == 3)
             {
-                BanList.addban(bantype, cur_client.ID, 1000 * kicktime, Vars.bot_name, kickmsg);
+                BanList.addban(bantype, handler.ID, 1000 * kicktime, Vars.bot_name, kickmsg);
             }
             else if (bantype == 2)
             {
-                BanList.addban(bantype, cur_client.RealIP, 1000 * kicktime, Vars.bot_name, kickmsg);
+                BanList.addban(bantype, handler.RealIP, 1000 * kicktime, Vars.bot_name, kickmsg);
             }
             else if (bantype == 1)
             {
-                BanList.addban(bantype, cur_client.NI, 1000 * kicktime, Vars.bot_name, kickmsg);
+                BanList.addban(bantype, handler.NI, 1000 * kicktime, Vars.bot_name, kickmsg);
             }
         }
         else
@@ -194,20 +203,20 @@ public class ClientNod implements IoFutureListener<WriteFuture>
 
             if (bantype == 3)
             {
-                BanList.addban(bantype, cur_client.ID, kicktime, Vars.bot_name, kickmsg);
+                BanList.addban(bantype, handler.ID, kicktime, Vars.bot_name, kickmsg);
             }
             else if (bantype == 2)
             {
-                BanList.addban(bantype, cur_client.RealIP, kicktime, Vars.bot_name, kickmsg);
+                BanList.addban(bantype, handler.RealIP, kicktime, Vars.bot_name, kickmsg);
             }
             else if (bantype == 1)
             {
-                BanList.addban(bantype, cur_client.NI, kicktime, Vars.bot_name, kickmsg);
+                BanList.addban(bantype, handler.NI, kicktime, Vars.bot_name, kickmsg);
             }
 
         }
-        String brcast = "IQUI " + cur_client.SessionID + " IDDCBA TL" + Long.toString(kicktime);
-        cur_client.reg.TimeOnline += System.currentTimeMillis() - cur_client.LoggedAt;
+        String brcast = "IQUI " + handler.SessionID + " IDDCBA TL" + Long.toString(kicktime);
+        handler.reg.TimeOnline += System.currentTimeMillis() - handler.LoggedAt;
         if (!kickmsg.equals(""))
         {
             brcast = brcast + " MS" + ADC.retADCStr(kickmsg);
@@ -218,16 +227,16 @@ public class ClientNod implements IoFutureListener<WriteFuture>
         }
         Broadcast.getInstance().broadcast(brcast);
 
-        cur_client.kicked = 1;
-        this.cur_client.mySession.close();
+        handler.kicked = 1;
+        this.handler.mySession.close();
 
 
         log.info(Vars.bot_name +
-                    " kicked user " +
-                    cur_client.NI +
-                    " with CID " +
-                    cur_client.ID +
-                    " out in flames.");
+                 " kicked user " +
+                 handler.NI +
+                 " with CID " +
+                 handler.ID +
+                 " out in flames.");
         Main.Server.rewritebans();
     }
 
@@ -246,40 +255,40 @@ public class ClientNod implements IoFutureListener<WriteFuture>
 
     public void dropMeImGhost()
     {
-        if (cur_client.inside)
+        if (handler.inside)
         {
-            Broadcast.getInstance().broadcast("IQUI " + cur_client.SessionID, cur_client.myNod);
+            Broadcast.getInstance().broadcast("IQUI " + handler.SessionID, this);
 
-            //    cur_client.reg.TimeOnline+=System.currentTimeMillis()-cur_client.LoggedAt;
+            //    handler.reg.TimeOnline+=System.currentTimeMillis()-handler.LoggedAt;
         }
-        cur_client.kicked = 1;
-        cur_client.inside = false;
-        this.cur_client.mySession.close();
+        handler.kicked = 1;
+        handler.inside = false;
+        this.handler.mySession.close();
     }
 
 
     public void dropMe(ClientHandler whokicked)
     {
-        if (!cur_client.reg.kickable)
+        if (!handler.reg.kickable)
         {
-            whokicked.sendFromBot("" + cur_client.NI + " is undroppable.");
+            whokicked.sendFromBot("" + handler.NI + " is undroppable.");
             return;
         }
 
 
         Broadcast.getInstance()
-                 .broadcast("IQUI " + cur_client.SessionID + " ID" + whokicked.SessionID);
+                 .broadcast("IQUI " + handler.SessionID + " ID" + whokicked.SessionID);
 
-        //  cur_client.reg.TimeOnline+=System.currentTimeMillis()-cur_client.LoggedAt;
+        //  handler.reg.TimeOnline+=System.currentTimeMillis()-handler.LoggedAt;
 
-        cur_client.kicked = 1;
-        this.cur_client.mySession.close();
+        handler.kicked = 1;
+        this.handler.mySession.close();
 
 
         whokicked.sendFromBot("Dropped user " +
-                              cur_client.NI +
+                              handler.NI +
                               " with CID " +
-                              cur_client.ID +
+                              handler.ID +
                               " down from the sky.");
         //  Main.Server.rewritebans ();
     }
@@ -287,31 +296,31 @@ public class ClientNod implements IoFutureListener<WriteFuture>
 
     public void redirectMe(ClientHandler whokicked, String URL)
     {
-        if (!cur_client.reg.kickable)
+        if (!handler.reg.kickable)
         {
-            whokicked.sendFromBot("" + cur_client.NI + " is unredirectable.");
+            whokicked.sendFromBot("" + handler.NI + " is unredirectable.");
             return;
         }
 
 
         Broadcast.getInstance()
                  .broadcast("IQUI " +
-                            cur_client.SessionID +
+                            handler.SessionID +
                             " ID" +
                             whokicked.SessionID +
                             " RD" +
                             URL);
 
-        //   cur_client.reg.TimeOnline+=System.currentTimeMillis()-cur_client.LoggedAt;
+        //   handler.reg.TimeOnline+=System.currentTimeMillis()-handler.LoggedAt;
 
-        cur_client.kicked = 1;
-        this.cur_client.mySession.close();
+        handler.kicked = 1;
+        this.handler.mySession.close();
 
 
         whokicked.sendFromBot("Redirected user " +
-                              cur_client.NI +
+                              handler.NI +
                               " with CID " +
-                              cur_client.ID +
+                              handler.ID +
                               " to " +
                               URL +
                               ".");

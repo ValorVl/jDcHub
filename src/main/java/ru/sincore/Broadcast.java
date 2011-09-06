@@ -48,6 +48,9 @@ class line
  * clients.
  *
  * @author Pietricica
+ *
+ * @author Alexey 'lh' Antonov
+ * @since 2011-09-06
  */
 public class Broadcast
 {
@@ -92,9 +95,9 @@ public class Broadcast
      * Creates a new instance of Broadcast , sends to all except the ClientNod
      * received as param.
      */
-    public void broadcast(String STR, ClientNod cur_client)
+    public void broadcast(String STR, Client client)
     {
-        run(0, STR, cur_client);
+        run(0, STR, client);
     }
 
 
@@ -115,10 +118,10 @@ public class Broadcast
     }
 
 
-    public void execute(int state, String STR, ClientNod cur_client,
-                        ClientNod CH)
+    public void execute(int state, String STR, Client fromClient,
+                        Client toClient)
     {
-        ClientThread ct = new ClientThread(state, STR, cur_client, CH);
+        ClientThread ct = new ClientThread(state, STR, fromClient, toClient);
         ct.run();
     }
 
@@ -128,41 +131,42 @@ public class Broadcast
 
         private final int       state;
         private final String    STR;
-        private final ClientNod cur_client;
-        private final ClientNod CH;
+        private final Client    fromClient;
+        private final Client    toClient;
 
 
-        public ClientThread(int state, String STR, ClientNod cur_client,
-                            ClientNod CH)
+        public ClientThread(int state, String STR, Client fromClient,
+                            Client toClient)
         {
             this.state = state;
             this.STR = STR;
-            this.cur_client = cur_client;
-            this.CH = CH;
+            this.fromClient = fromClient;
+            this.toClient = toClient;
         }
 
 
         public void run()
         {
             String NI = "";
+            ClientHandler toClientHandler = toClient.getClientHandler();
             // x[i]= ((IoSession) (x[i]));
-            // ClientNod CH=((ClientHandler)(x[i].getAttachment())).myNod;
+            // ClientNod toClient=((ClientHandler)(x[i].getAttachment())).myNod;
             if (STR.startsWith("BMSG ") || STR.startsWith("IMSG "))
             {
                 NI = Vars.bot_name;
-                if (CH.cur_client.userok == 1)
+                if (toClientHandler.userok == 1)
 
                 {
                     if (STR.startsWith("BMSG "))
                     {
-                        if (CH.cur_client.SessionID.equals(STR.substring(5, 9)))
+                        if (toClientHandler.SessionID.equals(STR.substring(5, 9)))
                         {
-                            NI = CH.cur_client.NI;
+                            NI = toClientHandler.NI;
                         }
                     }
                 }
 
-                if ((STR.startsWith("BMSG ") && CH.cur_client.SessionID
+                if ((STR.startsWith("BMSG ") && toClientHandler.SessionID
                         .equals(STR.substring(5, 9)))
                     || STR.startsWith("IMSG "))
                 {
@@ -226,47 +230,47 @@ public class Broadcast
                 }
             }
 
-            if ((CH.cur_client.userok == 1 && CH != cur_client)
-                || (CH != cur_client && CH.cur_client.userok == 1
-                    && state == 1 && CH.cur_client.ACTIVE == 1))
+            if ((toClientHandler.userok == 1 && toClient != fromClient)
+                || (toClientHandler.userok == 1 && toClient != fromClient
+                    && state == 1 && toClientHandler.ACTIVE == 1))
             {
-                if (state == STATE_ALL_KEY && !CH.cur_client.reg.key)
+                if (state == STATE_ALL_KEY && !toClientHandler.reg.key)
                 {
                     return;
                 }
-                if (CH.cur_client.ACTIVE != 1 && state == STATE_ACTIVE)
+                if (toClientHandler.ACTIVE != 1 && state == STATE_ACTIVE)
                 {
                     return;
                 }
-                if (!STR.startsWith("E") && CH == cur_client)
+                if (!STR.startsWith("E") && toClient == fromClient)
                 {
                     return;
                 }
                 if (STR.startsWith("IMSG "))
                 {
-                    CH.cur_client.sendFromBot(STR.substring(5));
+                    toClientHandler.sendFromBot(STR.substring(5));
                 }
                 else
                 {
-                    CH.cur_client.sendToClient(STR);
+                    toClientHandler.sendToClient(STR);
                 }
             }
         }
     }
 
 
-    public void sendToAll(int state, String STR, ClientNod cur_client)
+    public void sendToAll(int state, String STR, Client fromClient)
     {
-        for (ClientNod CH : SimpleHandler.getUsers())
+        for (Client toClient : SessionManager.getUsers())
         {
-            execute(state, STR, cur_client, CH);
+            execute(state, STR, fromClient, toClient);
         }
     }
 
 
-    public void run(int state, String STR, ClientNod cur_client)
+    public void run(int state, String STR, Client client)
     {
-        sendToAll(state, STR, cur_client);
+        sendToAll(state, STR, client);
     }
 
     /**

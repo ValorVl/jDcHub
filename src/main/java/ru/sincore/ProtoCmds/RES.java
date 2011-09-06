@@ -28,8 +28,8 @@ import ru.sincore.conf.Vars;
 import ru.sincore.util.Constants;
 import ru.sincore.util.STAError;
 import ru.sincore.ClientHandler;
-import ru.sincore.ClientNod;
-import ru.sincore.SimpleHandler;
+import ru.sincore.Client;
+import ru.sincore.SessionManager;
 
 import java.util.StringTokenizer;
 
@@ -116,13 +116,13 @@ public class RES
             }
             aux = tok.nextToken();
             //now must look for the aux SID...
-            for (ClientNod temp : SimpleHandler.getUsers())
+            for (Client temp : SessionManager.getUsers())
             {
-                if (temp.cur_client.SessionID.equals(aux))
+                if (temp.handler.SessionID.equals(aux))
                 {
                     aux = tok.nextToken(); // this is the effective result
 
-                    temp.cur_client.sendToClient(Issued_Command);
+                    temp.handler.sendToClient(Issued_Command);
                     if (Issued_Command.charAt(0) == 'E')
                     {
                         cur_client.sendToClient(Issued_Command);

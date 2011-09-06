@@ -45,7 +45,7 @@ public class ClientExecutor extends Thread
         while (!Main.Server.restart)
         {
             long start = System.currentTimeMillis();
-            if (SimpleHandler.Users.isEmpty())
+            if (SessionManager.Users.isEmpty())
             {
                 try
                 {
@@ -59,11 +59,11 @@ public class ClientExecutor extends Thread
             }
 
 
-            for (ClientNod temp : SimpleHandler.getUsers())
+            for (Client temp : SessionManager.getUsers())
             {
-                synchronized (temp.cur_client.Queue)
+                synchronized (temp.handler.Queue)
                 {
-                    if (temp.cur_client.Queue.First == null)
+                    if (temp.handler.Queue.First == null)
                     {
 
                         try
@@ -76,15 +76,15 @@ public class ClientExecutor extends Thread
                         }
                         continue;
                     }
-                    String str = temp.cur_client.Queue.First.MSG + "\n";
-                    temp.cur_client.Queue.First = temp.cur_client.Queue.First.Next;
-                    while (temp.cur_client.Queue.First != null)
+                    String str = temp.handler.Queue.First.MSG + "\n";
+                    temp.handler.Queue.First = temp.handler.Queue.First.Next;
+                    while (temp.handler.Queue.First != null)
                     {
-                        str += temp.cur_client.Queue.First.MSG + "\n";
-                        temp.cur_client.Queue.First = temp.cur_client.Queue.First.Next;
+                        str += temp.handler.Queue.First.MSG + "\n";
+                        temp.handler.Queue.First = temp.handler.Queue.First.Next;
                     }
 
-                    temp.cur_client.mySession.write(str.substring(0, str.length() - 1));
+                    temp.handler.mySession.write(str.substring(0, str.length() - 1));
 
                     try
                     {

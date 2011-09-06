@@ -23,11 +23,11 @@
 
 package ru.sincore.cmd.ExtendedCmds;
 
+import ru.sincore.SessionManager;
 import ru.sincore.TigerImpl.Base32;
 import ru.sincore.util.ADC;
 import ru.sincore.ClientHandler;
-import ru.sincore.ClientNod;
-import ru.sincore.SimpleHandler;
+import ru.sincore.Client;
 
 import java.util.StringTokenizer;
 
@@ -52,19 +52,19 @@ public class ExtInfo
             aux += ST.nextToken();
         }
         aux = ADC.retADCStr(aux);
-        ClientNod tempx = null;
+        Client tempx = null;
 
         if (ADC.isIP(aux))//we have an IP address
         {
-            //ClientNod temp=ClientNod.FirstClient.NextClient;
+            //Client temp=Client.FirstClient.NextClient;
             String Nicklist = "";
-            for (ClientNod temp : SimpleHandler.getUsers())
+            for (Client temp : SessionManager.getUsers())
             {
-                if (temp.cur_client.userok == 1)
+                if (temp.handler.userok == 1)
                 {
-                    if ((temp.cur_client.RealIP.equals(aux.toLowerCase())))
+                    if ((temp.handler.RealIP.equals(aux.toLowerCase())))
                     {
-                        Nicklist = Nicklist + temp.cur_client.NI + "\n";
+                        Nicklist = Nicklist + temp.handler.NI + "\n";
                     }
                 }
 
@@ -93,16 +93,16 @@ public class ExtInfo
                 {
                     Base32.decode(aux);
                     //ok if we are here, its a CID
-                    for (ClientNod temp : SimpleHandler.getUsers())
+                    for (Client temp : SessionManager.getUsers())
                     {
-                        if (temp.cur_client.userok == 1)
+                        if (temp.handler.userok == 1)
                         {
-                            if ((temp.cur_client.ID.equals(aux)))
+                            if ((temp.handler.ID.equals(aux)))
                             {
                                 cur_client.sendFromBot("CID " +
                                                        aux +
                                                        " is used by:\n" +
-                                                       temp.cur_client.NI);
+                                                       temp.handler.NI);
                                 return;
                             }
                         }
@@ -120,28 +120,28 @@ public class ExtInfo
             }
 
 
-            for (ClientNod temp : SimpleHandler.getUsers())
+            for (Client temp : SessionManager.getUsers())
             {
-                if (temp.cur_client.userok == 1)
+                if (temp.handler.userok == 1)
                 {
-                    if ((temp.cur_client.NI.toLowerCase().equals(aux.toLowerCase())))
+                    if ((temp.handler.NI.toLowerCase().equals(aux.toLowerCase())))
                     {
 
                         String blah11 = "User Info\nNick " +
-                                        ADC.retNormStr(temp.cur_client.NI) +
+                                        ADC.retNormStr(temp.handler.NI) +
                                         "\nCID " +
-                                        temp.cur_client.ID +
+                                        temp.handler.ID +
                                         "\nShare Size " +
-                                        temp.cur_client.SS +
+                                        temp.handler.SS +
                                         " Bytes\n" +
                                         "Description " +
-                                        (temp.cur_client.DE != null ?
-                                         ADC.retNormStr(temp.cur_client.DE) :
+                                        (temp.handler.DE != null ?
+                                         ADC.retNormStr(temp.handler.DE) :
                                          "") +
                                         "\nTag ";
 
-                        String Tag = "<" + ADC.retNormStr(temp.cur_client.VE) + ",M:";
-                        if (temp.cur_client.ACTIVE == 1)
+                        String Tag = "<" + ADC.retNormStr(temp.handler.VE) + ",M:";
+                        if (temp.handler.ACTIVE == 1)
                         {
                             Tag = Tag + "A";
                         }
@@ -149,18 +149,18 @@ public class ExtInfo
                         {
                             Tag = Tag + "P";
                         }
-                        Tag = Tag + ",H:" + temp.cur_client.HN + "/";
-                        if (temp.cur_client.HR != null)
+                        Tag = Tag + ",H:" + temp.handler.HN + "/";
+                        if (temp.handler.HR != null)
                         {
-                            Tag = Tag + temp.cur_client.HR + "/";
+                            Tag = Tag + temp.handler.HR + "/";
                         }
                         else
                         {
                             Tag = Tag + "?";
                         }
-                        if (temp.cur_client.HO != null)
+                        if (temp.handler.HO != null)
                         {
-                            Tag = Tag + temp.cur_client.HO;
+                            Tag = Tag + temp.handler.HO;
                         }
                         else
                         {
@@ -168,10 +168,10 @@ public class ExtInfo
                         }
 
                         Tag = Tag + ",S:";
-                        if (temp.cur_client.SL != null)
+                        if (temp.handler.SL != null)
 
                         {
-                            Tag = Tag + temp.cur_client.SL + ">";
+                            Tag = Tag + temp.handler.SL + ">";
                         }
                         else
                         {
@@ -179,15 +179,15 @@ public class ExtInfo
                         }
                         blah11 = blah11 + Tag + "\nSupports "
                                  +
-                                 ((temp.cur_client.SU != null) ?
-                                  temp.cur_client.SU :
+                                 ((temp.handler.SU != null) ?
+                                  temp.handler.SU :
                                   "nothing special") +
                                  "\nIp address " +
-                                 temp.cur_client.RealIP;
-                        if (temp.cur_client.reg.isreg)
+                                 temp.handler.RealIP;
+                        if (temp.handler.reg.isreg)
                         {
 
-                            blah11 = blah11 + temp.cur_client.reg.getRegInfo();
+                            blah11 = blah11 + temp.handler.reg.getRegInfo();
                         }
 
                         else

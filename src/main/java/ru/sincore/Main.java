@@ -199,7 +199,7 @@ public class Main extends Thread
 
         AccountsConfig.First = null;
         BanList.First = null;
-        SimpleHandler.Users.clear();
+        SessionManager.Users.clear();
 
         Server.shutdown();
         System.gc(); //calling garbage collectors
@@ -231,37 +231,37 @@ public class Main extends Thread
                     return;
                 }
 
-                for (ClientNod temp : SimpleHandler.getUsers())
+                for (Client temp : SessionManager.getUsers())
                 {
-                    if (temp.cur_client.userok == 1)
+                    if (temp.handler.userok == 1)
                     {
-                        if ((temp.cur_client.ID.equals(aux)))
+                        if ((temp.handler.ID.equals(aux)))
                         {
-                            AccountsConfig.addReg(temp.cur_client.ID, temp.cur_client.NI, "Server");
-                            temp.cur_client.reg = AccountsConfig.getnod(temp.cur_client.ID);
-                            log.info(Translation.getUserRegged(temp.cur_client.NI, aux));
-                            temp.cur_client.can_receive_cmds = true;
-                            temp.cur_client.sendFromBot(Translation.getString("reg_msg"));
-                            temp.cur_client.putOpchat(true);
-                            if (temp.cur_client.reg.key)
+                            AccountsConfig.addReg(temp.handler.ID, temp.handler.NI, "Server");
+                            temp.handler.reg = AccountsConfig.getnod(temp.handler.ID);
+                            log.info(Translation.getUserRegged(temp.handler.NI, aux));
+                            temp.handler.can_receive_cmds = true;
+                            temp.handler.sendFromBot(Translation.getString("reg_msg"));
+                            temp.handler.putOpchat(true);
+                            if (temp.handler.reg.key)
                             {
-                                temp.cur_client.CT = "4";
+                                temp.handler.CT = "4";
                             }
                             else
                             {
-                                temp.cur_client.CT = "2";
+                                temp.handler.CT = "2";
                             }
 
 
                             Broadcast.getInstance()
                                      .broadcast("BINF " +
-                                                temp.cur_client.SessionID +
+                                                temp.handler.SessionID +
                                                 " " +
-                                                (temp.cur_client.reg.key ? "CT4" : "CT2"));
+                                                (temp.handler.reg.key ? "CT4" : "CT2"));
 
-                            temp.cur_client.reg.LastIP = temp.cur_client.RealIP;
-                            temp.cur_client.reg.isreg = true;
-                            temp.cur_client.LoggedAt = System.currentTimeMillis();
+                            temp.handler.reg.LastIP = temp.handler.RealIP;
+                            temp.handler.reg.isreg = true;
+                            temp.handler.LoggedAt = System.currentTimeMillis();
 
 
                             Main.Server.rewriteregs();
@@ -278,50 +278,50 @@ public class Main extends Thread
             }
             catch (IllegalArgumentException iae)
             {
-                //cur_client.sendFromBot("Not a CID, trying to add the "+aux+" nick.");
-                for (ClientNod temp : SimpleHandler.getUsers())
+                //handler.sendFromBot("Not a CID, trying to add the "+aux+" nick.");
+                for (Client temp : SessionManager.getUsers())
                 {
-                    if (temp.cur_client.userok == 1)
+                    if (temp.handler.userok == 1)
                     {
-                        if ((temp.cur_client.NI.toLowerCase().equals(aux.toLowerCase())))
+                        if ((temp.handler.NI.toLowerCase().equals(aux.toLowerCase())))
                         {
-                            if (AccountsConfig.isReg(temp.cur_client.ID) > 0)
+                            if (AccountsConfig.isReg(temp.handler.ID) > 0)
                             {
                                 System.out
-                                        .println(AccountsConfig.getnod(temp.cur_client.ID)
+                                        .println(AccountsConfig.getnod(temp.handler.ID)
                                                                .getRegInfo());
 
                                 return;
                             }
-                            AccountsConfig.addReg(temp.cur_client.ID, temp.cur_client.NI, "Server");
-                            temp.cur_client.reg = AccountsConfig.getnod(temp.cur_client.ID);
+                            AccountsConfig.addReg(temp.handler.ID, temp.handler.NI, "Server");
+                            temp.handler.reg = AccountsConfig.getnod(temp.handler.ID);
 
-                            temp.cur_client.sendFromBot(Translation.getString("reg_msg"));
-                            temp.cur_client.can_receive_cmds = true;
-                            temp.cur_client.putOpchat(true);
-                            if (temp.cur_client.reg.key)
+                            temp.handler.sendFromBot(Translation.getString("reg_msg"));
+                            temp.handler.can_receive_cmds = true;
+                            temp.handler.putOpchat(true);
+                            if (temp.handler.reg.key)
                             {
-                                temp.cur_client.CT = "4";
+                                temp.handler.CT = "4";
                             }
                             else
                             {
-                                temp.cur_client.CT = "2";
+                                temp.handler.CT = "2";
                             }
 
 
                             Broadcast.getInstance()
                                      .broadcast("BINF " +
-                                                temp.cur_client.SessionID +
+                                                temp.handler.SessionID +
                                                 " " +
-                                                (temp.cur_client.reg.key ? "CT4" : "CT2"));
+                                                (temp.handler.reg.key ? "CT4" : "CT2"));
 
-                            temp.cur_client.reg.isreg = true;
-                            temp.cur_client.LoggedAt = System.currentTimeMillis();
-                            temp.cur_client.reg.LastIP = temp.cur_client.RealIP;
+                            temp.handler.reg.isreg = true;
+                            temp.handler.LoggedAt = System.currentTimeMillis();
+                            temp.handler.reg.LastIP = temp.handler.RealIP;
                             log.info(Translation.getNotCid(aux) +
-                                   "\n" +
-                                   Translation.getUserRegged(temp.cur_client.NI,
-                                                             temp.cur_client.ID));
+                                     "\n" +
+                                     Translation.getUserRegged(temp.handler.NI,
+                                                               temp.handler.ID));
 
                             Main.Server.rewriteregs();
                             return;
@@ -338,49 +338,49 @@ public class Main extends Thread
         }
         else
         {
-            //cur_client.sendFromBot("Not a CID, trying to add the "+aux+" nick.");
-            for (ClientNod temp : SimpleHandler.getUsers())
+            //handler.sendFromBot("Not a CID, trying to add the "+aux+" nick.");
+            for (Client temp : SessionManager.getUsers())
             {
 
-                if (temp.cur_client.userok == 1)
+                if (temp.handler.userok == 1)
                 {
-                    if ((temp.cur_client.NI.toLowerCase().equals(aux.toLowerCase())))
+                    if ((temp.handler.NI.toLowerCase().equals(aux.toLowerCase())))
                     {
-                        if (AccountsConfig.isReg(temp.cur_client.ID) > 0)
+                        if (AccountsConfig.isReg(temp.handler.ID) > 0)
                         {
                             System.out
-                                    .println(AccountsConfig.getnod(temp.cur_client.ID)
+                                    .println(AccountsConfig.getnod(temp.handler.ID)
                                                            .getRegInfo());
 
                             return;
                         }
-                        AccountsConfig.addReg(temp.cur_client.ID, temp.cur_client.NI, "Server");
-                        temp.cur_client.reg = AccountsConfig.getnod(temp.cur_client.ID);
-                        temp.cur_client.can_receive_cmds = true;
-                        temp.cur_client.sendFromBot(Translation.getString("reg_msg"));
-                        temp.cur_client.putOpchat(true);
-                        if (temp.cur_client.reg.key)
+                        AccountsConfig.addReg(temp.handler.ID, temp.handler.NI, "Server");
+                        temp.handler.reg = AccountsConfig.getnod(temp.handler.ID);
+                        temp.handler.can_receive_cmds = true;
+                        temp.handler.sendFromBot(Translation.getString("reg_msg"));
+                        temp.handler.putOpchat(true);
+                        if (temp.handler.reg.key)
                         {
-                            temp.cur_client.CT = "4";
+                            temp.handler.CT = "4";
                         }
                         else
                         {
-                            temp.cur_client.CT = "2";
+                            temp.handler.CT = "2";
                         }
 
 
                         Broadcast.getInstance()
                                  .broadcast("BINF " +
-                                            temp.cur_client.SessionID +
+                                            temp.handler.SessionID +
                                             " " +
-                                            (temp.cur_client.reg.key ? "CT4" : "CT2"));
+                                            (temp.handler.reg.key ? "CT4" : "CT2"));
 
-                        temp.cur_client.LoggedAt = System.currentTimeMillis();
-                        temp.cur_client.reg.isreg = true;
-                        temp.cur_client.reg.LastIP = temp.cur_client.RealIP;
+                        temp.handler.LoggedAt = System.currentTimeMillis();
+                        temp.handler.reg.isreg = true;
+                        temp.handler.reg.LastIP = temp.handler.RealIP;
                         log.info(Translation.getNotCid(aux) +
                                "\n" +
-                               Translation.getUserRegged(temp.cur_client.NI, temp.cur_client.ID));
+                               Translation.getUserRegged(temp.handler.NI, temp.handler.ID));
 
                         Main.Server.rewriteregs();
                         return;
@@ -616,26 +616,26 @@ public class Main extends Thread
                         if (AccountsConfig.unreg(aux))
                         {
                             int found = 0;
-                            for (ClientNod temp : SimpleHandler.getUsers())
+                            for (Client temp : SessionManager.getUsers())
                             {
-                                if (temp.cur_client.userok == 1)
+                                if (temp.handler.userok == 1)
                                 {
-                                    if ((temp.cur_client.ID.equals(aux)))
+                                    if ((temp.handler.ID.equals(aux)))
                                     {
-                                        temp.cur_client
+                                        temp.handler
                                                 .sendFromBot(Translation.getString("account_deleted"));
-                                        temp.cur_client.putOpchat(false);
-                                        temp.cur_client.CT = "0";
+                                        temp.handler.putOpchat(false);
+                                        temp.handler.CT = "0";
 
                                         Broadcast.getInstance()
                                                  .broadcast("BINF " +
-                                                            temp.cur_client.SessionID +
+                                                            temp.handler.SessionID +
                                                             " CT");
-                                        temp.cur_client.reg = new Nod();
+                                        temp.handler.reg = new Nod();
                                         System.out
-                                                .println(Translation.getUserDeleted(temp.cur_client.NI,
+                                                .println(Translation.getUserDeleted(temp.handler.NI,
                                                                                     aux));
-                                        temp.cur_client.can_receive_cmds = false;
+                                        temp.handler.can_receive_cmds = false;
                                         Main.Server.rewriteregs();
                                         found = 1;
                                     }
@@ -655,27 +655,27 @@ public class Main extends Thread
                     {
                         System.out.println(Translation.getString("not_cid_check"));
                         int found = 0;
-                        for (ClientNod temp : SimpleHandler.getUsers())
+                        for (Client temp : SessionManager.getUsers())
                         {
 
-                            if (temp.cur_client.userok == 1)
+                            if (temp.handler.userok == 1)
                             {
-                                if ((temp.cur_client.NI.toLowerCase().equals(aux.toLowerCase())))
+                                if ((temp.handler.NI.toLowerCase().equals(aux.toLowerCase())))
                                 {
-                                    AccountsConfig.unreg(temp.cur_client.ID);
+                                    AccountsConfig.unreg(temp.handler.ID);
                                     System.out
-                                            .println(Translation.getUserDeleted(temp.cur_client.NI,
-                                                                                temp.cur_client.ID));
-                                    temp.cur_client
+                                            .println(Translation.getUserDeleted(temp.handler.NI,
+                                                                                temp.handler.ID));
+                                    temp.handler
                                             .sendFromBot(Translation.getString("account_deleted"));
-                                    temp.cur_client.putOpchat(false);
-                                    temp.cur_client.CT = "0";
-                                    temp.cur_client.can_receive_cmds = false;
+                                    temp.handler.putOpchat(false);
+                                    temp.handler.CT = "0";
+                                    temp.handler.can_receive_cmds = false;
                                     Broadcast.getInstance()
                                              .broadcast("BINF " +
-                                                        temp.cur_client.SessionID +
+                                                        temp.handler.SessionID +
                                                         " CT");
-                                    temp.cur_client.reg = new Nod();
+                                    temp.handler.reg = new Nod();
                                 }
                             }
                             Main.Server.rewriteregs();
@@ -1156,11 +1156,11 @@ public class Main extends Thread
                                 return;
                             }
 
-                            for (ClientNod tempy : SimpleHandler.getUsers())
+                            for (Client tempy : SessionManager.getUsers())
                             {
-                                if (tempy.cur_client.userok == 1)
+                                if (tempy.handler.userok == 1)
                                 {
-                                    if (tempy.cur_client.NI.equalsIgnoreCase(new_name))
+                                    if (tempy.handler.NI.equalsIgnoreCase(new_name))
                                     {
                                         System.out.println(Translation.getString("nick_taken"));
                                         return;
@@ -1196,11 +1196,11 @@ public class Main extends Thread
                                 System.out.println(Translation.getString("invalid_nick"));
                                 return;
                             }
-                            for (ClientNod tempy : SimpleHandler.getUsers())
+                            for (Client tempy : SessionManager.getUsers())
                             {
-                                if (tempy.cur_client.userok == 1)
+                                if (tempy.handler.userok == 1)
                                 {
-                                    if (tempy.cur_client.NI.equalsIgnoreCase(new_name))
+                                    if (tempy.handler.NI.equalsIgnoreCase(new_name))
                                     {
                                         System.out.println(Translation.getString("nick_taken"));
                                         return;
@@ -1804,9 +1804,9 @@ public class Main extends Thread
                 else if (recvbuf.toLowerCase().equals("usercount"))
                 {
                     int i = 0, j = 0;
-                    for (ClientNod temp : SimpleHandler.getUsers())
+                    for (Client temp : SessionManager.getUsers())
                     {
-                        if (temp.cur_client.userok == 1)
+                        if (temp.handler.userok == 1)
                         {
                             i++;
                         }
@@ -1832,9 +1832,9 @@ public class Main extends Thread
 
                     //Proppies.getProperty();
                     int i = 0, j = 0;
-                    for (ClientNod temp : SimpleHandler.getUsers())
+                    for (Client temp : SessionManager.getUsers())
                     {
-                        if (temp.cur_client.userok == 1)
+                        if (temp.handler.userok == 1)
                         {
                             i++;
                         }

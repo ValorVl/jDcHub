@@ -23,9 +23,9 @@
 
 package ru.sincore.cmd.ExtendedCmds;
 
+import ru.sincore.Client;
 import ru.sincore.ClientHandler;
-import ru.sincore.ClientNod;
-import ru.sincore.SimpleHandler;
+import ru.sincore.SessionManager;
 
 import java.util.StringTokenizer;
 import java.util.regex.PatternSyntaxException;
@@ -75,9 +75,9 @@ public class ExtMass
         System.out.println(recvbuf);
         if (extmass.equalsIgnoreCase("all"))
         {
-            for (ClientNod temp : SimpleHandler.getUsers())
+            for (Client temp : SessionManager.getUsers())
             {
-                temp.cur_client.sendFromBotPM(aux);
+                temp.handler.sendFromBotPM(aux);
 
             }
             cur_client.sendFromBot("Broadcast sent.");
@@ -90,13 +90,13 @@ public class ExtMass
             "".matches(extmass);
 
 
-            for (ClientNod temp : SimpleHandler.getUsers())
+            for (Client temp : SessionManager.getUsers())
             {
-                if (temp.cur_client.userok == 1)
+                if (temp.handler.userok == 1)
                 {
-                    if ((temp.cur_client.NI.toLowerCase().matches(extmass.toLowerCase())))
+                    if ((temp.handler.NI.toLowerCase().matches(extmass.toLowerCase())))
                     {
-                        temp.cur_client.sendFromBotPM(aux);
+                        temp.handler.sendFromBotPM(aux);
                     }
                 }
 
@@ -130,13 +130,13 @@ public class ExtMass
                         return;
                     }
 
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (Long.parseLong(tempz.cur_client.SS) / 1024 / 1024 > Number)
+                            if (Long.parseLong(tempz.handler.SS) / 1024 / 1024 > Number)
                             {
-                                tempz.cur_client.sendFromBotPM(aux);
+                                tempz.handler.sendFromBotPM(aux);
                             }
                         }
 
@@ -163,13 +163,13 @@ public class ExtMass
                         return;
                     }
 
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (Long.parseLong(tempz.cur_client.HN) > Number)
+                            if (Long.parseLong(tempz.handler.HN) > Number)
                             {
-                                tempz.cur_client.sendFromBotPM(aux);
+                                tempz.handler.sendFromBotPM(aux);
                             }
                         }
 
@@ -196,13 +196,13 @@ public class ExtMass
                         return;
                     }
 
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (Long.parseLong(tempz.cur_client.HR) > Number)
+                            if (Long.parseLong(tempz.handler.HR) > Number)
                             {
-                                tempz.cur_client.sendFromBotPM(aux);
+                                tempz.handler.sendFromBotPM(aux);
                             }
                         }
 
@@ -229,13 +229,13 @@ public class ExtMass
                         return;
                     }
 
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (Long.parseLong(tempz.cur_client.HO) > Number)
+                            if (Long.parseLong(tempz.handler.HO) > Number)
                             {
-                                tempz.cur_client.sendFromBotPM(aux);
+                                tempz.handler.sendFromBotPM(aux);
                             }
                         }
 
@@ -262,13 +262,13 @@ public class ExtMass
                         return;
                     }
 
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (Long.parseLong(tempz.cur_client.SS) > Number)
+                            if (Long.parseLong(tempz.handler.SS) > Number)
                             {
-                                tempz.cur_client.sendFromBotPM(aux);
+                                tempz.handler.sendFromBotPM(aux);
                             }
                         }
 
@@ -295,13 +295,13 @@ public class ExtMass
                         return;
                     }
 
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (tempz.cur_client.NI.length() > Number)
+                            if (tempz.handler.NI.length() > Number)
                             {
-                                tempz.cur_client.sendFromBotPM(aux);
+                                tempz.handler.sendFromBotPM(aux);
                             }
                         }
 
@@ -332,14 +332,14 @@ public class ExtMass
                         return;
                     }
 
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (Long.parseLong(tempz.cur_client.SS) / 1024 / 1024 <
-                                Number)//&& tempz.cur_client.userok==1)
+                            if (Long.parseLong(tempz.handler.SS) / 1024 / 1024 <
+                                Number)//&& tempz.handler.userok==1)
                             {
-                                tempz.cur_client.sendFromBotPM(aux);
+                                tempz.handler.sendFromBotPM(aux);
                             }
                         }
 
@@ -366,13 +366,13 @@ public class ExtMass
                         return;
                     }
 
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (Long.parseLong(tempz.cur_client.HN) < Number)
+                            if (Long.parseLong(tempz.handler.HN) < Number)
                             {
-                                tempz.cur_client.sendFromBotPM(aux);
+                                tempz.handler.sendFromBotPM(aux);
                             }
                         }
 
@@ -399,13 +399,13 @@ public class ExtMass
                         return;
                     }
 
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (Long.parseLong(tempz.cur_client.HO) < Number)
+                            if (Long.parseLong(tempz.handler.HO) < Number)
                             {
-                                tempz.cur_client.sendFromBotPM(aux);
+                                tempz.handler.sendFromBotPM(aux);
                             }
                         }
 
@@ -432,13 +432,13 @@ public class ExtMass
                         return;
                     }
 
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (Long.parseLong(tempz.cur_client.HR) < Number)
+                            if (Long.parseLong(tempz.handler.HR) < Number)
                             {
-                                tempz.cur_client.sendFromBotPM(aux);
+                                tempz.handler.sendFromBotPM(aux);
                             }
                         }
 
@@ -465,13 +465,13 @@ public class ExtMass
                         return;
                     }
 
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (tempz.cur_client.NI.length() < Number)
+                            if (tempz.handler.NI.length() < Number)
                             {
-                                tempz.cur_client.sendFromBotPM(aux);
+                                tempz.handler.sendFromBotPM(aux);
                             }
                         }
 
@@ -498,13 +498,13 @@ public class ExtMass
                         return;
                     }
 
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (Long.parseLong(tempz.cur_client.SL) < Number)
+                            if (Long.parseLong(tempz.handler.SL) < Number)
                             {
-                                tempz.cur_client.sendFromBotPM(aux);
+                                tempz.handler.sendFromBotPM(aux);
                             }
                         }
 
@@ -535,14 +535,14 @@ public class ExtMass
                         return;
                     }
 
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (Long.parseLong(tempz.cur_client.SS) / 1024 / 1024 ==
-                                Number)//&& tempz.cur_client.userok==1)
+                            if (Long.parseLong(tempz.handler.SS) / 1024 / 1024 ==
+                                Number)//&& tempz.handler.userok==1)
                             {
-                                tempz.cur_client.sendFromBotPM(aux);
+                                tempz.handler.sendFromBotPM(aux);
                             }
                         }
 
@@ -569,13 +569,13 @@ public class ExtMass
                         return;
                     }
 
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (Long.parseLong(tempz.cur_client.HO) == Number)
+                            if (Long.parseLong(tempz.handler.HO) == Number)
                             {
-                                tempz.cur_client.sendFromBotPM(aux);
+                                tempz.handler.sendFromBotPM(aux);
                             }
                         }
 
@@ -602,24 +602,24 @@ public class ExtMass
                         return;
                     }
 
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
                             if (Number == 1)
                             {
-                                if (Long.parseLong(tempz.cur_client.CT) == 2)
+                                if (Long.parseLong(tempz.handler.CT) == 2)
 
                                 {
-                                    tempz.cur_client.sendFromBotPM(aux);
+                                    tempz.handler.sendFromBotPM(aux);
                                 }
                             }
                             else if (Number == 0)
                             {
-                                if (Long.parseLong(tempz.cur_client.CT) != 2)
+                                if (Long.parseLong(tempz.handler.CT) != 2)
 
                                 {
-                                    tempz.cur_client.sendFromBotPM(aux);
+                                    tempz.handler.sendFromBotPM(aux);
                                 }
                             }
                         }
@@ -645,13 +645,13 @@ public class ExtMass
                         return;
                     }
 
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (Long.parseLong(tempz.cur_client.HR) == Number)
+                            if (Long.parseLong(tempz.handler.HR) == Number)
                             {
-                                tempz.cur_client.sendFromBotPM(aux);
+                                tempz.handler.sendFromBotPM(aux);
                             }
                         }
 
@@ -676,24 +676,24 @@ public class ExtMass
                         return;
                     }
 
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
                             if (Number == 1)
                             {
-                                if (Long.parseLong(tempz.cur_client.CT) == 4)
+                                if (Long.parseLong(tempz.handler.CT) == 4)
 
                                 {
-                                    tempz.cur_client.sendFromBotPM(aux);
+                                    tempz.handler.sendFromBotPM(aux);
                                 }
                             }
                             else if (Number == 0)
                             {
-                                if (Long.parseLong(tempz.cur_client.CT) != 4)
+                                if (Long.parseLong(tempz.handler.CT) != 4)
 
                                 {
-                                    tempz.cur_client.sendFromBotPM(aux);
+                                    tempz.handler.sendFromBotPM(aux);
                                 }
                             }
                         }
@@ -719,13 +719,13 @@ public class ExtMass
                         return;
                     }
 
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (Long.parseLong(tempz.cur_client.HR) == Number)
+                            if (Long.parseLong(tempz.handler.HR) == Number)
                             {
-                                tempz.cur_client.sendFromBotPM(aux);
+                                tempz.handler.sendFromBotPM(aux);
                             }
                         }
 
@@ -752,13 +752,13 @@ public class ExtMass
                         return;
                     }
 
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (Long.parseLong(tempz.cur_client.HN) == Number)
+                            if (Long.parseLong(tempz.handler.HN) == Number)
                             {
-                                tempz.cur_client.sendFromBotPM(aux);
+                                tempz.handler.sendFromBotPM(aux);
                             }
                         }
 
@@ -778,16 +778,16 @@ public class ExtMass
                     Number = extmass.substring(mark + 1, extmass.length());
 
 
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (tempz.cur_client
+                            if (tempz.handler
                                     .SU
                                     .toLowerCase()
-                                    .contains(Number.toLowerCase()))//&& tempz.cur_client.userok==1)
+                                    .contains(Number.toLowerCase()))//&& tempz.handler.userok==1)
                             {
-                                tempz.cur_client.sendFromBotPM(aux);
+                                tempz.handler.sendFromBotPM(aux);
                             }
                         }
 
@@ -812,13 +812,13 @@ public class ExtMass
                         return;
                     }
 
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (tempz.cur_client.NI.length() == Number)
+                            if (tempz.handler.NI.length() == Number)
                             {
-                                tempz.cur_client.sendFromBotPM(aux);
+                                tempz.handler.sendFromBotPM(aux);
                             }
                         }
 
@@ -845,13 +845,13 @@ public class ExtMass
                         return;
                     }
 
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (Long.parseLong(tempz.cur_client.SL) == Number)
+                            if (Long.parseLong(tempz.handler.SL) == Number)
                             {
-                                tempz.cur_client.sendFromBotPM(aux);
+                                tempz.handler.sendFromBotPM(aux);
                             }
                         }
 
@@ -883,14 +883,14 @@ public class ExtMass
                         return;
                     }
 
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (Long.parseLong(tempz.cur_client.SS) / 1024 / 1024 !=
-                                Number)//&& tempz.cur_client.userok==1)
+                            if (Long.parseLong(tempz.handler.SS) / 1024 / 1024 !=
+                                Number)//&& tempz.handler.userok==1)
                             {
-                                tempz.cur_client.sendFromBotPM(aux);
+                                tempz.handler.sendFromBotPM(aux);
                             }
                         }
 
@@ -917,24 +917,24 @@ public class ExtMass
                         return;
                     }
 
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
                             if (Number == 1)
                             {
-                                if (Long.parseLong(tempz.cur_client.CT) == 2)
+                                if (Long.parseLong(tempz.handler.CT) == 2)
 
                                 {
-                                    tempz.cur_client.sendFromBotPM(aux);
+                                    tempz.handler.sendFromBotPM(aux);
                                 }
                             }
                             else if (Number == 0)
                             {
-                                if (Long.parseLong(tempz.cur_client.CT) != 2)
+                                if (Long.parseLong(tempz.handler.CT) != 2)
 
                                 {
-                                    tempz.cur_client.sendFromBotPM(aux);
+                                    tempz.handler.sendFromBotPM(aux);
                                 }
                             }
                         }
@@ -960,13 +960,13 @@ public class ExtMass
                         return;
                     }
 
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (Long.parseLong(tempz.cur_client.AW) != Number)
+                            if (Long.parseLong(tempz.handler.AW) != Number)
                             {
-                                tempz.cur_client.sendFromBotPM(aux);
+                                tempz.handler.sendFromBotPM(aux);
                             }
                         }
 
@@ -991,24 +991,24 @@ public class ExtMass
                         return;
                     }
 
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
                             if (Number == 1)
                             {
-                                if (Long.parseLong(tempz.cur_client.CT) == 4)
+                                if (Long.parseLong(tempz.handler.CT) == 4)
 
                                 {
-                                    tempz.cur_client.sendFromBotPM(aux);
+                                    tempz.handler.sendFromBotPM(aux);
                                 }
                             }
                             else if (Number == 0)
                             {
-                                if (Long.parseLong(tempz.cur_client.CT) != 4)
+                                if (Long.parseLong(tempz.handler.CT) != 4)
 
                                 {
-                                    tempz.cur_client.sendFromBotPM(aux);
+                                    tempz.handler.sendFromBotPM(aux);
                                 }
                             }
                         }
@@ -1034,13 +1034,13 @@ public class ExtMass
                         return;
                     }
 
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (Long.parseLong(tempz.cur_client.HO) != Number)
+                            if (Long.parseLong(tempz.handler.HO) != Number)
                             {
-                                tempz.cur_client.sendFromBotPM(aux);
+                                tempz.handler.sendFromBotPM(aux);
                             }
                         }
 
@@ -1067,13 +1067,13 @@ public class ExtMass
                         return;
                     }
 
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (Long.parseLong(tempz.cur_client.HR) != Number)
+                            if (Long.parseLong(tempz.handler.HR) != Number)
                             {
-                                tempz.cur_client.sendFromBotPM(aux);
+                                tempz.handler.sendFromBotPM(aux);
                             }
                         }
 
@@ -1100,13 +1100,13 @@ public class ExtMass
                         return;
                     }
 
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (Long.parseLong(tempz.cur_client.HN) != Number)
+                            if (Long.parseLong(tempz.handler.HN) != Number)
                             {
-                                tempz.cur_client.sendFromBotPM(aux);
+                                tempz.handler.sendFromBotPM(aux);
                             }
                         }
 
@@ -1126,16 +1126,16 @@ public class ExtMass
                     Number = extmass.substring(mark + 1, extmass.length());
 
 
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (!tempz.cur_client
+                            if (!tempz.handler
                                     .SU
                                     .toLowerCase()
-                                    .contains(Number.toLowerCase()))//&& tempz.cur_client.userok==1)
+                                    .contains(Number.toLowerCase()))//&& tempz.handler.userok==1)
                             {
-                                tempz.cur_client.sendFromBotPM(aux);
+                                tempz.handler.sendFromBotPM(aux);
                             }
                         }
 
@@ -1160,13 +1160,13 @@ public class ExtMass
                         return;
                     }
 
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (tempz.cur_client.NI.length() != Number)
+                            if (tempz.handler.NI.length() != Number)
                             {
-                                tempz.cur_client.sendFromBotPM(aux);
+                                tempz.handler.sendFromBotPM(aux);
                             }
                         }
 
@@ -1193,13 +1193,13 @@ public class ExtMass
                         return;
                     }
 
-                    for (ClientNod tempz : SimpleHandler.getUsers())
+                    for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.cur_client.userok == 1)
+                        if (tempz.handler.userok == 1)
                         {
-                            if (Long.parseLong(tempz.cur_client.SL) != Number)
+                            if (Long.parseLong(tempz.handler.SL) != Number)
                             {
-                                tempz.cur_client.sendFromBotPM(aux);
+                                tempz.handler.sendFromBotPM(aux);
                             }
                         }
 

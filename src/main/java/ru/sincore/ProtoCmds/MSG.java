@@ -216,13 +216,13 @@ public class MSG
                     if (what % 2 == 1)
                     {
                         ;//notify opchat :
-                        for (ClientNod temp : SimpleHandler.getUsers())
+                        for (Client temp : SessionManager.getUsers())
                         {
-                            if (temp.cur_client.reg.isreg)
+                            if (temp.handler.reg.isreg)
                             {
-                                temp.cur_client
+                                temp.handler
                                         .sendToClient("EMSG ABCD " +
-                                                      temp.cur_client.SessionID +
+                                                      temp.handler.SessionID +
                                                       " User\\s{" +
                                                       cur_client.NI +
                                                       "}\\swith\\sIP\\s{" +
@@ -376,7 +376,7 @@ public class MSG
             {
                 Broadcast.getInstance().broadcast(Issued_Command);
             }
-            //System.out.println("acum am trimis broadcast de la "+cur_client.ID);
+            //System.out.println("acum am trimis broadcast de la "+handler.ID);
             //System.out.println (Issued_Command);
         }
         else if (Issued_Command.charAt(0) == 'E') //echo direct msg
@@ -420,16 +420,16 @@ public class MSG
 
                     }
                 }
-                //cur_client.sendToClient ("EMSG DCBA "+cur_client.SessionID+" Hello ! PMDCBA");
+                //handler.sendToClient ("EMSG DCBA "+handler.SessionID+" Hello ! PMDCBA");
                 return;
             }
             else if (!pmsid.equals("ABCD"))
             {
-                for (ClientNod temp : SimpleHandler.getUsers())
+                for (Client temp : SessionManager.getUsers())
                 {
-                    if (temp.cur_client.SessionID.equals(pmsid))
+                    if (temp.handler.SessionID.equals(pmsid))
                     {
-                        temp.cur_client.sendToClient(Issued_Command);
+                        temp.handler.sendToClient(Issued_Command);
                         cur_client.sendToClient(Issued_Command);
                         return;
                     }
@@ -449,17 +449,17 @@ public class MSG
                 //must send to all ops...
 
                 //cant broadcast coz must send each;s SID
-                for (ClientNod temp : SimpleHandler.getUsers())
+                for (Client temp : SessionManager.getUsers())
                 {
-                    if (temp.cur_client.userok == 1)
+                    if (temp.handler.userok == 1)
                     {
-                        if (temp.cur_client.reg.isreg && !temp.cur_client.equals(cur_client))
+                        if (temp.handler.reg.isreg && !temp.handler.equals(cur_client))
                         {
-                            temp.cur_client
+                            temp.handler
                                     .sendToClient("EMSG " +
                                                   cur_client.SessionID +
                                                   " " +
-                                                  temp.cur_client.SessionID +
+                                                  temp.handler.SessionID +
                                                   " " +
                                                   message +
                                                   " PMABCD");
@@ -489,7 +489,7 @@ public class MSG
             if (pmsid.equals("DCBA"))
             {
                 //talking to bot security
-                // cur_client.sendToClient ("DMSG DCBA "+cur_client.SessionID+" Hello ! PMDCBA");
+                // handler.sendToClient ("DMSG DCBA "+handler.SessionID+" Hello ! PMDCBA");
                 // ok now lets check that the chat is a command....
                 if (cur_client.reg.isreg && message.charAt(0) == '!' ||
                     cur_client.reg.isreg && message.charAt(0) == '+') //ok.. command mode.
@@ -500,11 +500,11 @@ public class MSG
             }
             else if (!pmsid.equals("ABCD"))
             {
-                for (ClientNod temp : SimpleHandler.getUsers())
+                for (Client temp : SessionManager.getUsers())
                 {
-                    if (temp.cur_client.SessionID.equals(pmsid))
+                    if (temp.handler.SessionID.equals(pmsid))
                     {
-                        temp.cur_client.sendToClient(Issued_Command);
+                        temp.handler.sendToClient(Issued_Command);
                         return;
                     }
                 }
@@ -522,15 +522,15 @@ public class MSG
                 //talking to bot
                 //must send to all ops...
 
-                for (ClientNod temp : SimpleHandler.getUsers())
+                for (Client temp : SessionManager.getUsers())
                 {
-                    if (temp.cur_client.reg.isreg && !temp.cur_client.equals(cur_client))
+                    if (temp.handler.reg.isreg && !temp.handler.equals(cur_client))
                     {
-                        temp.cur_client
+                        temp.handler
                                 .sendToClient("DMSG " +
                                               cur_client.SessionID +
                                               " " +
-                                              temp.cur_client.SessionID +
+                                              temp.handler.SessionID +
                                               " " +
                                               message +
                                               " PMABCD");
