@@ -226,42 +226,45 @@ public class Main extends Thread
                 if (AccountsConfig.isReg(aux) > 0)
                 {
 
-                    System.out.println(AccountsConfig.getnod(aux).getRegInfo());
-
+                    log.info(AccountsConfig.getnod(aux).getRegInfo());
                     return;
                 }
 
-                for (Client temp : SessionManager.getUsers())
+                for (Client client : SessionManager.getUsers())
                 {
-                    if (temp.handler.userok == 1)
+                    ClientHandler clientHandler = client.getClientHandler();
+
+                    if (clientHandler.userok == 1)
                     {
-                        if ((temp.handler.ID.equals(aux)))
+                        if ((clientHandler.ID.equals(aux)))
                         {
-                            AccountsConfig.addReg(temp.handler.ID, temp.handler.NI, "Server");
-                            temp.handler.reg = AccountsConfig.getnod(temp.handler.ID);
-                            log.info(Translation.getUserRegged(temp.handler.NI, aux));
-                            temp.handler.can_receive_cmds = true;
-                            temp.handler.sendFromBot(Translation.getString("reg_msg"));
-                            temp.handler.putOpchat(true);
-                            if (temp.handler.reg.key)
+                            //247
+                            //log.info(Translation.getUserRegged(clientHandler.NI, aux));
+
+                            AccountsConfig.addReg(clientHandler.ID, clientHandler.NI, "Server");
+                            clientHandler.reg = AccountsConfig.getnod(clientHandler.ID);
+                            clientHandler.can_receive_cmds = true;
+                            clientHandler.sendFromBot(Translation.getString("reg_msg"));
+                            clientHandler.putOpchat(true);
+                            if (clientHandler.reg.key)
                             {
-                                temp.handler.CT = "4";
+                                clientHandler.CT = "4";
                             }
                             else
                             {
-                                temp.handler.CT = "2";
+                                clientHandler.CT = "2";
                             }
 
 
                             Broadcast.getInstance()
                                      .broadcast("BINF " +
-                                                temp.handler.SessionID +
+                                                clientHandler.SessionID +
                                                 " " +
-                                                (temp.handler.reg.key ? "CT4" : "CT2"));
+                                                (clientHandler.reg.key ? "CT4" : "CT2"));
 
-                            temp.handler.reg.LastIP = temp.handler.RealIP;
-                            temp.handler.reg.isreg = true;
-                            temp.handler.LoggedAt = System.currentTimeMillis();
+                            clientHandler.reg.isreg = true;
+                            clientHandler.reg.LastIP = clientHandler.RealIP;
+                            clientHandler.LoggedAt = System.currentTimeMillis();
 
 
                             Main.Server.rewriteregs();
@@ -279,49 +282,50 @@ public class Main extends Thread
             catch (IllegalArgumentException iae)
             {
                 //handler.sendFromBot("Not a CID, trying to add the "+aux+" nick.");
-                for (Client temp : SessionManager.getUsers())
+                for (Client client : SessionManager.getUsers())
                 {
-                    if (temp.handler.userok == 1)
+                    ClientHandler clientHandler = client.getClientHandler();
+
+                    if (clientHandler.userok == 1)
                     {
-                        if ((temp.handler.NI.toLowerCase().equals(aux.toLowerCase())))
+                        if ((clientHandler.NI.toLowerCase().equals(aux.toLowerCase())))
                         {
-                            if (AccountsConfig.isReg(temp.handler.ID) > 0)
+                            if (AccountsConfig.isReg(clientHandler.ID) > 0)
                             {
                                 System.out
-                                        .println(AccountsConfig.getnod(temp.handler.ID)
+                                        .println(AccountsConfig.getnod(clientHandler.ID)
                                                                .getRegInfo());
 
                                 return;
                             }
-                            AccountsConfig.addReg(temp.handler.ID, temp.handler.NI, "Server");
-                            temp.handler.reg = AccountsConfig.getnod(temp.handler.ID);
-
-                            temp.handler.sendFromBot(Translation.getString("reg_msg"));
-                            temp.handler.can_receive_cmds = true;
-                            temp.handler.putOpchat(true);
-                            if (temp.handler.reg.key)
+                            AccountsConfig.addReg(clientHandler.ID, clientHandler.NI, "Server");
+                            clientHandler.reg = AccountsConfig.getnod(clientHandler.ID);
+                            clientHandler.can_receive_cmds = true;
+                            clientHandler.sendFromBot(Translation.getString("reg_msg"));
+                            clientHandler.putOpchat(true);
+                            if (clientHandler.reg.key)
                             {
-                                temp.handler.CT = "4";
+                                clientHandler.CT = "4";
                             }
                             else
                             {
-                                temp.handler.CT = "2";
+                                clientHandler.CT = "2";
                             }
 
 
                             Broadcast.getInstance()
                                      .broadcast("BINF " +
-                                                temp.handler.SessionID +
+                                                clientHandler.SessionID +
                                                 " " +
-                                                (temp.handler.reg.key ? "CT4" : "CT2"));
+                                                (clientHandler.reg.key ? "CT4" : "CT2"));
 
-                            temp.handler.reg.isreg = true;
-                            temp.handler.LoggedAt = System.currentTimeMillis();
-                            temp.handler.reg.LastIP = temp.handler.RealIP;
+                            clientHandler.reg.isreg = true;
+                            clientHandler.reg.LastIP = clientHandler.RealIP;
+                            clientHandler.LoggedAt = System.currentTimeMillis();
                             log.info(Translation.getNotCid(aux) +
                                      "\n" +
-                                     Translation.getUserRegged(temp.handler.NI,
-                                                               temp.handler.ID));
+                                     Translation.getUserRegged(clientHandler.NI,
+                                                               clientHandler.ID));
 
                             Main.Server.rewriteregs();
                             return;
@@ -339,48 +343,50 @@ public class Main extends Thread
         else
         {
             //handler.sendFromBot("Not a CID, trying to add the "+aux+" nick.");
-            for (Client temp : SessionManager.getUsers())
+            for (Client client : SessionManager.getUsers())
             {
+                ClientHandler clientHandler = client.getClientHandler();
 
-                if (temp.handler.userok == 1)
+                if (clientHandler.userok == 1)
                 {
-                    if ((temp.handler.NI.toLowerCase().equals(aux.toLowerCase())))
+                    if ((clientHandler.NI.toLowerCase().equals(aux.toLowerCase())))
                     {
-                        if (AccountsConfig.isReg(temp.handler.ID) > 0)
+                        if (AccountsConfig.isReg(clientHandler.ID) > 0)
                         {
                             System.out
-                                    .println(AccountsConfig.getnod(temp.handler.ID)
+                                    .println(AccountsConfig.getnod(clientHandler.ID)
                                                            .getRegInfo());
 
                             return;
                         }
-                        AccountsConfig.addReg(temp.handler.ID, temp.handler.NI, "Server");
-                        temp.handler.reg = AccountsConfig.getnod(temp.handler.ID);
-                        temp.handler.can_receive_cmds = true;
-                        temp.handler.sendFromBot(Translation.getString("reg_msg"));
-                        temp.handler.putOpchat(true);
-                        if (temp.handler.reg.key)
+                        AccountsConfig.addReg(clientHandler.ID, clientHandler.NI, "Server");
+                        clientHandler.reg = AccountsConfig.getnod(clientHandler.ID);
+                        clientHandler.can_receive_cmds = true;
+                        clientHandler.sendFromBot(Translation.getString("reg_msg"));
+
+                        clientHandler.putOpchat(true);
+                        if (clientHandler.reg.key)
                         {
-                            temp.handler.CT = "4";
+                            clientHandler.CT = "4";
                         }
                         else
                         {
-                            temp.handler.CT = "2";
+                            clientHandler.CT = "2";
                         }
 
 
                         Broadcast.getInstance()
                                  .broadcast("BINF " +
-                                            temp.handler.SessionID +
+                                            clientHandler.SessionID +
                                             " " +
-                                            (temp.handler.reg.key ? "CT4" : "CT2"));
+                                            (clientHandler.reg.key ? "CT4" : "CT2"));
 
-                        temp.handler.LoggedAt = System.currentTimeMillis();
-                        temp.handler.reg.isreg = true;
-                        temp.handler.reg.LastIP = temp.handler.RealIP;
+                        clientHandler.LoggedAt = System.currentTimeMillis();
+                        clientHandler.reg.isreg = true;
+                        clientHandler.reg.LastIP = clientHandler.RealIP;
                         log.info(Translation.getNotCid(aux) +
                                "\n" +
-                               Translation.getUserRegged(temp.handler.NI, temp.handler.ID));
+                               Translation.getUserRegged(clientHandler.NI, clientHandler.ID));
 
                         Main.Server.rewriteregs();
                         return;
