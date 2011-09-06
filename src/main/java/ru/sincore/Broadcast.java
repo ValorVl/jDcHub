@@ -27,22 +27,6 @@ import java.util.Calendar;
 
 import ru.sincore.conf.Vars;
 
-class line
-{
-    public String curline;
-
-    line Next;
-
-
-    public line(String str)
-    {
-
-        Next = null;
-        curline = str;
-    }
-}
-
-
 /**
  * Provides broadcasts and feature broadcasts constructors to all connected
  * clients.
@@ -60,8 +44,11 @@ public class Broadcast
 
     public static final int STATE_ALL_KEY = 10;
 
-    static line First = null;
-    static line Last  = null;
+    /**
+     * Contains message history without duplicates
+     * and Info messages
+     */
+    private StringBuffer history;
 
     static int size = 0;
 
@@ -170,63 +157,22 @@ public class Broadcast
                         .equals(STR.substring(5, 9)))
                     || STR.startsWith("IMSG "))
                 {
-                    if (First == null)
-                    {
-                        line bla;
-                        if (STR.startsWith("BMSG "))
-                        {
-                            bla = new line("["
-                                           + Calendar.getInstance().getTime()
-                                                     .toString() + "] <" + NI + "> "
-                                           + STR.substring(10) + "\n");
-                        }
-                        else
-                        {
-                            bla = new line("["
-                                           + Calendar.getInstance().getTime()
-                                                     .toString() + "] <" + NI + "> "
-                                           + STR.substring(5) + "\n");
-                        }
-                        Last = bla;
-                        First = Last;
-                        size++;
-                    }
 
-                    else
-                    {
-                        line bla;
-                        // BMSG AAAA message
-                        if (STR.startsWith("BMSG "))
-                        {
-                            bla = new line("["
-                                           + Calendar.getInstance().getTime()
-                                                     .toString() + "] <" + NI + "> "
-                                           + STR.substring(10) + "\n");
-                        }
-                        else
-                        {
-                            bla = new line("["
-                                           + Calendar.getInstance().getTime()
-                                                     .toString() + "] <" + NI + "> "
-                                           + STR.substring(5) + "\n");
-                        }
+                    String message = "[" +
+                                   Calendar.getInstance().getTime().toString() +
+                                   "] <" + NI + "> " +
+                                   (STR.startsWith("BMSG ") ?
+                                    STR.substring(10) :
+                                    STR.substring(5)) +
+                                   "\n";
 
-                        if (!(Last.curline.equals(bla.curline) && STR
-                                .startsWith("IMSG ")))
-                        {
-                            Last.Next = bla;
+                    /**
+                     * TODO add save message to history
+                     * if string not equal to last string
+                     * and not starts with "IMSG "
+                     * put it to history
+                     */
 
-                            size++;
-
-                            Last = bla;
-
-                            while (size >= Vars.history_lines)
-                            {
-                                First = First.Next;
-                                size--;
-                            }
-                        }
-                    }
                 }
             }
 
@@ -242,7 +188,8 @@ public class Broadcast
                 {
                     return;
                 }
-                if (!STR.startsWith("E") && toClient == fromClient)
+                // TODO may be buggie
+                if (!STR.startsWith("E") && toClient.equals(fromClient))
                 {
                     return;
                 }
