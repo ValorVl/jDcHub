@@ -21,19 +21,6 @@ public class ConfigLoader
 		DATABASE_CONFIG = "./etc/database.properties";
 	}
 
-	/**
-     * Database connectivity properties
-     */
-
-    public static String  DB_CONNECTION_DSN;
-	public static String  DB_ENGINE;
-	public static String  DB_DIALECT;
-    public static String  DB_USER_NAME;
-    public static String  DB_PASSPWORD;
-    public static int     DB_PULL_MIN;
-    public static int     DB_PULL_MAX;
-    public static int 	  DB_TIMEOUT;
-
     /**
      * Hub properties
      */
@@ -44,6 +31,10 @@ public class ConfigLoader
     public static String HUB_NAME;
     public static String HUB_DESCRIPTION;
     public static String HUB_OWNER;
+
+	// Chat log settings
+
+	public static int    LAST_MESSAGES_COUNT;
 
     /**
      * ADC properties
@@ -106,53 +97,17 @@ public class ConfigLoader
 
     public static void init()
     {
-		initDb();
         initHub();
     }
 
 
-    private static void initDb()
-    {
-		File databasePropertiesFile;
-		FileInputStream fileInput;
-		BufferedInputStream buffInput;
-		Properties prop;
-
-		try
-		{
-			databasePropertiesFile = new File(DATABASE_CONFIG);
-			fileInput = new FileInputStream(databasePropertiesFile);
-			buffInput = new BufferedInputStream(fileInput);
-			prop = new Properties();
-
-			prop.load(buffInput);
-
-			_log.info("=== Load database properties >>>");
-
-			DB_CONNECTION_DSN 									= prop.getProperty("database.dsn");
-			DB_ENGINE											= prop.getProperty("database.driver.class");
-			DB_DIALECT											= prop.getProperty("database.dialect");
-			DB_USER_NAME 										= prop.getProperty("database.user");
-			DB_PASSPWORD 										= prop.getProperty("database.password");
-			DB_PULL_MIN 										= Integer.parseInt(prop.getProperty("database.pool.min"));
-			DB_PULL_MAX 										= Integer.parseInt(prop.getProperty("database.pool.max"));
-			DB_TIMEOUT											= Integer.parseInt(prop.getProperty("database.pool.timeout"));
-
-			buffInput.close();
-		}
-		catch (Exception e)
-		{
-			_log.fatal("Fatal error >>>", e);
-		}
-
-    }
 
 
     private static void initHub()
     {
 		File hubPropertiesFile;
 		FileInputStream fileInput;
-		BufferedInputStream buffInput = null;
+		BufferedInputStream buffInput;
 		Properties prop;
 
         try
@@ -166,23 +121,14 @@ public class ConfigLoader
 
             _log.info("=== Load hub properties >>>");
 
+			LAST_MESSAGES_COUNT									= Integer.parseInt(prop.getProperty("last.messages.count"),10);
 
-
+		 	buffInput.close();
         }
         catch (Exception e)
         {
             _log.fatal("Fatal error >>>", e);
-        }finally {
-			try{
-				if (buffInput.available() > 0)
-				{
-					buffInput.close();
-				}
-			}catch (Exception ex)
-			{
-				_log.fatal(ex);
-			}
-		}
+        }
     }
 
 }

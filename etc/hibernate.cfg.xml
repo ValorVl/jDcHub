@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+                                         "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+ <session-factory name="jdchub">
+  <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+  <property name="hibernate.connection.password">Satana666</property>
+  <property name="hibernate.connection.url">jdbc:mysql://10.10.10.129/jdchub?characterEncoding=UTF-8</property>
+  <property name="hibernate.connection.username">valor</property>
+  <property name="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</property>
+  <property name="hibernate.show_sql">true</property>
+  <property name="hibernate.hbm2ddl.auto">update</property>
+  <property name="hibernate.format_sql">true</property>
+  <property name="hibernate.default_entity_mode">pojo</property>
+  <property name="hibernate.connection.charSet">UTF-8</property>
+     <mapping class="ru.sincore.db.pojo.ChatLogPOJO"/>
+ </session-factory>
+</hibernate-configuration>
