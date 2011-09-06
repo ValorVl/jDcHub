@@ -23,17 +23,17 @@
 
 package ru.sincore;
 
+import ru.sincore.util.TimeConv;
+
 import java.io.Serializable;
 import java.util.Date;
-
-import ru.sincore.util.TimeConv;
 
 /**
  * @author Pietricica
  */
 public class Nod implements Serializable, Cloneable
 {
-    public String  CID;
+    public String  CID; //
     public String  Password;
     public boolean key;
     //ClientHandler CH;
