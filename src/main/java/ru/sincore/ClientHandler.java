@@ -63,11 +63,18 @@ public class ClientHandler
     public int quit      = 0;
 
     public boolean can_receive_cmds = false;
+    // TODO remove this, cause it's not nessesary
+    /**
+     * Indicates is current client in SessionManager.User map
+     */
     public boolean inside           = false;
 
     public WriteFuture closingwrite = null;
     public long        LoggedAt     = 0l;
 
+    /**
+     * Node to registred client from AccountsConfig
+     */
     public Nod    reg;
     public Ban    myban;
     public String RandomData;
