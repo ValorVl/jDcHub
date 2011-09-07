@@ -41,7 +41,7 @@ public class AccountsConfig
     }
 
 
-    static public void addReg(String CID, String LastNI, String WhoRegged)
+    public static void addReg(String CID, String LastNI, String WhoRegged)
     {
         Nod newreg;
         newreg = new Nod();
@@ -57,43 +57,39 @@ public class AccountsConfig
     }
 
 
-    static public void addReg(Nod n)
+    public static void addReg(Nod n)
     {
         nods.put(n.CID, n);
     }
 
 
-    static public int isReg(String CID)
+    public static int isReg(String CID)
     {
         return (nods.containsKey(CID) ? 1 : 0);
     }
 
 
-    static public Nod isNickRegFl(String nick)
+    public static Nod isNickRegFl(String nick)
     {
-        Nod x = First;
-        while (x != null)
+        // TODO rewrite to normal algorithm
+
+        for (Nod nod : nods.values())
         {
-            if (x.LastNI != null)
-            {
-                if (x.LastNI.equalsIgnoreCase(nick) && x.accountflyable)
-                {
-                    return x;
-                }
-            }
-            x = x.Next;
+            if (nod.LastNI.equalsIgnoreCase(nick) && nod.accountflyable)
+                return nod;
         }
+
         return null;
     }
 
 
-    static public Nod getnod(String CID)
+    public static Nod getnod(String CID)
     {
         return nods.get(CID);
     }
 
 
-    static public boolean unreg(String CID)
+    public static boolean unreg(String CID)
     {
         return (nods.remove(CID) != null);
     }
@@ -101,21 +97,7 @@ public class AccountsConfig
 
     static public boolean nickReserved(String nick, String CID)
     {
-        Nod x = AccountsConfig.First;
-        while (x != null)
-        {
-            if (!x.CID.equals(CID))
-            {
-                if (x.LastNI != null)
-                {
-                    if (x.nickprotected && x.LastNI.equalsIgnoreCase(nick))
-                    {
-                        return true;
-                    }
-                }
-            }
-            x = x.Next;
-        }
-        return false;
+        Nod nod = nods.get(CID);
+        return (nod != null) && (nod.LastNI.equalsIgnoreCase(nick) && nod.nickprotected);
     }
 }
