@@ -1,5 +1,6 @@
 package ru.sincore.util;
 
+import ru.sincore.Client;
 import ru.sincore.ClientHandler;
 import ru.sincore.Exceptions.STAException;
 /*
@@ -31,75 +32,94 @@ import ru.sincore.conf.Vars;
  * ( when clients send abnormal or erroneous messages ).
  *
  * @author Pietricica
+ *
+ * @author Alexey 'lh' Antonov
+ * @since 2011-09-07
  */
 
 
 public class STAError
 {
-    ClientHandler cur_client;
-    int           error_code;
-    String        error_desc;
+    Client  client;
+    int     errorCode;
+    String  errorDescription;
 
 
     /**
      * Creates a new instance of STAError
+     * @param client Client wich message was
+     * @param errorCode Error code
+     * @param errorDescription Desctiption of the error
+     * @throws STAException
      */
-    public STAError(ClientHandler CH, int ec, String error_d)
+    public STAError(Client client, int errorCode, String errorDescription)
             throws STAException
     {
-        cur_client = CH;
-        error_code = ec;
+        this.client = client;
+        this.errorCode = errorCode;
 
-        error_desc = ADC.retADCStr(error_d).replaceAll("\\\\sTL", " TL");
-        String Error_string;
-        if (ec == 0)
+        this.errorDescription = ADC.retADCStr(errorDescription).replaceAll("\\\\sTL", " TL");
+        String errorString;
+        if (errorCode == 0)
         {
-            Error_string = "ISTA 000 " + error_desc;
+            errorString = "ISTA 000 " + this.errorDescription;
         }
         else
         {
-            Error_string = "ISTA " + Integer.toString(error_code) + " " + error_desc;
+            errorString = "ISTA " + Integer.toString(this.errorCode) + " " + this.errorDescription;
         }
 
-        cur_client.sendToClient(Error_string);
-        if (ec >= 200)
+        client.getClientHandler().sendToClient(errorString);
+        if (errorCode >= 200)
         {
             if (!Vars.redirect_url.equals(""))
             {
-                cur_client.closingwrite = cur_client.sendToClient("IQUI " +
-                                                                  cur_client.SessionID +
-                                                                  " RD" +
-                                                                  Vars.redirect_url);
+                client.getClientHandler().closingwrite =
+                        client.getClientHandler().sendToClient("IQUI " +
+                                                               client.getClientHandler().SessionID +
+                                                               " RD" +
+                                                               Vars.redirect_url);
             }
-            throw new STAException(Error_string, ec);
+            throw new STAException(errorString, errorCode);
         }
 
     }
 
 
-    public STAError(ClientHandler CH, int ec, String error_d, String Prefix, String Flag)
+    /**
+     * Creates a new instance of STAError
+     * @param client Client wich message was
+     * @param errorCode Error code
+     * @param errorDescription Desctiption of the error
+     * @param Prefix
+     * @param Flag
+     * @throws STAException
+     */
+    public STAError(Client client, int errorCode, String errorDescription, String Prefix, String Flag)
             throws STAException
     {
-        cur_client = CH;
-        error_code = ec;
+        this.client = client;
+        this.errorCode = errorCode;
 
-        error_desc = ADC.retADCStr(error_d);
+        this.errorDescription = ADC.retADCStr(errorDescription);
 
 
-        String Error_string =
-                "ISTA " + Integer.toString(error_code) + " " + error_desc + " " + Prefix + Flag;
+        String errorString =
+                "ISTA " + Integer.toString(this.errorCode) + " " +
+                this.errorDescription + " " + Prefix + Flag;
 
-        cur_client.sendToClient(Error_string);
-        if (ec >= 200)
+        client.getClientHandler().sendToClient(errorString);
+        if (errorCode >= 200)
         {
             if (!Vars.redirect_url.equals(""))
             {
-                cur_client.closingwrite = cur_client.sendToClient("IQUI " +
-                                                                  cur_client.SessionID +
-                                                                  " RD" +
-                                                                  Vars.redirect_url);
+                client.getClientHandler().closingwrite =
+                        client.getClientHandler().sendToClient("IQUI " +
+                                                               client.getClientHandler().SessionID +
+                                                               " RD" +
+                                                               Vars.redirect_url);
             }
-            throw new STAException(Error_string, ec);
+            throw new STAException(errorString, errorCode);
         }
 
     }

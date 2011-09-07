@@ -23,14 +23,14 @@
 
 package ru.sincore;
 
+import java.util.HashMap;
+
 /**
  * @author Pietricica
  */
 public class AccountsConfig
 {
-    public static int reg_count = 1;
-
-    public static Nod First = null;
+    public static HashMap<String, Nod> nods;
 
 
     /**
@@ -38,8 +38,6 @@ public class AccountsConfig
      */
     public AccountsConfig()
     {
-        reg_count = 1;
-        First = null;
     }
 
 
@@ -54,68 +52,20 @@ public class AccountsConfig
         newreg.LastNI = LastNI;
         newreg.WhoRegged = WhoRegged;
         newreg.CreatedOn = System.currentTimeMillis();
-        if (First == null)
-        {
-            First = newreg;
-        }
-        else
-        {
-            newreg.Next = First;
-            First = newreg;
-        }
-        reg_count++;
 
+        nods.put(newreg.CID, newreg);
     }
 
 
     static public void addReg(Nod n)
     {
-        Nod newreg;
-        //newreg=new Nod();
-        newreg = n;
-        if (n == null)
-        {
-            return;
-        }
-
-        if (First == null)
-        {
-            First = newreg;
-            newreg.Next = null;
-        }
-        else
-        {
-            newreg.Next = First;
-            First = newreg;
-        }
-        reg_count++;
-
+        nods.put(n.CID, n);
     }
 
 
     static public int isReg(String CID)
     {
-        if (First == null)
-        {
-            return 0;
-        }
-        Nod temp = First;
-        while (temp != null)
-        {
-            if (temp.CID.equals(CID))
-            {
-                if (temp.key)
-                {
-                    return 2;
-                }
-                else
-                {
-                    return 1;
-                }
-            }
-            temp = temp.Next;
-        }
-        return 0;
+        return (nods.containsKey(CID) ? 1 : 0);
     }
 
 
@@ -139,49 +89,13 @@ public class AccountsConfig
 
     static public Nod getnod(String CID)
     {
-        if (First == null)
-        {
-            return null;
-        }
-        Nod temp = First;
-        while (temp != null)
-        {
-            if (temp.CID.equals(CID))
-            {
-                return temp;
-            }
-            temp = temp.Next;
-        }
-        return null;
+        return nods.get(CID);
     }
 
 
     static public boolean unreg(String CID)
     {
-        if (First == null)
-        {
-            return false;
-        }
-        Nod temp = First;
-        if (First.CID.equals(CID))
-        {
-
-            First = First.Next;
-            temp.Next = null;
-            return true;
-        }
-
-        while (temp.Next != null && !temp.Next.CID.equals(CID))
-        {
-            temp = temp.Next;
-        }
-        if (temp.Next == null)
-        {
-            return false;
-        }
-        temp.Next = temp.Next.Next;
-        reg_count--;
-        return true;
+        return (nods.remove(CID) != null);
     }
 
 

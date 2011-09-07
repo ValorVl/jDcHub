@@ -61,13 +61,13 @@ public class ClientAssasin extends Thread
                 }
                 catch (InterruptedException ex)
                 {
-
                 }
                 continue;
             }
 
             for (Client client : SessionManager.getUsers())
             {
+                ClientHandler clientHandler = client.getClientHandler();
 
                 long currentTime = System.currentTimeMillis();
 
@@ -84,37 +84,37 @@ public class ClientAssasin extends Thread
                 }
                 */
 
-                if (((client.handler.kicked != 1)
-                     && (client.handler.InQueueSearch != null))
-                    && (client.handler.userok == 1))
+                if (((clientHandler.kicked != 1)
+                     && (clientHandler.InQueueSearch != null))
+                    && (clientHandler.userok == 1))
                 {
 
                     double xy = 1;
-                    for (int i = 0; i < client.handler.search_step; i++)
+                    for (int i = 0; i < clientHandler.search_step; i++)
                     {
                         xy *= ((double) Vars.search_log_base) / 1000;
                     }
                     xy *= 1000;
                     long xx = (long) xy;
-                    if (client.handler.search_step >= Vars.search_steps)
+                    if (clientHandler.search_step >= Vars.search_steps)
                     {
                         xx = Vars.search_spam_reset * 1000;
                     }
                     // System.out.println(xx);
-                    if ((currentTime - client.handler.Lastsearch) > xx)
+                    if ((currentTime - clientHandler.Lastsearch) > xx)
                     {
 
-                        if (client.handler.InQueueSearch.startsWith("B"))
+                        if (clientHandler.InQueueSearch.startsWith("B"))
                         {
-                            Broadcast.getInstance().broadcast(client.handler.InQueueSearch);
+                            Broadcast.getInstance().broadcast(clientHandler.InQueueSearch);
                         }
                         else
                         {
                             Broadcast.getInstance()
-                                     .broadcast(client.handler.InQueueSearch, Broadcast.STATE_ACTIVE);
+                                     .broadcast(clientHandler.InQueueSearch, Broadcast.STATE_ACTIVE);
                         }
-                        client.handler.InQueueSearch = null;
-                        client.handler.Lastsearch = currentTime;
+                        clientHandler.InQueueSearch = null;
+                        clientHandler.Lastsearch = currentTime;
                     }
 
                 }

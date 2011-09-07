@@ -56,9 +56,9 @@ import java.util.*;
 
 public class Command
 {
-    ClientHandler currentClient;
-    String        Issued_Command;
-    String        State;
+    Client currentClient;
+    String command;
+    String state;
 
 
     private void sendUsersInfs()
@@ -190,15 +190,15 @@ public class Command
             throws CommandException, STAException
     {
 
-        if (Issued_Command.length() < 10)
+        if (command.length() < 10)
         {
             new STAError(currentClient,
                          100 + Constants.STA_GENERIC_PROTOCOL_ERROR,
                          "Incorrect protocol command");
             return;
         }
-        Issued_Command = Issued_Command.substring(4);
-        StringTokenizer tok = new StringTokenizer(Issued_Command);
+        command = command.substring(4);
+        StringTokenizer tok = new StringTokenizer(command);
 
         String cur_inf = "BINF " + currentClient.SessionID;
 
@@ -212,7 +212,7 @@ public class Command
         }
 
         // handler.cur_inf="BINF ADDD EMtest NIbla";
-        //Issued_Command="ADDD NImu DEblah";
+        //command="ADDD NImu DEblah";
         //     synchronized(handler.cur_inf)
         //      {
         //    if(handler.cur_inf!=null)
@@ -222,22 +222,22 @@ public class Command
         //    while(inftok.hasMoreTokens())
         //    {
         //         String y=inftok.nextToken();
-        //         if(Issued_Command.contains(y.substring(0,2)))
+        //         if(command.contains(y.substring(0,2)))
         //        {
         //            handler.cur_inf=handler.cur_inf.substring(0,handler.cur_inf.indexOf(y))+handler.cur_inf.substring(handler.cur_inf.indexOf(y)+y.length());
         //           // inftok=new StringTokenizer(handler.cur_inf);
         //      }
 
         //   }
-        //   Issued_Command+=handler.cur_inf.substring(9);
+        //   command+=handler.cur_inf.substring(9);
         //   }
-        tok = new StringTokenizer(Issued_Command);
+        tok = new StringTokenizer(command);
         tok.nextToken();
         //    }
-        //   if(Issued_Command.endsWith(" "))
-        //         Issued_Command=Issued_Command.substring(0,Issued_Command.length()-1);
+        //   if(command.endsWith(" "))
+        //         command=command.substring(0,command.length()-1);
 
-        // System.out.println(Issued_Command);
+        // System.out.println(command);
         while (tok.hasMoreElements())
         {
 
@@ -248,7 +248,7 @@ public class Command
             if (aux.startsWith("ID"))//meaning we have the ID thingy
             {
 
-                if (!State.equals("PROTOCOL"))
+                if (!state.equals("PROTOCOL"))
                 {
                     new STAError(currentClient, 100, "Can't change CID while connected.");
                     return;
@@ -270,7 +270,7 @@ public class Command
                 }
                 currentClient.NI = aux.substring(2);
 
-                if (!State.equals("PROTOCOL"))
+                if (!state.equals("PROTOCOL"))
                 {
                     if (currentClient.reg.isreg)
                     {
@@ -284,7 +284,7 @@ public class Command
             {
 
 
-                if (!State.equals("PROTOCOL"))
+                if (!state.equals("PROTOCOL"))
                 {
                     new STAError(currentClient, 100, "Can't change PID while connected.");
                     return;
@@ -387,7 +387,7 @@ public class Command
             {
                 currentClient.HN = aux.substring(2);
 
-                if (State.equals("NORMAL"))
+                if (state.equals("NORMAL"))
                 {
                     cur_inf = cur_inf + " HN" + currentClient.HN;
                 }
@@ -450,7 +450,7 @@ public class Command
 
 
         }
-        if (State.equals("PROTOCOL"))
+        if (state.equals("PROTOCOL"))
         {
             if (currentClient.ID == null)
             {
@@ -606,7 +606,7 @@ public class Command
                         return;
                     }
                 }
-                /* if(State.equals ("PROTOCOL"))
+                /* if(state.equals ("PROTOCOL"))
                 if(SessionManager.Users.containsKey(handler.ID) || temp.handler.ID.equals(handler.ID))//&& temp.handler.CIDsecure)
                 {
                     new STAError(handler,200+Constants.STA_CID_TAKEN,"CID taken. Please go to Settings and pick new PID.");
@@ -623,14 +623,14 @@ public class Command
 
         if (AccountsConfig.nickReserved(currentClient.NI, currentClient.ID))
         {
-            int x = (State.equals("PROTOCOL")) ? 200 : 100;
+            int x = (state.equals("PROTOCOL")) ? 200 : 100;
             new STAError(currentClient,
                          x + Constants.STA_NICK_TAKEN,
                          "Nick reserved. Please choose another.");
             return;
         }
         // now must check if hub is full...
-        if (State.equals("PROTOCOL")) //otherwise is already connected, no point in checking this
+        if (state.equals("PROTOCOL")) //otherwise is already connected, no point in checking this
         {
             /** must check the hideme var*/
             if (currentClient.reg.HideMe)
@@ -661,7 +661,7 @@ public class Command
                 if (!ValidateField(currentClient.EM))
                 {
                     new STAError(currentClient,
-                                 State.equals("PROTOCOL") ? 200 : 100,
+                                 state.equals("PROTOCOL") ? 200 : 100,
                                  "E-mail contains forbidden words.");
                     return;
                 }
@@ -674,7 +674,7 @@ public class Command
                 if (!ValidateField(currentClient.DE))
                 {
                     new STAError(currentClient,
-                                 State.equals("PROTOCOL") ? 200 : 100,
+                                 state.equals("PROTOCOL") ? 200 : 100,
                                  "Description contains forbidden words");
                     return;
                 }
@@ -901,7 +901,7 @@ public class Command
             return;
         }
 
-        if (State.equals("PROTOCOL"))
+        if (state.equals("PROTOCOL"))
 
         {
             try
@@ -969,7 +969,7 @@ public class Command
         }
         /*------------ok now must see if the pid is registered...---------------*/
 
-        if (State.equals("PROTOCOL"))
+        if (state.equals("PROTOCOL"))
         {
             if (currentClient.reg.isreg)
             {
@@ -1038,7 +1038,7 @@ public class Command
 
 
         //ok now must send to handler client the inf of all others
-        if (State.equals("PROTOCOL"))
+        if (state.equals("PROTOCOL"))
         {
             //ok now must send to handler the inf of all others
 
@@ -1106,7 +1106,7 @@ public class Command
             return;
         }
 
-        //  if(State.equals ("NORMAL"))
+        //  if(state.equals ("NORMAL"))
         //  {
         //      if(System.currentTimeMillis()-handler.LastINF>(1000*120L))
         //      {
@@ -1130,7 +1130,7 @@ public class Command
     {
 
 
-        if (Issued_Command.length() < 4)
+        if (command.length() < 4)
         {
             new STAError(currentClient,
                          100 + Constants.STA_GENERIC_PROTOCOL_ERROR,
@@ -1138,28 +1138,28 @@ public class Command
         }
         /*******************************INF COMMAND *****************************************/
 
-        if (Issued_Command.substring(1).startsWith("INF"))
+        if (command.substring(1).startsWith("INF"))
         {
 
-            if (State.equals("IDENTIFY") || State.equals("VERIFY"))
+            if (state.equals("IDENTIFY") || state.equals("VERIFY"))
             {
                 new STAError(currentClient,
                              200 + Constants.STA_INVALID_STATE,
-                             "INF Invalid State.",
+                             "INF Invalid state.",
                              "FC",
-                             Issued_Command.substring(0, 4));
+                             command.substring(0, 4));
                 return;
             }
 
 
-            if (Issued_Command.charAt(0) != 'B')
+            if (command.charAt(0) != 'B')
             {
                 new STAError(currentClient, 100, "INF Invalid Context.");
                 return;
             }
             if (!currentClient.reg.overridespam)
             {
-                switch (Issued_Command.charAt(0))
+                switch (command.charAt(0))
                 {
                     case 'B':
                         if (Vars.BINF != 1)
@@ -1205,14 +1205,14 @@ public class Command
         }
 
         /************************PAS COMMAND****************************/
-        if (Issued_Command.charAt(1) == 'P' &&
-            Issued_Command.charAt(2) == 'A' &&
-            Issued_Command.charAt(3) == 'S')
+        if (command.charAt(1) == 'P' &&
+            command.charAt(2) == 'A' &&
+            command.charAt(3) == 'S')
         {
 
             if (!currentClient.reg.overridespam)
             {
-                switch (Issued_Command.charAt(0))
+                switch (command.charAt(0))
                 {
                     case 'B':
                         if (Vars.BPAS != 1)
@@ -1262,9 +1262,9 @@ public class Command
                 new STAError(currentClient, 100, "Not registered.");
                 return;
             }
-            if (Issued_Command.charAt(0) != 'H')
+            if (command.charAt(0) != 'H')
             {
-                if (State.equals("NORMAL"))
+                if (state.equals("NORMAL"))
                 {
                     throw new CommandException("FAIL state:PROTOCOL reason:NOT BASE CLIENT");
                 }
@@ -1310,7 +1310,7 @@ public class Command
             {
                 System.out.println(e);
             }
-            if (realpas.equals(Issued_Command.substring(5)))
+            if (realpas.equals(command.substring(5)))
             {
                 currentClient.sendToClient("IMSG Authenticated.");
 
@@ -1333,53 +1333,53 @@ public class Command
                 return;
             }
 
-            //System.out.println (Issued_Command);
+            //System.out.println (command);
             completeLogIn();
         }
 
         /**********************SUP COMMAND******************************/
-        if (Issued_Command.charAt(1) == 'S' &&
-            Issued_Command.charAt(2) == 'U' &&
-            Issued_Command.charAt(3) == 'P')
+        if (command.charAt(1) == 'S' &&
+            command.charAt(2) == 'U' &&
+            command.charAt(3) == 'P')
         {
-            new SUP(currentClient, State, Issued_Command);
+            new SUP(currentClient, state, command);
 
         }
 
 
         /********************************MSG COMMAND************************************/
-        if (Issued_Command.charAt(1) == 'M' &&
-            Issued_Command.charAt(2) == 'S' &&
-            Issued_Command.charAt(3) == 'G')
+        if (command.charAt(1) == 'M' &&
+            command.charAt(2) == 'S' &&
+            command.charAt(3) == 'G')
         {
-            new MSG(currentClient, State, Issued_Command);
+            new MSG(currentClient, state, command);
         }
 
 
-        if (Issued_Command.charAt(1) == 'S' &&
-            Issued_Command.charAt(2) == 'C' &&
-            Issued_Command.charAt(3) == 'H')
+        if (command.charAt(1) == 'S' &&
+            command.charAt(2) == 'C' &&
+            command.charAt(3) == 'H')
         {
-            new SCH(currentClient, Issued_Command, State);
+            new SCH(currentClient, command, state);
         }
-        if (Issued_Command.charAt(1) == 'S' &&
-            Issued_Command.charAt(2) == 'T' &&
-            Issued_Command.charAt(3) == 'A')
+        if (command.charAt(1) == 'S' &&
+            command.charAt(2) == 'T' &&
+            command.charAt(3) == 'A')
         {
-            new STA(currentClient, Issued_Command, State);
+            new STA(currentClient, command, state);
         }
-        if (Issued_Command.substring(1)
+        if (command.substring(1)
                           .startsWith("RES ")) //direct search result, only active to passive must send this
         {
-            new RES(currentClient, State, Issued_Command);
+            new RES(currentClient, state, command);
         }
-        else if (Issued_Command.substring(1).startsWith("CTM ")) //direct connect to me
+        else if (command.substring(1).startsWith("CTM ")) //direct connect to me
         {
-            new CTM(currentClient, State, Issued_Command);
+            new CTM(currentClient, state, command);
         }
-        else if (Issued_Command.substring(1).startsWith("RCM ")) //reverse connect to me
+        else if (command.substring(1).startsWith("RCM ")) //reverse connect to me
         {
-            new RCM(currentClient, State, Issued_Command);
+            new RCM(currentClient, state, command);
         }
 
 
@@ -1387,7 +1387,7 @@ public class Command
 
         for (Module myMod : Modulator.myModules)
         {
-            myMod.onRawCommand(currentClient, Issued_Command);
+            myMod.onRawCommand(currentClient, command);
         }
     }
 
@@ -1396,7 +1396,7 @@ public class Command
      * Creates a new instance of Command with following params
      * CH of type ClientHandler identifies tha client to handle
      * Issued_command of String type actually identifies the given command
-     * state also of type String Identifies tha State in which tha connection is,
+     * state also of type String Identifies tha state in which tha connection is,
      * meaning [ accordingly to arne's draft]:
      * PROTOCOL (feature support discovery), IDENTIFY (user identification, static checks),
      * VERIFY (password check), NORMAL (normal operation) and DATA (for binary transfers).
@@ -1419,8 +1419,8 @@ public class Command
         }
 
 
-        Issued_Command = Issued_command;
-        State = currentClient.State;
+        command = Issued_command;
+        state = currentClient.State;
         HandleIssuedCommand();
         // if(handler.NI.contains("Pietr"))
         //    new STAError(handler,201,"exception test bla.");

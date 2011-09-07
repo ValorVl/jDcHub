@@ -1839,7 +1839,7 @@ public class Main extends Thread
                     int i = 0, j = 0;
                     for (Client temp : SessionManager.getUsers())
                     {
-                        if (temp.handler.userok == 1)
+                        if (temp.getClientHandler().userok == 1)
                         {
                             i++;
                         }
@@ -1878,8 +1878,7 @@ public class Main extends Thread
                             Proppies.getProperty("java.vm.specification.version"),
                             myRun.availableProcessors(),
                             Long.toString(myRun.maxMemory()),
-                            Long.toString(myRun.freeMemory())
-                            ,
+                            Long.toString(myRun.freeMemory()),
                             i,
                             j,
                             TimeConv.getStrTime(up)

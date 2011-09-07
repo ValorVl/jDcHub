@@ -55,8 +55,7 @@ public class SessionManager extends org.apache.mina.core.service.IoHandlerAdapte
 
     static
     {
-        Users = new ConcurrentHashMap<String, Client>(3000,
-                                                         (float) 0.75);
+        Users = new ConcurrentHashMap<String, Client>(3000, (float) 0.75);
     }
 
 
@@ -117,7 +116,7 @@ public class SessionManager extends org.apache.mina.core.service.IoHandlerAdapte
             }
             if ((t.getMessage().contains("BufferDataException: Line is too long")))
             {
-                new STAError((ClientHandler) (session.getAttribute("")), 100,
+                new STAError((Client) (session.getAttribute("")), 100,
                              "Message exceeds buffer." + t.getMessage());
             }
             else
@@ -138,7 +137,6 @@ public class SessionManager extends org.apache.mina.core.service.IoHandlerAdapte
     {
         String str = msg.toString();
 
-        //System.out.println("Message received... "+str);
         try
         {
             new Command((ClientHandler) (session.getAttribute("")), str);
@@ -149,25 +147,10 @@ public class SessionManager extends org.apache.mina.core.service.IoHandlerAdapte
             {
                 return;
             }
-            /* ClientHandler handler=(ClientHandler)(session.getAttachment());
-                 if(handler.userok==1)
-                {
-                     new Broadcast("IQUI "+handler.SessionID,handler.myNod);
-                 }
-                handler.myNod.killMe();*/
-            //  System.out.println("sta exception");
             session.close(false);
-            //Disconnect(session);
         }
         catch (CommandException cfex)
         {
-            /* ClientHandler handler=(ClientHandler)(session.getAttachment());
-                 if(handler.userok==1)
-                 {
-                      new Broadcast("IQUI "+handler.SessionID,handler.myNod);
-                 }
-                 handler.myNod.killMe();*/
-
             session.close(false);
         }
 
@@ -179,10 +162,6 @@ public class SessionManager extends org.apache.mina.core.service.IoHandlerAdapte
     {
         //ok, we're in idle
         ClientHandler cur_client = (ClientHandler) (session.getAttribute(""));
-        // WriteFuture future=session.write("");
-        //  future.addListener(handler.myNod );
-
-        //handler.sendToClient("");
     }
 
 
@@ -192,19 +171,10 @@ public class SessionManager extends org.apache.mina.core.service.IoHandlerAdapte
         Client currentClient = (Client) (session.getAttribute(""));
         ClientHandler currentClientHandler = currentClient.getClientHandler();
 
-        //  System.out.printf("quitting via session closed nick =%s\n",handler.NI);
-
-        /*synchronized(FirstClient)
-          {
-          this.PrevClient.NextClient=this.NextClient;
-          if(this.NextClient!=null)
-             this.NextClient.PrevClient=this.PrevClient;
-          // System.out.println("killed");
-          }*/
-
         if (currentClientHandler.userok == 1 && currentClientHandler.kicked != 1)
         {
-            Broadcast.getInstance().broadcast("IQUI " + currentClientHandler.SessionID, currentClient);
+            // TODO COMMAND broadcast client quited message
+            //Broadcast.getInstance().broadcast("IQUI " + currentClientHandler.SessionID, currentClient);
         }
         /** calling plugins...*/
 
@@ -229,18 +199,10 @@ public class SessionManager extends org.apache.mina.core.service.IoHandlerAdapte
     public void sessionOpened(IoSession session)
             throws Exception
     {
-        //System.out.println("Client Connected...");
-
-        //if( session.getTransportType() == TransportType.SOCKET )
-        //	((SocketSessionConfig) session.getConfig() ).setReceiveBufferSize( 2048 );
-        //((SocketSessionConfig) session.getConfig() ).
-        //   session.
-
         Client currentClient = (Client) HubServer.AddClient();
         ClientHandler currentClientHandler = (ClientHandler) currentClient.getClientHandler();
 
         session.setAttribute("", currentClient);
-        //session.setIdleTime(IdleStatus.READER_IDLE, 120);
 
         currentClientHandler.mySession = session;
         StringTokenizer ST = new StringTokenizer(currentClientHandler.mySession

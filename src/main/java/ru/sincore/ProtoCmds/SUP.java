@@ -23,6 +23,7 @@
 
 package ru.sincore.ProtoCmds;
 
+import ru.sincore.Client;
 import ru.sincore.Exceptions.CommandException;
 import ru.sincore.Exceptions.STAException;
 import ru.sincore.conf.Vars;
@@ -45,9 +46,10 @@ public class SUP
     /**
      * Creates a new instance of SUP
      */
-    public SUP(ClientHandler cur_client, String State, String Issued_Command)
+    public SUP(Client client, String State, String Issued_Command)
             throws STAException, CommandException
     {
+        ClientHandler cur_client = client.getClientHandler();
         if (!cur_client.reg.overridespam)
         {
             switch (Issued_Command.charAt(0))
@@ -55,35 +57,35 @@ public class SUP
                 case 'B':
                     if (Vars.BSUP != 1)
                     {
-                        new STAError(cur_client, 100, "SUP Invalid Context B");
+                        new STAError(client, 100, "SUP Invalid Context B");
                         return;
                     }
                     break;
                 case 'E':
                     if (Vars.ESUP != 1)
                     {
-                        new STAError(cur_client, 100, "SUP Invalid Context E");
+                        new STAError(client, 100, "SUP Invalid Context E");
                         return;
                     }
                     break;
                 case 'D':
                     if (Vars.DSUP != 1)
                     {
-                        new STAError(cur_client, 100, "SUP Invalid Context D");
+                        new STAError(client, 100, "SUP Invalid Context D");
                         return;
                     }
                     break;
                 case 'F':
                     if (Vars.FSUP != 1)
                     {
-                        new STAError(cur_client, 100, "SUP Invalid Context F");
+                        new STAError(client, 100, "SUP Invalid Context F");
                         return;
                     }
                     break;
                 case 'H':
                     if (Vars.HSUP != 1)
                     {
-                        new STAError(cur_client, 100, "SUP Invalid Context H");
+                        new STAError(client, 100, "SUP Invalid Context H");
                         return;
                     }
 
@@ -100,7 +102,7 @@ public class SUP
         }
         if (State.equals("VERIFY") || State.equals("IDENTIFY"))
         {
-            new STAError(cur_client, 200 + Constants.STA_INVALID_STATE, "SUP Invalid State.");
+            new STAError(client, 200 + Constants.STA_INVALID_STATE, "SUP Invalid State.");
             return;
         }
         Issued_Command = Issued_Command.substring(4);
@@ -108,8 +110,20 @@ public class SUP
         while (tok.hasMoreTokens())
         {
             String aux = tok.nextToken();
+            boolean enable;
             if (aux.startsWith("AD"))
             {
+                enable = true;
+            }
+            else if (aux.startsWith("RM"))
+            {
+                enable = false;
+            }
+            else
+            {
+                new STAError(client, 100, "Unknown SUP token (not an \'AD\' or \'RM\').");
+            }
+
                 aux = aux.substring(2);
                 if (aux.equals("BAS0"))
                 {
@@ -132,9 +146,9 @@ public class SUP
                 {
                     cur_client.tigr = true;
                 }
-            }
-            else if (aux.startsWith("RM"))
-            {
+
+
+
                 aux = aux.substring(2);
                 if (aux.startsWith("UCM") && aux.length() == 4)
                 {
@@ -156,7 +170,6 @@ public class SUP
                 {
                     cur_client.tigr = false;
                 }
-            }
         }
         if (cur_client.bas0)
         {
@@ -170,7 +183,7 @@ public class SUP
              else
                 handler. sendToClient("IINF CT32 VE"+ADC.retADCStr (Vars.HubVersion)+" NI"+ADC.retADCStr(Vars.HubName)+ " DE"+ADC.retADCStr(Vars.HubDE));
             */
-            new STAError(cur_client,
+            new STAError(client,
                          100 + Constants.STA_GENERIC_PROTOCOL_ERROR,
                          "Your client uses a very old ADC version. Please update in order to connect to this hub. You can get a new version usually by visiting the developer's webpage from Help/About menu.");
         }
@@ -183,7 +196,7 @@ public class SUP
             }
             else if (State.equals("NORMAL"))
             {
-                new STAError(cur_client,
+                new STAError(client,
                              200 + Constants.STA_GENERIC_PROTOCOL_ERROR,
                              "You removed BASE features therefore you can't stay on hub anymore.");
                 return;
@@ -192,7 +205,7 @@ public class SUP
 
         if (!cur_client.tigr)
         {
-            new STAError(cur_client,
+            new STAError(client,
                          100 + Constants.STA_NO_HASH_OVERLAP,
                          "Cannot find any compatible hash function to use. Defaulting to TIGER.");
         }
