@@ -28,7 +28,6 @@ import ru.sincore.banning.BanList;
 import ru.sincore.cmd.GrantCmd;
 import ru.sincore.cmd.PortCmd;
 import ru.sincore.conf.Vars;
-import ru.sincore.i18n.Translation;
 import ru.sincore.python.*;
 import ru.sincore.util.ADC;
 import ru.sincore.util.HostTester;
@@ -323,9 +322,9 @@ public class Main extends Thread
                             clientHandler.reg.LastIP = clientHandler.RealIP;
                             clientHandler.LoggedAt = System.currentTimeMillis();
                             log.info(Translation.getNotCid(aux) +
-                                     "\n" +
-                                     Translation.getUserRegged(clientHandler.NI,
-                                                               clientHandler.ID));
+											 "\n" +
+											 Translation.getUserRegged(clientHandler.NI,
+																	   clientHandler.ID));
 
                             Main.Server.rewriteregs();
                             return;
@@ -385,8 +384,8 @@ public class Main extends Thread
                         clientHandler.reg.isreg = true;
                         clientHandler.reg.LastIP = clientHandler.RealIP;
                         log.info(Translation.getNotCid(aux) +
-                               "\n" +
-                               Translation.getUserRegged(clientHandler.NI, clientHandler.ID));
+										 "\n" +
+										 Translation.getUserRegged(clientHandler.NI, clientHandler.ID));
 
                         Main.Server.rewriteregs();
                         return;
@@ -460,9 +459,9 @@ public class Main extends Thread
 
 
         log.info(Translation.getString("gpl1") + "\r\n" +
-               Translation.getString("gpl2") + "\r\n" +
-               Translation.getString("gpl3") + "\r\n" +
-               Translation.getString("gpl4"));
+						 Translation.getString("gpl2") + "\r\n" +
+						 Translation.getString("gpl3") + "\r\n" +
+						 Translation.getString("gpl4"));
 
         Proppies = System.getProperties();
 

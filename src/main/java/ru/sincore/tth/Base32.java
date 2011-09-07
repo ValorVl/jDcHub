@@ -91,7 +91,9 @@ public class Base32
      * Decode a Base32 string into an array of binary bytes. May fail if the
      * parameter is a non canonical Base32 string (the only other possible
      * exception is that the returned array cannot be allocated in memory)
-     */
+	 * @param base32
+	 * @return
+	 */
     static public byte[] decode(final String base32)
             throws IllegalArgumentException
     {

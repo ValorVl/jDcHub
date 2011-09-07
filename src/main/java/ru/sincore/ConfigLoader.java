@@ -18,7 +18,7 @@ public class ConfigLoader
 	static
 	{
 		HUB_CONFIG = "./etc/hub.properties";
-		HUB_MESSAGES = "./etc/messages/messages.properties";
+		HUB_MESSAGES = "./etc/messages/servermessages.properties";
 	}
 
     /**
@@ -32,67 +32,14 @@ public class ConfigLoader
     public static String HUB_DESCRIPTION;
     public static String HUB_OWNER;
 
+	public static String HUB_MESSAGES_FILE_DIR;
+	public static String HUB_MESSAGES_LANG;
+
 	// Chat log settings
 
 	public static int    LAST_MESSAGES_COUNT;
 
-    /**
-     * ADC properties
-     */
 
-    public static int BMSG;
-    public static int DMSG;
-    public static int EMSG;
-    public static int FMSG;
-    public static int HMSG;
-
-    public static int BSTA;
-    public static int DSTA;
-    public static int ESTA;
-    public static int FSTA;
-    public static int HSTA;
-
-    public static int BCTM;
-    public static int DCTM;
-    public static int ECTM;
-    public static int FCTM;
-    public static int HCTM;
-
-    public static int BRCM;
-    public static int DRCM;
-    public static int ERCM;
-    public static int FRCM;
-    public static int HRCM;
-
-    public static int BINF;
-    public static int DINF;
-    public static int EINF;
-    public static int FINF;
-    public static int HINF;
-
-    public static int BSCH;
-    public static int DSCH;
-    public static int ESCH;
-    public static int FSCH;
-    public static int HSCH;
-
-    public static int BRES;
-    public static int DRES;
-    public static int ERES;
-    public static int FRES;
-    public static int HRES;
-
-    public static int BPAS;
-    public static int DPAS;
-    public static int EPAS;
-    public static int FPAS;
-    public static int HPAS;
-
-    public static int BSUP;
-    public static int DSUP;
-    public static int ESUP;
-    public static int FSUP;
-    public static int HSUP;
 
 
     public static void init()
@@ -150,6 +97,9 @@ public class ConfigLoader
             _log.info("=== Load hub properties >>>");
 
 			LAST_MESSAGES_COUNT									= Integer.parseInt(prop.getProperty("last.messages.count"),10);
+
+			HUB_MESSAGES_FILE_DIR								= prop.getProperty("core.client.messages.dir","./etc/clientmessages");
+			HUB_MESSAGES_LANG									= prop.getProperty("core.client.messages.lang","EN");
 
 		 	buffInput.close();
         }

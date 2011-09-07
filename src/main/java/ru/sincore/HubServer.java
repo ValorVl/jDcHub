@@ -60,7 +60,6 @@ import ru.sincore.banning.bans;
 import ru.sincore.conf.Port;
 import ru.sincore.conf.Variables;
 import ru.sincore.conf.Vars;
-import ru.sincore.i18n.Translation;
 import ru.sincore.util.ADC;
 
 
