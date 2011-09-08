@@ -41,22 +41,22 @@ public class RegConfig implements Serializable
 
     public RegConfig()
     {
-        nods = new Nod[100];
-        reg_count = AccountsConfig.reg_count;
-
-        if (AccountsConfig.First == null)
-        {
-            return;
-        }
-        Nod temp = AccountsConfig.First;
-        int i = 1;
-        while (temp != null)
-        {
-            //nods[reg_count]=new Nod();
-            nods[i] = temp;
-            i++;
-            temp = temp.Next;
-        }
+//        nods = new Nod[100];
+//        reg_count = AccountsConfig.reg_count;
+//
+//        if (AccountsConfig.First == null)
+//        {
+//            return;
+//        }
+//        Nod temp = AccountsConfig.First;
+//        int i = 1;
+//        while (temp != null)
+//        {
+//            //nods[reg_count]=new Nod();
+//            nods[i] = temp;
+//            i++;
+//            temp = temp.Next;
+//        }
 
 
     }

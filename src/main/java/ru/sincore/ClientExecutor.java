@@ -40,83 +40,84 @@ public class ClientExecutor extends Thread
     }
 
 
-    public void run()
-    {
-        while (!Main.Server.restart)
-        {
-            long start = System.currentTimeMillis();
-            if (SessionManager.Users.isEmpty())
-            {
-                try
-                {
-                    this.sleep(1000);
-                }
-                catch (InterruptedException ex)
-                {
-
-                }
-                continue;
-            }
-
-
-            for (Client temp : SessionManager.getUsers())
-            {
-                synchronized (temp.handler.Queue)
-                {
-                    if (temp.handler.Queue.First == null)
-                    {
-
-                        try
-                        {
-                            this.sleep(50);
-                        }
-                        catch (InterruptedException ex)
-                        {
-
-                        }
-                        continue;
-                    }
-                    String str = temp.handler.Queue.First.MSG + "\n";
-                    temp.handler.Queue.First = temp.handler.Queue.First.Next;
-                    while (temp.handler.Queue.First != null)
-                    {
-                        str += temp.handler.Queue.First.MSG + "\n";
-                        temp.handler.Queue.First = temp.handler.Queue.First.Next;
-                    }
-
-                    temp.handler.mySession.write(str.substring(0, str.length() - 1));
-
-                    try
-                    {
-                        this.sleep(50);
-                    }
-                    catch (InterruptedException ex)
-                    {
-
-                    }
-                }
-            }
-            /*long end=System.currentTimeMillis();
-    if(end-start>1000)
-    {
-         try
-            {
-                this.sleep(20);
-            } catch (InterruptedException ex)
-            {
-
-            }
-         continue;
-    }
-
-    try
-            {
-                this.sleep(1000-(end-start));
-            } catch (InterruptedException ex)
-            {
-
-            }*/
-        }
-    }
+//    public void run()
+//   {
+//        while (!Main.Server.restart)
+//        {
+//            long start = System.currentTimeMillis();
+//            if (SessionManager.Users.isEmpty())
+//            {
+//                try
+//                {
+//                    this.sleep(1000);
+//                }
+//                catch (InterruptedException ex)
+//                {
+//
+//                }
+//                continue;
+//            }
+//
+//
+//            for (Client temp : SessionManager.getUsers())
+//            {
+//                synchronized (temp.getClientHandler().Queue)
+//                {
+//                    if (temp.getClientHandler().Queue.First == null)
+//                    {
+//
+//                        try
+//                        {
+//                            this.sleep(50);
+//                        }
+//                        catch (InterruptedException ex)
+//                        {
+//
+//                        }
+//                        continue;
+//                    }
+//                    String str = temp.getClientHandler().Queue.First.MSG + "\n";
+//                    temp.getClientHandler().Queue.First = temp.getClientHandler().Queue.First.Next;
+//                    while (temp.getClientHandler().Queue.First != null)
+//                    {
+//                        str += temp.getClientHandler().Queue.First.MSG + "\n";
+//                        temp.getClientHandler().Queue.First = temp.getClientHandler().Queue.First.Next;
+//                    }
+//
+//                    temp.handler.mySession.write(str.substring(0, str.length() - 1));
+//
+//                    try
+//                    {
+//                        this.sleep(50);
+//                    }
+//                    catch (InterruptedException ex)
+//                    {
+//
+//                    }
+//                }
+//            }
+//            /*long end=System.currentTimeMillis();
+//    if(end-start>1000)
+//    {
+//         try
+//            {
+//                this.sleep(20);
+//            } catch (InterruptedException ex)
+//            {
+//
+//            }
+//         continue;
+//    }
+//
+//    try
+//            {
+//                this.sleep(1000-(end-start));
+//            } catch (InterruptedException ex)
+//            {
+//
+//            }*/
+//        }
+//	/*
+ //   }
 
 }

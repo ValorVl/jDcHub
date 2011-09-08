@@ -23,18 +23,13 @@
 
 package ru.sincore.conf;
 
+import ru.sincore.*;
+import ru.sincore.util.ADC;
+import ru.sincore.util.HostTester;
+
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.StringTokenizer;
-
-import ru.sincore.Broadcast;
-import ru.sincore.ClientHandler;
-import ru.sincore.Client;
-import ru.sincore.HubServer;
-import ru.sincore.Main;
-import ru.sincore.util.ADC;
-import ru.sincore.util.HostTester;
-import ru.sincore.SessionManager;
 
 /**
  * The main hub configuration utility, is called when via command or tty a configuration wants changed.
@@ -484,8 +479,8 @@ public class CFGConfig
 
                 for (Client tempy : SessionManager.getUsers())
                 {
-                    if ((tempy.handler.userok == 1)
-                        && ((tempy.handler.NI.toLowerCase()
+                    if ((tempy.getClientHandler().userok == 1)
+                        && ((tempy.getClientHandler().NI.toLowerCase()
                                                 .equals(new_name.toLowerCase()))))
                     {
                         cur_client
@@ -519,8 +514,8 @@ public class CFGConfig
 
                 for (Client tempy : SessionManager.getUsers())
                 {
-                    if ((tempy.handler.userok == 1)
-                        && ((tempy.handler.NI.toLowerCase()
+                    if ((tempy.getClientHandler().userok == 1)
+                        && ((tempy.getClientHandler().NI.toLowerCase()
                                                 .equals(new_name.toLowerCase()))))
                     {
                         cur_client

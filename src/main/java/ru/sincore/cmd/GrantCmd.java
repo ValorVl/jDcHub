@@ -21,11 +21,10 @@
 
 package ru.sincore.cmd;
 
-import java.util.StringTokenizer;
-
 import ru.sincore.*;
 import ru.sincore.util.ADC;
-import ru.sincore.SessionManager;
+
+import java.util.StringTokenizer;
 
 /**
  * The grant command, that is called either via client , either via tty.
@@ -68,11 +67,11 @@ public class GrantCmd
 
             for (Client tempp : SessionManager.getUsers())
             {
-                if (tempp.handler.userok == 1)
+                if (tempp.getClientHandler().userok == 1)
                 {
-                    if (tempp.handler.NI.equalsIgnoreCase(who) && tempp.handler.reg.isreg)
+                    if (tempp.getClientHandler().NI.equalsIgnoreCase(who) && tempp.getClientHandler().reg.isreg)
                     {
-                        modnod = AccountsConfig.getnod(tempp.handler.ID);
+                        modnod = AccountsConfig.getnod(tempp.getClientHandler().ID);
                         ok = true;
                         temp = tempp;
                     }
@@ -581,18 +580,18 @@ public class GrantCmd
 
                         for (Client tempx : SessionManager.getUsers())
                         {
-                            if (tempx.handler.userok == 1)
+                            if (tempx.getClientHandler().userok == 1)
                             {
-                                if (tempx.handler
+                                if (tempx.getClientHandler()
                                         .ID
                                         .equals(modnod.CID)) //if registered guy is online
                                 {
                                     Broadcast.getInstance()
                                              .broadcast("BINF " +
-                                                        tempx.handler.SessionID +
+                                                        tempx.getClientHandler().SessionID +
                                                         " CT4");
 
-                                    tempx.handler.CT = "4";
+                                    tempx.getClientHandler().CT = "4";
                                 }
                             }
 
@@ -609,18 +608,18 @@ public class GrantCmd
 
                         for (Client tempx : SessionManager.getUsers())
                         {
-                            if (tempx.handler.userok == 1)
+                            if (tempx.getClientHandler().userok == 1)
                             {
-                                if (tempx.handler
+                                if (tempx.getClientHandler()
                                         .ID
                                         .equals(modnod.CID)) //if registered guy is online
                                 {
                                     Broadcast.getInstance()
                                              .broadcast("BINF " +
-                                                        temp.handler.SessionID +
+                                                        temp.getClientHandler().SessionID +
                                                         " CT2");
 
-                                    tempx.handler.CT = "2";
+                                    tempx.getClientHandler().CT = "2";
 
                                 }
                             }
@@ -682,11 +681,11 @@ public class GrantCmd
 
                     for (Client tempx : SessionManager.getUsers())
                     {
-                        if (tempx.handler.userok == 1)
+                        if (tempx.getClientHandler().userok == 1)
                         {
-                            if (tempx.handler.ID.equals(modnod.CID))//if registered guy is online
+                            if (tempx.getClientHandler().ID.equals(modnod.CID))//if registered guy is online
                             {
-                                tempx.handler.putOpchat(true);
+                                tempx.getClientHandler().putOpchat(true);
                             }
                         }
                     }
@@ -699,11 +698,11 @@ public class GrantCmd
 
                     for (Client tempx : SessionManager.getUsers())
                     {
-                        if (tempx.handler.userok == 1)
+                        if (tempx.getClientHandler().userok == 1)
                         {
-                            if (tempx.handler.ID.equals(modnod.CID))//if registered guy is online
+                            if (tempx.getClientHandler().ID.equals(modnod.CID))//if registered guy is online
                             {
-                                tempx.handler.putOpchat(false);
+                                tempx.getClientHandler().putOpchat(false);
                             }
                         }
 
@@ -787,10 +786,10 @@ public class GrantCmd
         cur_client.sendFromBot(toSend + "Done.");
         if (temp != null)
         {
-            if (temp.handler.NI.equalsIgnoreCase(who)
-                || temp.handler.ID.equals(who))
+            if (temp.getClientHandler().NI.equalsIgnoreCase(who)
+                || temp.getClientHandler().ID.equals(who))
             {
-                temp.handler.sendFromBotPM(UpdatedInfo);
+                temp.getClientHandler().sendFromBotPM(UpdatedInfo);
             }
         }
 
@@ -827,11 +826,11 @@ public class GrantCmd
             boolean ok = false;
             for (Client tempp : SessionManager.getUsers())
             {
-                if (tempp.handler.userok == 1)
+                if (tempp.getClientHandler().userok == 1)
                 {
-                    if (tempp.handler.NI.equalsIgnoreCase(who))
+                    if (tempp.getClientHandler().NI.equalsIgnoreCase(who))
                     {
-                        modnod = AccountsConfig.getnod(tempp.handler.ID);
+                        modnod = AccountsConfig.getnod(tempp.getClientHandler().ID);
                         temp = tempp;
                         ok = true;
                         break;
@@ -1156,18 +1155,18 @@ public class GrantCmd
                         for (Client tempx : SessionManager.getUsers())
                         {
 
-                            if (tempx.handler.userok == 1)
+                            if (tempx.getClientHandler().userok == 1)
                             {
-                                if (tempx.handler
+                                if (tempx.getClientHandler()
                                         .ID
                                         .equals(modnod.CID))//if registered guy is online
                                 {
                                     Broadcast.getInstance()
                                              .broadcast("BINF " +
-                                                        tempx.handler.SessionID +
+                                                        tempx.getClientHandler().SessionID +
                                                         " CT4");
 
-                                    tempx.handler.CT = "4";
+                                    tempx.getClientHandler().CT = "4";
                                 }
                             }
                         }
@@ -1183,18 +1182,18 @@ public class GrantCmd
 
                         for (Client tempx : SessionManager.getUsers())
                         {
-                            if (tempx.handler.userok == 1)
+                            if (tempx.getClientHandler().userok == 1)
                             {
-                                if (tempx.handler
+                                if (tempx.getClientHandler()
                                         .ID
                                         .equals(modnod.CID))//if registered guy is online
                                 {
                                     Broadcast.getInstance()
                                              .broadcast("BINF " +
-                                                        temp.handler.SessionID +
+                                                        temp.getClientHandler().SessionID +
                                                         " CT2");
 
-                                    tempx.handler.CT = "2";
+                                    tempx.getClientHandler().CT = "2";
 
                                 }
                             }
@@ -1237,11 +1236,11 @@ public class GrantCmd
 
                     for (Client tempx : SessionManager.getUsers())
                     {
-                        if (tempx.handler.userok == 1)
+                        if (tempx.getClientHandler().userok == 1)
                         {
-                            if (tempx.handler.ID.equals(modnod.CID))//if registered guy is online
+                            if (tempx.getClientHandler().ID.equals(modnod.CID))//if registered guy is online
                             {
-                                tempx.handler.putOpchat(true);
+                                tempx.getClientHandler().putOpchat(true);
                             }
                         }
                     }
@@ -1254,11 +1253,11 @@ public class GrantCmd
 
                     for (Client tempx : SessionManager.getUsers())
                     {
-                        if (tempx.handler.userok == 1)
+                        if (tempx.getClientHandler().userok == 1)
                         {
-                            if (tempx.handler.ID.equals(modnod.CID))//if registered guy is online
+                            if (tempx.getClientHandler().ID.equals(modnod.CID))//if registered guy is online
                             {
-                                tempx.handler.putOpchat(false);
+                                tempx.getClientHandler().putOpchat(false);
                             }
                         }
 
@@ -1321,9 +1320,9 @@ public class GrantCmd
         System.out.println(toSend + "Done.");
         if (temp != null)
         {
-            if (temp.handler.NI.equalsIgnoreCase(who) || temp.handler.ID.equals(who))
+            if (temp.getClientHandler().NI.equalsIgnoreCase(who) || temp.getClientHandler().ID.equals(who))
             {
-                temp.handler
+                temp.getClientHandler()
                         .sendFromBotPM(toSend.replaceAll(what + " is unknown feature \\\\n", ""));
             }
         }

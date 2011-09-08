@@ -59,7 +59,7 @@ public class SID
             {
 
 
-                if (cursid.equals(temp.handler.sid))
+                if (cursid.equals(temp.getClientHandler().sid))
                 {
                     ok = 0;
                     continue;

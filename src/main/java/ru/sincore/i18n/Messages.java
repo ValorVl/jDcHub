@@ -28,8 +28,20 @@ public class Messages
 	public static String CLOSE_HUB;
 	public static String ACCOUNT_REGISTER;
 	public static String REGISTER_CID;
+	public static String NOT_CID;
+	public static String NO_USER;
+	public static String SERVER_STARTUP;
+	public static String SERVER_STARTUP_DONE;
+	public static String SEARCHING_IN_PROGRESS;
+	public static String CID_UNBANNED;
+	public static String CID_NOT_BANNED;
+	public static String USER_REGISTER;
+	public static String DONE;
+
 
 	//define client message var
+
+	public static String REG_MESSAGE;
 
 	//Empty constructor
 	Messages(){}

@@ -60,11 +60,11 @@ public class ExtInfo
             String Nicklist = "";
             for (Client temp : SessionManager.getUsers())
             {
-                if (temp.handler.userok == 1)
+                if (temp.getClientHandler().userok == 1)
                 {
-                    if ((temp.handler.RealIP.equals(aux.toLowerCase())))
+                    if ((temp.getClientHandler().RealIP.equals(aux.toLowerCase())))
                     {
-                        Nicklist = Nicklist + temp.handler.NI + "\n";
+                        Nicklist = Nicklist + temp.getClientHandler().NI + "\n";
                     }
                 }
 
@@ -95,14 +95,14 @@ public class ExtInfo
                     //ok if we are here, its a CID
                     for (Client temp : SessionManager.getUsers())
                     {
-                        if (temp.handler.userok == 1)
+                        if (temp.getClientHandler().userok == 1)
                         {
-                            if ((temp.handler.ID.equals(aux)))
+                            if ((temp.getClientHandler().ID.equals(aux)))
                             {
                                 cur_client.sendFromBot("CID " +
                                                        aux +
                                                        " is used by:\n" +
-                                                       temp.handler.NI);
+                                                       temp.getClientHandler().NI);
                                 return;
                             }
                         }
@@ -122,26 +122,26 @@ public class ExtInfo
 
             for (Client temp : SessionManager.getUsers())
             {
-                if (temp.handler.userok == 1)
+                if (temp.getClientHandler().userok == 1)
                 {
-                    if ((temp.handler.NI.toLowerCase().equals(aux.toLowerCase())))
+                    if ((temp.getClientHandler().NI.toLowerCase().equals(aux.toLowerCase())))
                     {
 
                         String blah11 = "User Info\nNick " +
-                                        ADC.retNormStr(temp.handler.NI) +
+                                        ADC.retNormStr(temp.getClientHandler().NI) +
                                         "\nCID " +
-                                        temp.handler.ID +
+                                        temp.getClientHandler().ID +
                                         "\nShare Size " +
-                                        temp.handler.SS +
+                                        temp.getClientHandler().SS +
                                         " Bytes\n" +
                                         "Description " +
-                                        (temp.handler.DE != null ?
-                                         ADC.retNormStr(temp.handler.DE) :
+                                        (temp.getClientHandler().DE != null ?
+                                         ADC.retNormStr(temp.getClientHandler().DE) :
                                          "") +
                                         "\nTag ";
 
-                        String Tag = "<" + ADC.retNormStr(temp.handler.VE) + ",M:";
-                        if (temp.handler.ACTIVE == 1)
+                        String Tag = "<" + ADC.retNormStr(temp.getClientHandler().VE) + ",M:";
+                        if (temp.getClientHandler().ACTIVE == 1)
                         {
                             Tag = Tag + "A";
                         }
@@ -149,18 +149,18 @@ public class ExtInfo
                         {
                             Tag = Tag + "P";
                         }
-                        Tag = Tag + ",H:" + temp.handler.HN + "/";
-                        if (temp.handler.HR != null)
+                        Tag = Tag + ",H:" + temp.getClientHandler().HN + "/";
+                        if (temp.getClientHandler().HR != null)
                         {
-                            Tag = Tag + temp.handler.HR + "/";
+                            Tag = Tag + temp.getClientHandler().HR + "/";
                         }
                         else
                         {
                             Tag = Tag + "?";
                         }
-                        if (temp.handler.HO != null)
+                        if (temp.getClientHandler().HO != null)
                         {
-                            Tag = Tag + temp.handler.HO;
+                            Tag = Tag + temp.getClientHandler().HO;
                         }
                         else
                         {
@@ -168,10 +168,10 @@ public class ExtInfo
                         }
 
                         Tag = Tag + ",S:";
-                        if (temp.handler.SL != null)
+                        if (temp.getClientHandler().SL != null)
 
                         {
-                            Tag = Tag + temp.handler.SL + ">";
+                            Tag = Tag + temp.getClientHandler().SL + ">";
                         }
                         else
                         {
@@ -179,15 +179,15 @@ public class ExtInfo
                         }
                         blah11 = blah11 + Tag + "\nSupports "
                                  +
-                                 ((temp.handler.SU != null) ?
-                                  temp.handler.SU :
+                                 ((temp.getClientHandler().SU != null) ?
+                                  temp.getClientHandler().SU :
                                   "nothing special") +
                                  "\nIp address " +
-                                 temp.handler.RealIP;
-                        if (temp.handler.reg.isreg)
+                                 temp.getClientHandler().RealIP;
+                        if (temp.getClientHandler().reg.isreg)
                         {
 
-                            blah11 = blah11 + temp.handler.reg.getRegInfo();
+                            blah11 = blah11 + temp.getClientHandler().reg.getRegInfo();
                         }
 
                         else

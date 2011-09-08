@@ -23,26 +23,6 @@ package ru.sincore;
  */
 
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.net.InetSocketAddress;
-import java.nio.charset.Charset;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
-import java.util.ResourceBundle;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
-
 import org.apache.log4j.Logger;
 import org.apache.mina.core.service.IoAcceptor;
 import org.apache.mina.core.session.IdleStatus;
@@ -51,7 +31,6 @@ import org.apache.mina.filter.codec.textline.TextLineCodecFactory;
 import org.apache.mina.filter.logging.LoggingFilter;
 import org.apache.mina.filter.ssl.SslFilter;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
-
 import ru.sincore.Modules.Modulator;
 import ru.sincore.adcs.CertManager;
 import ru.sincore.adcs.SSLManager;
@@ -61,6 +40,14 @@ import ru.sincore.conf.Port;
 import ru.sincore.conf.Variables;
 import ru.sincore.conf.Vars;
 import ru.sincore.util.ADC;
+
+import java.io.*;
+import java.net.InetSocketAddress;
+import java.nio.charset.Charset;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 
 /**
@@ -512,24 +499,25 @@ public class HubServer extends Thread
 
             Vars.lang = vars.lang;
 
-            if (Vars.lang.length() > 4)
-            {
-                Translation.curLocale =
-                        new Locale(Vars.lang.substring(0, 2), Vars.lang.substring(3));
-                Locale.setDefault(Translation.curLocale);
-                try
-                {
-                    Translation.Strings = ResourceBundle.getBundle("Translation",
-                                                                   Translation.curLocale);
-
-                }
-                catch (java.util.MissingResourceException mre)
-                {
-                    //System.out.println("Fatal Error : Unable to locate Translation.properties file or any other translation. FAIL.");
-                    // System.exit(1);
-                    mre.printStackTrace();
-                }
-            }
+			//TODO WTF ? is needed
+//            if (Vars.lang.length() > 4)
+//            {
+//                Translation.curLocale =
+//                        new Locale(Vars.lang.substring(0, 2), Vars.lang.substring(3));
+//                Locale.setDefault(Translation.curLocale);
+//                try
+//                {
+//                    Translation.Strings = ResourceBundle.getBundle("Translation",
+//                                                                   Translation.curLocale);
+//
+//                }
+//                catch (java.util.MissingResourceException mre)
+//                {
+//                    //System.out.println("Fatal Error : Unable to locate Translation.properties file or any other translation. FAIL.");
+//                    // System.exit(1);
+//                    mre.printStackTrace();
+//                }
+//            }
 
             Vars.BMSG = vars.BMSG;
             Vars.EMSG = vars.EMSG;

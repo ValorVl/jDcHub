@@ -78,9 +78,9 @@ public class ExtRedirect
 
             for (Client aux : SessionManager.getUsers())
             {
-                if (aux.handler.userok == 1)
+                if (aux.getClientHandler().userok == 1)
                 {
-                    if (aux.handler.ID.equalsIgnoreCase(what))
+                    if (aux.getClientHandler().ID.equalsIgnoreCase(what))
                     {
                         aux.redirectMe(cur_client, URL);
                         cur_client.sendFromBot("Done.");
@@ -100,9 +100,9 @@ public class ExtRedirect
         {
             for (Client aux : SessionManager.getUsers())
             {
-                if (aux.handler.userok == 1)
+                if (aux.getClientHandler().userok == 1)
                 {
-                    if (aux.handler.NI.equalsIgnoreCase(what))
+                    if (aux.getClientHandler().NI.equalsIgnoreCase(what))
                     {
                         aux.redirectMe(cur_client, URL);
                         cur_client.sendFromBot("Done.");
@@ -119,9 +119,9 @@ public class ExtRedirect
             "".matches(what);
             for (Client aux : SessionManager.getUsers())
             {
-                if (aux.handler.userok == 1)
+                if (aux.getClientHandler().userok == 1)
                 {
-                    if (aux.handler.NI.matches(what))
+                    if (aux.getClientHandler().NI.matches(what))
                     {
 
                         aux.redirectMe(cur_client, URL);
@@ -158,13 +158,13 @@ public class ExtRedirect
                     cur_client.sendFromBot("Done.");
                     return;
                 }
-                // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");handler.sendFromBot("Done.");
+                // getClientHandler().sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");getClientHandler().sendFromBot("Done.");
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.handler.userok == 1)
+                    if (tempz.getClientHandler().userok == 1)
                     {
-                        if (Long.parseLong(tempz.handler.SS) / 1024 / 1024 > Number)
+                        if (Long.parseLong(tempz.getClientHandler().SS) / 1024 / 1024 > Number)
                         {
                             tempz.redirectMe(cur_client, URL);
                         }
@@ -192,15 +192,15 @@ public class ExtRedirect
                     cur_client.sendFromBot("Done.");
                     return;
                 }
-                // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");handler.sendFromBot("Done.");
+                // getClientHandler().sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");getClientHandler().sendFromBot("Done.");
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.handler.userok == 1)
+                    if (tempz.getClientHandler().userok == 1)
                     {
                         try
                         {
-                            if (Long.parseLong(tempz.handler.HN) > Number)
+                            if (Long.parseLong(tempz.getClientHandler().HN) > Number)
                             {
                                 tempz.redirectMe(cur_client, URL);
                             }
@@ -232,15 +232,15 @@ public class ExtRedirect
                     cur_client.sendFromBot("Done.");
                     return;
                 }
-                // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");handler.sendFromBot("Done.");
+                // getClientHandler().sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");getClientHandler().sendFromBot("Done.");
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.handler.userok == 1)
+                    if (tempz.getClientHandler().userok == 1)
                     {
                         try
                         {
-                            if (Long.parseLong(tempz.handler.HR) > Number)
+                            if (Long.parseLong(tempz.getClientHandler().HR) > Number)
                             {
                                 tempz.redirectMe(cur_client, URL);
                             }
@@ -272,15 +272,15 @@ public class ExtRedirect
                     cur_client.sendFromBot("Done.");
                     return;
                 }
-                // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");handler.sendFromBot("Done.");
+                // getClientHandler().sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");getClientHandler().sendFromBot("Done.");
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.handler.userok == 1)
+                    if (tempz.getClientHandler().userok == 1)
                     {
                         try
                         {
-                            if (Long.parseLong(tempz.handler.HO) > Number)
+                            if (Long.parseLong(tempz.getClientHandler().HO) > Number)
                             {
                                 tempz.redirectMe(cur_client, URL);
                             }
@@ -312,15 +312,15 @@ public class ExtRedirect
                     cur_client.sendFromBot("Done.");
                     return;
                 }
-                // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");handler.sendFromBot("Done.");
+                // getClientHandler().sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");getClientHandler().sendFromBot("Done.");
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.handler.userok == 1)
+                    if (tempz.getClientHandler().userok == 1)
                     {
                         try
                         {
-                            if (Long.parseLong(tempz.handler.SL) > Number)
+                            if (Long.parseLong(tempz.getClientHandler().SL) > Number)
                             {
                                 tempz.redirectMe(cur_client, URL);
                             }
@@ -352,13 +352,13 @@ public class ExtRedirect
                     cur_client.sendFromBot("Done.");
                     return;
                 }
-                // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");handler.sendFromBot("Done.");
+                // getClientHandler().sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");getClientHandler().sendFromBot("Done.");
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.handler.userok == 1)
+                    if (tempz.getClientHandler().userok == 1)
                     {
-                        if (tempz.handler.NI.length() > Number)
+                        if (tempz.getClientHandler().NI.length() > Number)
                         {
                             tempz.redirectMe(cur_client, URL);
                         }
@@ -390,13 +390,13 @@ public class ExtRedirect
                     cur_client.sendFromBot("Done.");
                     return;
                 }
-                // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");handler.sendFromBot("Done.");
+                // getClientHandler().sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");getClientHandler().sendFromBot("Done.");
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.handler.userok == 1)
+                    if (tempz.getClientHandler().userok == 1)
                     {
-                        if (Long.parseLong(tempz.handler.SS) / 1024 / 1024 <
+                        if (Long.parseLong(tempz.getClientHandler().SS) / 1024 / 1024 <
                             Number)//&& tempz.userok==1)
                         {
                             tempz.redirectMe(cur_client, URL);
@@ -425,15 +425,15 @@ public class ExtRedirect
                     cur_client.sendFromBot("Done.");
                     return;
                 }
-                // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");handler.sendFromBot("Done.");
+                // getClientHandler().sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");getClientHandler().sendFromBot("Done.");
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.handler.userok == 1)
+                    if (tempz.getClientHandler().userok == 1)
                     {
                         try
                         {
-                            if (Long.parseLong(tempz.handler.HN) < Number)
+                            if (Long.parseLong(tempz.getClientHandler().HN) < Number)
                             {
                                 tempz.redirectMe(cur_client, URL);
                             }
@@ -465,15 +465,15 @@ public class ExtRedirect
                     cur_client.sendFromBot("Done.");
                     return;
                 }
-                // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");handler.sendFromBot("Done.");
+                // getClientHandler().sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");getClientHandler().sendFromBot("Done.");
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.handler.userok == 1)
+                    if (tempz.getClientHandler().userok == 1)
                     {
                         try
                         {
-                            if (Long.parseLong(tempz.handler.HO) < Number)
+                            if (Long.parseLong(tempz.getClientHandler().HO) < Number)
                             {
                                 tempz.redirectMe(cur_client, URL);
                             }
@@ -505,15 +505,15 @@ public class ExtRedirect
                     cur_client.sendFromBot("Done.");
                     return;
                 }
-                // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");handler.sendFromBot("Done.");
+                // getClientHandler().sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");getClientHandler().sendFromBot("Done.");
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.handler.userok == 1)
+                    if (tempz.getClientHandler().userok == 1)
                     {
                         try
                         {
-                            if (Long.parseLong(tempz.handler.HR) < Number)
+                            if (Long.parseLong(tempz.getClientHandler().HR) < Number)
                             {
                                 tempz.redirectMe(cur_client, URL);
                             }
@@ -545,13 +545,13 @@ public class ExtRedirect
                     cur_client.sendFromBot("Done.");
                     return;
                 }
-                // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");handler.sendFromBot("Done.");
+                // getClientHandler().sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");getClientHandler().sendFromBot("Done.");
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.handler.userok == 1)
+                    if (tempz.getClientHandler().userok == 1)
                     {
-                        if (tempz.handler.NI.length() < Number)
+                        if (tempz.getClientHandler().NI.length() < Number)
                         {
                             tempz.redirectMe(cur_client, URL);
                         }
@@ -579,15 +579,15 @@ public class ExtRedirect
                     cur_client.sendFromBot("Done.");
                     return;
                 }
-                // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");handler.sendFromBot("Done.");
+                // getClientHandler().sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");getClientHandler().sendFromBot("Done.");
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.handler.userok == 1)
+                    if (tempz.getClientHandler().userok == 1)
                     {
                         try
                         {
-                            if (Long.parseLong(tempz.handler.SL) < Number)
+                            if (Long.parseLong(tempz.getClientHandler().SL) < Number)
                             {
                                 tempz.redirectMe(cur_client, URL);
                             }
@@ -623,14 +623,14 @@ public class ExtRedirect
                     cur_client.sendFromBot("Done.");
                     return;
                 }
-                // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");handler.sendFromBot("Done.");
+                // getClientHandler().sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");getClientHandler().sendFromBot("Done.");
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.handler.userok == 1)
+                    if (tempz.getClientHandler().userok == 1)
                     {
-                        if (Long.parseLong(tempz.handler.SS) / 1024 / 1024 ==
-                            Number)//&& tempz.handler.userok==1)
+                        if (Long.parseLong(tempz.getClientHandler().SS) / 1024 / 1024 ==
+                            Number)//&& tempz.getClientHandler().userok==1)
                         {
                             tempz.redirectMe(cur_client, URL);
                         }
@@ -658,15 +658,15 @@ public class ExtRedirect
                     cur_client.sendFromBot("Done.");
                     return;
                 }
-                // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");handler.sendFromBot("Done.");
+                // getClientHandler().sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");getClientHandler().sendFromBot("Done.");
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.handler.userok == 1)
+                    if (tempz.getClientHandler().userok == 1)
                     {
                         try
                         {
-                            if (Long.parseLong(tempz.handler.HO) == Number)
+                            if (Long.parseLong(tempz.getClientHandler().HO) == Number)
                             {
                                 tempz.redirectMe(cur_client, URL);
                             }
@@ -698,15 +698,15 @@ public class ExtRedirect
                     cur_client.sendFromBot("Done.");
                     return;
                 }
-                // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");handler.sendFromBot("Done.");
+                // getClientHandler().sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");getClientHandler().sendFromBot("Done.");
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.handler.userok == 1)
+                    if (tempz.getClientHandler().userok == 1)
                     {
                         if (Number == 1)
                         {
-                            if (Long.parseLong(tempz.handler.CT) == 2)
+                            if (Long.parseLong(tempz.getClientHandler().CT) == 2)
 
                             {
                                 tempz.redirectMe(cur_client, URL);
@@ -714,7 +714,7 @@ public class ExtRedirect
                         }
                         else if (Number == 0)
                         {
-                            if (Long.parseLong(tempz.handler.CT) != 2)
+                            if (Long.parseLong(tempz.getClientHandler().CT) != 2)
 
                             {
                                 tempz.redirectMe(cur_client, URL);
@@ -742,13 +742,13 @@ public class ExtRedirect
                     cur_client.sendFromBot("Done.");
                     return;
                 }
-                // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");handler.sendFromBot("Done.");
+                // getClientHandler().sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");getClientHandler().sendFromBot("Done.");
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.handler.userok == 1)
+                    if (tempz.getClientHandler().userok == 1)
                     {
-                        if (Long.parseLong(tempz.handler.HR) == Number)
+                        if (Long.parseLong(tempz.getClientHandler().HR) == Number)
                         {
                             tempz.redirectMe(cur_client, URL);
                         }
@@ -774,17 +774,17 @@ public class ExtRedirect
                     cur_client.sendFromBot("Done.");
                     return;
                 }
-                // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");handler.sendFromBot("Done.");
+                // getClientHandler().sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");getClientHandler().sendFromBot("Done.");
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.handler.userok == 1)
+                    if (tempz.getClientHandler().userok == 1)
                     {
                         try
                         {
                             if (Number == 1)
                             {
-                                if (Long.parseLong(tempz.handler.CT) == 4)
+                                if (Long.parseLong(tempz.getClientHandler().CT) == 4)
 
                                 {
                                     tempz.redirectMe(cur_client, URL);
@@ -792,7 +792,7 @@ public class ExtRedirect
                             }
                             else if (Number == 0)
                             {
-                                if (Long.parseLong(tempz.handler.CT) != 4)
+                                if (Long.parseLong(tempz.getClientHandler().CT) != 4)
 
                                 {
                                     tempz.redirectMe(cur_client, URL);
@@ -826,15 +826,15 @@ public class ExtRedirect
                     cur_client.sendFromBot("Done.");
                     return;
                 }
-                // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");handler.sendFromBot("Done.");
+                // getClientHandler().sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");getClientHandler().sendFromBot("Done.");
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.handler.userok == 1)
+                    if (tempz.getClientHandler().userok == 1)
                     {
                         try
                         {
-                            if (Long.parseLong(tempz.handler.HR) == Number)
+                            if (Long.parseLong(tempz.getClientHandler().HR) == Number)
                             {
                                 tempz.redirectMe(cur_client, URL);
                             }
@@ -867,15 +867,15 @@ public class ExtRedirect
                     cur_client.sendFromBot("Done.");
                     return;
                 }
-                // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");handler.sendFromBot("Done.");
+                // getClientHandler().sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");getClientHandler().sendFromBot("Done.");
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.handler.userok == 1)
+                    if (tempz.getClientHandler().userok == 1)
                     {
                         try
                         {
-                            if (Long.parseLong(tempz.handler.HN) == Number)
+                            if (Long.parseLong(tempz.getClientHandler().HN) == Number)
                             {
                                 tempz.redirectMe(cur_client, URL);
                             }
@@ -900,16 +900,16 @@ public class ExtRedirect
 
                 Number = aux.substring(mark + 1, aux.length());
 
-                // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");handler.sendFromBot("Done.");
+                // getClientHandler().sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");getClientHandler().sendFromBot("Done.");
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.handler.userok == 1)
+                    if (tempz.getClientHandler().userok == 1)
                     {
-                        if (tempz.handler
+                        if (tempz.getClientHandler()
                                 .SU
                                 .toLowerCase()
-                                .contains(Number.toLowerCase()))//&& tempz.handler.userok==1)
+                                .contains(Number.toLowerCase()))//&& tempz.getClientHandler().userok==1)
                         {
                             tempz.redirectMe(cur_client, URL);
                         }
@@ -935,13 +935,13 @@ public class ExtRedirect
                     cur_client.sendFromBot("Done.");
                     return;
                 }
-                // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");handler.sendFromBot("Done.");
+                // getClientHandler().sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");getClientHandler().sendFromBot("Done.");
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.handler.userok == 1)
+                    if (tempz.getClientHandler().userok == 1)
                     {
-                        if (tempz.handler.NI.length() == Number)
+                        if (tempz.getClientHandler().NI.length() == Number)
                         {
                             tempz.redirectMe(cur_client, URL);
                         }
@@ -969,13 +969,13 @@ public class ExtRedirect
                     cur_client.sendFromBot("Done.");
                     return;
                 }
-                // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");handler.sendFromBot("Done.");
+                // getClientHandler().sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");getClientHandler().sendFromBot("Done.");
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.handler.userok == 1)
+                    if (tempz.getClientHandler().userok == 1)
                     {
-                        if (Long.parseLong(tempz.handler.SL) == Number)
+                        if (Long.parseLong(tempz.getClientHandler().SL) == Number)
                         {
                             tempz.redirectMe(cur_client, URL);
                         }
@@ -1008,14 +1008,14 @@ public class ExtRedirect
                     cur_client.sendFromBot("Done.");
                     return;
                 }
-                // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");handler.sendFromBot("Done.");
+                // getClientHandler().sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");getClientHandler().sendFromBot("Done.");
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.handler.userok == 1)
+                    if (tempz.getClientHandler().userok == 1)
                     {
-                        if (Long.parseLong(tempz.handler.SS) / 1024 / 1024 !=
-                            Number)//&& tempz.handler.userok==1)
+                        if (Long.parseLong(tempz.getClientHandler().SS) / 1024 / 1024 !=
+                            Number)//&& tempz.getClientHandler().userok==1)
                         {
                             tempz.redirectMe(cur_client, URL);
                         }
@@ -1043,17 +1043,17 @@ public class ExtRedirect
                     cur_client.sendFromBot("Done.");
                     return;
                 }
-                // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");handler.sendFromBot("Done.");
+                // getClientHandler().sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");getClientHandler().sendFromBot("Done.");
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.handler.userok == 1)
+                    if (tempz.getClientHandler().userok == 1)
                     {
                         try
                         {
                             if (Number == 1)
                             {
-                                if (Long.parseLong(tempz.handler.CT) == 2)
+                                if (Long.parseLong(tempz.getClientHandler().CT) == 2)
 
                                 {
                                     tempz.redirectMe(cur_client, URL);
@@ -1061,7 +1061,7 @@ public class ExtRedirect
                             }
                             else if (Number == 0)
                             {
-                                if (Long.parseLong(tempz.handler.CT) != 2)
+                                if (Long.parseLong(tempz.getClientHandler().CT) != 2)
 
                                 {
                                     tempz.redirectMe(cur_client, URL);
@@ -1093,15 +1093,15 @@ public class ExtRedirect
                     cur_client.sendFromBot("Done.");
                     return;
                 }
-                // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");handler.sendFromBot("Done.");
+                // getClientHandler().sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");getClientHandler().sendFromBot("Done.");
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.handler.userok == 1)
+                    if (tempz.getClientHandler().userok == 1)
                     {
                         try
                         {
-                            if (Long.parseLong(tempz.handler.AW) != Number)
+                            if (Long.parseLong(tempz.getClientHandler().AW) != Number)
                             {
                                 tempz.redirectMe(cur_client, URL);
                             }
@@ -1131,17 +1131,17 @@ public class ExtRedirect
                     cur_client.sendFromBot("Done.");
                     return;
                 }
-                // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");handler.sendFromBot("Done.");
+                // getClientHandler().sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");getClientHandler().sendFromBot("Done.");
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.handler.userok == 1)
+                    if (tempz.getClientHandler().userok == 1)
                     {
                         try
                         {
                             if (Number == 1)
                             {
-                                if (Long.parseLong(tempz.handler.CT) == 4)
+                                if (Long.parseLong(tempz.getClientHandler().CT) == 4)
 
                                 {
                                     tempz.redirectMe(cur_client, URL);
@@ -1149,7 +1149,7 @@ public class ExtRedirect
                             }
                             else if (Number == 0)
                             {
-                                if (Long.parseLong(tempz.handler.CT) != 4)
+                                if (Long.parseLong(tempz.getClientHandler().CT) != 4)
 
                                 {
                                     tempz.redirectMe(cur_client, URL);
@@ -1181,15 +1181,15 @@ public class ExtRedirect
                     cur_client.sendFromBot("Done.");
                     return;
                 }
-                // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");handler.sendFromBot("Done.");
+                // getClientHandler().sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");getClientHandler().sendFromBot("Done.");
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.handler.userok == 1)
+                    if (tempz.getClientHandler().userok == 1)
                     {
                         try
                         {
-                            if (Long.parseLong(tempz.handler.HO) != Number)
+                            if (Long.parseLong(tempz.getClientHandler().HO) != Number)
                             {
                                 tempz.redirectMe(cur_client, URL);
                             }
@@ -1221,15 +1221,15 @@ public class ExtRedirect
                     cur_client.sendFromBot("Done.");
                     return;
                 }
-                // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");handler.sendFromBot("Done.");
+                // getClientHandler().sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");getClientHandler().sendFromBot("Done.");
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.handler.userok == 1)
+                    if (tempz.getClientHandler().userok == 1)
                     {
                         try
                         {
-                            if (Long.parseLong(tempz.handler.HR) != Number)
+                            if (Long.parseLong(tempz.getClientHandler().HR) != Number)
                             {
                                 tempz.redirectMe(cur_client, URL);
                             }
@@ -1261,15 +1261,15 @@ public class ExtRedirect
                     cur_client.sendFromBot("Done.");
                     return;
                 }
-                // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");handler.sendFromBot("Done.");
+                // getClientHandler().sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");getClientHandler().sendFromBot("Done.");
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.handler.userok == 1)
+                    if (tempz.getClientHandler().userok == 1)
                     {
                         try
                         {
-                            if (Long.parseLong(tempz.handler.HN) != Number)
+                            if (Long.parseLong(tempz.getClientHandler().HN) != Number)
                             {
                                 tempz.redirectMe(cur_client, URL);
                             }
@@ -1294,16 +1294,16 @@ public class ExtRedirect
 
                 Number = aux.substring(mark + 1, aux.length());
 
-                // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");handler.sendFromBot("Done.");
+                // getClientHandler().sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");getClientHandler().sendFromBot("Done.");
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.handler.userok == 1)
+                    if (tempz.getClientHandler().userok == 1)
                     {
-                        if (!tempz.handler
+                        if (!tempz.getClientHandler()
                                 .SU
                                 .toLowerCase()
-                                .contains(Number.toLowerCase()))//&& tempz.handler.userok==1)
+                                .contains(Number.toLowerCase()))//&& tempz.getClientHandler().userok==1)
                         {
                             tempz.redirectMe(cur_client, URL);
                         }
@@ -1329,13 +1329,13 @@ public class ExtRedirect
                     cur_client.sendFromBot("Done.");
                     return;
                 }
-                // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");handler.sendFromBot("Done.");
+                // getClientHandler().sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");getClientHandler().sendFromBot("Done.");
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.handler.userok == 1)
+                    if (tempz.getClientHandler().userok == 1)
                     {
-                        if (tempz.handler.NI.length() != Number)
+                        if (tempz.getClientHandler().NI.length() != Number)
                         {
                             tempz.redirectMe(cur_client, URL);
                         }
@@ -1363,15 +1363,15 @@ public class ExtRedirect
                     cur_client.sendFromBot("Done.");
                     return;
                 }
-                // handler.sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");handler.sendFromBot("Done.");
+                // getClientHandler().sendFromBot(""+Integer.toString (Number));//Invalid Extended Redirect ...\");getClientHandler().sendFromBot("Done.");
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.handler.userok == 1)
+                    if (tempz.getClientHandler().userok == 1)
                     {
                         try
                         {
-                            if (Long.parseLong(tempz.handler.SL) != Number)
+                            if (Long.parseLong(tempz.getClientHandler().SL) != Number)
                             {
                                 tempz.redirectMe(cur_client, URL);
                             }
