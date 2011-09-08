@@ -139,7 +139,7 @@ public class SessionManager extends org.apache.mina.core.service.IoHandlerAdapte
 
         try
         {
-            new Command((ClientHandler) (session.getAttribute("")), str);
+            new Command((Client) (session.getAttribute("")), str);
         }
         catch (STAException stex)
         {
@@ -161,7 +161,6 @@ public class SessionManager extends org.apache.mina.core.service.IoHandlerAdapte
             throws Exception
     {
         //ok, we're in idle
-        ClientHandler cur_client = (ClientHandler) (session.getAttribute(""));
     }
 
 
@@ -187,20 +186,15 @@ public class SessionManager extends org.apache.mina.core.service.IoHandlerAdapte
 
         log.info(currentClientHandler.NI+" with SID " + currentClientHandler.SessionID + " just quited.");
 
-        // TODO watch what 'inside' means
-        if (currentClientHandler.inside)
-        {
-            SessionManager.Users.remove(currentClientHandler.ID);
-        }
-        currentClientHandler = null;
+        SessionManager.Users.remove(currentClientHandler.ID);
     }
 
 
     public void sessionOpened(IoSession session)
             throws Exception
     {
-        Client currentClient = (Client) HubServer.AddClient();
-        ClientHandler currentClientHandler = (ClientHandler) currentClient.getClientHandler();
+        Client currentClient = HubServer.AddClient();
+        ClientHandler currentClientHandler = currentClient.getClientHandler();
 
         session.setAttribute("", currentClient);
 

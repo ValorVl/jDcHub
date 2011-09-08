@@ -587,7 +587,7 @@ public class Command
         for (Client client : SessionManager.getUsers())
         {
 
-            if (!client.getClientHandler().equals(currentClient))
+            if (!client.equals(currentClient))
             {
                 if (client.getClientHandler().userok == 1)
                 {
