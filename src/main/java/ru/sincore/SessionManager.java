@@ -23,22 +23,19 @@
 
 package ru.sincore;
 
-import java.util.Collection;
-import java.util.StringTokenizer;
-import java.util.concurrent.ConcurrentHashMap;
-
-
 import org.apache.log4j.Logger;
-import org.apache.mina.core.session.IoSession;
 import org.apache.mina.core.session.IdleStatus;
-
-
+import org.apache.mina.core.session.IoSession;
 import ru.sincore.Exceptions.CommandException;
 import ru.sincore.Exceptions.STAException;
 import ru.sincore.Modules.Modulator;
 import ru.sincore.Modules.Module;
 import ru.sincore.TigerImpl.Base32;
 import ru.sincore.util.STAError;
+
+import java.util.Collection;
+import java.util.StringTokenizer;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Pietricica
@@ -135,7 +132,8 @@ public class SessionManager extends org.apache.mina.core.service.IoHandlerAdapte
     public void messageReceived(IoSession session, Object msg)
             throws Exception
     {
-        String str = msg.toString();
+        String str = (String) msg;
+		log.debug("Incoming message : " + str);
 
         try
         {

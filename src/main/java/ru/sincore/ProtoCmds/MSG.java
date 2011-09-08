@@ -341,13 +341,13 @@ public class MSG
                          message.toLowerCase().startsWith("+cfg"))//config settings
                 {
                     cur_client.sendFromBot("[config:] " + ADC.retNormStr(message));
-                    new CommandParser(cur_client, message);
+                    new CommandParser(client, message);
 
                 }
                 else
                 {
                     cur_client.sendFromBot("[command:] " + ADC.retNormStr(message));
-                    new CommandParser(cur_client, message);
+                    new CommandParser(client, message);
 
                 }
             }
@@ -416,13 +416,13 @@ public class MSG
                              message.toLowerCase().startsWith("+cfg"))//config settings
                     {
                         cur_client.sendFromBot("[config:] " + ADC.retNormStr(message));
-                        new CommandParser(cur_client, message);
+                        new CommandParser(client, message);
 
                     }
                     else
                     {
                         cur_client.sendFromBot("[command:] " + ADC.retNormStr(message));
-                        new CommandParser(cur_client, message);
+                        new CommandParser(client, message);
 
                     }
                 }
@@ -501,7 +501,7 @@ public class MSG
                     cur_client.reg.isreg && message.charAt(0) == '+') //ok.. command mode.
                 {
                     cur_client.sendFromBot("[command:] " + ADC.retNormStr(message));
-                    new CommandParser(cur_client, message);
+                    new CommandParser(client, message);
                 }
             }
             else if (!pmsid.equals("ABCD"))

@@ -23,6 +23,7 @@ package ru.sincore;
  */
 
 import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 import ru.sincore.TigerImpl.Base32;
 import ru.sincore.banning.BanList;
 import ru.sincore.i18n.Messages;
@@ -57,7 +58,9 @@ public class Main extends Thread
 
     public static void init()
     {
-        ClassLoader cl = ClassLoader.getSystemClassLoader();
+		PropertyConfigurator.configure("./etc/log4j.properties");
+
+		ClassLoader cl = ClassLoader.getSystemClassLoader();
         String javaClassPath = System.getProperty("java.class.path");
         String userDirectory = System.getProperty("user.dir");
 
@@ -316,8 +319,8 @@ public class Main extends Thread
                             clientHandler.reg.isreg = true;
                             clientHandler.reg.LastIP = clientHandler.RealIP;
                             clientHandler.LoggedAt = System.currentTimeMillis();
-                            log.info(String.format(Messages.NOT_CID,clientHandler.NI).concat("\n")
-											 .concat(String.format(Messages.USER_REGISTER,clientHandler.NI,clientHandler.ID)));
+                            log.info(String.format(Messages.NOT_CID, clientHandler.NI).concat("\n")
+											 .concat(String.format(Messages.USER_REGISTER, clientHandler.NI, clientHandler.ID)));
 
                             Main.Server.rewriteregs();
                             return;
@@ -376,7 +379,7 @@ public class Main extends Thread
                         clientHandler.LoggedAt = System.currentTimeMillis();
                         clientHandler.reg.isreg = true;
                         clientHandler.reg.LastIP = clientHandler.RealIP;
-                        log.info(Messages.NOT_CID.concat("\n").concat(String.format(Messages.USER_REGISTER,clientHandler.NI,clientHandler.ID)));
+                        log.info(Messages.NOT_CID.concat("\n").concat(String.format(Messages.USER_REGISTER, clientHandler.NI, clientHandler.ID)));
 
                         Main.Server.rewriteregs();
                         return;
