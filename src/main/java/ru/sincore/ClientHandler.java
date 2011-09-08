@@ -458,7 +458,7 @@ public class ClientHandler
 
     public void sendFromBot(String text)
     {
-        if (text.equals(""))
+        if (text.isEmpty())
         {
             return;
         }

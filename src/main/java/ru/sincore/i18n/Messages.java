@@ -20,8 +20,19 @@ public class Messages
 {
 	private static final Logger log = Logger.getLogger(Messages.class);
 
+	private static final String SERVER_MESSAGE_FILE = "./etc/messages/servermessages.properties";
+	// define server message var
 
-	// define message var
+	public static String SERVER_MESSAGE_STUB;
+	public static String RESTART_HUB;
+	public static String CLOSE_HUB;
+	public static String ACCOUNT_REGISTER;
+	public static String REGISTER_CID;
+
+	//define client message var
+
+	//Empty constructor
+	Messages(){}
 
 	/**
 	 * Get preconfigured messages file
@@ -54,7 +65,7 @@ public class Messages
 		return "messages"+selectedLang;
 	}
 
-	public static synchronized void load()
+	public static synchronized void loadClientMessages()
 	{
 		AtomicReference<Properties> messages = new AtomicReference<Properties>();
 		File messagesFile;
@@ -86,6 +97,46 @@ public class Messages
 				assert bufferedInputStream != null;
 				bufferedInputStream.close();
 			} catch (IOException ex)
+			{
+				log.error(ex);
+			}
+		}
+	}
+
+	private static void loadServerMesages()
+	{
+		File hubPropertiesFile;
+		FileInputStream fileInput = null;
+		BufferedInputStream buffInput = null;
+		Properties prop;
+
+        try
+        {
+            hubPropertiesFile 		= new File(SERVER_MESSAGE_FILE);
+            fileInput 				= new FileInputStream(hubPropertiesFile);
+            buffInput 				= new BufferedInputStream(fileInput);
+            prop 					= new Properties();
+
+			prop.clear();
+            prop.load(buffInput);
+
+
+			SERVER_MESSAGE_STUB		= prop.getProperty("core.server.message.stub");
+			RESTART_HUB 			= prop.getProperty("core.server.message.restart_hub");
+			CLOSE_HUB				= prop.getProperty("core.server.message.close_hub");
+			ACCOUNT_REGISTER		= prop.getProperty("core.server.message.account_register");
+			REGISTER_CID			= prop.getProperty("core.server.message.register_cid");
+        }
+        catch (Exception e)
+        {
+            log.fatal(e);
+        }finally {
+			try
+			{
+				fileInput.close();
+				buffInput.close();
+
+			}catch (IOException ex)
 			{
 				log.error(ex);
 			}

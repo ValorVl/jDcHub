@@ -1,8 +1,9 @@
 package ru.sincore.util;
 
 import ru.sincore.Client;
-import ru.sincore.ClientHandler;
 import ru.sincore.Exceptions.STAException;
+import ru.sincore.conf.Vars;
+
 /*
  * STAError.java
  *
@@ -25,7 +26,6 @@ import ru.sincore.Exceptions.STAException;
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-import ru.sincore.conf.Vars;
 
 /**
  * Provides a simple way to throw STA exceptions to clients
@@ -53,6 +53,7 @@ public class STAError
      * @throws STAException
      */
     public STAError(Client client, int errorCode, String errorDescription)
+
             throws STAException
     {
         this.client = client;
@@ -72,7 +73,7 @@ public class STAError
         client.getClientHandler().sendToClient(errorString);
         if (errorCode >= 200)
         {
-            if (!Vars.redirect_url.equals(""))
+            if (!Vars.redirect_url.isEmpty())
             {
                 client.getClientHandler().closingwrite =
                         client.getClientHandler().sendToClient("IQUI " +
@@ -104,6 +105,7 @@ public class STAError
         this.errorDescription = ADC.retADCStr(errorDescription);
 
 
+
         String errorString =
                 "ISTA " + Integer.toString(this.errorCode) + " " +
                 this.errorDescription + " " + Prefix + Flag;
@@ -111,7 +113,7 @@ public class STAError
         client.getClientHandler().sendToClient(errorString);
         if (errorCode >= 200)
         {
-            if (!Vars.redirect_url.equals(""))
+            if (!Vars.redirect_url.isEmpty())
             {
                 client.getClientHandler().closingwrite =
                         client.getClientHandler().sendToClient("IQUI " +

@@ -13,12 +13,10 @@ public class ConfigLoader
     private static final Logger _log = Logger.getLogger(ConfigLoader.class);
 
 	private static final String HUB_CONFIG;
-	private static final String HUB_MESSAGES;
 
 	static
 	{
 		HUB_CONFIG = "./etc/hub.properties";
-		HUB_MESSAGES = "./etc/messages/servermessages.properties";
 	}
 
     /**
@@ -45,37 +43,10 @@ public class ConfigLoader
     public static void init()
     {
         initHub();
-		loadMesages();
     }
 
 
-	private static void loadMesages()
-	{
-		File hubPropertiesFile;
-		FileInputStream fileInput;
-		BufferedInputStream buffInput;
-		Properties prop;
 
-        try
-        {
-            hubPropertiesFile 		= new File(HUB_MESSAGES);
-            fileInput 				= new FileInputStream(hubPropertiesFile);
-            buffInput 				= new BufferedInputStream(fileInput);
-            prop 					= new Properties();
-
-            prop.load(buffInput);
-
-            _log.info("=== Load hub messages >>>");
-
-
-
-		 	buffInput.close();
-        }
-        catch (Exception e)
-        {
-            _log.fatal("Fatal error >>>", e);
-        }
-	}
 
 
     private static void initHub()
