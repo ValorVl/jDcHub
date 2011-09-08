@@ -23,14 +23,11 @@
 
 package ru.sincore.ProtoCmds;
 
+import ru.sincore.*;
 import ru.sincore.Exceptions.STAException;
 import ru.sincore.conf.Vars;
 import ru.sincore.util.Constants;
 import ru.sincore.util.STAError;
-import ru.sincore.BannedWord;
-import ru.sincore.Broadcast;
-import ru.sincore.ClientHandler;
-import ru.sincore.Main;
 
 import java.util.StringTokenizer;
 
@@ -38,62 +35,71 @@ import java.util.StringTokenizer;
  * Basic implementation of ADC SCH command.
  *
  * @author Pietricica
+ *
+ * @author Alexey 'lh' Antonov
+ * @since 2011-09-08
  */
 public class SCH
 {
 
     /**
      * Creates a new instance of SCH
+     * @param client reference to client
+     * @param state command state. See ADC protocol specs.
+     * @param command incoming command // TODO realy?
+     * @throws STAException exception, cause the something gone wrong =)
      */
-    public SCH(ClientHandler cur_client, String Issued_Command, String State)
+    public SCH(Client client, String state, String command)
             throws STAException
     {
-        if (State.equals("IDENTIFY") || State.equals("VERIFY") || State.equals("PROTOCOL"))
+        ClientHandler cur_client = client.getClientHandler();
+
+        if (state.equals("IDENTIFY") || state.equals("VERIFY") || state.equals("PROTOCOL"))
         {
-            new STAError(cur_client,
+            new STAError(client,
                          200 + Constants.STA_INVALID_STATE,
                          "SCH Invalid State.",
                          "FC",
-                         Issued_Command.substring(0, 4));
+                         command.substring(0, 4));
             return;
         }
 
         if (!cur_client.reg.overridespam)
         {
-            switch (Issued_Command.charAt(0))
+            switch (command.charAt(0))
             {
                 case 'B':
                     if (Vars.BSCH != 1)
                     {
-                        new STAError(cur_client, 100, "SCH Invalid Context B");
+                        new STAError(client, 100, "SCH Invalid Context B");
                         return;
                     }
                     break;
                 case 'E':
                     if (Vars.ESCH != 1)
                     {
-                        new STAError(cur_client, 100, "SCH Invalid Context E");
+                        new STAError(client, 100, "SCH Invalid Context E");
                         return;
                     }
                     break;
                 case 'D':
                     if (Vars.DSCH != 1)
                     {
-                        new STAError(cur_client, 100, "SCH Invalid Context D");
+                        new STAError(client, 100, "SCH Invalid Context D");
                         return;
                     }
                     break;
                 case 'F':
                     if (Vars.FSCH != 1)
                     {
-                        new STAError(cur_client, 100, "SCH Invalid Context F");
+                        new STAError(client, 100, "SCH Invalid Context F");
                         return;
                     }
                     break;
                 case 'H':
                     if (Vars.HSCH != 1)
                     {
-                        new STAError(cur_client, 100, "SCH Invalid Context H");
+                        new STAError(client, 100, "SCH Invalid Context H");
                         return;
                     }
 
@@ -109,14 +115,14 @@ public class SCH
          */
         boolean automagic = true;
         String Key = "";
-        StringTokenizer tok = new StringTokenizer(Issued_Command);
+        StringTokenizer tok = new StringTokenizer(command);
         String aux = tok.nextToken();
         String TOken = "";
         int activeonly = 0;
         int len = 0;
         if (!tok.nextToken().equals(cur_client.SessionID))
         {
-            new STAError(cur_client,
+            new STAError(client,
                          200 + Constants.STA_GENERIC_PROTOCOL_ERROR,
                          "Protocol Error.Wrong SID supplied.");
             return;
@@ -128,9 +134,9 @@ public class SCH
             if (aux.startsWith("+") || aux.startsWith("-"))
 
             {
-                if (Issued_Command.charAt(0) != 'F')
+                if (command.charAt(0) != 'F')
                 {
-                    new STAError(cur_client,
+                    new STAError(client,
                                  100 + Constants.STA_GENERIC_PROTOCOL_ERROR,
                                  "SCH Must Be Feature Broadcast to send to Featured clients.");
                     return;
@@ -141,7 +147,7 @@ public class SCH
                 }
                 else
                 {
-                    new STAError(cur_client, 100, "SCH Feature Not Supported.");
+                    new STAError(client, 100, "SCH Feature Not Supported.");
                     return;
                 }
             }
@@ -162,15 +168,15 @@ public class SCH
                             {
                                 if ((prop & BannedWord.kicked) > 0)
                                 {
-                                    cur_client.myNod.kickMeByBot("You searched forbidden words", 3);
+                                    client.kickMeByBot("You searched forbidden words", 3);
                                 }
                                 else if ((prop & BannedWord.dropped) > 0)
                                 {
-                                    new STAError(cur_client, 200, "You searched forbidden words");
+                                    new STAError(client, 200, "You searched forbidden words");
                                 }
                                 else
                                 {
-                                    new STAError(cur_client, 100, "You searched forbidden words");
+                                    new STAError(client, 100, "You searched forbidden words");
                                 }
                                 return;
                             }
@@ -186,16 +192,16 @@ public class SCH
         }
         if (len > Vars.max_sch_chars)
         {
-            new STAError(cur_client, 100, "Search exceeds maximum length.");
+            new STAError(client, 100, "Search exceeds maximum length.");
             return;
         }
         if (len < Vars.min_sch_chars && len != 0)
         {
-            new STAError(cur_client, 100, "Search too short.");
+            new STAError(client, 100, "Search too short.");
             return;
         }
         long curtime = System.currentTimeMillis();
-        if (automagic == false)
+        if (!automagic)
         {
             if (curtime - cur_client.Lastsearch > Vars.search_spam_reset * 1000)
             {
@@ -233,7 +239,7 @@ public class SCH
                         // handler.Lastsearch=System.currentTimeMillis ();
                     }
 
-                    cur_client.InQueueSearch = Issued_Command;
+                    cur_client.InQueueSearch = command;
                     return;
                 }
 
@@ -248,14 +254,15 @@ public class SCH
                 {
                     //handler.sendToClient (Issued_Command);
                     String[] Messages = Vars.Msg_Search_Spam.split("\\\n");
-                    for (int j = 0; j < Messages.length; j++)
+
+                    for (String message : Messages)
                     {
                         cur_client.sendToClient("DRES DCBA " +
                                                 cur_client.SessionID +
                                                 " SI1 SL1 FN/Searching: " +
                                                 Key +
                                                 " -- " +
-                                                Messages[j] +
+                                                message +
                                                 " TRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA TO" +
                                                 TOken);
                     }
@@ -264,7 +271,7 @@ public class SCH
                         cur_client.search_step++;
                         //handler.Lastsearch=System.currentTimeMillis ();
                     }
-                    cur_client.InQueueSearch = Issued_Command;
+                    cur_client.InQueueSearch = command;
                     return;
                 }
 
@@ -283,18 +290,17 @@ public class SCH
             cur_client.Lastautomagic = curtime;
 
         }
-        if (Issued_Command.charAt(0) == 'B')
+        if (command.charAt(0) == 'B')
         {
-            Broadcast.getInstance().broadcast(Issued_Command);
+            Broadcast.getInstance().broadcast(command);
         }
-        else if (Issued_Command.charAt(0) == 'F')
+        else if (command.charAt(0) == 'F')
         {
-            Broadcast.getInstance().broadcast(Issued_Command, Broadcast.STATE_ACTIVE);
+            Broadcast.getInstance().broadcast(command, Broadcast.STATE_ACTIVE);
         }
         else
         {
-            new STAError(cur_client, 100, "SCH Invalid Context.");
-            return;
+            new STAError(client, 100, "SCH Invalid Context.");
         }
     }
 

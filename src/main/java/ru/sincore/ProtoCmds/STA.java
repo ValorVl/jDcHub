@@ -37,28 +37,36 @@ import java.util.StringTokenizer;
  * Basic implementation of ADC STA command, in client to hub context.
  *
  * @author Pietricica
+ *
+ * @author Alexey 'lh' Antonov
+ * @since 2011-09-08
  */
 public class STA
 {
 
     /**
      * Creates a new instance of STA
+     * @param client reference to client
+     * @param state command state. See ADC protocol specs.
+     * @param command incoming command // TODO realy?
+     * @throws STAException exception, cause the something gone wrong =)
      */
-    public STA(ClientHandler cur_client, String recvbuf, String State)
+    public STA(Client client, String state, String command)
             throws STAException
     {
-        if (recvbuf.charAt(0) == 'B')
+        ClientHandler cur_client = client.getClientHandler();
+
+        if (command.charAt(0) == 'B')
         {
             if (!cur_client.reg.overridespam)
             {
                 if (Vars.BSTA == 0)
                 {
                     cur_client.sendFromBot("STA invalid context B");
-                    return;
                 }
             }
         }
-        else if (recvbuf.charAt(0) == 'D')
+        else if (command.charAt(0) == 'D')
         {
             if (!cur_client.reg.overridespam)
             {
@@ -68,11 +76,11 @@ public class STA
                     return;
                 }
             }
-            StringTokenizer TK = new StringTokenizer(recvbuf);
+            StringTokenizer TK = new StringTokenizer(command);
             TK.nextToken();
             if (!TK.hasMoreTokens())
             {
-                new STAError(cur_client,
+                new STAError(client,
                              100 + Constants.STA_GENERIC_PROTOCOL_ERROR,
                              "Must supply SID");
                 return;
@@ -80,38 +88,35 @@ public class STA
             String cursid = TK.nextToken();
             if (!cursid.equals(cur_client.SessionID))
             {
-                new STAError(cur_client,
+                new STAError(client,
                              100 + Constants.STA_GENERIC_PROTOCOL_ERROR,
                              "Protocol Error.Wrong SID supplied.");
                 return;
             }
             if (!TK.hasMoreTokens())
             {
-                new STAError(cur_client,
+                new STAError(client,
                              140 + Constants.STA_GENERIC_PROTOCOL_ERROR,
                              "Must supply target SID");
                 return;
             }
             String dsid = TK.nextToken();
-            for (Client target : SessionManager.getUsers())
+            for (Client targetClient : SessionManager.getUsers())
             {
-                if (target.handler.userok == 1)
+                if (targetClient.getClientHandler().userok == 1)
                 {
-                    if (target.handler.SessionID.equals(dsid))
+                    if (targetClient.getClientHandler().SessionID.equals(dsid))
 
                     {
-                        target.handler.sendToClient(recvbuf);
+                        targetClient.getClientHandler().sendToClient(command);
                         return;
                     }
                 }
             }
 
-            new STAError(cur_client, 100, "Invalid Target Sid.");
-            return;
-
-
+            new STAError(client, 100, "Invalid Target Sid.");
         }
-        else if (recvbuf.charAt(0) == 'E')
+        else if (command.charAt(0) == 'E')
         {
             if (!cur_client.reg.overridespam)
             {
@@ -121,58 +126,54 @@ public class STA
                     return;
                 }
             }
-            StringTokenizer TK = new StringTokenizer(recvbuf);
+            StringTokenizer TK = new StringTokenizer(command);
             TK.nextToken();
             if (!TK.hasMoreTokens())
             {
-                new STAError(cur_client, 100, "Must supply SID");
+                new STAError(client, 100, "Must supply SID");
                 return;
             }
             String cursid = TK.nextToken();
             if (!cursid.equals(cur_client.SessionID))
             {
-                new STAError(cur_client,
+                new STAError(client,
                              200 + Constants.STA_GENERIC_PROTOCOL_ERROR,
                              "Protocol Error.Wrong SID supplied.");
                 return;
             }
             if (!TK.hasMoreTokens())
             {
-                new STAError(cur_client,
+                new STAError(client,
                              100 + Constants.STA_GENERIC_PROTOCOL_ERROR,
                              "Must supply SID");
                 return;
             }
             String esid = TK.nextToken();
-            for (Client target : SessionManager.getUsers())
+            for (Client targetClient : SessionManager.getUsers())
             {
-                if (target.handler.userok == 1)
+                if (targetClient.getClientHandler().userok == 1)
                 {
-                    if (target.handler.SessionID.equals(esid))
+                    if (targetClient.getClientHandler().SessionID.equals(esid))
                     {
-                        target.handler.sendToClient(recvbuf);
-                        cur_client.sendToClient(recvbuf);
+                        targetClient.getClientHandler().sendToClient(command);
+                        cur_client.sendToClient(command);
                     }
                 }
             }
 
-            new STAError(cur_client, 100, "Invalid Target Sid.");
-            return;
-
-
+            new STAError(client, 100, "Invalid Target Sid.");
         }
-        else if (recvbuf.charAt(0) == 'F')
+        else if (command.charAt(0) == 'F')
         {
             if (!cur_client.reg.overridespam)
             {
                 if (Vars.FSTA == 0)
                 {
                     cur_client.sendFromBot("STA invalid context F");
-                    return;
                 }
             }
         }
-        else if (recvbuf.charAt(0) == 'H')
+        else if (command.charAt(0) == 'H')
         {
             if (!cur_client.reg.overridespam)
             // ok, client has an error. what can i do about it? :))
@@ -180,7 +181,6 @@ public class STA
                 if (Vars.HSTA == 0)
                 {
                     cur_client.sendFromBot("STA invalid context H");
-                    return;
                 }
             }
         }

@@ -37,70 +37,78 @@ import java.util.StringTokenizer;
  * Implementation of the MSG command in ADC protocol.
  *
  * @author Pietricica
+ *
+ * @author Alexey 'lh' Antonov
+ * @since 2011-09-08
  */
 public class MSG
 {
 
     /**
      * Creates a new instance of MSG
+     * @param client reference to client
+     * @param state command state. See ADC protocol specs.
+     * @param command incoming command // TODO realy?
+     * @throws STAException exception, cause the something gone wrong =)
      */
-    public MSG(ClientHandler cur_client, String State, String Issued_Command)
+    public MSG(Client client, String state, String command)
             throws STAException
     {
-        if (State.equals("IDENTIFY") || State.equals("VERIFY") || State.equals("PROTOCOL"))
+        ClientHandler cur_client = client.getClientHandler();
+        if (state.equals("IDENTIFY") || state.equals("VERIFY") || state.equals("PROTOCOL"))
         {
-            new STAError(cur_client,
+            new STAError(client,
                          200 + Constants.STA_INVALID_STATE,
                          "MSG Invalid State.",
                          "FC",
-                         Issued_Command.substring(0, 4));
+                         command.substring(0, 4));
             return;
         }
         if (!cur_client.reg.overridespam)
         {
-            switch (Issued_Command.charAt(0))
+            switch (command.charAt(0))
             {
                 case 'B':
                     if (Vars.BMSG != 1)
                     {
-                        new STAError(cur_client, 100, "MSG Invalid Context B");
+                        new STAError(client, 100, "MSG Invalid Context B");
                         return;
                     }
                     break;
                 case 'E':
                     if (Vars.EMSG != 1)
                     {
-                        new STAError(cur_client, 100, "MSG Invalid Context E");
+                        new STAError(client, 100, "MSG Invalid Context E");
                         return;
                     }
                     break;
                 case 'D':
                     if (Vars.DMSG != 1)
                     {
-                        new STAError(cur_client, 100, "MSG Invalid Context D");
+                        new STAError(client, 100, "MSG Invalid Context D");
                         return;
                     }
                     break;
                 case 'F':
                     if (Vars.FMSG != 1)
                     {
-                        new STAError(cur_client, 100, "MSG Invalid Context F");
+                        new STAError(client, 100, "MSG Invalid Context F");
                         return;
                     }
                     break;
                 case 'H':
                     if (Vars.HMSG != 1)
                     {
-                        new STAError(cur_client, 100, "MSG Invalid Context H");
+                        new STAError(client, 100, "MSG Invalid Context H");
                         return;
                     }
 
             }
         }
         //System.out.println (Issued_Command) ;
-        StringTokenizer tok = new StringTokenizer(Issued_Command, " ");
+        StringTokenizer tok = new StringTokenizer(command, " ");
         String aux = tok.nextToken();
-        if (Issued_Command.charAt(0) == 'H') //for hub only, special check
+        if (command.charAt(0) == 'H') //for hub only, special check
         {
             if (aux.equals("Test"))
             {
@@ -111,11 +119,11 @@ public class MSG
 
         if (!tok.nextToken().equals(cur_client.SessionID))
         {
-            new STAError(cur_client, 200, "Protocol Error. Wrong SID supplied.");
+            new STAError(client, 200, "Protocol Error. Wrong SID supplied.");
             return;
         }
         String pmsid = null;
-        if (Issued_Command.charAt(0) == 'D' || Issued_Command.charAt(0) == 'E')
+        if (command.charAt(0) == 'D' || command.charAt(0) == 'E')
         {
             pmsid = tok.nextToken();
         }
@@ -126,7 +134,7 @@ public class MSG
             if (
                     !(cur_client.reg.overridespam))
             {
-                new STAError(cur_client, 100, "Message exceeds maximum lenght.");
+                new STAError(client, 100, "Message exceeds maximum lenght.");
                 return;
             }
         }
@@ -140,7 +148,7 @@ public class MSG
             //  System.out.println(index);
             if (index != -1)//not ok
             {
-                if (!((Issued_Command.startsWith("E") || Issued_Command.startsWith("D")) //if pm
+                if (!((command.startsWith("E") || command.startsWith("D")) //if pm
                       && (Main.listaBanate.getPrAt(index) & BannedWord.privatechat) == 0))
                 //and private chat control activated
                 {
@@ -175,7 +183,7 @@ public class MSG
                     if (what % 2 == 1)
                     {
                         //System.out.println("flag contine 2");
-                        cur_client.myNod.kickMeByBot("You typed forbidden word.", 3);
+                        client.kickMeByBot("You typed forbidden word.", 3);
                     }
                     what /= 2;
                     if (what % 2 == 1)
@@ -194,14 +202,14 @@ public class MSG
                     if (what % 2 == 1)
                     {
                         //System.out.println("flag contine 16");
-                        Issued_Command = Issued_Command.replace(message, "****");
+                        command = command.replace(message, "****");
 
                     }
                     what /= 2;
                     if (what % 2 == 1)
                     {
                         //System.out.println("flag contine 32");
-                        Issued_Command = Issued_Command.replace(message,
+                        command = command.replace(message,
                                                                 ADC.retADCStr(Main.listaBanate
                                                                                       .getReplAt(
                                                                                               index)));
@@ -216,13 +224,13 @@ public class MSG
                     if (what % 2 == 1)
                     {
                         ;//notify opchat :
-                        for (Client temp : SessionManager.getUsers())
+                        for (Client tempClient : SessionManager.getUsers())
                         {
-                            if (temp.handler.reg.isreg)
+                            if (tempClient.getClientHandler().reg.isreg)
                             {
-                                temp.handler
+                                tempClient.getClientHandler()
                                         .sendToClient("EMSG ABCD " +
-                                                      temp.handler.SessionID +
+                                                      tempClient.getClientHandler().SessionID +
                                                       " User\\s{" +
                                                       cur_client.NI +
                                                       "}\\swith\\sIP\\s{" +
@@ -240,7 +248,7 @@ public class MSG
                     }
                     if (kick)
                     {
-                        new STAError(cur_client, 200, "You typed forbidden word.");
+                        new STAError(client, 200, "You typed forbidden word.");
                     }
                     if (ret)
                     {
@@ -266,7 +274,7 @@ public class MSG
                 }
                 else
                 {
-                    new STAError(cur_client,
+                    new STAError(client,
                                  100 + Constants.STA_GENERIC_PROTOCOL_ERROR,
                                  "MSG Invalid Flag.");
                     return;
@@ -283,7 +291,7 @@ public class MSG
                 if (!cur_client.reg.overridespam)
 
                 {
-                    new STAError(cur_client,
+                    new STAError(client,
                                  100,
                                  "Chatting Too Fast. Minimum chat interval " +
                                  String.valueOf(Vars.chat_interval) +
@@ -306,11 +314,11 @@ public class MSG
         }
 
 
-        if (Issued_Command.charAt(0) == 'B') //broadcast
+        if (command.charAt(0) == 'B') //broadcast
         {
             if (pmsid != null)
             {
-                new STAError(cur_client, 100, "MSG Can't Broadcast PM.");
+                new STAError(client, 100, "MSG Can't Broadcast PM.");
                 return;
             }
             // ok now lets check that the chat is a command....
@@ -323,9 +331,7 @@ public class MSG
 
                 if ((message.toLowerCase().startsWith("!adc") ||
                      message.toLowerCase().startsWith("+adc")) &&
-                    (message.length() > 4 ?
-                     message.toLowerCase().charAt(4) != 's' :
-                     true))//adc adv config panel
+                    (message.length() <= 4 || message.toLowerCase().charAt(4) != 's'))//adc adv config panel
                 {
                     cur_client.sendFromBot("[adc:] " + ADC.retNormStr(message));
                     new ADCConfig(cur_client, message);
@@ -374,27 +380,27 @@ public class MSG
 
 
             {
-                Broadcast.getInstance().broadcast(Issued_Command);
+                Broadcast.getInstance().broadcast(command);
             }
             //System.out.println("acum am trimis broadcast de la "+handler.ID);
             //System.out.println (Issued_Command);
         }
-        else if (Issued_Command.charAt(0) == 'E') //echo direct msg
+        else if (command.charAt(0) == 'E') //echo direct msg
         {
             if (pmsid == null)
             {
-                new STAError(cur_client, 100, "MSG Can't PM to Nobody.");
+                new STAError(client, 100, "MSG Can't PM to Nobody.");
                 return;
             }
             if (!thissid.equals(cur_client.SessionID))
             {
-                new STAError(cur_client, 100, "MSG PM not returning to self.");
+                new STAError(client, 100, "MSG PM not returning to self.");
                 return;
             }
             if (pmsid.equals("DCBA"))
             {
                 //talking to bot security
-                cur_client.sendToClient(Issued_Command);
+                cur_client.sendToClient(command);
                 // ok now lets check that the chat is a command....
                 if (cur_client.reg.isreg && message.charAt(0) == '!' ||
                     cur_client.reg.isreg && message.charAt(0) == '+') //ok.. command mode.
@@ -427,16 +433,16 @@ public class MSG
             {
                 for (Client temp : SessionManager.getUsers())
                 {
-                    if (temp.handler.SessionID.equals(pmsid))
+                    if (temp.getClientHandler().SessionID.equals(pmsid))
                     {
-                        temp.handler.sendToClient(Issued_Command);
-                        cur_client.sendToClient(Issued_Command);
+                        temp.getClientHandler().sendToClient(command);
+                        cur_client.sendToClient(command);
                         return;
                     }
                 }
                 //talking to inexisting client
 
-                new STAError(cur_client,
+                new STAError(client,
                              100,
                              "MSG User not found."); //not kick, maybe the other client just left after he sent the msg;
                 return;
@@ -449,17 +455,17 @@ public class MSG
                 //must send to all ops...
 
                 //cant broadcast coz must send each;s SID
-                for (Client temp : SessionManager.getUsers())
+                for (Client targetClient : SessionManager.getUsers())
                 {
-                    if (temp.handler.userok == 1)
+                    if (targetClient.getClientHandler().userok == 1)
                     {
-                        if (temp.handler.reg.isreg && !temp.handler.equals(cur_client))
+                        if (targetClient.getClientHandler().reg.isreg && !targetClient.equals(client))
                         {
-                            temp.handler
+                            targetClient.getClientHandler()
                                     .sendToClient("EMSG " +
                                                   cur_client.SessionID +
                                                   " " +
-                                                  temp.handler.SessionID +
+                                                  targetClient.getClientHandler().SessionID +
                                                   " " +
                                                   message +
                                                   " PMABCD");
@@ -470,20 +476,20 @@ public class MSG
 
 
             }
-            cur_client.sendToClient(Issued_Command);
+            cur_client.sendToClient(command);
 
 
         }
-        else if (Issued_Command.charAt(0) == 'D') //direct direct msg
+        else if (command.charAt(0) == 'D') //direct direct msg
         {
             if (pmsid == null)
             {
-                new STAError(cur_client, 100, "MSG Can't PM to Nobody.");
+                new STAError(client, 100, "MSG Can't PM to Nobody.");
                 return;
             }
             if (!thissid.equals(cur_client.SessionID))
             {
-                new STAError(cur_client, 100, "MSG PM not returning to self.");
+                new STAError(client, 100, "MSG PM not returning to self.");
                 return;
             }
             if (pmsid.equals("DCBA"))
@@ -500,37 +506,35 @@ public class MSG
             }
             else if (!pmsid.equals("ABCD"))
             {
-                for (Client temp : SessionManager.getUsers())
+                for (Client tempClient : SessionManager.getUsers())
                 {
-                    if (temp.handler.SessionID.equals(pmsid))
+                    if (tempClient.getClientHandler().SessionID.equals(pmsid))
                     {
-                        temp.handler.sendToClient(Issued_Command);
+                        tempClient.getClientHandler().sendToClient(command);
                         return;
                     }
                 }
                 //talking to inexisting client
 
-                new STAError(cur_client,
+                new STAError(client,
                              100,
                              "MSG User not found."); //not kick, maybe the other client just left after he sent the msg;
                 return;
-
-
             }
             else
             {
                 //talking to bot
                 //must send to all ops...
 
-                for (Client temp : SessionManager.getUsers())
+                for (Client tempClient : SessionManager.getUsers())
                 {
-                    if (temp.handler.reg.isreg && !temp.handler.equals(cur_client))
+                    if (tempClient.getClientHandler().reg.isreg && !tempClient.equals(client))
                     {
-                        temp.handler
+                        tempClient.getClientHandler()
                                 .sendToClient("DMSG " +
                                               cur_client.SessionID +
                                               " " +
-                                              temp.handler.SessionID +
+                                              tempClient.getClientHandler().SessionID +
                                               " " +
                                               message +
                                               " PMABCD");
@@ -544,7 +548,7 @@ public class MSG
 
         else
         {
-            new STAError(cur_client, 100, "MSG Invalid Context");
+            new STAError(client, 100, "MSG Invalid Context");
             return;
         }
     }

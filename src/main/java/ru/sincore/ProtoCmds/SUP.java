@@ -39,20 +39,28 @@ import java.util.StringTokenizer;
  * Implementation of the ADC SUP command, feature checker of clients.
  *
  * @author Pietricica
+ *
+ * @author Alexey 'lh' Antonov
+ * @since 2011-09-08
  */
 public class SUP
 {
 
     /**
      * Creates a new instance of SUP
+     * @param client reference to client
+     * @param state command state. See ADC protocol specs.
+     * @param command incoming command // TODO realy?
+     * @throws STAException exception, cause the something gone wrong =)
+     * @throws CommandException exception, cause the something gone wrong =)
      */
-    public SUP(Client client, String State, String Issued_Command)
+    public SUP(Client client, String state, String command)
             throws STAException, CommandException
     {
         ClientHandler cur_client = client.getClientHandler();
         if (!cur_client.reg.overridespam)
         {
-            switch (Issued_Command.charAt(0))
+            switch (command.charAt(0))
             {
                 case 'B':
                     if (Vars.BSUP != 1)
@@ -92,25 +100,25 @@ public class SUP
             }
         }
 
-        if (Issued_Command.charAt(0) != 'H')
+        if (command.charAt(0) != 'H')
         {
-            if (State.equals("PROTOCOL"))
+            if (state.equals("PROTOCOL"))
             {
                 throw new CommandException("FAIL state:PROTOCOL reason:NOT BASE CLIENT");
             }
 
         }
-        if (State.equals("VERIFY") || State.equals("IDENTIFY"))
+        if (state.equals("VERIFY") || state.equals("IDENTIFY"))
         {
             new STAError(client, 200 + Constants.STA_INVALID_STATE, "SUP Invalid State.");
             return;
         }
-        Issued_Command = Issued_Command.substring(4);
-        StringTokenizer tok = new StringTokenizer(Issued_Command);
+        command = command.substring(4);
+        StringTokenizer tok = new StringTokenizer(command);
         while (tok.hasMoreTokens())
         {
             String aux = tok.nextToken();
-            boolean enable;
+            boolean enable = false;
             if (aux.startsWith("AD"))
             {
                 enable = true;
@@ -124,52 +132,28 @@ public class SUP
                 new STAError(client, 100, "Unknown SUP token (not an \'AD\' or \'RM\').");
             }
 
-                aux = aux.substring(2);
-                if (aux.equals("BAS0"))
-                {
-                    cur_client.bas0 = true;
-                    cur_client.base = 1;
-                }
-                if (aux.equals("BASE"))
-                {
-                    cur_client.base = 2;
-                }
-                if (aux.startsWith("PIN") && aux.length() == 4)
-                {
-                    cur_client.ping = true;
-                }
-                if (aux.startsWith("UCM") && aux.length() == 4)
-                {
-                    cur_client.ucmd = 1;
-                }
-                if (aux.startsWith("TIGR") && aux.length() == 4)
-                {
-                    cur_client.tigr = true;
-                }
-
-
-
-                aux = aux.substring(2);
-                if (aux.startsWith("UCM") && aux.length() == 4)
-                {
-                    cur_client.ucmd = 0;
-                }
-                if (aux.equals("BAS0"))
-                {
-                    cur_client.bas0 = false;
-                }
-                if (aux.equals("BASE"))
-                {
-                    cur_client.base = 0;
-                }
-                if (aux.startsWith("PIN") && aux.length() == 4)
-                {
-                    cur_client.ping = false;
-                }
-                if (aux.startsWith("TIG") && aux.length() == 4)
-                {
-                    cur_client.tigr = false;
-                }
+            aux = aux.substring(2);
+            if (aux.equals("BAS0"))
+            {
+                cur_client.bas0 = enable;
+                cur_client.base = 1;
+            }
+            else if (aux.equals("BASE"))
+            {
+                cur_client.base = (enable ? 2 : 0);
+            }
+            else if (aux.startsWith("PIN") && aux.length() == 4)
+            {
+                cur_client.ping = enable;
+            }
+            else if (aux.startsWith("UCM") && aux.length() == 4)
+            {
+                cur_client.ucmd = (enable ? 1 : 0);
+            }
+            else if (aux.startsWith("TIGR") && aux.length() == 4)
+            {
+                cur_client.tigr = enable;
+            }
         }
         if (cur_client.bas0)
         {
@@ -190,11 +174,11 @@ public class SUP
 
         if (cur_client.base == 0)
         {
-            if (State.equals("PROTOCOL"))
+            if (state.equals("PROTOCOL"))
             {
                 throw new CommandException("FAIL state:PROTOCOL reason:NOT BASE CLIENT");
             }
-            else if (State.equals("NORMAL"))
+            else if (state.equals("NORMAL"))
             {
                 new STAError(client,
                              200 + Constants.STA_GENERIC_PROTOCOL_ERROR,
@@ -211,7 +195,7 @@ public class SUP
         }
 
 
-        if (State.equals("PROTOCOL"))
+        if (state.equals("PROTOCOL"))
         {
             cur_client.sendToClient(ADC.Init);
 

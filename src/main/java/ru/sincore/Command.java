@@ -65,9 +65,9 @@ public class Command
     {
         for (Client client : SessionManager.getUsers())
         {
-            if (client.getClientHandler().userok == 1 && client.getClientHandler() != currentClient)
+            if (client.getClientHandler().userok == 1 && client.equals(currentClient))
             {
-                currentClient.sendToClient(client.getClientHandler().getINF());
+                currentClient.getClientHandler().sendToClient(client.getClientHandler().getINF());
             }
 
 
@@ -83,19 +83,15 @@ public class Command
         synchronized (SessionManager.Users)
         {
             // System.out.println("marimea este "+SessionManager.Users.size());
-            if (SessionManager.Users.containsKey(currentClient.ID))
+            if (SessionManager.Users.containsKey(currentClient.getClientHandler().ID))
             {
-                Client ch = SessionManager.Users.get(currentClient.ID);
+                Client ch = SessionManager.Users.get(currentClient.getClientHandler().ID);
                 ch.dropMeImGhost();
             }
 
 
-            SessionManager.Users.put(currentClient.ID, currentClient.myNod);
-            currentClient.inside = true;
-            //  ok=true;
-            //System.out.println("a intrat "+handler.ID+", marimea este "+SessionManager.Users.size());
-
-
+            SessionManager.Users.put(currentClient.getClientHandler().ID, currentClient);
+            currentClient.getClientHandler().inside = true;
         }
         return true;
     }
@@ -105,15 +101,15 @@ public class Command
             throws STAException
     {
         // must check if its op or not and move accordingly
-        if (!currentClient.reg.key) //DO NOT increase HR count and put RG field to 1
+        if (!currentClient.getClientHandler().reg.key) //DO NOT increase HR count and put RG field to 1
         {
             //  handler.HR=String.valueOf(Integer.parseInt(handler.HR)+1);
-            currentClient.CT = "2";
+            currentClient.getClientHandler().CT = "2";
         }
         else //DO NOT increase HO count and put OP field to 1
         {
             //   handler.HO=String.valueOf(Integer.parseInt(handler.HO)+1);
-            currentClient.CT = "4";
+            currentClient.getClientHandler().CT = "4";
         }
 
 
@@ -142,39 +138,37 @@ public class Command
         */
         sendUsersInfs();
 
-        currentClient.sendToClient("BINF DCBA ID" +
-                                Vars.SecurityCid +
-                                " NI" +
-                                ADC.retADCStr(Vars.bot_name)
-                                +
-                                " CT5 DE" +
-                                ADC.retADCStr(Vars.bot_desc));
-        currentClient.putOpchat(true);
-        currentClient.sendToClient(currentClient.getINF());  //sending inf about itself too
+        currentClient.getClientHandler().sendToClient("BINF DCBA ID" +
+                                                      Vars.SecurityCid +
+                                                      " NI" +
+                                                      ADC.retADCStr(Vars.bot_name)
+                                                      +
+                                                      " CT5 DE" +
+                                                      ADC.retADCStr(Vars.bot_desc));
+        currentClient.getClientHandler().putOpchat(true);
+        currentClient.getClientHandler().sendToClient(currentClient.getClientHandler().getINF());  //sending inf about itself too
         //handler.sendToClient(inf);
 
 
         //ok now must send INF to all clients
-        Broadcast.getInstance().broadcast(currentClient.getINF(), currentClient.myNod);
-        currentClient.userok = 1; //user is OK, logged in and cool.
-        currentClient.reg.LastLogin = System.currentTimeMillis();
-        currentClient.sendFromBot(ADC.MOTD);
-        //System.out.println("gay");
-        //handler.sendFromBot ("gay");
-        currentClient.sendFromBot(currentClient.reg.HideMe ? "You are currently hidden." : "");
+        Broadcast.getInstance().broadcast(currentClient.getClientHandler().getINF(), currentClient);
+        currentClient.getClientHandler().userok = 1; //user is OK, logged in and cool.
+        currentClient.getClientHandler().reg.LastLogin = System.currentTimeMillis();
+        currentClient.getClientHandler().sendFromBot(ADC.MOTD);
+        currentClient.getClientHandler().sendFromBot(currentClient.getClientHandler().reg.HideMe ? "You are currently hidden." : "");
 
-        currentClient.LoggedAt = System.currentTimeMillis();
-        currentClient.State = "NORMAL";
+        currentClient.getClientHandler().LoggedAt = System.currentTimeMillis();
+        currentClient.getClientHandler().State = "NORMAL";
 
 
         /** calling plugins...*/
 
         for (Module myMod : Modulator.myModules)
         {
-            myMod.onConnect(currentClient);
+            myMod.onConnect(currentClient.getClientHandler());
         }
         //handler.sendFromBot( ADC.MOTD);
-        currentClient.can_receive_cmds = true;
+        currentClient.getClientHandler().can_receive_cmds = true;
 
 
     }
@@ -200,10 +194,10 @@ public class Command
         command = command.substring(4);
         StringTokenizer tok = new StringTokenizer(command);
 
-        String cur_inf = "BINF " + currentClient.SessionID;
+        String cur_inf = "BINF " + currentClient.getClientHandler().SessionID;
 
         String thesid = tok.nextToken();
-        if (!thesid.equals(currentClient.SessionID))
+        if (!thesid.equals(currentClient.getClientHandler().SessionID))
         {
             new STAError(currentClient,
                          200 + Constants.STA_GENERIC_PROTOCOL_ERROR,
@@ -253,8 +247,8 @@ public class Command
                     new STAError(currentClient, 100, "Can't change CID while connected.");
                     return;
                 }
-                currentClient.ID = aux.substring(2);
-                cur_inf = cur_inf + " ID" + currentClient.ID;
+                currentClient.getClientHandler().ID = aux.substring(2);
+                cur_inf = cur_inf + " ID" + currentClient.getClientHandler().ID;
                 //System.out.println (handler.ID);
             }
             else if (aux.startsWith("NI"))
@@ -268,17 +262,17 @@ public class Command
                                  "Nick not valid, please choose another");
                     return;
                 }
-                currentClient.NI = aux.substring(2);
+                currentClient.getClientHandler().NI = aux.substring(2);
 
                 if (!state.equals("PROTOCOL"))
                 {
-                    if (currentClient.reg.isreg)
+                    if (currentClient.getClientHandler().reg.isreg)
                     {
-                        currentClient.reg.LastNI = currentClient.NI;
+                        currentClient.getClientHandler().reg.LastNI = currentClient.getClientHandler().NI;
                     }
                 }
 
-                cur_inf = cur_inf + " NI" + currentClient.NI;
+                cur_inf = cur_inf + " NI" + currentClient.getClientHandler().NI;
             }
             else if (aux.startsWith("PD"))//the PiD
             {
@@ -291,134 +285,134 @@ public class Command
                 }
 
 
-                currentClient.PD = aux.substring(2);
+                currentClient.getClientHandler().PD = aux.substring(2);
             }
             else if (aux.startsWith("I4"))
             {
 
-                currentClient.I4 = aux.substring(2);
+                currentClient.getClientHandler().I4 = aux.substring(2);
                 if (aux.substring(2).equals("0.0.0.0") ||
                     aux.substring(2).equals("localhost"))//only if active client
                 {
-                    currentClient.I4 = currentClient.RealIP;
+                    currentClient.getClientHandler().I4 = currentClient.getClientHandler().RealIP;
                 }
 
 
-                else if (!aux.substring(2).equals(currentClient.RealIP) && !aux.substring(2).equals("")
-                         && !currentClient.RealIP.equals("127.0.0.1"))
+                else if (!aux.substring(2).equals(currentClient.getClientHandler().RealIP) && !aux.substring(2).equals("")
+                         && !currentClient.getClientHandler().RealIP.equals("127.0.0.1"))
                 {
                     new STAError(currentClient,
                                  200 + Constants.STA_INVALID_IP,
                                  "Wrong IP address supplied.",
                                  "I4",
-                                 currentClient.RealIP);
+                                 currentClient.getClientHandler().RealIP);
                     return;
                 }
-                cur_inf = cur_inf + " I4" + currentClient.I4;
+                cur_inf = cur_inf + " I4" + currentClient.getClientHandler().I4;
 
             }
             else if (aux.startsWith("I6"))
             {
-                currentClient.I6 = aux.substring(2);
-                cur_inf = cur_inf + " I6" + currentClient.I6;
+                currentClient.getClientHandler().I6 = aux.substring(2);
+                cur_inf = cur_inf + " I6" + currentClient.getClientHandler().I6;
             }
             else if (aux.startsWith("U4"))
             {
-                currentClient.U4 = aux.substring(2);
-                cur_inf = cur_inf + " U4" + currentClient.U4;
+                currentClient.getClientHandler().U4 = aux.substring(2);
+                cur_inf = cur_inf + " U4" + currentClient.getClientHandler().U4;
             }
             else if (aux.startsWith("U6"))
             {
-                currentClient.U6 = aux.substring(2);
-                cur_inf = cur_inf + " U6" + currentClient.U6;
+                currentClient.getClientHandler().U6 = aux.substring(2);
+                cur_inf = cur_inf + " U6" + currentClient.getClientHandler().U6;
             }
             else if (aux.startsWith("SS"))
             {
-                currentClient.SS = aux.substring(2);
-                cur_inf = cur_inf + " SS" + currentClient.SS;
+                currentClient.getClientHandler().SS = aux.substring(2);
+                cur_inf = cur_inf + " SS" + currentClient.getClientHandler().SS;
             }
             else if (aux.startsWith("SF"))
             {
-                currentClient.SF = aux.substring(2);
-                cur_inf = cur_inf + " SF" + currentClient.SF;
+                currentClient.getClientHandler().SF = aux.substring(2);
+                cur_inf = cur_inf + " SF" + currentClient.getClientHandler().SF;
             }
             else if (aux.startsWith("VE"))
             {
-                currentClient.VE = aux.substring(2);
-                cur_inf = cur_inf + " VE" + currentClient.VE;
+                currentClient.getClientHandler().VE = aux.substring(2);
+                cur_inf = cur_inf + " VE" + currentClient.getClientHandler().VE;
             }
             else if (aux.startsWith("US"))
             {
-                currentClient.US = aux.substring(2);
-                cur_inf = cur_inf + " US" + currentClient.US;
+                currentClient.getClientHandler().US = aux.substring(2);
+                cur_inf = cur_inf + " US" + currentClient.getClientHandler().US;
             }
             else if (aux.startsWith("DS"))
             {
-                currentClient.DS = aux.substring(2);
-                cur_inf = cur_inf + " DS" + currentClient.DS;
+                currentClient.getClientHandler().DS = aux.substring(2);
+                cur_inf = cur_inf + " DS" + currentClient.getClientHandler().DS;
             }
             else if (aux.startsWith("SL"))
             {
-                currentClient.SL = aux.substring(2);
-                cur_inf = cur_inf + " SL" + currentClient.SL;
+                currentClient.getClientHandler().SL = aux.substring(2);
+                cur_inf = cur_inf + " SL" + currentClient.getClientHandler().SL;
             }
             else if (aux.startsWith("AS"))
             {
-                currentClient.AS = aux.substring(2);
-                cur_inf = cur_inf + " AS" + currentClient.AS;
+                currentClient.getClientHandler().AS = aux.substring(2);
+                cur_inf = cur_inf + " AS" + currentClient.getClientHandler().AS;
             }
             else if (aux.startsWith("AM"))
             {
-                currentClient.AM = aux.substring(2);
-                cur_inf = cur_inf + " AM" + currentClient.AM;
+                currentClient.getClientHandler().AM = aux.substring(2);
+                cur_inf = cur_inf + " AM" + currentClient.getClientHandler().AM;
             }
             else if (aux.startsWith("EM"))
             {
-                currentClient.EM = aux.substring(2);
-                cur_inf = cur_inf + " EM" + currentClient.EM;
+                currentClient.getClientHandler().EM = aux.substring(2);
+                cur_inf = cur_inf + " EM" + currentClient.getClientHandler().EM;
             }
 
             else if (aux.startsWith("DE"))
             {
-                currentClient.DE = aux.substring(2);
-                cur_inf = cur_inf + " DE" + currentClient.DE;
+                currentClient.getClientHandler().DE = aux.substring(2);
+                cur_inf = cur_inf + " DE" + currentClient.getClientHandler().DE;
             }
             else if (aux.startsWith("HN"))
             {
-                currentClient.HN = aux.substring(2);
+                currentClient.getClientHandler().HN = aux.substring(2);
 
                 if (state.equals("NORMAL"))
                 {
-                    cur_inf = cur_inf + " HN" + currentClient.HN;
+                    cur_inf = cur_inf + " HN" + currentClient.getClientHandler().HN;
                 }
             }
             else if (aux.startsWith("HR"))
             {
-                currentClient.HR = aux.substring(2);
-                cur_inf = cur_inf + " HR" + currentClient.HR;
+                currentClient.getClientHandler().HR = aux.substring(2);
+                cur_inf = cur_inf + " HR" + currentClient.getClientHandler().HR;
             }
             else if (aux.startsWith("HO"))
             {
-                currentClient.HO = aux.substring(2);
-                cur_inf = cur_inf + " HO" + currentClient.HO;
+                currentClient.getClientHandler().HO = aux.substring(2);
+                cur_inf = cur_inf + " HO" + currentClient.getClientHandler().HO;
             }
             else if (aux.startsWith("TO"))
             {
-                currentClient.TO = aux.substring(2);
-                cur_inf = cur_inf + " TO" + currentClient.TO;
+                currentClient.getClientHandler().TO = aux.substring(2);
+                cur_inf = cur_inf + " TO" + currentClient.getClientHandler().TO;
             }
 
             else if (aux.startsWith("AW"))
             {
-                currentClient.AW = aux.substring(2);
-                cur_inf = cur_inf + " AW" + currentClient.AW;
+                currentClient.getClientHandler().AW = aux.substring(2);
+                cur_inf = cur_inf + " AW" + currentClient.getClientHandler().AW;
             }
             else if (aux.startsWith("CT"))
             {
-                if (currentClient.reg.overridespam)
+                if (currentClient.getClientHandler().reg.overridespam)
                 {
-                    currentClient.CT = aux.substring(2);
-                    cur_inf = cur_inf + " CT" + currentClient.CT;
+                    currentClient.getClientHandler().CT = aux.substring(2);
+                    cur_inf = cur_inf + " CT" + currentClient.getClientHandler().CT;
                 }
                 else
                 {
@@ -431,15 +425,15 @@ public class Command
             else if (aux.startsWith("HI"))
             {
 
-                currentClient.HI = aux.substring(2);
-                cur_inf = cur_inf + " HI" + currentClient.HI;
+                currentClient.getClientHandler().HI = aux.substring(2);
+                cur_inf = cur_inf + " HI" + currentClient.getClientHandler().HI;
 
             }
 
             else if (aux.startsWith("SU"))
             {
-                currentClient.SU = aux.substring(2);
-                cur_inf = cur_inf + " SU" + currentClient.SU;
+                currentClient.getClientHandler().SU = aux.substring(2);
+                cur_inf = cur_inf + " SU" + currentClient.getClientHandler().SU;
             }
             else
             {
@@ -452,7 +446,7 @@ public class Command
         }
         if (state.equals("PROTOCOL"))
         {
-            if (currentClient.ID == null)
+            if (currentClient.getClientHandler().ID == null)
             {
                 new STAError(currentClient,
                              200 + Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
@@ -461,7 +455,7 @@ public class Command
                              "ID");
                 return;
             }
-            else if (currentClient.ID.equals(""))
+            else if (currentClient.getClientHandler().ID.equals(""))
             {
                 new STAError(currentClient,
                              200 + Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
@@ -470,7 +464,7 @@ public class Command
                              "ID");
                 return;
             }
-            if (currentClient.PD == null)
+            if (currentClient.getClientHandler().PD == null)
             {
                 new STAError(currentClient,
                              200 + Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
@@ -479,7 +473,7 @@ public class Command
                              "PD");
                 return;
             }
-            else if (currentClient.PD.equals(""))
+            else if (currentClient.getClientHandler().PD.equals(""))
             {
                 new STAError(currentClient,
                              200 + Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
@@ -489,7 +483,7 @@ public class Command
                 return;
             }
 
-            if (currentClient.NI == null)
+            if (currentClient.getClientHandler().NI == null)
             {
                 new STAError(currentClient,
                              200 + Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
@@ -498,7 +492,7 @@ public class Command
                              "NI");
                 return;
             }
-            else if (currentClient.NI.equals(""))
+            else if (currentClient.getClientHandler().NI.equals(""))
             {
                 new STAError(currentClient,
                              200 + Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
@@ -507,7 +501,7 @@ public class Command
                              "NI");
                 return;
             }
-            if (currentClient.HN == null)
+            if (currentClient.getClientHandler().HN == null)
             {
                 new STAError(currentClient,
                              200 + Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
@@ -516,7 +510,7 @@ public class Command
                              "HN");
                 return;
             }
-            else if (currentClient.HN.equals(""))
+            else if (currentClient.getClientHandler().HN.equals(""))
             {
                 new STAError(currentClient,
                              200 + Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
@@ -525,10 +519,10 @@ public class Command
                              "HN");
                 return;
             }
-            currentClient.reg = AccountsConfig.getnod(currentClient.ID);
-            if (currentClient.reg == null)
+            currentClient.getClientHandler().reg = AccountsConfig.getnod(currentClient.getClientHandler().ID);
+            if (currentClient.getClientHandler().reg == null)
             {
-                currentClient.reg = new Nod();
+                currentClient.getClientHandler().reg = new Nod();
             }
             //handler.reg.CH=handler;
             // if(!handler.reg.isreg)
@@ -537,26 +531,26 @@ public class Command
 
 
         /* check if user is banned first*/
-        currentClient.myban = BanList.getban(3, currentClient.ID);
-        if (currentClient.myban == null)
+        currentClient.getClientHandler().myban = BanList.getban(3, currentClient.getClientHandler().ID);
+        if (currentClient.getClientHandler().myban == null)
         {
 
-            currentClient.myban = BanList.getban(2, (currentClient.RealIP));
+            currentClient.getClientHandler().myban = BanList.getban(2, (currentClient.getClientHandler().RealIP));
             //System.out.println(handler.mySession.getRemoteAddress().toString());
         }
-        if (currentClient.myban == null)
+        if (currentClient.getClientHandler().myban == null)
         {
-            currentClient.myban = BanList.getban(1, currentClient.NI);
+            currentClient.getClientHandler().myban = BanList.getban(1, currentClient.getClientHandler().NI);
 
         }
-        if (currentClient.myban != null) //banned
+        if (currentClient.getClientHandler().myban != null) //banned
         {
-            if (currentClient.myban.time == -1)
+            if (currentClient.getClientHandler().myban.time == -1)
             {
                 String msg = "Hello there. You are permanently banned.\nOp who banned you: " +
-                             currentClient.myban.banop +
+                             currentClient.getClientHandler().myban.banop +
                              "\nReason: " +
-                             currentClient.myban.banreason +
+                             currentClient.getClientHandler().myban.banreason +
                              "\n" +
                              Vars.Msg_Banned;
                 //System.out.println(msg);
@@ -565,14 +559,14 @@ public class Command
                 return;
             }
             long TL =
-                    System.currentTimeMillis() - currentClient.myban.timeofban - currentClient.myban.time;
+                    System.currentTimeMillis() - currentClient.getClientHandler().myban.timeofban - currentClient.getClientHandler().myban.time;
             TL = -TL;
             if (TL > 0)
             {
                 String msg = "Hello there. You are temporary banned.\nOp who banned you: " +
-                             currentClient.myban.banop +
+                             currentClient.getClientHandler().myban.banop +
                              "\nReason: " +
-                             currentClient.myban.banreason +
+                             currentClient.getClientHandler().myban.banreason +
                              "\nThere are still " +
                              Long.toString(TL / 1000) +
                              " seconds remaining.\n" +
@@ -597,8 +591,8 @@ public class Command
             {
                 if (client.getClientHandler().userok == 1)
                 {
-                    if (client.getClientHandler().NI.toLowerCase().equals(currentClient.NI.toLowerCase()) &&
-                        !client.getClientHandler().ID.equals(currentClient.ID))
+                    if (client.getClientHandler().NI.toLowerCase().equals(currentClient.getClientHandler().NI.toLowerCase()) &&
+                        !client.getClientHandler().ID.equals(currentClient.getClientHandler().ID))
                     {
                         new STAError(currentClient,
                                      200 + Constants.STA_NICK_TAKEN,
@@ -621,7 +615,7 @@ public class Command
         }
 
 
-        if (AccountsConfig.nickReserved(currentClient.NI, currentClient.ID))
+        if (AccountsConfig.nickReserved(currentClient.getClientHandler().NI, currentClient.getClientHandler().ID))
         {
             int x = (state.equals("PROTOCOL")) ? 200 : 100;
             new STAError(currentClient,
@@ -633,14 +627,14 @@ public class Command
         if (state.equals("PROTOCOL")) //otherwise is already connected, no point in checking this
         {
             /** must check the hideme var*/
-            if (currentClient.reg.HideMe)
+            if (currentClient.getClientHandler().reg.HideMe)
             {
                 cur_inf = cur_inf + " HI1";
-                currentClient.HI = "1";
+                currentClient.getClientHandler().HI = "1";
             }
 
 
-            if (Vars.max_users <= i && !currentClient.reg.overridefull)
+            if (Vars.max_users <= i && !currentClient.getClientHandler().reg.overridefull)
             {
                 new STAError(currentClient,
                              200 + Constants.STA_HUB_FULL,
@@ -654,11 +648,11 @@ public class Command
 
         }
 
-        if (!currentClient.reg.overridespam)
+        if (!currentClient.getClientHandler().reg.overridespam)
         {
-            if (currentClient.EM != null)
+            if (currentClient.getClientHandler().EM != null)
             {
-                if (!ValidateField(currentClient.EM))
+                if (!ValidateField(currentClient.getClientHandler().EM))
                 {
                     new STAError(currentClient,
                                  state.equals("PROTOCOL") ? 200 : 100,
@@ -667,11 +661,11 @@ public class Command
                 }
             }
         }
-        if (!currentClient.reg.overridespam)
+        if (!currentClient.getClientHandler().reg.overridespam)
         {
-            if (currentClient.DE != null)
+            if (currentClient.getClientHandler().DE != null)
             {
-                if (!ValidateField(currentClient.DE))
+                if (!ValidateField(currentClient.getClientHandler().DE))
                 {
                     new STAError(currentClient,
                                  state.equals("PROTOCOL") ? 200 : 100,
@@ -681,9 +675,9 @@ public class Command
             }
         }
 
-        if (!currentClient.reg.overridespam)
+        if (!currentClient.getClientHandler().reg.overridespam)
         {
-            if (currentClient.SS == null && Vars.min_share != 0)
+            if (currentClient.getClientHandler().SS == null && Vars.min_share != 0)
             {
                 new STAError(currentClient,
                              200 + Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
@@ -692,9 +686,9 @@ public class Command
                              "SS");
             }
         }
-        if (!currentClient.reg.overridespam)
+        if (!currentClient.getClientHandler().reg.overridespam)
         {
-            if (currentClient.SL == null && Vars.min_sl != 0)
+            if (currentClient.getClientHandler().SL == null && Vars.min_sl != 0)
             {
                 new STAError(currentClient,
                              200 + Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
@@ -707,9 +701,9 @@ public class Command
         try
         {
             //checking all:
-            if (!currentClient.reg.overridespam)
+            if (!currentClient.getClientHandler().reg.overridespam)
             {
-                if (currentClient.NI.length() > Vars.max_ni)
+                if (currentClient.getClientHandler().NI.length() > Vars.max_ni)
                 {
                     new STAError(currentClient,
                                  200 + Constants.STA_NICK_INVALID,
@@ -719,9 +713,9 @@ public class Command
                     return;
                 }
             }
-            if (!currentClient.reg.overridespam)
+            if (!currentClient.getClientHandler().reg.overridespam)
             {
-                if (currentClient.NI.length() < Vars.min_ni)
+                if (currentClient.getClientHandler().NI.length() < Vars.min_ni)
                 {
                     new STAError(currentClient,
                                  200 + Constants.STA_NICK_INVALID,
@@ -731,11 +725,11 @@ public class Command
                     return;
                 }
             }
-            if (!currentClient.reg.overridespam)
+            if (!currentClient.getClientHandler().reg.overridespam)
             {
-                if (currentClient.DE != null)
+                if (currentClient.getClientHandler().DE != null)
                 {
-                    if (currentClient.DE.length() > Vars.max_de)
+                    if (currentClient.getClientHandler().DE.length() > Vars.max_de)
                     {
                         new STAError(currentClient,
                                      200 + Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
@@ -746,11 +740,11 @@ public class Command
                     }
                 }
             }
-            if (!currentClient.reg.overridespam)
+            if (!currentClient.getClientHandler().reg.overridespam)
             {
-                if (currentClient.EM != null)
+                if (currentClient.getClientHandler().EM != null)
                 {
-                    if (currentClient.EM.length() > Vars.max_em)
+                    if (currentClient.getClientHandler().EM.length() > Vars.max_em)
                     {
                         new STAError(currentClient,
                                      200 + Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
@@ -761,11 +755,11 @@ public class Command
                     }
                 }
             }
-            if (!currentClient.reg.overrideshare)
+            if (!currentClient.getClientHandler().reg.overrideshare)
             {
-                if (currentClient.SS != null)
+                if (currentClient.getClientHandler().SS != null)
                 {
-                    if (Long.parseLong(currentClient.SS) > 1024 * Vars.max_share * 1024)
+                    if (Long.parseLong(currentClient.getClientHandler().SS) > 1024 * Vars.max_share * 1024)
                     {
                         new STAError(currentClient,
                                      200 + Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
@@ -776,11 +770,11 @@ public class Command
                     }
                 }
             }
-            if (!currentClient.reg.overrideshare)
+            if (!currentClient.getClientHandler().reg.overrideshare)
             {
-                if (currentClient.SS != null)
+                if (currentClient.getClientHandler().SS != null)
                 {
-                    if (Long.parseLong(currentClient.SS) < 1024 * Vars.min_share * 1024)
+                    if (Long.parseLong(currentClient.getClientHandler().SS) < 1024 * Vars.min_share * 1024)
                     {
                         new STAError(currentClient,
                                      200 + Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
@@ -791,11 +785,11 @@ public class Command
                     }
                 }
             }
-            if (!currentClient.reg.overrideshare)
+            if (!currentClient.getClientHandler().reg.overrideshare)
             {
-                if (currentClient.SL != null)
+                if (currentClient.getClientHandler().SL != null)
                 {
-                    if (Integer.parseInt(currentClient.SL) < Vars.min_sl)
+                    if (Integer.parseInt(currentClient.getClientHandler().SL) < Vars.min_sl)
                     {
                         new STAError(currentClient,
                                      200 + Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
@@ -806,11 +800,11 @@ public class Command
                     }
                 }
             }
-            if (!currentClient.reg.overrideshare)
+            if (!currentClient.getClientHandler().reg.overrideshare)
             {
-                if (currentClient.SL != null)
+                if (currentClient.getClientHandler().SL != null)
                 {
-                    if (Integer.parseInt(currentClient.SL) > Vars.max_sl)
+                    if (Integer.parseInt(currentClient.getClientHandler().SL) > Vars.max_sl)
                     {
                         new STAError(currentClient,
                                      200 + Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
@@ -821,9 +815,9 @@ public class Command
                     }
                 }
             }
-            if (!currentClient.reg.overridespam)
+            if (!currentClient.getClientHandler().reg.overridespam)
             {
-                if (Integer.parseInt(currentClient.HN) > Vars.max_hubs_user)
+                if (Integer.parseInt(currentClient.getClientHandler().HN) > Vars.max_hubs_user)
                 {
                     new STAError(currentClient,
                                  200 + Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
@@ -833,11 +827,11 @@ public class Command
                     return;
                 }
             }
-            if (!currentClient.reg.overridespam)
+            if (!currentClient.getClientHandler().reg.overridespam)
             {
-                if (currentClient.HO != null)
+                if (currentClient.getClientHandler().HO != null)
                 {
-                    if (Integer.parseInt(currentClient.HO) > Vars.max_hubs_op)
+                    if (Integer.parseInt(currentClient.getClientHandler().HO) > Vars.max_hubs_op)
                     {
                         new STAError(currentClient,
                                      200 + Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
@@ -848,11 +842,11 @@ public class Command
                     }
                 }
             }
-            if (!currentClient.reg.overridespam)
+            if (!currentClient.getClientHandler().reg.overridespam)
             {
-                if (currentClient.HR != null)
+                if (currentClient.getClientHandler().HR != null)
                 {
-                    if (Integer.parseInt(currentClient.HR) > Vars.max_hubs_reg)
+                    if (Integer.parseInt(currentClient.getClientHandler().HR) > Vars.max_hubs_reg)
                     {
                         new STAError(currentClient,
                                      200 + Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
@@ -872,28 +866,28 @@ public class Command
             return;
         }
 
-        if (currentClient.ID.equals(Vars.OpChatCid))
+        if (currentClient.getClientHandler().ID.equals(Vars.OpChatCid))
         {
             new STAError(currentClient,
                          200 + Constants.STA_CID_TAKEN,
                          "CID taken. Please go to Settings and pick new PID.");
             return;
         }
-        if (currentClient.ID.equals(Vars.SecurityCid))
+        if (currentClient.getClientHandler().ID.equals(Vars.SecurityCid))
         {
             new STAError(currentClient,
                          200 + Constants.STA_CID_TAKEN,
                          "CID taken. Please go to Settings and pick new PID.");
             return;
         }
-        if (currentClient.NI.equalsIgnoreCase(Vars.Opchat_name))
+        if (currentClient.getClientHandler().NI.equalsIgnoreCase(Vars.Opchat_name))
         {
             new STAError(currentClient,
                          200 + Constants.STA_NICK_TAKEN,
                          "Nick taken, please choose another");
             return;
         }
-        if (currentClient.NI.equalsIgnoreCase(Vars.bot_name))
+        if (currentClient.getClientHandler().NI.equalsIgnoreCase(Vars.bot_name))
         {
             new STAError(currentClient,
                          200 + Constants.STA_NICK_TAKEN,
@@ -910,20 +904,20 @@ public class Command
 
                 myTiger.engineReset();
                 myTiger.init();
-                byte[] bytepid = Base32.decode(currentClient.PD);
+                byte[] bytepid = Base32.decode(currentClient.getClientHandler().PD);
 
 
                 myTiger.engineUpdate(bytepid, 0, bytepid.length);
 
                 byte[] finalTiger = myTiger.engineDigest();
-                if (!Base32.encode(finalTiger).equals(currentClient.ID))
+                if (!Base32.encode(finalTiger).equals(currentClient.getClientHandler().ID))
                 {
                     new STAError(currentClient,
                                  200 + Constants.STA_GENERIC_LOGIN_ERROR,
                                  "Invalid CID check.");
                     return;
                 }
-                if (currentClient.PD.length() != 39)
+                if (currentClient.getClientHandler().PD.length() != 39)
                 {
                     throw new IllegalArgumentException();
                 }
@@ -945,7 +939,7 @@ public class Command
         }
 
 
-        if (currentClient.bas0 && currentClient.base != 2)
+        if (currentClient.getClientHandler().bas0 && currentClient.getClientHandler().base != 2)
         {
             new STAError(currentClient,
                          200 + Constants.STA_GENERIC_PROTOCOL_ERROR,
@@ -953,17 +947,17 @@ public class Command
         }
 
 
-        if (currentClient.SU != null)
+        if (currentClient.getClientHandler().SU != null)
         {
-            if (!(currentClient.SU.equals("")))
+            if (!(currentClient.getClientHandler().SU.equals("")))
             {
-                if (currentClient.SU.contains("TCP4"))
+                if (currentClient.getClientHandler().SU.contains("TCP4"))
                 {
-                    currentClient.ACTIVE = 1;
+                    currentClient.getClientHandler().ACTIVE = 1;
                 }
                 else
                 {
-                    currentClient.ACTIVE = 0;
+                    currentClient.getClientHandler().ACTIVE = 0;
                 }
             }
         }
@@ -971,22 +965,22 @@ public class Command
 
         if (state.equals("PROTOCOL"))
         {
-            if (currentClient.reg.isreg)
+            if (currentClient.getClientHandler().reg.isreg)
             {
-                if (currentClient.reg.Password.equals(""))//no pass defined ( yet)
+                if (currentClient.getClientHandler().reg.Password.equals(""))//no pass defined ( yet)
                 {
-                    currentClient.sendToClient(
+                    currentClient.getClientHandler().sendToClient(
                             "ISTA 000 Registered,\\sno\\spassword\\srequired.\\sThough,\\sits\\srecomandable\\sto\\sset\\sone.");
-                    currentClient.sendToClient("ISTA 000 Authenticated.");
+                    currentClient.getClientHandler().sendToClient("ISTA 000 Authenticated.");
 
 
-                    currentClient.reg.LastNI = currentClient.NI;
-                    currentClient.reg.LastIP = currentClient.RealIP;
+                    currentClient.getClientHandler().reg.LastNI = currentClient.getClientHandler().NI;
+                    currentClient.getClientHandler().reg.LastIP = currentClient.getClientHandler().RealIP;
                     completeLogIn();
                     return;
 
                 }
-                currentClient.sendToClient("ISTA 000 Registered,\\stype\\syour\\spassword.");
+                currentClient.getClientHandler().sendToClient("ISTA 000 Registered,\\stype\\syour\\spassword.");
                 /* creates some hash for the GPA random data*/
                 Tiger myTiger = new Tiger();
 
@@ -997,18 +991,18 @@ public class Command
                 myTiger.engineUpdate(T, 0, T.length);
 
                 byte[] finalTiger = myTiger.engineDigest();
-                currentClient.RandomData = Base32.encode(finalTiger);
-                currentClient.sendToClient("IGPA " + currentClient.RandomData);
-                currentClient.State = "VERIFY";
+                currentClient.getClientHandler().RandomData = Base32.encode(finalTiger);
+                currentClient.getClientHandler().sendToClient("IGPA " + currentClient.getClientHandler().RandomData);
+                currentClient.getClientHandler().State = "VERIFY";
                 return;
             }
             else
             {
                 Nod k;
-                k = AccountsConfig.isNickRegFl(currentClient.NI);
+                k = AccountsConfig.isNickRegFl(currentClient.getClientHandler().NI);
                 if (k != null)
                 {
-                    currentClient.sendToClient(
+                    currentClient.getClientHandler().sendToClient(
                             "ISTA 000 Nick\\sRegistered\\s(flyable\\saccount).\\sPlease\\sprovide\\spassword.");
 
                     /* creates some hash for the GPA random data*/
@@ -1021,10 +1015,10 @@ public class Command
                     myTiger.engineUpdate(T, 0, T.length);
 
                     byte[] finalTiger = myTiger.engineDigest();
-                    currentClient.RandomData = Base32.encode(finalTiger);
-                    currentClient.sendToClient("IGPA " + currentClient.RandomData);
-                    currentClient.reg = k;
-                    currentClient.State = "VERIFY";
+                    currentClient.getClientHandler().RandomData = Base32.encode(finalTiger);
+                    currentClient.getClientHandler().sendToClient("IGPA " + currentClient.getClientHandler().RandomData);
+                    currentClient.getClientHandler().reg = k;
+                    currentClient.getClientHandler().State = "VERIFY";
                     return;
                 }
                 else if (Vars.reg_only == 1)
@@ -1068,40 +1062,40 @@ public class Command
             }
             sendUsersInfs();
 
-            currentClient.sendToClient("BINF DCBA ID" +
-                                    Vars.SecurityCid +
-                                    " NI" +
-                                    ADC.retADCStr(Vars.bot_name)
-                                    +
-                                    " CT5 DE" +
-                                    ADC.retADCStr(Vars.bot_desc));
+            currentClient.getClientHandler().sendToClient("BINF DCBA ID" +
+                                                          Vars.SecurityCid +
+                                                          " NI" +
+                                                          ADC.retADCStr(Vars.bot_name)
+                                                          +
+                                                          " CT5 DE" +
+                                                          ADC.retADCStr(Vars.bot_desc));
             //handler.sendToClient("BINF DCBA IDaa NIbla");
             //      if(true)return;
-            currentClient.putOpchat(true);
-            currentClient.sendToClient(currentClient.getINF());  //sending inf about itself too
+            currentClient.getClientHandler().putOpchat(true);
+            currentClient.getClientHandler().sendToClient(currentClient.getClientHandler().getINF());  //sending inf about itself too
 
             //ok now must send INF to all clients
-            Broadcast.getInstance().broadcast(currentClient.getINF(), currentClient.myNod);
+            Broadcast.getInstance().broadcast(currentClient.getClientHandler().getINF(), currentClient);
             // System.out.println("acum am trimis ca a intrat "+handler.ID);
 
 
             //Main.PopMsg(handler.NI+" with SID "+handler.SessionID+" just entered.");
             //  handler.sendFromBot(""+Main.Server.myPath.replaceAll (" ","\\ "));
             //ok now that we passed to normal state and user is ok, check if it has UCMD, and if so, send a test command
-            if (currentClient.ucmd == 1)
+            if (currentClient.getClientHandler().ucmd == 1)
             {
                 //ok, he is ucmd ok, so
-                currentClient.sendToClient("ICMD Test CT1 TTTest");
+                currentClient.getClientHandler().sendToClient("ICMD Test CT1 TTTest");
             }
-            currentClient.State = "NORMAL";
-            currentClient.userok = 1; //user is OK, logged in and cool.
-            currentClient.sendFromBot(ADC.MOTD);
+            currentClient.getClientHandler().State = "NORMAL";
+            currentClient.getClientHandler().userok = 1; //user is OK, logged in and cool.
+            currentClient.getClientHandler().sendFromBot(ADC.MOTD);
 
             /** calling plugins...*/
 
             for (Module myMod : Modulator.myModules)
             {
-                myMod.onConnect(currentClient);
+                myMod.onConnect(currentClient.getClientHandler());
             }
             return;
         }
@@ -1157,7 +1151,7 @@ public class Command
                 new STAError(currentClient, 100, "INF Invalid Context.");
                 return;
             }
-            if (!currentClient.reg.overridespam)
+            if (!currentClient.getClientHandler().reg.overridespam)
             {
                 switch (command.charAt(0))
                 {
@@ -1210,7 +1204,7 @@ public class Command
             command.charAt(3) == 'S')
         {
 
-            if (!currentClient.reg.overridespam)
+            if (!currentClient.getClientHandler().reg.overridespam)
             {
                 switch (command.charAt(0))
                 {
@@ -1253,11 +1247,11 @@ public class Command
             }
             Nod k;
 
-            if ((k = AccountsConfig.isNickRegFl(currentClient.NI)) != null)
+            if ((k = AccountsConfig.isNickRegFl(currentClient.getClientHandler().NI)) != null)
             {
-                currentClient.reg = k;
+                currentClient.getClientHandler().reg = k;
             }
-            if (!currentClient.reg.isreg)
+            if (!currentClient.getClientHandler().reg.isreg)
             {
                 new STAError(currentClient, 100, "Not registered.");
                 return;
@@ -1284,8 +1278,8 @@ public class Command
                 myTiger.init();
                 // removed old adc support;
                 //  byte [] bytecid=Base32.decode (handler.ID);
-                byte[] pas = currentClient.reg.Password.getBytes();
-                byte[] random = Base32.decode(currentClient.RandomData);
+                byte[] pas = currentClient.getClientHandler().reg.Password.getBytes();
+                byte[] random = Base32.decode(currentClient.getClientHandler().RandomData);
 
                 byte[] result = new byte[pas.length + random.length];
                 //for(int i=0;i<bytecid.length;i++)
@@ -1312,20 +1306,20 @@ public class Command
             }
             if (realpas.equals(command.substring(5)))
             {
-                currentClient.sendToClient("IMSG Authenticated.");
+                currentClient.getClientHandler().sendToClient("IMSG Authenticated.");
 
-                currentClient.sendFromBot(ADC.MOTD);
+                currentClient.getClientHandler().sendFromBot(ADC.MOTD);
 
                 //System.out.println ("pwla");
-                currentClient.reg.LastNI = currentClient.NI;
+                currentClient.getClientHandler().reg.LastNI = currentClient.getClientHandler().NI;
                 // handler.reg.LastNI=handler.NI;
-                currentClient.reg.LastIP = currentClient.RealIP;
+                currentClient.getClientHandler().reg.LastIP = currentClient.getClientHandler().RealIP;
 
-                if (!currentClient.ID.equals(currentClient.reg.CID))
+                if (!currentClient.getClientHandler().ID.equals(currentClient.getClientHandler().reg.CID))
                 {
-                    currentClient.sendToClient("IMSG Account\\sCID\\supdated\\sto\\s" + currentClient.ID);
+                    currentClient.getClientHandler().sendToClient("IMSG Account\\sCID\\supdated\\sto\\s" + currentClient.getClientHandler().ID);
                 }
-                currentClient.reg.CID = currentClient.ID;
+                currentClient.getClientHandler().reg.CID = currentClient.getClientHandler().ID;
             }
             else
             {
@@ -1338,38 +1332,28 @@ public class Command
         }
 
         /**********************SUP COMMAND******************************/
-        if (command.charAt(1) == 'S' &&
-            command.charAt(2) == 'U' &&
-            command.charAt(3) == 'P')
+        if (command.substring(1).startsWith("SUP"))
         {
             new SUP(currentClient, state, command);
-
         }
 
-
         /********************************MSG COMMAND************************************/
-        if (command.charAt(1) == 'M' &&
-            command.charAt(2) == 'S' &&
-            command.charAt(3) == 'G')
+        if (command.substring(1).startsWith("MSG"))
         {
             new MSG(currentClient, state, command);
         }
 
+        if (command.substring(1).startsWith("SCH"))
+        {
+            new SCH(currentClient, state, command);
+        }
 
-        if (command.charAt(1) == 'S' &&
-            command.charAt(2) == 'C' &&
-            command.charAt(3) == 'H')
+        if (command.substring(1).startsWith("STA"))
         {
-            new SCH(currentClient, command, state);
+            new STA(currentClient, state, command);
         }
-        if (command.charAt(1) == 'S' &&
-            command.charAt(2) == 'T' &&
-            command.charAt(3) == 'A')
-        {
-            new STA(currentClient, command, state);
-        }
-        if (command.substring(1)
-                          .startsWith("RES ")) //direct search result, only active to passive must send this
+
+        if (command.substring(1).startsWith("RES ")) //direct search result, only active to passive must send this
         {
             new RES(currentClient, state, command);
         }
@@ -1387,7 +1371,7 @@ public class Command
 
         for (Module myMod : Modulator.myModules)
         {
-            myMod.onRawCommand(currentClient, command);
+            myMod.onRawCommand(currentClient.getClientHandler(), command);
         }
     }
 
@@ -1395,35 +1379,34 @@ public class Command
     /**
      * Creates a new instance of Command with following params
      * CH of type ClientHandler identifies tha client to handle
-     * Issued_command of String type actually identifies the given command
-     * state also of type String Identifies tha state in which tha connection is,
-     * meaning [ accordingly to arne's draft]:
-     * PROTOCOL (feature support discovery), IDENTIFY (user identification, static checks),
-     * VERIFY (password check), NORMAL (normal operation) and DATA (for binary transfers).
-     * Calling function should send one of this params, that is calling function
-     * request... Command class does not check params.
-     * Function throws CommandException if smth is wrong.
+     * @param client
+     * @param command      Issued_command of String type actually identifies the given command
+     *                      state also of type String Identifies tha state in which tha connection is,
+     *                      meaning [ accordingly to arne's draft]:
+     *                      PROTOCOL (feature support discovery), IDENTIFY (user identification, static checks),
+     *                      VERIFY (password check), NORMAL (normal operation) and DATA (for binary transfers).
+     *                      Calling function should send one of this params, that is calling function
+     *                      request... Command class does not check params.
+     * @throws CommandException Something wrong happend
+     * @throws STAException
      */
-    public Command(ClientHandler CH, String Issued_command)
+    public Command(Client client, String command)
             throws STAException, CommandException
     {
-        currentClient = CH;
+        currentClient = client;
         // System.out.printf("["+handler.NI+"]:%s\n",Issued_command);
 
 
         //System.out.printf("[Received]:%s\n",Issued_command);
-        if (Issued_command.equals(""))
+        if (command.equals(""))
         {
             //System.out.println("("+handler.NI+")"+System.currentTimeMillis ()/1000);
             return;
         }
 
-
-        command = Issued_command;
-        state = currentClient.State;
+        this.command = command;
+        state = currentClient.getClientHandler().State;
         HandleIssuedCommand();
-        // if(handler.NI.contains("Pietr"))
-        //    new STAError(handler,201,"exception test bla.");
     }
 
 }

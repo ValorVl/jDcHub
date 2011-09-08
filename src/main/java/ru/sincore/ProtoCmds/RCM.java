@@ -43,93 +43,98 @@ public class RCM
 
     /**
      * Creates a new instance of RCM
+     * @param client reference to client
+     * @param state command state. See ADC protocol specs.
+     * @param command incoming command // TODO realy?
+     * @throws STAException exception, cause the something gone wrong =)
      */
-
-    public RCM(ClientHandler cur_client, String State, String Issued_Command)
+    public RCM(Client client, String state, String command)
             throws STAException
     {
-        if (State.equals("IDENTIFY") || State.equals("VERIFY") || State.equals("PROTOCOL"))
+        ClientHandler cur_client = client.getClientHandler();
+
+        if (state.equals("IDENTIFY") || state.equals("VERIFY") || state.equals("PROTOCOL"))
         {
-            new STAError(cur_client,
+            new STAError(client,
                          100 + Constants.STA_INVALID_STATE,
                          "RCM Invalid State.",
                          "FC",
-                         Issued_Command.substring(0, 4));
+                         command.substring(0, 4));
             return;
         }
         if (!cur_client.reg.overridespam)
         {
-            switch (Issued_Command.charAt(0))
+            switch (command.charAt(0))
             {
                 case 'B':
                     if (Vars.BRCM != 1)
                     {
-                        new STAError(cur_client, 100, "RCM Invalid Context B");
+                        new STAError(client, 100, "RCM Invalid Context B");
                         return;
                     }
                     break;
                 case 'E':
                     if (Vars.ERCM != 1)
                     {
-                        new STAError(cur_client, 100, "RCM Invalid Context E");
+                        new STAError(client, 100, "RCM Invalid Context E");
                         return;
                     }
                     break;
                 case 'D':
                     if (Vars.DRCM != 1)
                     {
-                        new STAError(cur_client, 100, "RCM Invalid Context D");
+                        new STAError(client, 100, "RCM Invalid Context D");
                         return;
                     }
                     break;
                 case 'F':
                     if (Vars.FRCM != 1)
                     {
-                        new STAError(cur_client, 100, "RCM Invalid Context F");
+                        new STAError(client, 100, "RCM Invalid Context F");
                         return;
                     }
                     break;
                 case 'H':
                     if (Vars.HRCM != 1)
                     {
-                        new STAError(cur_client, 100, "RCM Invalid Context H");
+                        new STAError(client, 100, "RCM Invalid Context H");
                         return;
                     }
 
             }
         }
-        if (Issued_Command.charAt(0) == 'D' || Issued_Command.charAt(0) == 'E')
+        if (command.charAt(0) == 'D' || command.charAt(0) == 'E')
         {
-            StringTokenizer tok = new StringTokenizer(Issued_Command);
+            StringTokenizer tok = new StringTokenizer(command);
             String aux = tok.nextToken();
             aux = tok.nextToken();
             if (!aux.equals(cur_client.SessionID))
             {
-                new STAError(cur_client,
+                new STAError(client,
                              200 + Constants.STA_GENERIC_PROTOCOL_ERROR,
                              "Protocol Error.Wrong SID supplied.");
                 return;
             }
             aux = tok.nextToken();
             //now must look for the aux SID...
-            for (Client temp : SessionManager.getUsers())
+            for (Client targetClient : SessionManager.getUsers())
             {
-                if (temp.handler.SessionID.equals(aux))
+                if (targetClient.getClientHandler().SessionID.equals(aux))
                 {
                     aux =
                             tok.nextToken(); // this is the string representing protocol, next token is port, next token is TO
 
-                    temp.handler.sendToClient(Issued_Command);
-                    if (Issued_Command.charAt(0) == 'E')
+                    targetClient.getClientHandler().sendToClient(command);
+                    if (command.charAt(0) == 'E')
                     {
-                        cur_client.sendToClient(Issued_Command);
+                        cur_client.sendToClient(command);
                     }
                 }
 
             }
-            //talking to inexisting client
-            return; //not kick, maybe the other client just left after he sent the msg;
 
+            //talking to inexisting client
+            //not kick, maybe the other client just left after he sent the msg;
         }
     }
 

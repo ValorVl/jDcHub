@@ -43,95 +43,102 @@ public class RES
 
     /**
      * Creates a new instance of RES
+     * @param client reference to client
+     * @param state command state. See ADC protocol specs.
+     * @param command incoming command // TODO realy?
+     * @throws STAException exception, cause the something gone wrong =)
      */
-    public RES(ClientHandler cur_client, String State, String Issued_Command)
+    public RES(Client client, String state, String command)
             throws STAException
     {
+        ClientHandler cur_client = client.getClientHandler();
         if (cur_client.ACTIVE == 0)
         {
-            new STAError(cur_client, 100, "Error: Must be TCP active to use RES.");
+            new STAError(client, 100, "Error: Must be TCP active to use RES.");
             return;
         }
-        if (State.equals("IDENTIFY") || State.equals("VERIFY") || State.equals("PROTOCOL"))
+        if (state.equals("IDENTIFY") || state.equals("VERIFY") || state.equals("PROTOCOL"))
         {
-            new STAError(cur_client,
+            new STAError(client,
                          100 + Constants.STA_INVALID_STATE,
                          "RES Invalid State.",
                          "FC",
-                         Issued_Command.substring(0, 4));
+                         command.substring(0, 4));
             return;
         }
         if (!cur_client.reg.overridespam)
         {
-            switch (Issued_Command.charAt(0))
+            switch (command.charAt(0))
             {
                 case 'B':
                     if (Vars.BRES != 1)
                     {
-                        new STAError(cur_client, 100, "RES Invalid Context B");
+                        new STAError(client, 100, "RES Invalid Context B");
                         return;
                     }
                     break;
                 case 'E':
                     if (Vars.ERES != 1)
                     {
-                        new STAError(cur_client, 140, "RES Invalid Context E");
+                        new STAError(client, 140, "RES Invalid Context E");
                         return;
                     }
                     break;
                 case 'D':
                     if (Vars.DRES != 1)
                     {
-                        new STAError(cur_client, 100, "RES Invalid Context D");
+                        new STAError(client, 100, "RES Invalid Context D");
                         return;
                     }
                     break;
                 case 'F':
                     if (Vars.FRES != 1)
                     {
-                        new STAError(cur_client, 100, "RES Invalid Context F");
+                        new STAError(client, 100, "RES Invalid Context F");
                         return;
                     }
                     break;
                 case 'H':
                     if (Vars.HRES != 1)
                     {
-                        new STAError(cur_client, 100, "RES Invalid Context H");
+                        new STAError(client, 100, "RES Invalid Context H");
                         return;
                     }
 
             }
         }
-        if (Issued_Command.charAt(0) == 'D' || Issued_Command.charAt(0) == 'E')
+        if (command.charAt(0) == 'D' || command.charAt(0) == 'E')
         {
-            StringTokenizer tok = new StringTokenizer(Issued_Command);
+            StringTokenizer tok = new StringTokenizer(command);
+
+            // TODO is it realy works?
             String aux = tok.nextToken();
             aux = tok.nextToken();
             if (!aux.equals(cur_client.SessionID))
             {
-                new STAError(cur_client,
+                new STAError(client,
                              200 + Constants.STA_GENERIC_PROTOCOL_ERROR,
                              "Protocol Error.Wrong SID supplied.");
                 return;
             }
             aux = tok.nextToken();
             //now must look for the aux SID...
-            for (Client temp : SessionManager.getUsers())
+            for (Client targetClient : SessionManager.getUsers())
             {
-                if (temp.handler.SessionID.equals(aux))
+                if (targetClient.getClientHandler().SessionID.equals(aux))
                 {
                     aux = tok.nextToken(); // this is the effective result
 
-                    temp.handler.sendToClient(Issued_Command);
-                    if (Issued_Command.charAt(0) == 'E')
+                    targetClient.getClientHandler().sendToClient(command);
+                    if (command.charAt(0) == 'E')
                     {
-                        cur_client.sendToClient(Issued_Command);
+                        cur_client.sendToClient(command);
                     }
                 }
             }
-            //talking to inexisting client
-            return; //not kick, maybe the other client just left after he sent the msg;
 
+            //talking to inexisting client
+            //not kick, maybe the other client just left after he sent the msg;
         }
     }
 
