@@ -48,7 +48,7 @@ public class Broadcast
      * Contains message history without duplicates
      * and Info messages
      */
-    private StringBuffer history;
+    public static StringBuffer history;
 
     static int size = 0;
 

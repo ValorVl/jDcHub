@@ -28,7 +28,6 @@ import ru.sincore.Modules.Modulator;
 import ru.sincore.Modules.Module;
 import ru.sincore.TigerImpl.Base32;
 import ru.sincore.adcs.AdcsCommand;
-import ru.sincore.banning.Ban;
 import ru.sincore.banning.BanList;
 import ru.sincore.cmd.BackupCmd;
 import ru.sincore.cmd.ChatControlCmd;
@@ -46,6 +45,7 @@ import ru.sincore.util.ADC;
 import ru.sincore.util.TimeConv;
 
 import java.util.Calendar;
+import java.util.List;
 import java.util.StringTokenizer;
 
 /**
@@ -53,32 +53,31 @@ import java.util.StringTokenizer;
  * Provides configuration in hub functionality.
  *
  * @author Pietricica
+ *
+ * @author Alexey 'lh' Antonov
+ * @since 2011-09-08
  */
 public class CommandParser
 {
     public static final Logger log = Logger.getLogger(CommandParser.class);
-    ClientHandler cur_client;
-    String        cmd;
+    Client client;
+    String command;
     /**
      * for !cmdhistory
      */
-    static line FirstCommand = null;
-    static line LastCommand  = null;
-    static int  size         = 0;
-
+    List<String> history;
     boolean done = false;
 
 
     /**
      * Creates a new instance of CommandParser
      */
-    public CommandParser(ClientHandler CH, String cmd)
+    public CommandParser(Client client, String command)
     {
-        cur_client = CH;
-        this.cmd = cmd;
+        this.client = client;
+        this.command = command;
         //this.setPriority (NORM_PRIORITY);
         run();
-
     }
 
 
@@ -98,16 +97,16 @@ public class CommandParser
                }
            }*/
 
-        String STR = cmd;
-        String NI = cur_client.NI;
-        String recvbuf = ADC.retNormStr(cmd.substring(1));
+        String STR = command;
+        String NI = client.getClientHandler().NI;
+        String recvbuf = ADC.retNormStr(command.substring(1));
 
         for (Module myMod : Modulator.myModules)
         {
             int result = 0;
-            if (cur_client.reg.additionalModules) //only if hes allowed to use modules
+            if (client.getClientHandler().reg.additionalModules) //only if hes allowed to use modules
             {
-                result = myMod.onCommand(cur_client, recvbuf);
+                result = myMod.onCommand(client.getClientHandler(), recvbuf);
             }
 
             if (commandOK != 2)
@@ -125,89 +124,52 @@ public class CommandParser
 
         if (commandOK == 0)
         {
-            cur_client.sendFromBot("Unknown Command. Type !help for info.");
+            client.getClientHandler().sendFromBot("Unknown Command. Type !help for info.");
         }
         if (commandOK != 2)
         {
-            if (FirstCommand == null)
-            {
-                line bla;
-
-                bla = new line("[" +
-                               Calendar.getInstance().getTime().toString() +
-                               "] <" +
-                               NI +
-                               "> " +
-                               STR +
-                               "\n");
-
-                LastCommand = bla;
-                FirstCommand = LastCommand;
-                size++;
-            }
-
-            else
-            {
-                line bla;
-                //BMSG AAAA message
-
-                bla = new line("[" +
-                               Calendar.getInstance().getTime().toString() +
-                               "] <" +
-                               NI +
-                               "> " +
-                               STR +
-                               "\n");
-
-                LastCommand.Next = bla;
-
-                size++;
-
-                LastCommand = bla;
-
-                while (size >= Vars.history_lines)
-                {
-                    FirstCommand = FirstCommand.Next;
-                    size--;
-                }
-
-            }
+            history.add("[" +
+                        Calendar.getInstance().getTime().toString() +
+                        "] <" +
+                        NI +
+                        "> " +
+                        STR +
+                        "\n");
         }
-
     }
 
 
     public void runx()
     {
 
-        String recvbuf = ADC.retNormStr(cmd.substring(1));
-        //	String STR = cmd;
+        String recvbuf = ADC.retNormStr(command.substring(1));
+        //	String STR = command;
         //	String NI = handler.NI;
 
 
         if (recvbuf.toLowerCase().equals("quit"))
         {
             commandOK = 1;
-            if (!cur_client.reg.myMask.quit)
+            if (!client.getClientHandler().reg.myMask.quit)
             {
-                cur_client.sendFromBot("Access denied.");
+                client.getClientHandler().sendFromBot("Access denied.");
                 done = true;
                 return;
             }
 
-            cur_client.sendFromBot("Closing down hub...");
+            client.getClientHandler().sendFromBot("Closing down hub...");
             //	Main.Server.rewriteregs();
             //	Main.Server.rewriteconfig();
             //	Main.Server.rewritebans();
             //save Banned Words List
             //Main.listaBanate.printFile(Main.myPath + "banwlist.txt");
 
-            log.warn("Hub is being shut down by " + cur_client.NI);
+            log.warn("Hub is being shut down by " + client.getClientHandler().NI);
 
             for (Module x : Modulator.myModules)
             {
 
-                x.onCommand(cur_client, recvbuf);
+                x.onCommand(client.getClientHandler(), recvbuf);
                 x.close();
             }
 
@@ -220,14 +182,16 @@ public class CommandParser
         else if (recvbuf.toLowerCase().equals("restart"))
         {
             commandOK = 1;
-            if (!cur_client.reg.myMask.restart)
+            if (!client.getClientHandler().reg.myMask.restart)
             {
-                cur_client.sendFromBot("Access denied.");
+                client.getClientHandler().sendFromBot("Access denied.");
                 done = true;
                 return;
             }
-            cur_client.sendFromBot("Restarting.... Wait 5 seconds...");
-            cur_client.myNod.dropMe(cur_client);
+            client.getClientHandler().sendFromBot("Restarting.... Wait 5 seconds...");
+
+            // TODO remove this crapy code !!!
+            client.dropMe(client.getClientHandler());
             //Main.Server.rewriteregs();
             //Main.Server.rewriteconfig();
             //Main.Server.rewritebans();
@@ -236,14 +200,14 @@ public class CommandParser
             //	BanList.First = null;
 
             //SessionManager.Users.clear();
-            log.warn("Hub restarted by " + cur_client.NI);
+            log.warn("Hub restarted by " + client.getClientHandler().NI);
 
             for (Module x : Modulator.myModules)
             {
-                x.onCommand(cur_client, recvbuf);
+                x.onCommand(client.getClientHandler(), recvbuf);
                 x.close();
             }
-            //if(true)return;
+
             Main.Restart();
             done = true;
             return;
@@ -251,187 +215,144 @@ public class CommandParser
         if (recvbuf.toLowerCase().startsWith("password"))
         {
             commandOK = 2;
-            if (!cur_client.reg.myMask.password)
+            if (!client.getClientHandler().reg.myMask.password)
             {
-                cur_client.sendFromBot("Access denied.");
+                client.getClientHandler().sendFromBot("Access denied.");
                 done = true;
                 return;
             }
             StringTokenizer ST = new StringTokenizer(recvbuf);
             ST.nextToken();
             String aux = ST.nextToken();
-            Nod temp = AccountsConfig.First;
-            while (!temp.CID.equals(cur_client.ID))
-            {
-                temp = temp.Next;
-            }
-            temp.Password = aux;
-            cur_client.reg.Password = aux;
 
-            Main.Server.rewriteregs();
-            cur_client.sendFromBot("Your password is now " + aux + ".");
+            Nod temp = AccountsConfig.getnod(client.getClientHandler().ID);
+            temp.Password = aux;
+            client.getClientHandler().reg.Password = aux;
+
+            // TODO save new passwork to db
+
+            client.getClientHandler().sendFromBot("Your password is now " + aux + ".");
 
         }
         else if (recvbuf.toLowerCase().startsWith("grant"))
         {
             commandOK = 1;
-            if (!cur_client.reg.myMask.grant)
+            if (!client.getClientHandler().reg.myMask.grant)
             {
-                cur_client.sendFromBot("Access denied.");
+                client.getClientHandler().sendFromBot("Access denied.");
                 done = true;
                 return;
             }
-            new GrantCmd(cur_client, recvbuf);
+            new GrantCmd(client.getClientHandler(), recvbuf);
 
         }
         else if (recvbuf.toLowerCase().startsWith("backup"))
         {
             commandOK = 1;
-            if (!cur_client.reg.myMask.backup)
+            if (!client.getClientHandler().reg.myMask.backup)
             {
-                cur_client.sendFromBot("Access denied.");
+                client.getClientHandler().sendFromBot("Access denied.");
                 done = true;
                 return;
             }
-            new BackupCmd(cur_client, recvbuf);
+            new BackupCmd(client.getClientHandler(), recvbuf);
 
         }
         else if (recvbuf.toLowerCase().startsWith("adcs"))
         {
             commandOK = 1;
-            if (!cur_client.reg.myMask.adcs)
+            if (!client.getClientHandler().reg.myMask.adcs)
             {
-                cur_client.sendFromBot("Access denied.");
+                client.getClientHandler().sendFromBot("Access denied.");
                 done = true;
                 return;
             }
-            new AdcsCommand(cur_client, recvbuf);
-        }
-        else if (recvbuf.toLowerCase().equals("gui"))
-        {
-            commandOK = 1;
-            if (!cur_client.reg.myMask.gui)
-            {
-                cur_client.sendFromBot("Access denied.");
-                done = true;
-                return;
-            }
+            new AdcsCommand(client.getClientHandler(), recvbuf);
         }
         else if (recvbuf.toLowerCase().startsWith("hideme"))
         {
             commandOK = 1;
-            if (!cur_client.reg.myMask.hideme)
+            if (!client.getClientHandler().reg.myMask.hideme)
             {
-                cur_client.sendFromBot("Access denied.");
+                client.getClientHandler().sendFromBot("Access denied.");
                 done = true;
                 return;
             }
-            if (!cur_client.reg.HideMe)
+            if (!client.getClientHandler().reg.HideMe)
             {
                 Broadcast.getInstance().broadcast(
-                        "BINF " + cur_client.SessionID + " HI1");
-                cur_client
+                        "BINF " + client.getClientHandler().SessionID + " HI1");
+                client.getClientHandler()
                         .sendFromBot("You are now hidden, not appearing in userlist no more.");
-                cur_client.reg.HideMe = true;
+                client.getClientHandler().reg.HideMe = true;
             }
             else
             {
                 Broadcast.getInstance().broadcast(
-                        "BINF " + cur_client.SessionID + " HI");
-                cur_client
+                        "BINF " + client.getClientHandler().SessionID + " HI");
+                client.getClientHandler()
                         .sendFromBot("You are now revealed, appearing again in userlist.");
-                cur_client.reg.HideMe = false;
+                client.getClientHandler().reg.HideMe = false;
             }
 
         }
         else if (recvbuf.toLowerCase().equals("listreg"))
         {
+            // TODO is CID unique only in session ???
+
             commandOK = 1;
-            if (!cur_client.reg.myMask.listreg)
+            if (!client.getClientHandler().reg.myMask.listreg)
             {
-                cur_client.sendFromBot("Access denied.");
+                client.getClientHandler().sendFromBot("Access denied.");
                 done = true;
                 return;
             }
-            String blah00 = "List :\n";
-            Nod n = AccountsConfig.First;
-            while (n != null)
+            String resultMessage = "List :\n";
+
+            for (Nod nod : AccountsConfig.nods.values())
             {
-                blah00 = blah00 + n.CID;
-                if (n.LastNI != null)
+                resultMessage = resultMessage + nod.CID;
+                if (nod.LastNI != null)
                 {
-                    blah00 = blah00 + " Last nick: " + n.LastNI + "\n";
+                    resultMessage = resultMessage + " Last nick: " + nod.LastNI + "\n";
                 }
                 else
                 {
-                    blah00 = blah00 + " Never seen online." + "\n";
+                    resultMessage = resultMessage + " Never seen online." + "\n";
                 }
-                n = n.Next;
             }
-            blah00 = blah00.substring(0, blah00.length() - 1);
-            cur_client.sendFromBot(blah00);
+            resultMessage = resultMessage.substring(0, resultMessage.length() - 1);
+            client.getClientHandler().sendFromBot(resultMessage);
 
         }
         else if (recvbuf.toLowerCase().equals("listban"))
         {
             commandOK = 1;
-            if (!cur_client.reg.myMask.listban)
+            if (!client.getClientHandler().reg.myMask.listban)
             {
-                cur_client.sendFromBot("Access denied.");
+                client.getClientHandler().sendFromBot("Access denied.");
                 done = true;
                 return;
             }
-            String blah00 = "Ban List :\n";
-            Ban n = BanList.First;
-            while (n != null)
-            {
-                if (n.bantype == 1)
-                {
-                    blah00 = blah00 + n.nick;
-                }
-                else if (n.bantype == 2)
-                {
-                    blah00 = blah00 + n.ip;
-                }
-                else if (n.bantype == 3)
-                {
-                    blah00 = blah00 + n.cid;
-                }
-                long TL = System.currentTimeMillis() - n.timeofban - n.time;
-                if (n.banop != null)
-                {
-                    blah00 = blah00 + " Banned by: " + n.banop;
-                }
-                if (n.banreason != null)
-                {
-                    blah00 = blah00 + " Reason: " + n.banreason;
-                }
-                if (n.time == -1)
-                {
-                    blah00 = blah00 + " Permanently";
-                }
-                else if (TL < 0)
-                {
-                    blah00 = blah00 + " Time Left: "
-                             + Long.toString(-TL / 1000) + " seconds.";
-                }
-                else
-                {
-                    blah00 = blah00 + " Expired";
-                }
-                blah00 = blah00 + "\n";
-                n = n.Next;
-            }
-            blah00 = blah00.substring(0, blah00.length() - 1);
-            cur_client.sendFromBot(blah00);
+            String resultMessage = "Ban List :\n";
+
+            // TODO get ban list from db
+//                nick (ip, cid - depends on bantype)
+//                ban time
+//                banop
+//                banreason
+//                permanentrly or not
+
+            resultMessage = resultMessage.substring(0, resultMessage.length() - 1);
+            client.getClientHandler().sendFromBot(resultMessage);
 
         }
         else if (recvbuf.toLowerCase().startsWith("ureg"))
         {
             commandOK = 1;
-            if (!cur_client.reg.myMask.ureg)
+            if (!client.getClientHandler().reg.myMask.ureg)
             {
-                cur_client.sendFromBot("Access denied.");
+                client.getClientHandler().sendFromBot("Access denied.");
                 done = true;
                 return;
             }
@@ -454,24 +375,28 @@ public class CommandParser
                 {
                     for (Client temp : SessionManager.getUsers())
                     {
-                        if (temp.handler.userok == 1)
+                        if (temp.getClientHandler().userok == 1)
                         {
-                            if ((temp.handler.ID.equals(aux)))
+                            if ((temp.getClientHandler().ID.equals(aux)))
                             {
-                                temp.handler
+                                temp.getClientHandler()
                                         .sendFromBot(""
                                                      +
                                                      "Your account has been deleted. From now on you are a simple user.");
-                                temp.handler.putOpchat(false);
-                                temp.handler.CT = "0";
-                                temp.handler.can_receive_cmds = false;
+                                temp.getClientHandler().putOpchat(false);
+                                temp.getClientHandler().CT = "0";
+                                temp.getClientHandler().can_receive_cmds = false;
                                 Broadcast.getInstance().broadcast(
-                                        "BINF " + temp.handler.SessionID
+                                        "BINF " + temp.getClientHandler().SessionID
                                         + " CT");
-                                temp.handler.reg = new Nod();
-                                cur_client.sendFromBot("User "
-                                                       + temp.handler.NI + " with CID "
-                                                       + aux + " found, deleted.");
+                                temp.getClientHandler().reg = new Nod();
+                                client.getClientHandler().sendFromBot("User "
+                                                                      +
+                                                                      temp.getClientHandler().NI +
+                                                                      " with CID "
+                                                                      +
+                                                                      aux +
+                                                                      " found, deleted.");
                                 Main.Server.rewriteregs();
                                 return;
                             }
@@ -479,50 +404,52 @@ public class CommandParser
 
                     }
 
-                    cur_client.sendFromBot("Reg deleted.");
-                    log.info(cur_client.NI + " deleted the reg " + aux);
+                    client.getClientHandler().sendFromBot("Reg deleted.");
+                    log.info(client.getClientHandler().NI + " deleted the reg " + aux);
 
                 }
                 else
                 {
-                    cur_client.sendFromBot("Reg not found.");
+                    client.getClientHandler().sendFromBot("Reg not found.");
                 }
             }
             catch (IllegalArgumentException iae)
             {
-                cur_client
+                client.getClientHandler()
                         .sendFromBot("Not a valid CID, checking for possible users...");
                 for (Client temp : SessionManager.getUsers())
                 {
-                    if (temp.handler.userok == 1)
+                    if (temp.getClientHandler().userok == 1)
                     {
-                        if ((temp.handler.NI.toLowerCase().equals(aux
+                        if ((temp.getClientHandler().NI.toLowerCase().equals(aux
                                                                              .toLowerCase())))
                         {
-                            if (!temp.handler.reg.isreg)
+                            if (!temp.getClientHandler().reg.isreg)
                             {
-                                cur_client
+                                client.getClientHandler()
                                         .sendFromBot("Client exists but not registered.");
                             }
                             else
                             {
-                                AccountsConfig.unreg(temp.handler.ID);
-                                log.info(cur_client.NI + " deleted the reg "
-                                         + temp.handler.ID);
-                                cur_client.sendFromBot("User "
-                                                       + temp.handler.NI + " deleted.");
-                                temp.handler
+                                AccountsConfig.unreg(temp.getClientHandler().ID);
+                                log.info(client.getClientHandler().NI + " deleted the reg "
+                                         + temp.getClientHandler().ID);
+                                client.getClientHandler().sendFromBot("User "
+                                                                      +
+                                                                      temp.getClientHandler().NI +
+                                                                      " deleted.");
+                                temp.getClientHandler()
                                         .sendFromBot(
                                                 "Your account has been deleted. From now on you are a simple user.");
-                                temp.handler.putOpchat(false);
-                                temp.handler.CT = "0";
-                                temp.handler.can_receive_cmds = false;
+                                temp.getClientHandler().putOpchat(false);
+                                temp.getClientHandler().CT = "0";
+                                temp.getClientHandler().can_receive_cmds = false;
 
                                 Broadcast.getInstance().broadcast(
-                                        "BINF " + temp.handler.SessionID
+                                        "BINF " + temp.getClientHandler().SessionID
                                         + " CT");
 
-                                temp.handler.reg = new Nod();
+                                temp.getClientHandler().reg = new Nod();
                                 Main.Server.rewriteregs();
                                 return;
                             }
@@ -530,7 +457,7 @@ public class CommandParser
                     }
                 }
 
-                cur_client.sendFromBot("No such client online.");
+                client.getClientHandler().sendFromBot("No such client online.");
 
             }
             Main.Server.rewriteregs();
@@ -539,9 +466,9 @@ public class CommandParser
         else if (recvbuf.toLowerCase().startsWith("reg"))
         {
             commandOK = 1;
-            if (!cur_client.reg.myMask.reg)
+            if (!client.getClientHandler().reg.myMask.reg)
             {
-                cur_client.sendFromBot("Access denied.");
+                client.getClientHandler().sendFromBot("Access denied.");
                 done = true;
                 return;
             }
@@ -561,57 +488,59 @@ public class CommandParser
                     if (AccountsConfig.isReg(aux) > 0)
                     {
 
-                        cur_client.sendFromBot(""
-                                               + AccountsConfig.getnod(aux).getRegInfo());
+                        client.getClientHandler().sendFromBot(""
+                                                              +
+                                                              AccountsConfig.getnod(aux)
+                                                                            .getRegInfo());
                         done = true;
                         return;
                     }
                     for (Client temp : SessionManager.getUsers())
                     {
-                        if (temp.handler.userok == 1)
+                        if (temp.getClientHandler().userok == 1)
                         {
-                            if ((temp.handler.ID.equals(aux)))
+                            if ((temp.getClientHandler().ID.equals(aux)))
                             {
-                                AccountsConfig.addReg(temp.handler.ID,
-                                                      temp.handler.NI, cur_client.NI);
-                                temp.handler.reg = AccountsConfig
-                                        .getnod(temp.handler.ID);
-                                cur_client
+                                AccountsConfig.addReg(temp.getClientHandler().ID,
+                                                      temp.getClientHandler().NI, client.getClientHandler().NI);
+                                temp.getClientHandler().reg = AccountsConfig
+                                        .getnod(temp.getClientHandler().ID);
+                                client.getClientHandler()
                                         .sendFromBot("User "
-                                                     + temp.handler.NI
+                                                     + temp.getClientHandler().NI
                                                      + " found with CID "
                                                      + aux
                                                      +
                                                      ", added. No password set, login does not require pass, however, its recomandable to set one...");
-                                temp.handler
+                                temp.getClientHandler()
                                         .sendFromBot("You have been registered by "
-                                                     + cur_client.NI
+                                                     + client.getClientHandler().NI
                                                      +
                                                      " . No password set, login does not require pass, however, its recomandable you to set one...");
-                                temp.handler.putOpchat(true);
-                                temp.handler.CT = "2";
+                                temp.getClientHandler().putOpchat(true);
+                                temp.getClientHandler().CT = "2";
 
                                 Broadcast.getInstance().broadcast("BINF "
                                                                   +
-                                                                  temp.handler.SessionID +
+                                                                  temp.getClientHandler().SessionID +
                                                                   " CT2");
-                                temp.handler.can_receive_cmds = true;
-                                temp.handler.reg.isreg = true;
-                                temp.handler.LoggedAt = System
+                                temp.getClientHandler().can_receive_cmds = true;
+                                temp.getClientHandler().reg.isreg = true;
+                                temp.getClientHandler().LoggedAt = System
                                         .currentTimeMillis();
-                                temp.handler.reg.LastIP = temp.handler.RealIP;
+                                temp.getClientHandler().reg.LastIP = temp.getClientHandler().RealIP;
                                 Main.Server.rewriteregs();
                                 return;
                             }
                         }
                     }
 
-                    AccountsConfig.addReg(aux, null, cur_client.NI);
-                    cur_client
+                    AccountsConfig.addReg(aux, null, client.getClientHandler().NI);
+                    client.getClientHandler()
                             .sendFromBot(
                                     "CID added. No password set, login does not require pass, however, its recomandable to set one...");
 
-                    log.info(cur_client.NI + " regged the CID " + aux);
+                    log.info(client.getClientHandler().NI + " regged the CID " + aux);
 
                 }
                 catch (IllegalArgumentException iae)
@@ -619,62 +548,62 @@ public class CommandParser
                     //handler.sendFromBot("Not a CID, trying to add the "+aux+" nick.");
                     for (Client temp : SessionManager.getUsers())
                     {
-                        if (temp.handler.userok == 1)
+                        if (temp.getClientHandler().userok == 1)
                         {
-                            if ((temp.handler.NI.toLowerCase().equals(aux
+                            if ((temp.getClientHandler().NI.toLowerCase().equals(aux
                                                                                  .toLowerCase())))
                             {
-                                if (AccountsConfig.isReg(temp.handler.ID) > 0)
+                                if (AccountsConfig.isReg(temp.getClientHandler().ID) > 0)
                                 {
-                                    cur_client.sendFromBot(""
-                                                           + AccountsConfig.getnod(
-                                            temp.handler.ID)
-                                                                           .getRegInfo());
+                                    client.getClientHandler().sendFromBot(""
+                                                                          + AccountsConfig.getnod(
+                                            temp.getClientHandler().ID)
+                                                                                          .getRegInfo());
                                     done = true;
                                     return;
                                 }
-                                AccountsConfig.addReg(temp.handler.ID,
-                                                      temp.handler.NI, cur_client.NI);
-                                temp.handler.reg = AccountsConfig
-                                        .getnod(temp.handler.ID);
-                                cur_client
+                                AccountsConfig.addReg(temp.getClientHandler().ID,
+                                                      temp.getClientHandler().NI, client.getClientHandler().NI);
+                                temp.getClientHandler().reg = AccountsConfig
+                                        .getnod(temp.getClientHandler().ID);
+                                client.getClientHandler()
                                         .sendFromBot("Not a CID, trying to add the "
                                                      + aux + " nick.");
-                                cur_client
+                                client.getClientHandler()
                                         .sendFromBot("User "
-                                                     + temp.handler.NI
+                                                     + temp.getClientHandler().NI
                                                      + " found with CID "
-                                                     + temp.handler.ID
+                                                     + temp.getClientHandler().ID
                                                      +
                                                      ", added. No password set, login does not require pass, however, its recomandable to set one...");
-                                temp.handler
+                                temp.getClientHandler()
                                         .sendFromBot("You have been registered by "
-                                                     + cur_client.NI
+                                                     + client.getClientHandler().NI
                                                      +
                                                      " . No password set, login does not require pass, however, its recomandable you to set one...");
-                                temp.handler.putOpchat(true);
-                                temp.handler.CT = "2";
-                                temp.handler.can_receive_cmds = true;
+                                temp.getClientHandler().putOpchat(true);
+                                temp.getClientHandler().CT = "2";
+                                temp.getClientHandler().can_receive_cmds = true;
                                 Broadcast.getInstance().broadcast("BINF "
                                                                   +
-                                                                  temp.handler.SessionID +
+                                                                  temp.getClientHandler().SessionID +
                                                                   " CT2");
 
-                                temp.handler.reg.isreg = true;
-                                temp.handler.LoggedAt = System
+                                temp.getClientHandler().reg.isreg = true;
+                                temp.getClientHandler().LoggedAt = System
                                         .currentTimeMillis();
-                                temp.handler.reg.LastIP = temp.handler.RealIP;
-                                log.info(cur_client.NI + " regged the CID "
-                                         + temp.handler.ID);
+                                temp.getClientHandler().reg.LastIP = temp.getClientHandler().RealIP;
+                                log.info(client.getClientHandler().NI + " regged the CID "
+                                         + temp.getClientHandler().ID);
                                 Main.Server.rewriteregs();
                                 return;
                             }
                         }
                     }
 
-                    cur_client.sendFromBot("Not a CID, trying to add the "
-                                           + aux + " nick.");
-                    cur_client.sendFromBot("No such client online.");
+                    client.getClientHandler().sendFromBot("Not a CID, trying to add the "
+                                                          + aux + " nick.");
+                    client.getClientHandler().sendFromBot("No such client online.");
 
                 }
                 catch (Exception e)
@@ -687,58 +616,58 @@ public class CommandParser
                 //handler.sendFromBot("Not a CID, trying to add the "+aux+" nick.");
                 for (Client temp : SessionManager.getUsers())
                 {
-                    if (temp.handler.userok == 1)
+                    if (temp.getClientHandler().userok == 1)
                     {
-                        if ((temp.handler.NI.toLowerCase().equals(aux
+                        if ((temp.getClientHandler().NI.toLowerCase().equals(aux
                                                                              .toLowerCase())))
                         {
-                            if (AccountsConfig.isReg(temp.handler.ID) > 0)
+                            if (AccountsConfig.isReg(temp.getClientHandler().ID) > 0)
                             {
-                                cur_client.sendFromBot(""
-                                                       + AccountsConfig.getnod(
-                                        temp.handler.ID)
-                                                                       .getRegInfo());
+                                client.getClientHandler().sendFromBot(""
+                                                                      + AccountsConfig.getnod(
+                                        temp.getClientHandler().ID)
+                                                                                      .getRegInfo());
                                 done = true;
                                 return;
                             }
-                            AccountsConfig.addReg(temp.handler.ID,
-                                                  temp.handler.NI, cur_client.NI);
-                            temp.handler.reg = AccountsConfig
-                                    .getnod(temp.handler.ID);
-                            cur_client
+                            AccountsConfig.addReg(temp.getClientHandler().ID,
+                                                  temp.getClientHandler().NI, client.getClientHandler().NI);
+                            temp.getClientHandler().reg = AccountsConfig
+                                    .getnod(temp.getClientHandler().ID);
+                            client.getClientHandler()
                                     .sendFromBot("Not a CID, trying to add the "
                                                  + aux + " nick.");
-                            cur_client
+                            client.getClientHandler()
                                     .sendFromBot("User "
-                                                 + temp.handler.NI
+                                                 + temp.getClientHandler().NI
                                                  + " found with CID "
-                                                 + temp.handler.ID
+                                                 + temp.getClientHandler().ID
                                                  +
                                                  ", added. No password set, login does not require pass, however, its recomandable to set one...");
-                            temp.handler
+                            temp.getClientHandler()
                                     .sendFromBot("You have been registered by "
-                                                 + cur_client.NI
+                                                 + client.getClientHandler().NI
                                                  +
                                                  " . No password set, login does not require pass, however, its recomandable you to set one...");
-                            temp.handler.putOpchat(true);
-                            temp.handler.CT = "2";
+                            temp.getClientHandler().putOpchat(true);
+                            temp.getClientHandler().CT = "2";
 
-                            Broadcast.getInstance().broadcast("BINF " + temp.handler.SessionID
+                            Broadcast.getInstance().broadcast("BINF " + temp.getClientHandler().SessionID
                                                               + " CT2");
-                            temp.handler.can_receive_cmds = true;
-                            temp.handler.LoggedAt = System
+                            temp.getClientHandler().can_receive_cmds = true;
+                            temp.getClientHandler().LoggedAt = System
                                     .currentTimeMillis();
-                            temp.handler.reg.LastIP = temp.handler.RealIP;
-                            log.info(cur_client.NI + " regged the CID "
-                                     + temp.handler.ID);
+                            temp.getClientHandler().reg.LastIP = temp.getClientHandler().RealIP;
+                            log.info(client.getClientHandler().NI + " regged the CID "
+                                     + temp.getClientHandler().ID);
                             Main.Server.rewriteregs();
                             return;
                         }
                     }
                 }
-                cur_client.sendFromBot("Not a CID, trying to add the " + aux
-                                       + " nick.");
-                cur_client.sendFromBot("No such client online.");
+                client.getClientHandler().sendFromBot("Not a CID, trying to add the " + aux
+                                                      + " nick.");
+                client.getClientHandler().sendFromBot("No such client online.");
 
             }
 
@@ -749,60 +678,60 @@ public class CommandParser
         {
             commandOK = 1;
 
-            if (!cur_client.reg.myMask.help)
+            if (!client.getClientHandler().reg.myMask.help)
             {
-                cur_client.sendFromBot("Access denied.");
+                client.getClientHandler().sendFromBot("Access denied.");
                 done = true;
                 return;
             }
 
             ;
-            cur_client.sendFromBot(cur_client.reg.myHelp.getHelp());
+            client.getClientHandler().sendFromBot(client.getClientHandler().reg.myHelp.getHelp());
 
         }
         else if (recvbuf.toLowerCase().startsWith("info "))
         {
             commandOK = 1;
-            if (!cur_client.reg.myMask.info)
+            if (!client.getClientHandler().reg.myMask.info)
             {
-                cur_client.sendFromBot("Access denied.");
+                client.getClientHandler().sendFromBot("Access denied.");
                 done = true;
                 return;
             }
-            new ExtInfo(cur_client, recvbuf);
+            new ExtInfo(client.getClientHandler(), recvbuf);
 
         }
 
         else if (recvbuf.toLowerCase().startsWith("mass"))
         {
             commandOK = 1;
-            if (!cur_client.reg.myMask.mass)
+            if (!client.getClientHandler().reg.myMask.mass)
             {
-                cur_client.sendFromBot("Access denied.");
+                client.getClientHandler().sendFromBot("Access denied.");
                 done = true;
                 return;
             }
-            new ExtMass(cur_client, recvbuf);
+            new ExtMass(client.getClientHandler(), recvbuf);
 
         }
         else if (recvbuf.toLowerCase().startsWith("redirect"))
         {
             commandOK = 1;
-            if (!cur_client.reg.myMask.redirect)
+            if (!client.getClientHandler().reg.myMask.redirect)
             {
-                cur_client.sendFromBot("Access denied.");
+                client.getClientHandler().sendFromBot("Access denied.");
                 done = true;
                 return;
             }
-            new ExtRedirect(cur_client, recvbuf);
+            new ExtRedirect(client.getClientHandler(), recvbuf);
 
         }
         else if (recvbuf.toLowerCase().startsWith("mynick "))
         {
             commandOK = 1;
-            if (!cur_client.reg.myMask.mynick)
+            if (!client.getClientHandler().reg.myMask.mynick)
             {
-                cur_client.sendFromBot("Access denied.");
+                client.getClientHandler().sendFromBot("Access denied.");
                 done = true;
                 return;
             }
@@ -821,7 +750,7 @@ public class CommandParser
             if (aux.length() < Vars.min_ni)
             {
                 {
-                    cur_client
+                    client.getClientHandler()
                             .sendFromBot("Nick too small, please choose another.");
                     done = true;
                     return;
@@ -830,7 +759,7 @@ public class CommandParser
             if (aux.length() > Vars.max_ni)
             {
                 {
-                    cur_client
+                    client.getClientHandler()
                             .sendFromBot("Nick too large, please choose another.");
                     {
                         done = true;
@@ -840,7 +769,7 @@ public class CommandParser
             }
             if (!Vars.ValidateNick(aux))
             {
-                cur_client
+                client.getClientHandler()
                         .sendFromBot("Nick not valid, please choose another.");
                 System.out.println(aux);
                 {
@@ -848,10 +777,10 @@ public class CommandParser
                     return;
                 }
             }
-            if (AccountsConfig.nickReserved(aux, cur_client.ID))
+            if (AccountsConfig.nickReserved(aux, client.getClientHandler().ID))
             {
 
-                cur_client.sendFromBot("Nick reserved. Please choose another.");
+                client.getClientHandler().sendFromBot("Nick reserved. Please choose another.");
                 {
                     done = true;
                     return;
@@ -860,12 +789,11 @@ public class CommandParser
 
             for (Client tempy : SessionManager.getUsers())
             {
-                if (tempy.handler.userok == 1)
+                if (tempy.getClientHandler().userok == 1)
                 {
-                    if ((tempy.handler.NI.toLowerCase().equals(aux
-                                                                          .toLowerCase())))
+                    if ((tempy.getClientHandler().NI.toLowerCase().equals(aux.toLowerCase())))
                     {
-                        cur_client
+                        client.getClientHandler()
                                 .sendFromBot("Nick taken, please choose another.");
                         {
                             done = true;
@@ -878,7 +806,7 @@ public class CommandParser
 
             if (aux.equalsIgnoreCase(Vars.Opchat_name))
             {
-                cur_client.sendFromBot("Nick taken, please choose another.");
+                client.getClientHandler().sendFromBot("Nick taken, please choose another.");
                 {
                     done = true;
                     return;
@@ -886,25 +814,25 @@ public class CommandParser
             }
             if (aux.equalsIgnoreCase(Vars.bot_name))
             {
-                cur_client.sendFromBot("Nick taken, please choose another.");
+                client.getClientHandler().sendFromBot("Nick taken, please choose another.");
                 {
                     done = true;
                     return;
                 }
             }
 
-            Broadcast.getInstance().broadcast("BINF " + cur_client.SessionID + " NI" + aux);
+            Broadcast.getInstance().broadcast("BINF " + client.getClientHandler().SessionID + " NI" + aux);
 
-            Broadcast.getInstance().broadcast("IMSG " + cur_client.NI + " is now known as " + aux);
-            cur_client.NI = aux;
+            Broadcast.getInstance().broadcast("IMSG " + client.getClientHandler().NI + " is now known as " + aux);
+            client.getClientHandler().NI = aux;
 
         }
         else if (recvbuf.toLowerCase().startsWith("rename "))
         {
             commandOK = 1;
-            if (!cur_client.reg.myMask.rename)
+            if (!client.getClientHandler().reg.myMask.rename)
             {
-                cur_client.sendFromBot("Access denied.");
+                client.getClientHandler().sendFromBot("Access denied.");
                 done = true;
                 return;
             }
@@ -915,14 +843,14 @@ public class CommandParser
             // aux=ADC.retADCStr(aux);
             for (Client temp : SessionManager.getUsers())
             {
-                if (temp.handler.userok == 1)
+                if (temp.getClientHandler().userok == 1)
                 {
-                    if ((temp.handler.NI.toLowerCase().equals(aux
+                    if ((temp.getClientHandler().NI.toLowerCase().equals(aux
                                                                          .toLowerCase())))
                     {
-                        if (!temp.handler.reg.renameable)
+                        if (!temp.getClientHandler().reg.renameable)
                         {
-                            cur_client
+                            client.getClientHandler()
                                     .sendFromBot("This registered user cannot be renamed.");
                         }
 
@@ -933,7 +861,7 @@ public class CommandParser
                             if (newnick.length() < Vars.min_ni)
                             {
                                 {
-                                    cur_client
+                                    client.getClientHandler()
                                             .sendFromBot("Nick too small, please choose another.");
                                     done = true;
                                     return;
@@ -942,7 +870,7 @@ public class CommandParser
                             if (newnick.length() > Vars.max_ni)
                             {
                                 {
-                                    cur_client
+                                    client.getClientHandler()
                                             .sendFromBot("Nick too large, please choose another.");
                                     done = true;
                                     return;
@@ -950,28 +878,28 @@ public class CommandParser
                             }
                             if (!Vars.ValidateNick(newnick))
                             {
-                                cur_client
+                                client.getClientHandler()
                                         .sendFromBot("Nick not valid, please choose another.");
                                 done = true;
                                 return;
                             }
                             if (AccountsConfig.nickReserved(newnick,
-                                                            temp.handler.ID))
+                                                            temp.getClientHandler().ID))
                             {
 
-                                cur_client
+                                client.getClientHandler()
                                         .sendFromBot("Nick reserved. Please choose another.");
                                 done = true;
                                 return;
                             }
                             for (Client tempy : SessionManager.getUsers())
                             {
-                                if (tempy.handler.userok == 1)
+                                if (tempy.getClientHandler().userok == 1)
                                 {
-                                    if ((tempy.handler.NI.toLowerCase()
+                                    if ((tempy.getClientHandler().NI.toLowerCase()
                                                             .equals(newnick.toLowerCase())))
                                     {
-                                        cur_client
+                                        client.getClientHandler()
                                                 .sendFromBot("Nick taken, please choose another.");
                                         done = true;
                                         return;
@@ -982,26 +910,29 @@ public class CommandParser
 
                             if (newnick.equals(Vars.Opchat_name))
                             {
-                                cur_client
+                                client.getClientHandler()
                                         .sendFromBot("Nick taken, please choose another.");
                                 done = true;
                                 return;
                             }
                             if (newnick.equals(Vars.bot_name))
                             {
-                                cur_client
+                                client.getClientHandler()
                                         .sendFromBot("Nick taken, please choose another.");
                                 done = true;
                                 return;
                             }
-                            Broadcast.getInstance().broadcast("BINF " + temp.handler.SessionID
+                            Broadcast.getInstance().broadcast("BINF " + temp.getClientHandler().SessionID
                                                               + " NI" + newnick);
 
-                            cur_client.sendFromBot("Renamed user "
-                                                   + temp.handler.NI + " to " + newnick);
-                            Broadcast.getInstance().broadcast("IMSG " + temp.handler.NI
+                            client.getClientHandler().sendFromBot("Renamed user "
+                                                                  +
+                                                                  temp.getClientHandler().NI +
+                                                                  " to " +
+                                                                  newnick);
+                            Broadcast.getInstance().broadcast("IMSG " + temp.getClientHandler().NI
                                                               + " is now known as " + newnick);
-                            temp.handler.NI = newnick;
+                            temp.getClientHandler().NI = newnick;
                             return;
 
                         }
@@ -1010,61 +941,61 @@ public class CommandParser
 
             }
 
-            cur_client.sendFromBot("No such user online.");
+            client.getClientHandler().sendFromBot("No such user online.");
 
         }
         else if (recvbuf.toLowerCase().startsWith("kick"))
         {
             commandOK = 1;
-            if (!cur_client.reg.myMask.kick)
+            if (!client.getClientHandler().reg.myMask.kick)
             {
-                cur_client.sendFromBot("Access denied.");
+                client.getClientHandler().sendFromBot("Access denied.");
                 done = true;
                 return;
             }
-            new ExtKick(cur_client, recvbuf);
+            new ExtKick(client.getClientHandler(), recvbuf);
 
         }
         else if (recvbuf.toLowerCase().startsWith("plugmin"))
         {
             commandOK = 1;
-            if (!cur_client.reg.myMask.plugmin)
+            if (!client.getClientHandler().reg.myMask.plugmin)
             {
-                cur_client.sendFromBot("Access denied.");
+                client.getClientHandler().sendFromBot("Access denied.");
                 done = true;
                 return;
             }
-            new PlugminCmd(cur_client, recvbuf);
+            new PlugminCmd(client.getClientHandler(), recvbuf);
 
         }
         else if (recvbuf.toLowerCase().startsWith("chatcontrol"))
         {
             commandOK = 1;
-            if (!cur_client.reg.myMask.chatcontrol)
+            if (!client.getClientHandler().reg.myMask.chatcontrol)
             {
-                cur_client.sendFromBot("Access denied.");
+                client.getClientHandler().sendFromBot("Access denied.");
                 done = true;
                 return;
             }
-            new ChatControlCmd(cur_client, recvbuf);
+            new ChatControlCmd(client.getClientHandler(), recvbuf);
         }
         else if (recvbuf.toLowerCase().startsWith("drop"))
         {
             commandOK = 1;
-            if (!cur_client.reg.myMask.drop)
+            if (!client.getClientHandler().reg.myMask.drop)
             {
-                cur_client.sendFromBot("Access denied.");
+                client.getClientHandler().sendFromBot("Access denied.");
                 done = true;
                 return;
             }
-            new ExtDrop(cur_client, recvbuf);
+            new ExtDrop(client.getClientHandler(), recvbuf);
         }
         else if (recvbuf.toLowerCase().startsWith("unban"))
         {
             commandOK = 1;
-            if (!cur_client.reg.myMask.unban)
+            if (!client.getClientHandler().reg.myMask.unban)
             {
-                cur_client.sendFromBot("Access denied.");
+                client.getClientHandler().sendFromBot("Access denied.");
                 done = true;
                 return;
             }
@@ -1072,7 +1003,7 @@ public class CommandParser
             ST.nextToken();
             if (!ST.hasMoreTokens())
             {
-                cur_client.sendFromBot("Nothing specified for unbanning.");
+                client.getClientHandler().sendFromBot("Nothing specified for unbanning.");
                 done = true;
                 return;
             }
@@ -1090,60 +1021,61 @@ public class CommandParser
                 }
                 if (BanList.delban(3, aux))
                 {
-                    cur_client.sendFromBot("Searching...");
-                    cur_client.sendFromBot("Found CID " + aux + ", unbanned.");
+                    client.getClientHandler().sendFromBot("Searching...");
+                    client.getClientHandler().sendFromBot("Found CID " + aux + ", unbanned.");
 
                 }
                 else
                 {
-                    cur_client.sendFromBot("Searching...");
-                    cur_client.sendFromBot("Found CID " + aux
-                                           + ", not banned nothing to do.");
+                    client.getClientHandler().sendFromBot("Searching...");
+                    client.getClientHandler().sendFromBot("Found CID " + aux
+                                                          + ", not banned nothing to do.");
                 }
             }
             catch (IllegalArgumentException iae)
             {
                 //ok its not a cid, lets check if its some IP address...
-                cur_client.sendFromBot("Not a CID, Searching...");
+                client.getClientHandler().sendFromBot("Not a CID, Searching...");
                 if (ADC.isIP(aux))
                 {
-                    cur_client.sendFromBot("Is IP ...checking if banned...");
+                    client.getClientHandler().sendFromBot("Is IP ...checking if banned...");
                     if (BanList.delban(2, aux))
                     {
-                        cur_client.sendFromBot("Found IP address " + aux
-                                               + ", unbanned.");
+                        client.getClientHandler().sendFromBot("Found IP address " + aux
+                                                              + ", unbanned.");
                     }
                     else
                     {
-                        cur_client.sendFromBot("Found IP address " + aux
-                                               + ", but is not banned, nothing to do.");
+                        client.getClientHandler().sendFromBot("Found IP address " + aux
+                                                              +
+                                                              ", but is not banned, nothing to do.");
                     }
                 }
                 else
                 {
-                    cur_client.sendFromBot("Is not IP...Checking for nick...");
+                    client.getClientHandler().sendFromBot("Is not IP...Checking for nick...");
                     if (BanList.delban(1, aux))
                     {
-                        cur_client.sendFromBot("Found nick " + aux
-                                               + ", unbanned.");
+                        client.getClientHandler().sendFromBot("Found nick " + aux
+                                                              + ", unbanned.");
                     }
                     else
                     {
-                        cur_client.sendFromBot("Nick " + aux
-                                               + " is not banned, nothing to do.");
+                        client.getClientHandler().sendFromBot("Nick " + aux
+                                                              + " is not banned, nothing to do.");
                     }
                 }
             }
-            cur_client.sendFromBot("Done.");
+            client.getClientHandler().sendFromBot("Done.");
             Main.Server.rewritebans();
 
         }
         else if (recvbuf.toLowerCase().startsWith("bancid "))
         {
             commandOK = 1;
-            if (!cur_client.reg.myMask.bancid)
+            if (!client.getClientHandler().reg.myMask.bancid)
             {
-                cur_client.sendFromBot("Access denied.");
+                client.getClientHandler().sendFromBot("Access denied.");
                 done = true;
                 return;
             }
@@ -1177,26 +1109,29 @@ public class CommandParser
                 // boolean banned=false;
                 for (Client temp : SessionManager.getUsers())
                 {
-                    if (temp.handler.userok == 1)
+                    if (temp.getClientHandler().userok == 1)
                     {
-                        if ((temp.handler.ID.toLowerCase().equals(aux
+                        if ((temp.getClientHandler().ID.toLowerCase().equals(aux
                                                                              .toLowerCase())))
                         {
-                            if (!temp.handler.reg.kickable)
+                            if (!temp.getClientHandler().reg.kickable)
                             {
-                                cur_client.sendFromBot("Searching...");
-                                cur_client.sendFromBot("Found CID " + aux
-                                                       + " belonging to" + temp.handler.NI
-                                                       + ", but is not kickable.");
+                                client.getClientHandler().sendFromBot("Searching...");
+                                client.getClientHandler().sendFromBot("Found CID " + aux
+                                                                      +
+                                                                      " belonging to" +
+                                                                      temp.getClientHandler().NI
+                                                                      +
+                                                                      ", but is not kickable.");
                             }
 
                             else
                             {
 
-                                cur_client.sendFromBot("Searching...");
-                                cur_client.sendFromBot("Found CID " + aux
-                                                       + ", banning..");
-                                temp.kickMeOut(cur_client, reason, 3, -1L);
+                                client.getClientHandler().sendFromBot("Searching...");
+                                client.getClientHandler().sendFromBot("Found CID " + aux
+                                                                      + ", banning..");
+                                temp.kickMeOut(client.getClientHandler(), reason, 3, -1L);
                                 Main.Server.rewritebans();
                                 return;
                             }
@@ -1205,54 +1140,58 @@ public class CommandParser
                 }
                 if ((AccountsConfig.getnod(aux)) == null)
                 {
-                    cur_client.sendFromBot("Searching...");
-                    cur_client
+                    client.getClientHandler().sendFromBot("Searching...");
+                    client.getClientHandler()
                             .sendFromBot("Found CID " + aux + ", banning....");
 
-                    BanList.addban(3, aux, -1, cur_client.NI, reason);
+                    BanList.addban(3, aux, -1, client.getClientHandler().NI, reason);
                 }
                 else if (!(AccountsConfig.getnod(aux).kickable))
                 {
-                    cur_client.sendFromBot("Searching...");
-                    cur_client.sendFromBot("Found CID " + aux + " belonging to"
-                                           + AccountsConfig.getnod(aux).LastNI
-                                           + ", but is not kickable.");
+                    client.getClientHandler().sendFromBot("Searching...");
+                    client.getClientHandler().sendFromBot("Found CID " + aux + " belonging to"
+                                                          + AccountsConfig.getnod(aux).LastNI
+                                                          + ", but is not kickable.");
                 }
                 else
                 {
-                    cur_client.sendFromBot("Searching...");
-                    cur_client
+                    client.getClientHandler().sendFromBot("Searching...");
+                    client.getClientHandler()
                             .sendFromBot("Found CID " + aux + ", banning....");
 
-                    BanList.addban(3, aux, -1, cur_client.NI, reason);
+                    BanList.addban(3, aux, -1, client.getClientHandler().NI, reason);
                 }
 
             }
             else
             {
                 //ok its not a cid, lets check if its some IP address...
-                cur_client.sendFromBot("Not a CID, Searching for a nick...");
+                client.getClientHandler().sendFromBot("Not a CID, Searching for a nick...");
                 for (Client temp : SessionManager.getUsers())
                 {
-                    if (temp.handler.userok == 1)
+                    if (temp.getClientHandler().userok == 1)
                     {
-                        if ((temp.handler.NI.toLowerCase().equals(aux
+                        if ((temp.getClientHandler().NI.toLowerCase().equals(aux
                                                                              .toLowerCase())))
                         {
-                            if (!(temp.handler.reg.kickable))
+                            if (!(temp.getClientHandler().reg.kickable))
                             {
-                                cur_client.sendFromBot("Found user "
-                                                       + temp.handler.NI + " with CID "
-                                                       + temp.handler.ID
-                                                       + ", but its unkickable.");
+                                client.getClientHandler().sendFromBot("Found user "
+                                                                      +
+                                                                      temp.getClientHandler().NI +
+                                                                      " with CID "
+                                                                      +
+                                                                      temp.getClientHandler().ID
+                                                                      +
+                                                                      ", but its unkickable.");
                             }
                             else
                             {
                                 //BanList.addban (3,temp.ID,-1,handler.NI,reason);
-                                cur_client.sendFromBot("Found user " + aux
-                                                       + ", banning..");
-                                temp.kickMeOut(cur_client, reason, 3, -1L);
-                                cur_client.sendFromBot("Done.");
+                                client.getClientHandler().sendFromBot("Found user " + aux
+                                                                      + ", banning..");
+                                temp.kickMeOut(client.getClientHandler(), reason, 3, -1L);
+                                client.getClientHandler().sendFromBot("Done.");
                                 Main.Server.rewritebans();
                                 return;
                             }
@@ -1260,19 +1199,19 @@ public class CommandParser
                     }
                 }
 
-                cur_client.sendFromBot("No user found with nick " + aux
-                                       + ". Not banned.");
+                client.getClientHandler().sendFromBot("No user found with nick " + aux
+                                                      + ". Not banned.");
 
             }//end catch
-            cur_client.sendFromBot("Done.");
+            client.getClientHandler().sendFromBot("Done.");
 
         }
         else if (recvbuf.toLowerCase().startsWith("bannick "))
         {
             commandOK = 1;
-            if (!cur_client.reg.myMask.bannick)
+            if (!client.getClientHandler().reg.myMask.bannick)
             {
-                cur_client.sendFromBot("Access denied.");
+                client.getClientHandler().sendFromBot("Access denied.");
                 return;
             }
             StringTokenizer ST = new StringTokenizer(ADC.retNormStr(recvbuf));
@@ -1300,26 +1239,27 @@ public class CommandParser
             reason = ADC.retADCStr(reason);
             for (Client temp : SessionManager.getUsers())
             {
-                if (temp.handler.userok == 1)
+                if (temp.getClientHandler().userok == 1)
                 {
-                    if ((temp.handler.NI.toLowerCase().equals(aux
+                    if ((temp.getClientHandler().NI.toLowerCase().equals(aux
                                                                          .toLowerCase())))
                     {
-                        if (!temp.handler.reg.kickable)
+                        if (!temp.getClientHandler().reg.kickable)
                         {
-                            cur_client.sendFromBot("Searching...");
-                            cur_client.sendFromBot("Found Nick " + aux
-                                                   + " but it belongs to an unkickable reg.");
+                            client.getClientHandler().sendFromBot("Searching...");
+                            client.getClientHandler().sendFromBot("Found Nick " + aux
+                                                                  +
+                                                                  " but it belongs to an unkickable reg.");
                         }
                         else
                         {
                             //BanList.addban (1,aux,-1,handler.NI,reason);
-                            cur_client.sendFromBot("Searching...");
-                            cur_client.sendFromBot("Found Nick " + aux
-                                                   + ", banning..");
+                            client.getClientHandler().sendFromBot("Searching...");
+                            client.getClientHandler().sendFromBot("Found Nick " + aux
+                                                                  + ", banning..");
 
-                            temp.kickMeOut(cur_client, reason, 1, -1L);
-                            cur_client.sendFromBot("Done.");
+                            temp.kickMeOut(client.getClientHandler(), reason, 1, -1L);
+                            client.getClientHandler().sendFromBot("Done.");
                             Main.Server.rewritebans();
                             return;
 
@@ -1328,20 +1268,20 @@ public class CommandParser
                 }
             }
 
-            cur_client.sendFromBot("Searching...");
-            cur_client.sendFromBot("Found Nick " + aux + ", banning....");
-            BanList.addban(1, aux, -1, cur_client.NI, reason);
+            client.getClientHandler().sendFromBot("Searching...");
+            client.getClientHandler().sendFromBot("Found Nick " + aux + ", banning....");
+            BanList.addban(1, aux, -1, client.getClientHandler().NI, reason);
 
             Main.Server.rewritebans();
-            cur_client.sendFromBot("Done.");
+            client.getClientHandler().sendFromBot("Done.");
         }
 
         else if (recvbuf.toLowerCase().startsWith("banip "))
         {
             commandOK = 1;
-            if (!cur_client.reg.myMask.banip)
+            if (!client.getClientHandler().reg.myMask.banip)
             {
-                cur_client.sendFromBot("Access denied.");
+                client.getClientHandler().sendFromBot("Access denied.");
                 return;
             }
             StringTokenizer ST = new StringTokenizer(ADC.retNormStr(recvbuf));
@@ -1372,17 +1312,20 @@ public class CommandParser
 
                 for (Client temp : SessionManager.getUsers())
                 {
-                    if (temp.handler.userok == 1)
+                    if (temp.getClientHandler().userok == 1)
                     {
-                        if (temp.handler.RealIP.equals(aux))
+                        if (temp.getClientHandler().RealIP.equals(aux))
                         {
-                            if (!temp.handler.reg.kickable)
+                            if (!temp.getClientHandler().reg.kickable)
                             {
-                                cur_client.sendFromBot("Searching...");
-                                cur_client.sendFromBot("Found IP " + aux
-                                                       + " belonging to " + temp.handler.NI
-                                                       + ", but its unkickable. Not banned.");
-                                cur_client.sendFromBot("Done.");
+                                client.getClientHandler().sendFromBot("Searching...");
+                                client.getClientHandler().sendFromBot("Found IP " + aux
+                                                                      +
+                                                                      " belonging to " +
+                                                                      temp.getClientHandler().NI
+                                                                      +
+                                                                      ", but its unkickable. Not banned.");
+                                client.getClientHandler().sendFromBot("Done.");
                                 done = true;
                                 return;
                             }
@@ -1394,12 +1337,12 @@ public class CommandParser
                 int kickedsome = 0;
                 for (Client temp : SessionManager.getUsers())
                 {
-                    if (temp.handler.userok == 1)
+                    if (temp.getClientHandler().userok == 1)
                     {
-                        if (temp.handler.RealIP.equals(aux))
+                        if (temp.getClientHandler().RealIP.equals(aux))
                         {
 
-                            temp.kickMeOut(cur_client, reason, 2, -1L);
+                            temp.kickMeOut(client.getClientHandler(), reason, 2, -1L);
                         }
                     }
 
@@ -1407,39 +1350,46 @@ public class CommandParser
 
                 if (kickedsome == 0)
                 {
-                    cur_client.sendFromBot("Searching...");
-                    cur_client.sendFromBot("Found IP " + aux + ", banning....");
-                    BanList.addban(2, aux, -1, cur_client.NI, reason);
+                    client.getClientHandler().sendFromBot("Searching...");
+                    client.getClientHandler().sendFromBot("Found IP " + aux + ", banning....");
+                    BanList.addban(2, aux, -1, client.getClientHandler().NI, reason);
                 }
 
             }
             else
             {
                 //ok its not a ip, lets check if its some nick...
-                cur_client.sendFromBot("Not a IP, Searching for a nick...");
+                client.getClientHandler().sendFromBot("Not a IP, Searching for a nick...");
                 for (Client temp : SessionManager.getUsers())
                 {
-                    if (temp.handler.userok == 1)
+                    if (temp.getClientHandler().userok == 1)
                     {
-                        if (temp.handler.NI.toLowerCase().equals(
+                        if (temp.getClientHandler().NI.toLowerCase().equals(
                                 aux.toLowerCase()))
                         {
-                            if (!temp.handler.reg.kickable)
+                            if (!temp.getClientHandler().reg.kickable)
                             {
-                                cur_client.sendFromBot("Found user "
-                                                       + temp.handler.NI + " with IP "
-                                                       + temp.handler.RealIP
-                                                       + ", but its unkickable.Not banned.");
+                                client.getClientHandler().sendFromBot("Found user "
+                                                                      +
+                                                                      temp.getClientHandler().NI +
+                                                                      " with IP "
+                                                                      +
+                                                                      temp.getClientHandler().RealIP
+                                                                      +
+                                                                      ", but its unkickable.Not banned.");
                             }
                             else
                             {
 
-                                cur_client.sendFromBot("Found user " + aux
-                                                       + " with IP " + temp.handler.RealIP
-                                                       + ", banning..");
+                                client.getClientHandler().sendFromBot("Found user " + aux
+                                                                      +
+                                                                      " with IP " +
+                                                                      temp.getClientHandler().RealIP
+                                                                      +
+                                                                      ", banning..");
 
-                                temp.kickMeOut(cur_client, reason, 2, -1L);
-                                cur_client.sendFromBot("Done.");
+                                temp.kickMeOut(client.getClientHandler(), reason, 2, -1L);
+                                client.getClientHandler().sendFromBot("Done.");
                                 Main.Server.rewritebans();
                                 return;
                             }
@@ -1447,11 +1397,11 @@ public class CommandParser
                     }
                 }
 
-                cur_client.sendFromBot("No user found with nick " + aux
-                                       + ". Not banned.");
+                client.getClientHandler().sendFromBot("No user found with nick " + aux
+                                                      + ". Not banned.");
 
             }//end catch
-            cur_client.sendFromBot("Done.");
+            client.getClientHandler().sendFromBot("Done.");
             Main.Server.rewritebans();
 
         }
@@ -1459,20 +1409,20 @@ public class CommandParser
         else if (recvbuf.toLowerCase().startsWith("cfg"))
         {
             commandOK = 1;
-            if (!cur_client.reg.myMask.cfg)
+            if (!client.getClientHandler().reg.myMask.cfg)
             {
-                cur_client.sendFromBot("Access denied.");
+                client.getClientHandler().sendFromBot("Access denied.");
                 done = true;
                 return;
             }
-            new CFGConfig(cur_client, recvbuf);
+            new CFGConfig(client.getClientHandler(), recvbuf);
         }
         else if (recvbuf.toLowerCase().startsWith("topic"))
         {
             commandOK = 1;
-            if (!cur_client.reg.myMask.topic)
+            if (!client.getClientHandler().reg.myMask.topic)
             {
-                cur_client.sendFromBot("Access denied.");
+                client.getClientHandler().sendFromBot("Access denied.");
                 done = true;
                 return;
             }
@@ -1484,14 +1434,13 @@ public class CommandParser
                 }
                 if (!Vars.HubDE.equals(""))
                 {
-                    cur_client.sendFromBot("Topic \"" + Vars.HubDE
-                                           + "\" deleted.");
-                    Broadcast.getInstance().broadcast("IMSG Topic was deleted by " + cur_client.NI,
-                                                      cur_client.myNod);
+                    client.getClientHandler().sendFromBot("Topic \"" + Vars.HubDE
+                                                          + "\" deleted.");
+                    Broadcast.getInstance().broadcast("IMSG Topic was deleted by " + client.getClientHandler().NI, client);
                 }
                 else
                 {
-                    cur_client.sendFromBot("There wasn't any topic anyway.");
+                    client.getClientHandler().sendFromBot("There wasn't any topic anyway.");
                 }
                 Vars.HubDE = "";
 
@@ -1501,13 +1450,13 @@ public class CommandParser
                 String auxbuf = recvbuf.substring(6);
 
                 // Vars.HubDE=Vars.HubDE.replaceAll("\\ "," ");
-                cur_client.sendFromBot("Topic changed from \"" + Vars.HubDE
-                                       + "\" " + "to \"" + auxbuf + "\".");
+                client.getClientHandler().sendFromBot("Topic changed from \"" + Vars.HubDE
+                                                      + "\" " + "to \"" + auxbuf + "\".");
                 auxbuf = auxbuf.replaceAll(" ", "\\ ");
                 Vars.HubDE = auxbuf;
 
                 Broadcast.getInstance().broadcast("IINF DE" + ADC.retADCStr(auxbuf));
-                Broadcast.getInstance().broadcast("IMSG Topic was changed by " + cur_client.NI
+                Broadcast.getInstance().broadcast("IMSG Topic was changed by " + client.getClientHandler().NI
                                                   + " to \"" + Vars.HubDE + "\"");
 
             }
@@ -1517,13 +1466,13 @@ public class CommandParser
         else if (recvbuf.toLowerCase().startsWith("port"))
         {
             commandOK = 1;
-            if (!cur_client.reg.myMask.port)
+            if (!client.getClientHandler().reg.myMask.port)
             {
-                cur_client.sendFromBot("Access denied.");
+                client.getClientHandler().sendFromBot("Access denied.");
                 done = true;
                 return;
             }
-            new PortCmd(cur_client, recvbuf);
+            new PortCmd(client.getClientHandler(), recvbuf);
             /*try
                {
                int x=Integer.parseInt(recvbuf.substring(5));
@@ -1546,16 +1495,16 @@ public class CommandParser
         else if (recvbuf.toLowerCase().equals("usercount"))
         {
             commandOK = 1;
-            if (!cur_client.reg.myMask.usercount)
+            if (!client.getClientHandler().reg.myMask.usercount)
             {
-                cur_client.sendFromBot("Access denied.");
+                client.getClientHandler().sendFromBot("Access denied.");
                 done = true;
                 return;
             }
             int i = 0, j = 0;
             for (Client temp : SessionManager.getUsers())
             {
-                if (temp.handler.userok == 1)
+                if (temp.getClientHandler().userok == 1)
                 {
                     i++;
                 }
@@ -1565,76 +1514,75 @@ public class CommandParser
                 }
 
             }
-            cur_client.sendFromBot("Current user count: " + Integer.toString(i)
-                                   + ". In progress users: " + Integer.toString(j) + ".");
+            client.getClientHandler().sendFromBot("Current user count: " + Integer.toString(i)
+                                                  +
+                                                  ". In progress users: " +
+                                                  Integer.toString(j) +
+                                                  ".");
         }
         else if (recvbuf.toLowerCase().equals("about"))
         {
             commandOK = 1;
-            if (!cur_client.reg.myMask.about)
+            if (!client.getClientHandler().reg.myMask.about)
             {
-                cur_client.sendFromBot("Access denied.");
+                client.getClientHandler().sendFromBot("Access denied.");
                 done = true;
                 return;
             }
-            cur_client.sendFromBot("\n"
-                                   + Vars.About.replaceAll(" ", "\\ ").replaceAll("\\x0a",
-                                                                                  "\\\n"));
+            client.getClientHandler().sendFromBot("\n"
+                                                  +
+                                                  Vars.About
+                                                          .replaceAll(" ", "\\ ")
+                                                          .replaceAll("\\x0a",
+                                                                      "\\\n"));
         }
         else if (recvbuf.toLowerCase().equals("history"))
         {
+            // TODO rewrite to normal chat message history returning
             commandOK = 1;
-            if (!cur_client.reg.myMask.history)
+            if (!client.getClientHandler().reg.myMask.history)
             {
-                cur_client.sendFromBot("Access denied.");
+                client.getClientHandler().sendFromBot("Access denied.");
                 done = true;
                 return;
             }
-            String blah00 = "History:\n";
-            line bb = Broadcast.First;
-            while (bb != null)
-            {
-                blah00 = blah00 + ADC.retNormStr(bb.curline);
-                bb = bb.Next;
-            }
+            String resultMessage = "History:\n" + Broadcast.history.toString();
 
-            cur_client.sendFromBot(blah00.substring(0, blah00.length() - 1));
+            client.getClientHandler().sendFromBot(resultMessage.substring(0, resultMessage.length() - 1));
         }
         else if (recvbuf.toLowerCase().equals("cmdhistory"))
         {
             commandOK = 1;
-            if (!cur_client.reg.myMask.cmdhistory)
+            if (!client.getClientHandler().reg.myMask.cmdhistory)
             {
-                cur_client.sendFromBot("Access denied.");
+                client.getClientHandler().sendFromBot("Access denied.");
                 done = true;
                 return;
             }
             String blah00 = "Command History:\n";
-            line bb = FirstCommand;
-            while (bb != null)
+
+            for (String historyCommand : history)
             {
-                blah00 = blah00 + ADC.retNormStr(bb.curline);
-                bb = bb.Next;
+                blah00 = blah00 + ADC.retNormStr(historyCommand);
             }
 
-            cur_client.sendFromBot(blah00.substring(0, blah00.length() - 1));
+            client.getClientHandler().sendFromBot(blah00.substring(0, blah00.length() - 1));
         }
         else if (recvbuf.toLowerCase().equals("stats"))
         {
             commandOK = 1;
-            if (!cur_client.reg.myMask.stats)
+            if (!client.getClientHandler().reg.myMask.stats)
             {
-                cur_client.sendFromBot("Access denied.");
+                client.getClientHandler().sendFromBot("Access denied.");
                 done = true;
                 return;
             }
             Runtime myRun = Runtime.getRuntime();
 
-            //Proppies.getProperty();
             int i = 0, j = 0;
-            for (Client temp : SessionManager.getUsers())
+            for (Client client : SessionManager.getUsers())
             {
-                if (temp.handler.userok == 1)
+                if (client.getClientHandler().userok == 1)
                 {
                     i++;
                 }
@@ -1682,7 +1630,7 @@ public class CommandParser
 
                     ;
 
-            cur_client.sendFromBot("" + blah);
+            client.getClientHandler().sendFromBot("" + blah);
         }
         else if (recvbuf.equals(""))
         {
