@@ -45,7 +45,6 @@ public class ChatLogDAOImpl implements ChatLogDAO
 			session.save(data);
 
 			session.getTransaction().commit();
-			session.close();
 
 		}catch (Exception ex){
 			log.error(ex);
@@ -89,12 +88,14 @@ public class ChatLogDAOImpl implements ChatLogDAO
 
 			ArrayList<ChatLogPOJO> data = new ArrayList<ChatLogPOJO>();
 
+			session.getTransaction().commit();
+
 			for (Object obj : result)
 			{
 				Object[] 	array 	= (Object[]) obj;
-				Date		date 	= (Date) array[0];
-				String 		nick 	= (String) array[1];
-				String 		message = (String) array[2];
+				Date		date 	= (Date) 	array[0];
+				String 		nick 	= (String) 	array[1];
+				String 		message = (String) 	array[2];
 
 				ChatLogPOJO pojo = new ChatLogPOJO();
 
@@ -104,9 +105,6 @@ public class ChatLogDAOImpl implements ChatLogDAO
 
 				data.add(pojo);
 			}
-
-
-			session.getTransaction().commit();
 
 			return data;
 

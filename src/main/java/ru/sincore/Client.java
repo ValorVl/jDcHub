@@ -26,7 +26,6 @@ package ru.sincore;
 import org.apache.log4j.Logger;
 import org.apache.mina.core.future.IoFutureListener;
 import org.apache.mina.core.future.WriteFuture;
-
 import ru.sincore.banning.BanList;
 import ru.sincore.conf.Vars;
 import ru.sincore.util.ADC;

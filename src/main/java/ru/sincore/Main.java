@@ -32,6 +32,7 @@ import ru.sincore.python.*;
 import ru.sincore.util.ADC;
 import ru.sincore.util.HostTester;
 import ru.sincore.util.TimeConv;
+import ru.sincore.i18n.Messages;
 
 import java.io.*;
 import java.util.*;
@@ -53,7 +54,6 @@ public class Main extends Thread
     public static Properties    Proppies;
     public static String        auxhelp;
     public static BanWordsList  listaBanate;
-
     public static String        MOTD = "";
     public static long          curtime;
     public static String        myPath;
@@ -174,7 +174,7 @@ public class Main extends Thread
         //save Banned Words List
         listaBanate.printFile(Main.myPath + "banwlist.txt");
 
-        log.warn(Translation.getString("close_hub"));
+        log.warn(Messages.CLOSE_HUB);
 
         try
         {
@@ -190,13 +190,12 @@ public class Main extends Thread
 
     public void run()
     {
-        log.warn(Translation.getString("restart_hub"));
+        log.warn(Messages.RESTART_HUB);
         Main.Server.rewriteregs();
         Main.Server.rewriteconfig();
         Main.Server.rewritebans();
         Main.Server.restart = true;
 
-        AccountsConfig.First = null;
         BanList.First = null;
         SessionManager.Users.clear();
 
@@ -243,7 +242,7 @@ public class Main extends Thread
                             AccountsConfig.addReg(clientHandler.ID, clientHandler.NI, "Server");
                             clientHandler.reg = AccountsConfig.getnod(clientHandler.ID);
                             clientHandler.can_receive_cmds = true;
-                            clientHandler.sendFromBot(Translation.getString("reg_msg"));
+                            clientHandler.sendFromBot(Messages.ACCOUNT_REGISTER);
                             clientHandler.putOpchat(true);
                             if (clientHandler.reg.key)
                             {
@@ -275,7 +274,7 @@ public class Main extends Thread
                 AccountsConfig.addReg(aux, null, "Server");
                 Nod x = AccountsConfig.getnod(aux);
                 x.isreg = true;
-                log.info(Translation.getString("regged_cid"));
+                log.info(Messages.REGISTER_CID);
 
             }
             catch (IllegalArgumentException iae)
@@ -300,7 +299,7 @@ public class Main extends Thread
                             AccountsConfig.addReg(clientHandler.ID, clientHandler.NI, "Server");
                             clientHandler.reg = AccountsConfig.getnod(clientHandler.ID);
                             clientHandler.can_receive_cmds = true;
-                            clientHandler.sendFromBot(Translation.getString("reg_msg"));
+                            clientHandler.sendFromBot(String.format(Messages.SERVER_MESSAGE_STUB,"Class Main : 303"));
                             clientHandler.putOpchat(true);
                             if (clientHandler.reg.key)
                             {
