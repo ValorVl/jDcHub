@@ -39,10 +39,7 @@ public class STAException extends Exception
     }
 
 
-    ;
-
-
-    public STAException(String bla, int x)
+	public STAException(String bla, int x)
     {
         super(bla);
         this.x = x;

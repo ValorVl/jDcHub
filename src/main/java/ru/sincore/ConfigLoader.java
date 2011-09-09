@@ -188,6 +188,7 @@ public class ConfigLoader
 			MAX_OP_IN_HUB										= Integer.parseInt(prop.getProperty("core.hub.max_op_in_chat","10"));
 			MAX_CHAT_MESSAGE_SIZE								= Integer.parseInt(prop.getProperty("core.hub.max_chat_message_size","100000"));
 			HUB_NAME											= prop.getProperty("core.hub.name","");
+			HUB_DE												= prop.getProperty("core.hub.de","");
 			HUB_DESCRIPTION										= prop.getProperty("core.hub.description","");
 			HUB_OWNER											= prop.getProperty("core.hub.owner","");
 			HUB_VERSION											= prop.getProperty("core.hub.version","");
@@ -216,6 +217,17 @@ public class ConfigLoader
 			COMMAND_PM_RETURN									= Boolean.parseBoolean(prop.getProperty("core.hub.command_pm_return","true"));
 			MARK_REGISTRATION_ONLY								= Boolean.parseBoolean(prop.getProperty("core.hub.mark_registration_only","true"));
 			ENABLE_ADCS											= Boolean.parseBoolean(prop.getProperty("core.hub.extension.adcs.adcs_enable","false"));
+
+
+			// B 	 Broadcast 	 			Hub must send message to all connected clients, including the sender of the message.
+			// C 	 Client message 	 	Clients must use this message type when communicating directly over TCP.
+			// D 	 Direct message 	 	The hub must send the message to the target_sid user.
+			// E 	 Echo message 	 		The hub must send the message to the target_sid user and the my_sid user.
+			// F 	 Feature broadcast 	 	The hub must send message to all clients that support both all required (+) and no excluded (-) features named. The feature name is matched against the corresponding SU field in INF sent by each client.
+			// H 	 Hub message 	 		Clients must use this message type when a message is intended for the hub only.
+			// I 	 Info message 	 		Hubs must use this message type when sending a message to a client that didn't come from another client.
+			// U 	 UDP message 	 		Clients must use this message type when communicating directly over UDP.
+
 
 			ADC_BMSG                                            = Integer.parseInt(prop.getProperty("ADC.BMSG","1"));
 			ADC_DMSG											= Integer.parseInt(prop.getProperty("ADC.DMSG","1"));

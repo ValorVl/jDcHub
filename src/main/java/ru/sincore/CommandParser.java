@@ -189,7 +189,7 @@ public class CommandParser
             //AccountsConfig.First = null;
             //	BanList.First = null;
 
-            //SessionManager.Users.clear();
+            //SessionManager.users.clear();
             log.warn("Hub restarted by " + client.getClientHandler().NI);
 
             for (Module x : Modulator.myModules)

@@ -51,7 +51,7 @@ public class ClientAssasin extends Thread
         while (!Main.Server.restart)
         {
 
-            if (SessionManager.Users.isEmpty())
+            if (SessionManager.users.isEmpty())
             {
                 try
                 {

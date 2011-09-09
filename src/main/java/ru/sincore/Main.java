@@ -200,7 +200,7 @@ public class Main extends Thread
         //Main.Server.restart = true;
 
         BanList.First = null;
-        SessionManager.Users.clear();
+        SessionManager.users.clear();
 
         Server.shutdown();
         System.gc(); //calling garbage collectors

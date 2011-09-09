@@ -45,7 +45,7 @@ public class ClientExecutor extends Thread
 //        while (!Main.Server.restart)
 //        {
 //            long start = System.currentTimeMillis();
-//            if (SessionManager.Users.isEmpty())
+//            if (SessionManager.users.isEmpty())
 //            {
 //                try
 //                {

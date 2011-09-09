@@ -24,6 +24,7 @@
 package ru.sincore;
 
 import org.apache.log4j.Logger;
+import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
 import ru.sincore.Exceptions.CommandException;
@@ -43,16 +44,16 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Alexey 'lh' Antonov
  * @since 2011-09-06
  */
-public class SessionManager extends org.apache.mina.core.service.IoHandlerAdapter
+public class SessionManager extends IoHandlerAdapter
 {
     public static final Logger log = Logger.getLogger(SessionManager.class);
 
-    public static ConcurrentHashMap<String, Client> Users;
+    public static ConcurrentHashMap<String, Client> users;
 
 
     static
     {
-        Users = new ConcurrentHashMap<String, Client>(3000, (float) 0.75);
+        users = new ConcurrentHashMap<String, Client>(3000, (float) 0.75);
     }
 
 
@@ -75,8 +76,7 @@ public class SessionManager extends org.apache.mina.core.service.IoHandlerAdapte
             }
             catch (InterruptedException e)
             {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                log.error(e);
             }
         }
         session.close(false);
@@ -85,7 +85,7 @@ public class SessionManager extends org.apache.mina.core.service.IoHandlerAdapte
 
     public static synchronized Collection<Client> getUsers()
     {
-        return Users.values();
+        return users.values();
     }
 
 
@@ -133,7 +133,7 @@ public class SessionManager extends org.apache.mina.core.service.IoHandlerAdapte
             throws Exception
     {
         String str = (String) msg;
-		log.debug("Incoming message : " + str);
+		log.debug("Incoming message : "+ str);
 
         try
         {
@@ -145,11 +145,13 @@ public class SessionManager extends org.apache.mina.core.service.IoHandlerAdapte
             {
                 return;
             }
-            session.close(false);
+            //session.close(false);
+			log.info(stex);
         }
         catch (CommandException cfex)
         {
-            session.close(false);
+            //session.close(false);
+			log.info(cfex);
         }
 
     }
@@ -159,6 +161,7 @@ public class SessionManager extends org.apache.mina.core.service.IoHandlerAdapte
             throws Exception
     {
         //ok, we're in idle
+		log.info(status);
     }
 
 
@@ -184,22 +187,25 @@ public class SessionManager extends org.apache.mina.core.service.IoHandlerAdapte
 
         log.info(currentClientHandler.NI+" with SID " + currentClientHandler.SessionID + " just quited.");
 
-        SessionManager.Users.remove(currentClientHandler.ID);
+        SessionManager.users.remove(currentClientHandler.ID);
     }
 
 
     public void sessionOpened(IoSession session)
             throws Exception
     {
-        Client currentClient = HubServer.AddClient();
-        ClientHandler currentClientHandler = currentClient.getClientHandler();
+
+		Client currentClient = HubServer.AddClient();
+
+		ClientHandler currentClientHandler = currentClient.getClientHandler();
 
         session.setAttribute("", currentClient);
 
         currentClientHandler.mySession = session;
         StringTokenizer ST = new StringTokenizer(currentClientHandler.mySession
                                                          .getRemoteAddress().toString(), "/:");
-        currentClientHandler.RealIP = ST.nextToken();
+
+		currentClientHandler.RealIP = ST.nextToken();
         SID cursid = new SID(currentClientHandler);
         currentClientHandler.SessionID = Base32.encode(cursid.cursid).substring(0, 4);
         currentClientHandler.sid = cursid.cursid;

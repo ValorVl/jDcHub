@@ -254,9 +254,9 @@ public class HubServer extends Thread
 
         Client newclient = new Client();
 
-        synchronized (SessionManager.Users)
+        synchronized (SessionManager.users)
         {
-            SessionManager.Users.put(newclient.getClientHandler().ID, newclient);
+            SessionManager.users.put(newclient.getClientHandler().ID, newclient);
         }
 
         return newclient;

@@ -72,7 +72,7 @@ public class ExtInfo
             }
             if (!Nicklist.equals(""))
             {
-                cur_client.sendFromBot("Users with IP " +
+                cur_client.sendFromBot("users with IP " +
                                        aux +
                                        " :\n" +
                                        Nicklist.substring(0, Nicklist.length() - 1));

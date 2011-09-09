@@ -23,6 +23,7 @@ package ru.sincore;
  */
 
 
+import org.apache.log4j.Logger;
 import ru.sincore.Exceptions.CommandException;
 import ru.sincore.Exceptions.STAException;
 import ru.sincore.Modules.Modulator;
@@ -50,6 +51,8 @@ import java.util.StringTokenizer;
 
 public class Command
 {
+	private static final Logger log = Logger.getLogger(Command.class);
+
     Client currentClient;
     String command;
     String state;
@@ -74,17 +77,17 @@ public class Command
     private boolean pushUser()
     {
         // boolean ok=false;
-        synchronized (SessionManager.Users)
+        synchronized (SessionManager.users)
         {
-            // System.out.println("marimea este "+SessionManager.Users.size());
-            if (SessionManager.Users.containsKey(currentClient.getClientHandler().ID))
+            // System.out.println("marimea este "+SessionManager.users.size());
+            if (SessionManager.users.containsKey(currentClient.getClientHandler().ID))
             {
-                Client ch = SessionManager.Users.get(currentClient.getClientHandler().ID);
+                Client ch = SessionManager.users.get(currentClient.getClientHandler().ID);
                 ch.dropMeImGhost();
             }
 
 
-            SessionManager.Users.put(currentClient.getClientHandler().ID, currentClient);
+            SessionManager.users.put(currentClient.getClientHandler().ID, currentClient);
             currentClient.getClientHandler().inside = true;
         }
         return true;
@@ -139,6 +142,7 @@ public class Command
 															  +
 															  " CT5 DE" +
 															  ADC.retADCStr(ConfigLoader.BOT_CHAT_DESCRIPTION));
+		log.info(ConfigLoader.SECURITY_CID);
         currentClient.getClientHandler().putOpchat(true);
         currentClient.getClientHandler().sendToClient(currentClient.getClientHandler().getINF());  //sending inf about itself too
         //handler.sendToClient(inf);
@@ -174,8 +178,7 @@ public class Command
     }
 
 
-    void handleINF()
-            throws CommandException, STAException
+    void handleINF() throws CommandException, STAException
     {
 
         if (command.length() < 10)
@@ -595,7 +598,7 @@ public class Command
                     }
                 }
                 /* if(state.equals ("PROTOCOL"))
-                if(SessionManager.Users.containsKey(handler.ID) || temp.handler.ID.equals(handler.ID))//&& temp.handler.CIDsecure)
+                if(SessionManager.users.containsKey(handler.ID) || temp.handler.ID.equals(handler.ID))//&& temp.handler.CIDsecure)
                 {
                     new STAError(handler,200+Constants.STA_CID_TAKEN,"CID taken. Please go to Settings and pick new PID.");
                     return;
@@ -1388,7 +1391,8 @@ public class Command
             throws STAException, CommandException
     {
         currentClient = client;
-        // System.out.printf("["+handler.NI+"]:%s\n",Issued_command);
+		log.info("COMMAND : " +command + "CLIENT"+client);
+        //System.out.printf("["+handler.NI+"]:%s\n",Issued_command);
 
 
         //System.out.printf("[Received]:%s\n",Issued_command);
