@@ -24,9 +24,7 @@ package ru.sincore;
 
 import org.apache.mina.core.future.WriteFuture;
 import org.apache.mina.core.session.IoSession;
-
 import ru.sincore.banning.Ban;
-import ru.sincore.conf.Vars;
 import ru.sincore.util.ADC;
 
 import java.util.Queue;
@@ -464,7 +462,7 @@ public class ClientHandler
         }
         if (this.userok == 1)
         {
-            if (can_receive_cmds && Vars.command_pm == 1)
+            if (can_receive_cmds && ConfigLoader.COMMAND_PM_RETURN == true)
             {
                 sendFromBotPM(text);
             }
@@ -496,11 +494,11 @@ public class ClientHandler
             if (this.reg.isreg && this.reg.opchataccess)
             {
                 this.sendToClient("BINF ABCD ID" +
-                                  Vars.OpChatCid +
+                                  ConfigLoader.OP_CHAT_CID +
                                   " NI" +
-                                  ADC.retADCStr(Vars.Opchat_name) +
+                                  ADC.retADCStr(ConfigLoader.OP_CHAT_NAME) +
                                   " CT5 DE" +
-                                  ADC.retADCStr(Vars.Opchat_desc));
+                                  ADC.retADCStr(ConfigLoader.OP_CHAT_DESCRIPTION));
             }
         }
         else

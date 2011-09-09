@@ -9,7 +9,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.Properties;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  *  Class load all localized string messages
@@ -42,6 +41,9 @@ public class Messages
 	//define client message var
 
 	public static String REG_MESSAGE;
+	public static String BAN_MESSAGE;
+	public static String HUB_FULL_MESSAGE;
+	public static String SEARCH_SPAM_MESSAGE;
 
 	//Empty constructor
 	Messages(){}
@@ -74,48 +76,47 @@ public class Messages
 
 			}
 		}
-		return "messages"+selectedLang;
+		return dir+"/messages."+selectedLang;
 	}
 
-	public static synchronized void loadClientMessages()
+	public static void loadClientMessages()
 	{
-		AtomicReference<Properties> messages = new AtomicReference<Properties>();
+		Properties messages = new Properties();
 		File messagesFile;
 		FileInputStream fileInputStream = null;
 		BufferedInputStream bufferedInputStream = null;
 
 		try
 		{
-
 			messagesFile = new File(localePref());
 			fileInputStream = new FileInputStream(messagesFile);
 			bufferedInputStream = new BufferedInputStream(fileInputStream);
-			messages.set(new Properties());
-			messages.get().load(bufferedInputStream);
+			messages.load(bufferedInputStream);
 
 			// start init messages var
-			messages.get().clear();
+			messages.clear();
 
+			REG_MESSAGE 			= messages.getProperty("core.reg_message");
+			SEARCH_SPAM_MESSAGE		= messages.getProperty("core.search_spam_detected");
 
-		} catch (IOException ex)
+		} catch (Exception ex)
 		{
 			log.error("Can not load messages file", ex);
 		} finally
 		{
 			try
 			{
-				assert fileInputStream != null;
 				fileInputStream.close();
-				assert bufferedInputStream != null;
 				bufferedInputStream.close();
-			} catch (IOException ex)
+
+			} catch (Exception ex)
 			{
 				log.error(ex);
 			}
 		}
 	}
 
-	private static void loadServerMesages()
+	public static void loadServerMessages()
 	{
 		File hubPropertiesFile;
 		FileInputStream fileInput = null;
@@ -132,12 +133,14 @@ public class Messages
 			prop.clear();
             prop.load(buffInput);
 
-
+			SERVER_STARTUP			= prop.getProperty("core.server.message.startup");
+			SERVER_STARTUP_DONE		= prop.getProperty("core.server.message.startup_done");
 			SERVER_MESSAGE_STUB		= prop.getProperty("core.server.message.stub");
 			RESTART_HUB 			= prop.getProperty("core.server.message.restart_hub");
 			CLOSE_HUB				= prop.getProperty("core.server.message.close_hub");
 			ACCOUNT_REGISTER		= prop.getProperty("core.server.message.account_register");
 			REGISTER_CID			= prop.getProperty("core.server.message.register_cid");
+
         }
         catch (Exception e)
         {

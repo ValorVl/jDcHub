@@ -25,7 +25,7 @@ package ru.sincore.ProtoCmds;
 
 import ru.sincore.*;
 import ru.sincore.Exceptions.STAException;
-import ru.sincore.conf.Vars;
+import ru.sincore.i18n.Messages;
 import ru.sincore.util.Constants;
 import ru.sincore.util.STAError;
 
@@ -69,35 +69,35 @@ public class SCH
             switch (command.charAt(0))
             {
                 case 'B':
-                    if (Vars.BSCH != 1)
+                    if (ConfigLoader.ADC_BSCH != 1)
                     {
                         new STAError(client, 100, "SCH Invalid Context B");
                         return;
                     }
                     break;
                 case 'E':
-                    if (Vars.ESCH != 1)
+                    if (ConfigLoader.ADC_ESCH != 1)
                     {
                         new STAError(client, 100, "SCH Invalid Context E");
                         return;
                     }
                     break;
                 case 'D':
-                    if (Vars.DSCH != 1)
+                    if (ConfigLoader.ADC_DSCH != 1)
                     {
                         new STAError(client, 100, "SCH Invalid Context D");
                         return;
                     }
                     break;
                 case 'F':
-                    if (Vars.FSCH != 1)
+                    if (ConfigLoader.ADC_FSCH != 1)
                     {
                         new STAError(client, 100, "SCH Invalid Context F");
                         return;
                     }
                     break;
                 case 'H':
-                    if (Vars.HSCH != 1)
+                    if (ConfigLoader.ADC_HSCH != 1)
                     {
                         new STAError(client, 100, "SCH Invalid Context H");
                         return;
@@ -190,12 +190,12 @@ public class SCH
                 TOken = aux.substring(2);
             }
         }
-        if (len > Vars.max_sch_chars)
+        if (len > ConfigLoader.MAX_CHARS_SEARCH_REQUEST)
         {
             new STAError(client, 100, "Search exceeds maximum length.");
             return;
         }
-        if (len < Vars.min_sch_chars && len != 0)
+        if (len < ConfigLoader.MIN_CHARS_SEARCH_REQUEST && len != 0)
         {
             new STAError(client, 100, "Search too short.");
             return;
@@ -203,16 +203,16 @@ public class SCH
         long curtime = System.currentTimeMillis();
         if (!automagic)
         {
-            if (curtime - cur_client.Lastsearch > Vars.search_spam_reset * 1000)
+            if (curtime - cur_client.Lastsearch > ConfigLoader.SEARCH_SPAM_RESET * 1000)
             {
                 cur_client.search_step = 0;
             }
-            else if (cur_client.search_step < Vars.search_steps)
+            else if (cur_client.search_step < ConfigLoader.SEARCH_STEPS)
             {
                 double x = 1;
                 for (int i = 0; i < cur_client.search_step; i++)
                 {
-                    x *= ((double) Vars.search_log_base) / 1000;
+                    x *= ((double) ConfigLoader.SEARCH_BASE_INTERVAL) / 1000;
                 }
                 x *= 1000;
                 long xx = (long) x;
@@ -221,15 +221,15 @@ public class SCH
                 if (curtime - cur_client.Lastsearch < xx)
                 {
                     //handler.sendToClient (Issued_Command);
-                    String[] Messages = Vars.Msg_Search_Spam.split("\\\n");
-                    for (int j = 0; j < Messages.length; j++)
+                    String[] messages = Messages.SEARCH_SPAM_MESSAGE.split("\\\n");
+                    for (int j = 0; j < messages.length; j++)
                     {
                         cur_client.sendToClient("DRES DCBA " +
                                                 cur_client.SessionID +
                                                 " SI1 SL1 FN/Searching: " +
                                                 Key +
                                                 " -- " +
-                                                Messages[j] +
+                                                messages[j] +
                                                 " TRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA TO" +
                                                 TOken);
                     }
@@ -247,22 +247,22 @@ public class SCH
             else
             {
 
-                long xx = Vars.search_spam_reset * 1000;
+                long xx = ConfigLoader.SEARCH_SPAM_RESET * 1000;
 
                 //System.out.println(xx);
                 if (curtime - cur_client.Lastsearch < xx)
                 {
                     //handler.sendToClient (Issued_Command);
-                    String[] Messages = Vars.Msg_Search_Spam.split("\\\n");
+                    String[] messages = Messages.SEARCH_SPAM_MESSAGE.split("\\\n");
 
-                    for (String message : Messages)
+                    for (String mess : messages)
                     {
                         cur_client.sendToClient("DRES DCBA " +
                                                 cur_client.SessionID +
                                                 " SI1 SL1 FN/Searching: " +
                                                 Key +
                                                 " -- " +
-                                                message +
+                                                mess +
                                                 " TRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA TO" +
                                                 TOken);
                     }
@@ -282,7 +282,7 @@ public class SCH
         }
         else
         {
-            if (curtime - cur_client.Lastautomagic < Vars.automagic_search * 1000)
+            if (curtime - cur_client.Lastautomagic < ConfigLoader.AUTOMATIC_SEARCH_INTERVAL * 1000)
             {
 
                 return;

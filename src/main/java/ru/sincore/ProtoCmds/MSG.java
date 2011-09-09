@@ -24,8 +24,6 @@
 package ru.sincore.ProtoCmds;
 
 import ru.sincore.Exceptions.STAException;
-import ru.sincore.conf.ADCConfig;
-import ru.sincore.conf.Vars;
 import ru.sincore.util.ADC;
 import ru.sincore.util.Constants;
 import ru.sincore.util.STAError;
@@ -69,35 +67,35 @@ public class MSG
             switch (command.charAt(0))
             {
                 case 'B':
-                    if (Vars.BMSG != 1)
+                    if (ConfigLoader.ADC_BMSG != 1)
                     {
                         new STAError(client, 100, "MSG Invalid Context B");
                         return;
                     }
                     break;
                 case 'E':
-                    if (Vars.EMSG != 1)
+                    if (ConfigLoader.ADC_EMSG != 1)
                     {
                         new STAError(client, 100, "MSG Invalid Context E");
                         return;
                     }
                     break;
                 case 'D':
-                    if (Vars.DMSG != 1)
+                    if (ConfigLoader.ADC_DMSG != 1)
                     {
                         new STAError(client, 100, "MSG Invalid Context D");
                         return;
                     }
                     break;
                 case 'F':
-                    if (Vars.FMSG != 1)
+                    if (ConfigLoader.ADC_FMSG != 1)
                     {
                         new STAError(client, 100, "MSG Invalid Context F");
                         return;
                     }
                     break;
                 case 'H':
-                    if (Vars.HMSG != 1)
+                    if (ConfigLoader.ADC_HMSG != 1)
                     {
                         new STAError(client, 100, "MSG Invalid Context H");
                         return;
@@ -129,7 +127,7 @@ public class MSG
         }
         String message = tok.nextToken();
 
-        if (message.length() > Vars.max_chat_msg)
+        if (message.length() > ConfigLoader.MAX_CHAT_MESSAGE_SIZE)
         {
             if (
                     !(cur_client.reg.overridespam))
@@ -230,17 +228,17 @@ public class MSG
                             {
                                 tempClient.getClientHandler()
                                         .sendToClient("EMSG ABCD " +
-                                                      tempClient.getClientHandler().SessionID +
-                                                      " User\\s{" +
-                                                      cur_client.NI +
-                                                      "}\\swith\\sIP\\s{" +
-                                                      cur_client.RealIP +
-                                                      "}\\sand" +
-                                                      "\\sCID\\s{" +
-                                                      cur_client.ID +
-                                                      "}\\sused\\sforbidden\\sword\\s:\\s" +
-                                                      message +
-                                                      " PMABCD");
+															  tempClient.getClientHandler().SessionID +
+															  " User\\s{" +
+															  cur_client.NI +
+															  "}\\swith\\sIP\\s{" +
+															  cur_client.RealIP +
+															  "}\\sand" +
+															  "\\sCID\\s{" +
+															  cur_client.ID +
+															  "}\\sused\\sforbidden\\sword\\s:\\s" +
+															  message +
+															  " PMABCD");
                             }
 
                         }
@@ -286,7 +284,7 @@ public class MSG
         long now = System.currentTimeMillis();
         if (cur_client.LastChatMsg != 0)
         {
-            if (now - cur_client.LastChatMsg < Vars.chat_interval)
+            if (now - cur_client.LastChatMsg < ConfigLoader.CHAT_REFRESH)
             {
                 if (!cur_client.reg.overridespam)
 
@@ -294,7 +292,7 @@ public class MSG
                     new STAError(client,
                                  100,
                                  "Chatting Too Fast. Minimum chat interval " +
-                                 String.valueOf(Vars.chat_interval) +
+                                 String.valueOf(ConfigLoader.CHAT_REFRESH) +
                                  " .You made " +
                                  String.valueOf(now - cur_client.LastChatMsg) +
                                  ".");
@@ -334,7 +332,7 @@ public class MSG
                     (message.length() <= 4 || message.toLowerCase().charAt(4) != 's'))//adc adv config panel
                 {
                     cur_client.sendFromBot("[adc:] " + ADC.retNormStr(message));
-                    new ADCConfig(cur_client, message);
+                    //new ADCConfig(cur_client, message);
 
                 }
                 else if (message.toLowerCase().startsWith("!cfg") ||
@@ -409,7 +407,7 @@ public class MSG
                         message.toLowerCase().startsWith("+adc"))//adc adv config panel
                     {
                         cur_client.sendFromBot("[adc:] " + ADC.retNormStr(message));
-                        new ADCConfig(cur_client, message);
+                        //new ADCConfig(cur_client, message);
 
                     }
                     else if (message.toLowerCase().startsWith("!cfg") ||
@@ -463,12 +461,12 @@ public class MSG
                         {
                             targetClient.getClientHandler()
                                     .sendToClient("EMSG " +
-                                                  cur_client.SessionID +
-                                                  " " +
-                                                  targetClient.getClientHandler().SessionID +
-                                                  " " +
-                                                  message +
-                                                  " PMABCD");
+														  cur_client.SessionID +
+														  " " +
+														  targetClient.getClientHandler().SessionID +
+														  " " +
+														  message +
+														  " PMABCD");
                         }
                     }
 

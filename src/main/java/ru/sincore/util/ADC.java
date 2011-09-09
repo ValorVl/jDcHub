@@ -22,10 +22,12 @@ package ru.sincore.util;
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import ru.sincore.ConfigLoader;
 import ru.sincore.Main;
 import ru.sincore.SessionManager;
 import ru.sincore.TigerImpl.Base32;
-import ru.sincore.conf.Vars;
+
+import static ru.sincore.ConfigLoader.MAX_USERS;
 
 /**
  * This class is the main storage place for ADC command that hub has to send.
@@ -51,60 +53,10 @@ abstract public class ADC
     /**
      * The default motd.
      */
-    public static String MOTD =
-            "\n       CONGRATULATIONS you succesfully run DSHub and you are now connected to it.\n" +
-            "Some reminders :\n" +
-            "DSHub is ADC software so you need an ADC compatibile client. More info about ADC on http://en.wikipedia.org/wiki/Advanced_Direct_Connect\n" +
-            "At the moment of this release ( October 2008 ), the following ADC clients were available:\n" +
-            "dc++ 0.702, AirDC 2.01,  apexdc 1.00, strongdc  2.13 ,BCDC 0.705, or ANY later version of those will be ADC compatible.\n" +
-            "So after you start the Hub, try connecting to adc://127.0.0.1:411\n" +
-            "Some ADC reminders:\n" +
-            "-- You need to connect to address adc:// ( or adcs:// if you use ADC Secure )\n" +
-            "-- There is no default port, every time one must be specified ( like 411 on NMDC)\n" +
-            "-- Accounts are on CID not nick ( you can use what nick you want )\n" +
-            "-- Clients that are not ADC compat or dont use the address correctly will just hang up and you will see them at Connecting Users in stats command.\n" +
-            "Oh and another thing, NMDC hublists dont work with ADC, so i got 2 fine lists that support ADC for you:\n" +
-            "  www.hubtracker.com\n" +
-            "  www.adchublist.com\n" +
-            "Thanks for using DSHub and I hope you will have as much fun using it as I had creating it ;)\n" +
-            "Also, I have been receiveing some complains lately that DSHub doesn't work in I-don't-know-what good way on some machines\n" +
-            "Out of my experience, DSHub works at least acceptable, and probably those persons can't make it work good enough. I want to point our " +
-            "that I do this for pleasure and to make people happy. Being accused that I don't provide a high quality software or documentation " +
-            "is just something that makes me sad about continuing this project. Remember that I don't get anything for doing this, it's my free time" +
-            " my work and my energy without any real benefit... (If you feel like helping in any way, e-mail me)\n\n" +
-
-            "For latest version, updates, any suggestions, information, or just anything visit www.death-squad.ro/dshub\n" +
-
-            "Homepage  		http://www.death-squad.ro/dshub\n" +
-
-
-            "Launchpad links\n\n" +
-
-            "Overview  		https://launchpad.net/dshub/\n" +
-            "Code  			https://code.launchpad.net/dshub/\n" +
-            "Bugs  			https://bugs.launchpad.net/dshub/\n" +
-            "Q&A  			https://answers.launchpad.net/dshub/\n\n" +
-
-            "Sourceforge links\n\n" +
-
-            "Overview               http://sourceforge.net/projects/dshub/\n" +
-            "Features               http://sourceforge.net/tracker/?group_id=197166&atid=960378\n" +
-            "Plugins		http://sourceforge.net/tracker/?group_id=197166&atid=1020439\n" +
-            "Translations		http://sourceforge.net/tracker/?group_id=197166&atid=1035463\n" +
-            "SVN Checkout		https://dshub.svn.sf.net/svnroot/dshub/trunk\n" +
-            "Mailing List		http://sourceforge.net/mail/?group_id=197166\n\n" +
-
-            "Other Links\n\n" +
-
-            "ADCPortal		http://www.adcportal.com\n\n" +
-
-
-            "Have a nice hubbing !";
+    public static String MOTD =""; //TODO Load in file
 
 
     public static String GreetingMsg = MOTD;
-
-    ;
 
 
     public static String retNormStr(String blah)
@@ -156,12 +108,12 @@ abstract public class ADC
 
     public static String getPingString()
     {
-        return " HH" + Vars.Hub_Host + " UC" + SessionManager.getUserCount() + " SS" +
+        return " HH" + ConfigLoader.HUB_LISTEN + " UC" + SessionManager.getUserCount() + " SS" +
                SessionManager.getTotalShare() + " SF" + SessionManager.getTotalFileCount() +
-               " MS" + 1024 * 1024 * Vars.min_share + " XS" + 1024 * 1024 * Vars.max_share +
-               " ML" + Vars.min_sl + " XL" + Vars.max_sl + " XU" + Vars.max_hubs_user +
-               " XR" + Vars.max_hubs_reg + " XO" + Vars.max_hubs_op +
-               " MC" + Vars.max_users + " UP" + (System.currentTimeMillis() - Main.curtime);
+               " MS" + 1024 * 1024 * ConfigLoader.MIN_SHARE_SIZE + " XS" + 1024 * 1024 * ConfigLoader.MAX_SHARE_SIZE +
+               " ML" + ConfigLoader.MIN_SLOT_COUNT + " XL" + ConfigLoader.MAX_SLOT_COUNT + " XU" + ConfigLoader.MAX_HUBS_USERS +
+               " XR" + ConfigLoader.MAX_HUBS_REGISTERED + " XO" + ConfigLoader.MAX_OP_IN_HUB +
+               " MC" + ConfigLoader.MAX_USERS + " UP" + (System.currentTimeMillis() - Main.curtime);
     }
 
 

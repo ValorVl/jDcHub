@@ -24,12 +24,12 @@
 package ru.sincore.ProtoCmds;
 
 import ru.sincore.Client;
+import ru.sincore.ClientHandler;
+import ru.sincore.ConfigLoader;
 import ru.sincore.Exceptions.STAException;
-import ru.sincore.conf.Vars;
+import ru.sincore.SessionManager;
 import ru.sincore.util.Constants;
 import ru.sincore.util.STAError;
-import ru.sincore.ClientHandler;
-import ru.sincore.SessionManager;
 
 import java.util.StringTokenizer;
 
@@ -48,7 +48,7 @@ public class STA
      * Creates a new instance of STA
      * @param client reference to client
      * @param state command state. See ADC protocol specs.
-     * @param command incoming command // TODO realy?
+     * @param command incoming command // TODO really?
      * @throws STAException exception, cause the something gone wrong =)
      */
     public STA(Client client, String state, String command)
@@ -60,7 +60,7 @@ public class STA
         {
             if (!cur_client.reg.overridespam)
             {
-                if (Vars.BSTA == 0)
+                if (ConfigLoader.ADC_BSTA == 0)
                 {
                     cur_client.sendFromBot("STA invalid context B");
                 }
@@ -70,7 +70,7 @@ public class STA
         {
             if (!cur_client.reg.overridespam)
             {
-                if (Vars.DSTA == 0)
+                if (ConfigLoader.ADC_DSTA == 0)
                 {
                     cur_client.sendFromBot("STA invalid context D");
                     return;
@@ -120,7 +120,7 @@ public class STA
         {
             if (!cur_client.reg.overridespam)
             {
-                if (Vars.ESTA == 0)
+                if (ConfigLoader.ADC_ESTA == 0)
                 {
                     cur_client.sendFromBot("STA invalid context E");
                     return;
@@ -167,7 +167,7 @@ public class STA
         {
             if (!cur_client.reg.overridespam)
             {
-                if (Vars.FSTA == 0)
+                if (ConfigLoader.ADC_FSTA == 0)
                 {
                     cur_client.sendFromBot("STA invalid context F");
                 }
@@ -178,7 +178,7 @@ public class STA
             if (!cur_client.reg.overridespam)
             // ok, client has an error. what can i do about it? :))
             {
-                if (Vars.HSTA == 0)
+                if (ConfigLoader.ADC_HSTA == 0)
                 {
                     cur_client.sendFromBot("STA invalid context H");
                 }

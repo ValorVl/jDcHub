@@ -25,8 +25,6 @@ package ru.sincore;
 
 import java.io.Serializable;
 
-import ru.sincore.conf.Vars;
-
 /**
  * Help File generator class, dynamically.
  *
@@ -77,7 +75,7 @@ public class HelpFile implements Serializable
     */
     public String getHelp()
     {
-        String blah = "Death Squad Hub " + Vars.HubVersion + ". Running on " +
+        String blah = "Death Squad Hub " + ConfigLoader.HUB_VERSION + ". Running on " +
                       Main.Proppies.getProperty("os.name")
                       + " " + Main.Proppies.getProperty("os.version")
                       + " " + Main.Proppies.getProperty("os.arch") + "\n";

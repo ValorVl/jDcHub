@@ -23,13 +23,13 @@
 
 package ru.sincore.ProtoCmds;
 
+import ru.sincore.Client;
+import ru.sincore.ClientHandler;
+import ru.sincore.ConfigLoader;
 import ru.sincore.Exceptions.STAException;
 import ru.sincore.SessionManager;
-import ru.sincore.conf.Vars;
 import ru.sincore.util.Constants;
 import ru.sincore.util.STAError;
-import ru.sincore.ClientHandler;
-import ru.sincore.Client;
 
 import java.util.StringTokenizer;
 
@@ -76,35 +76,35 @@ public class CTM
             switch (command.charAt(0))
             {
                 case 'B':
-                    if (Vars.BCTM != 1)
+                    if (ConfigLoader.ADC_BCTM != 1)
                     {
                         new STAError(client, 100, "CTM Invalid Context B");
                         return;
                     }
                     break;
                 case 'E':
-                    if (Vars.ECTM != 1)
+                    if (ConfigLoader.ADC_ECTM != 1)
                     {
                         new STAError(client, 100, "CTM Invalid Context E");
                         return;
                     }
                     break;
                 case 'D':
-                    if (Vars.DCTM != 1)
+                    if (ConfigLoader.ADC_DCTM != 1)
                     {
                         new STAError(client, 100, "CTM Invalid Context D");
                         return;
                     }
                     break;
                 case 'F':
-                    if (Vars.FCTM != 1)
+                    if (ConfigLoader.ADC_FCTM != 1)
                     {
                         new STAError(client, 100, "CTM Invalid Context F");
                         return;
                     }
                     break;
                 case 'H':
-                    if (Vars.HCTM != 1)
+                    if (ConfigLoader.ADC_HCTM != 1)
                     {
                         new STAError(client, 100, "CTM Invalid Context H");
                         return;

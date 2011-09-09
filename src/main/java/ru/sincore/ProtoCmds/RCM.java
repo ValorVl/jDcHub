@@ -23,13 +23,13 @@
 
 package ru.sincore.ProtoCmds;
 
+import ru.sincore.Client;
+import ru.sincore.ClientHandler;
+import ru.sincore.ConfigLoader;
 import ru.sincore.Exceptions.STAException;
 import ru.sincore.SessionManager;
-import ru.sincore.conf.Vars;
 import ru.sincore.util.Constants;
 import ru.sincore.util.STAError;
-import ru.sincore.ClientHandler;
-import ru.sincore.Client;
 
 import java.util.StringTokenizer;
 
@@ -67,35 +67,35 @@ public class RCM
             switch (command.charAt(0))
             {
                 case 'B':
-                    if (Vars.BRCM != 1)
+                    if (ConfigLoader.ADC_BRCM != 1)
                     {
                         new STAError(client, 100, "RCM Invalid Context B");
                         return;
                     }
                     break;
                 case 'E':
-                    if (Vars.ERCM != 1)
+                    if (ConfigLoader.ADC_ERCM != 1)
                     {
                         new STAError(client, 100, "RCM Invalid Context E");
                         return;
                     }
                     break;
                 case 'D':
-                    if (Vars.DRCM != 1)
+                    if (ConfigLoader.ADC_DRCM != 1)
                     {
                         new STAError(client, 100, "RCM Invalid Context D");
                         return;
                     }
                     break;
                 case 'F':
-                    if (Vars.FRCM != 1)
+                    if (ConfigLoader.ADC_FRCM != 1)
                     {
                         new STAError(client, 100, "RCM Invalid Context F");
                         return;
                     }
                     break;
                 case 'H':
-                    if (Vars.HRCM != 1)
+                    if (ConfigLoader.ADC_HRCM != 1)
                     {
                         new STAError(client, 100, "RCM Invalid Context H");
                         return;

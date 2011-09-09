@@ -23,13 +23,13 @@
 
 package ru.sincore.ProtoCmds;
 
+import ru.sincore.Client;
+import ru.sincore.ClientHandler;
+import ru.sincore.ConfigLoader;
 import ru.sincore.Exceptions.STAException;
-import ru.sincore.conf.Vars;
+import ru.sincore.SessionManager;
 import ru.sincore.util.Constants;
 import ru.sincore.util.STAError;
-import ru.sincore.ClientHandler;
-import ru.sincore.Client;
-import ru.sincore.SessionManager;
 
 import java.util.StringTokenizer;
 
@@ -71,35 +71,35 @@ public class RES
             switch (command.charAt(0))
             {
                 case 'B':
-                    if (Vars.BRES != 1)
+                    if (ConfigLoader.ADC_BRES != 1)
                     {
                         new STAError(client, 100, "RES Invalid Context B");
                         return;
                     }
                     break;
                 case 'E':
-                    if (Vars.ERES != 1)
+                    if (ConfigLoader.ADC_ERES != 1)
                     {
                         new STAError(client, 140, "RES Invalid Context E");
                         return;
                     }
                     break;
                 case 'D':
-                    if (Vars.DRES != 1)
+                    if (ConfigLoader.ADC_DRES != 1)
                     {
                         new STAError(client, 100, "RES Invalid Context D");
                         return;
                     }
                     break;
                 case 'F':
-                    if (Vars.FRES != 1)
+                    if (ConfigLoader.ADC_FRES != 1)
                     {
                         new STAError(client, 100, "RES Invalid Context F");
                         return;
                     }
                     break;
                 case 'H':
-                    if (Vars.HRES != 1)
+                    if (ConfigLoader.ADC_HRES != 1)
                     {
                         new STAError(client, 100, "RES Invalid Context H");
                         return;

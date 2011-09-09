@@ -24,14 +24,14 @@
 package ru.sincore.ProtoCmds;
 
 import ru.sincore.Client;
+import ru.sincore.ClientHandler;
+import ru.sincore.ConfigLoader;
 import ru.sincore.Exceptions.CommandException;
 import ru.sincore.Exceptions.STAException;
-import ru.sincore.conf.Vars;
+import ru.sincore.Main;
 import ru.sincore.util.ADC;
 import ru.sincore.util.Constants;
 import ru.sincore.util.STAError;
-import ru.sincore.ClientHandler;
-import ru.sincore.Main;
 
 import java.util.StringTokenizer;
 
@@ -63,35 +63,35 @@ public class SUP
             switch (command.charAt(0))
             {
                 case 'B':
-                    if (Vars.BSUP != 1)
+                    if (ConfigLoader.ADC_BSUP != 1)
                     {
                         new STAError(client, 100, "SUP Invalid Context B");
                         return;
                     }
                     break;
                 case 'E':
-                    if (Vars.ESUP != 1)
+                    if (ConfigLoader.ADC_ESUP != 1)
                     {
                         new STAError(client, 100, "SUP Invalid Context E");
                         return;
                     }
                     break;
                 case 'D':
-                    if (Vars.DSUP != 1)
+                    if (ConfigLoader.ADC_DSUP != 1)
                     {
                         new STAError(client, 100, "SUP Invalid Context D");
                         return;
                     }
                     break;
                 case 'F':
-                    if (Vars.FSUP != 1)
+                    if (ConfigLoader.ADC_FSUP != 1)
                     {
                         new STAError(client, 100, "SUP Invalid Context F");
                         return;
                     }
                     break;
                 case 'H':
-                    if (Vars.HSUP != 1)
+                    if (ConfigLoader.ADC_HSUP != 1)
                     {
                         new STAError(client, 100, "SUP Invalid Context H");
                         return;
@@ -203,32 +203,32 @@ public class SUP
             cur_client.sendToClient(ADC.ISID + " " + cur_client.SessionID);
             if (!cur_client.ping)
             {
-                if (Vars.HubDE.equals(""))
+                if (ConfigLoader.HUB_DE.isEmpty())
                 {
                     cur_client.sendToClient("IINF CT32 VE" +
-                                            ADC.retADCStr(Vars.HubVersion) +
+                                            ADC.retADCStr(ConfigLoader.HUB_VERSION) +
                                             " NI" +
-                                            ADC.retADCStr(Vars.HubName));
+                                            ADC.retADCStr(ConfigLoader.HUB_NAME));
                 }
                 else
                 {
                     cur_client.sendToClient("IINF CT32 VE" +
-                                            ADC.retADCStr(Vars.HubVersion) +
+                                            ADC.retADCStr(ConfigLoader.HUB_VERSION) +
                                             " NI" +
-                                            ADC.retADCStr(Vars.HubName) +
+                                            ADC.retADCStr(ConfigLoader.HUB_NAME) +
                                             " DE" +
-                                            ADC.retADCStr(Vars.HubDE));
+                                            ADC.retADCStr(ConfigLoader.HUB_DE));
                 }
             }
 
             else
                 //its a PINGer
-                if (Vars.HubDE.equals(""))
+                if (ConfigLoader.HUB_DE.isEmpty())
                 {
                     cur_client.sendToClient("IINF CT32 VE" +
-                                            ADC.retADCStr(Vars.HubVersion) +
+                                            ADC.retADCStr(ConfigLoader.HUB_VERSION) +
                                             " NI" +
-                                            ADC.retADCStr(Vars.HubName)
+                                            ADC.retADCStr(ConfigLoader.HUB_NAME)
                                             +
                                             ADC.getPingString()
 
@@ -238,11 +238,11 @@ public class SUP
                 else
                 {
                     cur_client.sendToClient("IINF CT32 VE" +
-                                            ADC.retADCStr(Vars.HubVersion) +
+                                            ADC.retADCStr(ConfigLoader.HUB_VERSION) +
                                             " NI" +
-                                            ADC.retADCStr(Vars.HubName) +
+                                            ADC.retADCStr(ConfigLoader.HUB_NAME) +
                                             " DE" +
-                                            ADC.retADCStr(Vars.HubDE) +
+                                            ADC.retADCStr(ConfigLoader.HUB_DE) +
                                             ADC.getPingString()
                                            );
                 }
@@ -250,7 +250,7 @@ public class SUP
 
             cur_client.sendToClient("ISTA 000 " +
                                     "Running\\sKappa\\sVersion\\sof\\sDSHub" +
-                                    (Vars.adcs_mode ? "\\sin\\sADC\\sSecure\\smode" :
+                                    (ConfigLoader.ENABLE_ADCS ? "\\sin\\sADC\\sSecure\\smode" :
                                      "") +
                                     ".\nISTA 000 Hub\\sis\\sup\\ssince\\s" +
                                     Main.Server

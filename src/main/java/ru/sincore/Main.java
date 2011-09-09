@@ -59,6 +59,10 @@ public class Main extends Thread
     public static void init()
     {
 		PropertyConfigurator.configure("./etc/log4j.properties");
+		ConfigLoader.init();
+		Messages.loadClientMessages();
+		Messages.loadServerMessages();
+
 
 		ClassLoader cl = ClassLoader.getSystemClassLoader();
         String javaClassPath = System.getProperty("java.class.path");
@@ -75,7 +79,7 @@ public class Main extends Thread
         }
 
         myPath = userDirectory + javaClassPath;
-        log.debug(myPath);
+        //log.debug(myPath);
 
         int x = myPath.lastIndexOf(separator.charAt(0));
         if (x != -1)
@@ -156,7 +160,7 @@ public class Main extends Thread
                 }
             }
         }
-        log.debug(myPath);
+        //log.debug(myPath);
 
         pManager = new PythonManager();
 
@@ -166,9 +170,9 @@ public class Main extends Thread
 
     public static void Exit()
     {
-        Server.rewriteregs();
-        Server.rewriteconfig();
-        Server.rewritebans();
+        //Server.rewriteregs();
+        //Server.rewriteconfig();
+        //Server.rewritebans();
 
         //save Banned Words List
         listaBanate.printFile(Main.myPath + "banwlist.txt");
@@ -190,10 +194,10 @@ public class Main extends Thread
     public void run()
     {
         log.warn(Messages.RESTART_HUB);
-        Main.Server.rewriteregs();
-        Main.Server.rewriteconfig();
-        Main.Server.rewritebans();
-        Main.Server.restart = true;
+        //Main.Server.rewriteregs();
+        //Main.Server.rewriteconfig();
+        //Main.Server.rewritebans();
+        //Main.Server.restart = true;
 
         BanList.First = null;
         SessionManager.Users.clear();
@@ -263,8 +267,6 @@ public class Main extends Thread
                             clientHandler.reg.LastIP = clientHandler.RealIP;
                             clientHandler.LoggedAt = System.currentTimeMillis();
 
-
-                            Main.Server.rewriteregs();
                             return;
                         }
                     }
@@ -322,7 +324,6 @@ public class Main extends Thread
                             log.info(String.format(Messages.NOT_CID, clientHandler.NI).concat("\n")
 											 .concat(String.format(Messages.USER_REGISTER, clientHandler.NI, clientHandler.ID)));
 
-                            Main.Server.rewriteregs();
                             return;
                         }
                     }
@@ -381,7 +382,6 @@ public class Main extends Thread
                         clientHandler.reg.LastIP = clientHandler.RealIP;
                         log.info(Messages.NOT_CID.concat("\n").concat(String.format(Messages.USER_REGISTER, clientHandler.NI, clientHandler.ID)));
 
-                        Main.Server.rewriteregs();
                         return;
                     }
                 }
@@ -390,7 +390,6 @@ public class Main extends Thread
             //TODO add error message in log stream. Cause, no user online.
         }
 
-        Main.Server.rewriteregs();
         //sendFromBot("Your password is now "+aux+".");
     }
 
@@ -558,9 +557,6 @@ public class Main extends Thread
                         */
                     }
                     log.info(Messages.DONE);
-
-                    Main.Server.rewritebans();
-
 
                 }
                 else if (recvbuf.toLowerCase().equals("listreg"))

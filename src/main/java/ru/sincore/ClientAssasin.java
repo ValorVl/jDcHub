@@ -23,8 +23,6 @@
 
 package ru.sincore;
 
-import ru.sincore.conf.Vars;
-
 /**
  * Permanent thread that keeps clients connected ( meaning killing the ones who
  * are disconnected). Also sends delayed searches and will be used for cron-like jobs.
@@ -92,13 +90,13 @@ public class ClientAssasin extends Thread
                     double xy = 1;
                     for (int i = 0; i < clientHandler.search_step; i++)
                     {
-                        xy *= ((double) Vars.search_log_base) / 1000;
+                        xy *= ((double) ConfigLoader.SEARCH_BASE_INTERVAL) / 1000;
                     }
                     xy *= 1000;
                     long xx = (long) xy;
-                    if (clientHandler.search_step >= Vars.search_steps)
+                    if (clientHandler.search_step >= ConfigLoader.SEARCH_STEPS)
                     {
-                        xx = Vars.search_spam_reset * 1000;
+                        xx = ConfigLoader.SEARCH_SPAM_RESET * 1000;
                     }
                     // System.out.println(xx);
                     if ((currentTime - clientHandler.Lastsearch) > xx)

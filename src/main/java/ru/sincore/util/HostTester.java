@@ -23,6 +23,8 @@
  */
 package ru.sincore.util;
 
+import ru.sincore.ConfigLoader;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -30,8 +32,6 @@ import java.io.PrintStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
-
-import ru.sincore.conf.Vars;
 
 /**
  * @author Pietricica
@@ -68,21 +68,21 @@ public class HostTester
             in.readLine();
             String INF = in.readLine();
             String test = "";
-            if (Vars.HubDE.equals(""))
+            if (ConfigLoader.HUB_DE.isEmpty())
             {
                 test = "IINF CT32 VE" +
-                       ADC.retADCStr(Vars.HubVersion) +
+                       ADC.retADCStr(ConfigLoader.HUB_VERSION) +
                        " NI" +
-                       ADC.retADCStr(Vars.HubName);
+                       ADC.retADCStr(ConfigLoader.HUB_NAME);
             }
             else
             {
                 test = "IINF CT32 VE" +
-                       ADC.retADCStr(Vars.HubVersion) +
+                       ADC.retADCStr(ConfigLoader.HUB_VERSION) +
                        " NI" +
-                       ADC.retADCStr(Vars.HubName) +
+                       ADC.retADCStr(ConfigLoader.HUB_NAME) +
                        " DE" +
-                       ADC.retADCStr(Vars.HubDE);
+                       ADC.retADCStr(ConfigLoader.HUB_DE);
             }
             if (!INF.equals(test))
             {
@@ -90,12 +90,12 @@ public class HostTester
                                     INF +
                                     "\n" +
                                     "IINF CT32 VE" +
-                                    ADC.retADCStr(Vars.HubVersion)
+                                    ADC.retADCStr(ConfigLoader.HUB_VERSION)
                                     +
                                     " NI" +
-                                    ADC.retADCStr(Vars.HubName) +
-                                    ((Vars.HubDE.equals("")) ?
-                                     (" DE" + ADC.retADCStr(Vars.HubDE)) :
+                                    ADC.retADCStr(ConfigLoader.HUB_NAME) +
+                                    ((ConfigLoader.HUB_DE.equals("")) ?
+                                     (" DE" + ADC.retADCStr(ConfigLoader.HUB_DE)) :
                                      ""));
             }
 

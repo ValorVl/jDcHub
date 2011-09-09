@@ -27,22 +27,16 @@ import ru.sincore.Exceptions.CommandException;
 import ru.sincore.Exceptions.STAException;
 import ru.sincore.Modules.Modulator;
 import ru.sincore.Modules.Module;
-import ru.sincore.ProtoCmds.CTM;
-import ru.sincore.ProtoCmds.MSG;
-import ru.sincore.ProtoCmds.RCM;
-import ru.sincore.ProtoCmds.RES;
-import ru.sincore.ProtoCmds.SCH;
-import ru.sincore.ProtoCmds.STA;
-import ru.sincore.ProtoCmds.SUP;
+import ru.sincore.ProtoCmds.*;
 import ru.sincore.TigerImpl.Base32;
 import ru.sincore.TigerImpl.Tiger;
 import ru.sincore.banning.BanList;
-import ru.sincore.conf.Vars;
+import ru.sincore.i18n.Messages;
 import ru.sincore.util.ADC;
 import ru.sincore.util.Constants;
 import ru.sincore.util.STAError;
 
-import java.util.*;
+import java.util.StringTokenizer;
 
 /**
  * Provides a parsing for each ADC command received from client, and makes the states transitions
@@ -139,12 +133,12 @@ public class Command
         sendUsersInfs();
 
         currentClient.getClientHandler().sendToClient("BINF DCBA ID" +
-                                                      Vars.SecurityCid +
-                                                      " NI" +
-                                                      ADC.retADCStr(Vars.bot_name)
-                                                      +
-                                                      " CT5 DE" +
-                                                      ADC.retADCStr(Vars.bot_desc));
+															  ConfigLoader.SECURITY_CID +
+															  " NI" +
+															  ADC.retADCStr(ConfigLoader.BOT_CHAT_NAME)
+															  +
+															  " CT5 DE" +
+															  ADC.retADCStr(ConfigLoader.BOT_CHAT_DESCRIPTION));
         currentClient.getClientHandler().putOpchat(true);
         currentClient.getClientHandler().sendToClient(currentClient.getClientHandler().getINF());  //sending inf about itself too
         //handler.sendToClient(inf);
@@ -255,7 +249,7 @@ public class Command
             {
 
 
-                if (!Vars.ValidateNick(aux.substring(2)))
+                if (! Nick.validateNick(aux.substring(2)))
                 {
                     new STAError(currentClient,
                                  200 + Constants.STA_NICK_INVALID,
@@ -552,7 +546,7 @@ public class Command
                              "\nReason: " +
                              currentClient.getClientHandler().myban.banreason +
                              "\n" +
-                             Vars.Msg_Banned;
+							 Messages.BAN_MESSAGE;
                 //System.out.println(msg);
                 new STAError(currentClient, 200 + Constants.STA_PERMANENTLY_BANNED, msg);
 
@@ -570,7 +564,7 @@ public class Command
                              "\nThere are still " +
                              Long.toString(TL / 1000) +
                              " seconds remaining.\n" +
-                             Vars.Msg_Banned +
+                             Messages.BAN_MESSAGE +
                              " TL" +
                              Long.toString(TL / 1000);
                 //System.out.println(msg);
@@ -634,14 +628,14 @@ public class Command
             }
 
 
-            if (Vars.max_users <= i && !currentClient.getClientHandler().reg.overridefull)
+            if (ConfigLoader.MAX_USERS <= i && !currentClient.getClientHandler().reg.overridefull)
             {
                 new STAError(currentClient,
                              200 + Constants.STA_HUB_FULL,
                              "Hello there. Hub is full, there are " +
                              String.valueOf(i) +
                              " users online.\n" +
-                             Vars.Msg_Full);
+                             Messages.HUB_FULL_MESSAGE);
                 return;
             }
 
@@ -677,18 +671,18 @@ public class Command
 
         if (!currentClient.getClientHandler().reg.overridespam)
         {
-            if (currentClient.getClientHandler().SS == null && Vars.min_share != 0)
+            if (currentClient.getClientHandler().SS == null && ConfigLoader.MIN_SHARE_SIZE != 0)
             {
                 new STAError(currentClient,
                              200 + Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
-                             "Share too small, " + Vars.min_share + " MiB required.",
+                             "Share too small, " + ConfigLoader.MIN_SHARE_SIZE + " MiB required.",
                              "FB",
                              "SS");
             }
         }
         if (!currentClient.getClientHandler().reg.overridespam)
         {
-            if (currentClient.getClientHandler().SL == null && Vars.min_sl != 0)
+            if (currentClient.getClientHandler().SL == null && ConfigLoader.MIN_SLOT_COUNT != 0)
             {
                 new STAError(currentClient,
                              200 + Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
@@ -703,7 +697,7 @@ public class Command
             //checking all:
             if (!currentClient.getClientHandler().reg.overridespam)
             {
-                if (currentClient.getClientHandler().NI.length() > Vars.max_ni)
+                if (currentClient.getClientHandler().NI.length() > ConfigLoader.MAX_NICK_SIZE)
                 {
                     new STAError(currentClient,
                                  200 + Constants.STA_NICK_INVALID,
@@ -715,7 +709,7 @@ public class Command
             }
             if (!currentClient.getClientHandler().reg.overridespam)
             {
-                if (currentClient.getClientHandler().NI.length() < Vars.min_ni)
+                if (currentClient.getClientHandler().NI.length() < ConfigLoader.MIN_NICK_SIZE)
                 {
                     new STAError(currentClient,
                                  200 + Constants.STA_NICK_INVALID,
@@ -729,7 +723,7 @@ public class Command
             {
                 if (currentClient.getClientHandler().DE != null)
                 {
-                    if (currentClient.getClientHandler().DE.length() > Vars.max_de)
+                    if (currentClient.getClientHandler().DE.length() > ConfigLoader.MAX_DESCRIPTION_CHAR_COUNT)
                     {
                         new STAError(currentClient,
                                      200 + Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
@@ -744,7 +738,7 @@ public class Command
             {
                 if (currentClient.getClientHandler().EM != null)
                 {
-                    if (currentClient.getClientHandler().EM.length() > Vars.max_em)
+                    if (currentClient.getClientHandler().EM.length() > ConfigLoader.MAX_EMAIL_CHAR_COUNT)
                     {
                         new STAError(currentClient,
                                      200 + Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
@@ -759,7 +753,7 @@ public class Command
             {
                 if (currentClient.getClientHandler().SS != null)
                 {
-                    if (Long.parseLong(currentClient.getClientHandler().SS) > 1024 * Vars.max_share * 1024)
+                    if (Long.parseLong(currentClient.getClientHandler().SS) > 1024 * ConfigLoader.MAX_SHARE_SIZE * 1024)
                     {
                         new STAError(currentClient,
                                      200 + Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
@@ -774,11 +768,11 @@ public class Command
             {
                 if (currentClient.getClientHandler().SS != null)
                 {
-                    if (Long.parseLong(currentClient.getClientHandler().SS) < 1024 * Vars.min_share * 1024)
+                    if (Long.parseLong(currentClient.getClientHandler().SS) < 1024 * ConfigLoader.MIN_SHARE_SIZE * 1024)
                     {
                         new STAError(currentClient,
                                      200 + Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
-                                     "Share too small " + Vars.min_share + " MiB required.",
+                                     "Share too small " + ConfigLoader.MIN_SHARE_SIZE + " MiB required.",
                                      "FB",
                                      "SS");
                         return;
@@ -789,7 +783,7 @@ public class Command
             {
                 if (currentClient.getClientHandler().SL != null)
                 {
-                    if (Integer.parseInt(currentClient.getClientHandler().SL) < Vars.min_sl)
+                    if (Integer.parseInt(currentClient.getClientHandler().SL) < ConfigLoader.MIN_SLOT_COUNT)
                     {
                         new STAError(currentClient,
                                      200 + Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
@@ -804,7 +798,7 @@ public class Command
             {
                 if (currentClient.getClientHandler().SL != null)
                 {
-                    if (Integer.parseInt(currentClient.getClientHandler().SL) > Vars.max_sl)
+                    if (Integer.parseInt(currentClient.getClientHandler().SL) > ConfigLoader.MAX_SLOT_COUNT)
                     {
                         new STAError(currentClient,
                                      200 + Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
@@ -817,7 +811,7 @@ public class Command
             }
             if (!currentClient.getClientHandler().reg.overridespam)
             {
-                if (Integer.parseInt(currentClient.getClientHandler().HN) > Vars.max_hubs_user)
+                if (Integer.parseInt(currentClient.getClientHandler().HN) > ConfigLoader.MAX_HUBS_USERS)
                 {
                     new STAError(currentClient,
                                  200 + Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
@@ -831,7 +825,7 @@ public class Command
             {
                 if (currentClient.getClientHandler().HO != null)
                 {
-                    if (Integer.parseInt(currentClient.getClientHandler().HO) > Vars.max_hubs_op)
+                    if (Integer.parseInt(currentClient.getClientHandler().HO) > ConfigLoader.MAX_OP_IN_HUB)
                     {
                         new STAError(currentClient,
                                      200 + Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
@@ -846,11 +840,11 @@ public class Command
             {
                 if (currentClient.getClientHandler().HR != null)
                 {
-                    if (Integer.parseInt(currentClient.getClientHandler().HR) > Vars.max_hubs_reg)
+                    if (Integer.parseInt(currentClient.getClientHandler().HR) > ConfigLoader.MAX_HUBS_REGISTERED)
                     {
                         new STAError(currentClient,
                                      200 + Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
-                                     "You are regged on too many hubs. Sorry.",
+                                     "You are registered on too many hubs. Sorry.",
                                      "FB",
                                      "HR");
                         return;
@@ -866,28 +860,28 @@ public class Command
             return;
         }
 
-        if (currentClient.getClientHandler().ID.equals(Vars.OpChatCid))
+        if (currentClient.getClientHandler().ID.equals(ConfigLoader.OP_CHAT_CID))
         {
             new STAError(currentClient,
                          200 + Constants.STA_CID_TAKEN,
                          "CID taken. Please go to Settings and pick new PID.");
             return;
         }
-        if (currentClient.getClientHandler().ID.equals(Vars.SecurityCid))
+        if (currentClient.getClientHandler().ID.equals(ConfigLoader.SECURITY_CID))
         {
             new STAError(currentClient,
                          200 + Constants.STA_CID_TAKEN,
                          "CID taken. Please go to Settings and pick new PID.");
             return;
         }
-        if (currentClient.getClientHandler().NI.equalsIgnoreCase(Vars.Opchat_name))
+        if (currentClient.getClientHandler().NI.equalsIgnoreCase(ConfigLoader.OP_CHAT_NAME))
         {
             new STAError(currentClient,
                          200 + Constants.STA_NICK_TAKEN,
                          "Nick taken, please choose another");
             return;
         }
-        if (currentClient.getClientHandler().NI.equalsIgnoreCase(Vars.bot_name))
+        if (currentClient.getClientHandler().NI.equalsIgnoreCase(ConfigLoader.BOT_CHAT_NAME))
         {
             new STAError(currentClient,
                          200 + Constants.STA_NICK_TAKEN,
@@ -970,7 +964,7 @@ public class Command
                 if (currentClient.getClientHandler().reg.Password.equals(""))//no pass defined ( yet)
                 {
                     currentClient.getClientHandler().sendToClient(
-                            "ISTA 000 Registered,\\sno\\spassword\\srequired.\\sThough,\\sits\\srecomandable\\sto\\sset\\sone.");
+							"ISTA 000 Registered,\\sno\\spassword\\srequired.\\sThough,\\sits\\srecomandable\\sto\\sset\\sone.");
                     currentClient.getClientHandler().sendToClient("ISTA 000 Authenticated.");
 
 
@@ -1003,7 +997,7 @@ public class Command
                 if (k != null)
                 {
                     currentClient.getClientHandler().sendToClient(
-                            "ISTA 000 Nick\\sRegistered\\s(flyable\\saccount).\\sPlease\\sprovide\\spassword.");
+							"ISTA 000 Nick\\sRegistered\\s(flyable\\saccount).\\sPlease\\sprovide\\spassword.");
 
                     /* creates some hash for the GPA random data*/
                     Tiger myTiger = new Tiger();
@@ -1021,7 +1015,7 @@ public class Command
                     currentClient.getClientHandler().State = "VERIFY";
                     return;
                 }
-                else if (Vars.reg_only == 1)
+                else if (ConfigLoader.MARK_REGISTRATION_ONLY == true)
                 {
                     new STAError(currentClient, 200 + Constants.STA_REG_ONLY, "Registered only hub.");
                     return;
@@ -1063,12 +1057,12 @@ public class Command
             sendUsersInfs();
 
             currentClient.getClientHandler().sendToClient("BINF DCBA ID" +
-                                                          Vars.SecurityCid +
-                                                          " NI" +
-                                                          ADC.retADCStr(Vars.bot_name)
-                                                          +
-                                                          " CT5 DE" +
-                                                          ADC.retADCStr(Vars.bot_desc));
+																  ConfigLoader.SECURITY_CID +
+																  " NI" +
+																  ADC.retADCStr(ConfigLoader.BOT_CHAT_NAME)
+																  +
+																  " CT5 DE" +
+																  ADC.retADCStr(ConfigLoader.BOT_CHAT_DESCRIPTION));
             //handler.sendToClient("BINF DCBA IDaa NIbla");
             //      if(true)return;
             currentClient.getClientHandler().putOpchat(true);
@@ -1156,35 +1150,35 @@ public class Command
                 switch (command.charAt(0))
                 {
                     case 'B':
-                        if (Vars.BINF != 1)
+                        if (ConfigLoader.ADC_BINF != 1)
                         {
                             new STAError(currentClient, 100, "INF Invalid Context B");
                             return;
                         }
                         break;
                     case 'E':
-                        if (Vars.EINF != 1)
+                        if (ConfigLoader.ADC_EINF != 1)
                         {
                             new STAError(currentClient, 100, "INF Invalid Context E");
                             return;
                         }
                         break;
                     case 'D':
-                        if (Vars.DINF != 1)
+                        if (ConfigLoader.ADC_DINF != 1)
                         {
                             new STAError(currentClient, 100, "INF Invalid Context D");
                             return;
                         }
                         break;
                     case 'F':
-                        if (Vars.FINF != 1)
+                        if (ConfigLoader.ADC_FINF != 1)
                         {
                             new STAError(currentClient, 100, "INF Invalid Context F");
                             return;
                         }
                         break;
                     case 'H':
-                        if (Vars.HINF != 1)
+                        if (ConfigLoader.ADC_HINF != 1)
                         {
                             new STAError(currentClient, 100, "INF Invalid Context H");
                             return;
@@ -1209,35 +1203,35 @@ public class Command
                 switch (command.charAt(0))
                 {
                     case 'B':
-                        if (Vars.BPAS != 1)
+                        if (ConfigLoader.ADC_BPAS != 1)
                         {
                             new STAError(currentClient, 100, "PAS Invalid Context B");
                             return;
                         }
                         break;
                     case 'E':
-                        if (Vars.EPAS != 1)
+                        if (ConfigLoader.ADC_EPAS != 1)
                         {
                             new STAError(currentClient, 100, "PAS Invalid Context E");
                             return;
                         }
                         break;
                     case 'D':
-                        if (Vars.DPAS != 1)
+                        if (ConfigLoader.ADC_DPAS != 1)
                         {
                             new STAError(currentClient, 100, "PAS Invalid Context D");
                             return;
                         }
                         break;
                     case 'F':
-                        if (Vars.FPAS != 1)
+                        if (ConfigLoader.ADC_FPAS != 1)
                         {
                             new STAError(currentClient, 100, "PAS Invalid Context F");
                             return;
                         }
                         break;
                     case 'H':
-                        if (Vars.HPAS != 1)
+                        if (ConfigLoader.ADC_HPAS != 1)
                         {
                             new STAError(currentClient, 100, "PAS Invalid Context H");
                             return;

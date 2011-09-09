@@ -793,8 +793,6 @@ public class GrantCmd
             }
         }
 
-
-        Main.Server.rewriteregs();
     }
 
 
@@ -1326,7 +1324,6 @@ public class GrantCmd
                         .sendFromBotPM(toSend.replaceAll(what + " is unknown feature \\\\n", ""));
             }
         }
-        HubServer.rewriteregs();
-    }
+}
 
 }

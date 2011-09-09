@@ -25,8 +25,6 @@ package ru.sincore.Modules;
 
 
 import ru.sincore.ClientHandler;
-import ru.sincore.Main;
-import ru.sincore.conf.Vars;
 
 /**
  * @author Pietricica
@@ -182,49 +180,53 @@ public class Module
         return enabled;
     }
 
-
+	//TODO rewrite this
     public void setEnabled(boolean enabled)
     {
-        this.enabled = enabled;
-        if (!(this.isEnabled()))
-        {
-            this.close();
-        }
-        else
-        {
-            try
-            {
-                isok = curModule.startup();
-            }
-            catch (AbstractMethodError abe)
-            {
-                isok = false;
-            }
-        }
-        int index = Vars.activePlugins.indexOf(this.getName());
-
-
-        Vars.activePlugins = Vars.activePlugins.substring(0, index - 1) +
-                             (this.isEnabled() ? "+" : "-") +
-                             Vars.activePlugins.substring(index);
+//        this.enabled = enabled;
+//        if (!(this.isEnabled()))
+//        {
+//            this.close();
+//        }
+//        else
+//        {
+//            try
+//            {
+//                isok = curModule.startup();
+//            }
+//            catch (AbstractMethodError abe)
+//            {
+//                isok = false;
+//            }
+//        }
+//        int index = Vars.activePlugins.indexOf(this.getName());
+//
+//
+//        Vars.activePlugins = Vars.activePlugins.substring(0, index - 1) +
+//                             (this.isEnabled() ? "+" : "-") +
+//                             Vars.activePlugins.substring(index);
     }
 
 
     public void loadEnable()
     {
-        int index = Vars.activePlugins.indexOf(this.getName());
+        //TODO Rewrite this
+        //int index = Vars.activePlugins.indexOf(this.getName());
+		int index = 1;
+
         if (index == -1)
         {
             //new module found !
 
-
-            Vars.activePlugins += "+" + this.getName();
+			//TODO Rewrite this
+            //Vars.activePlugins += "+" + this.getName();
             this.setEnabled(true);
         }
-        else if (Vars.activePlugins.charAt(index - 1) == '-')
-        {
-            this.setEnabled(false);
-        }
+		// TODO Rewrite this
+//        else if (Vars.activePlugins.charAt(index - 1) == '-')
+//        {
+//            this.setEnabled(false);
+//        }
         else
         {
             this.setEnabled(true);

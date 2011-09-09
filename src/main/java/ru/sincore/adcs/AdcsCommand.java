@@ -23,13 +23,13 @@
 
 package ru.sincore.adcs;
 
-import java.util.StringTokenizer;
-
 import org.apache.log4j.Logger;
-import ru.sincore.conf.Vars;
 import ru.sincore.ClientHandler;
+import ru.sincore.ConfigLoader;
 import ru.sincore.HubServer;
 import ru.sincore.Main;
+
+import java.util.StringTokenizer;
 
 /**
  * @author Eugen Hristev
@@ -58,9 +58,9 @@ public class AdcsCommand
                     "\n      disable -- this command disables ADCS and restarts your hub in normal ADC mode." +
                     "\n      certlogin [on|off] -- the on/off switch enables/disables the certificate based login ( no passwords )." +
                     "\nCurrently, ADCS mode is" +
-                    (Vars.adcs_mode ? " running ok " : " disabled ") +
+                    (ConfigLoader.ENABLE_ADCS ? " running ok " : " disabled ") +
                     "and certificate based login is " +
-                    (Vars.certlogin ? "on." : "off.");
+                    (ConfigLoader.CERT_LOGIN ? "on." : "off.");
             cur_client.sendFromBot(Help);
             return;
         }
@@ -95,7 +95,7 @@ public class AdcsCommand
             {
                 return;//cannot start adcs mode.. bug ?
             }
-            Vars.adcs_mode = true;
+            ConfigLoader.ENABLE_ADCS = true;
             Main.Restart();
             log.info("ADC Secure mode has been enabled");
             return;
@@ -105,7 +105,7 @@ public class AdcsCommand
         {
             HubServer.done_adcs = false;
             cur_client.sendFromBot("Disabling ADCS.... ( Hub will restart )...");
-            Vars.adcs_mode = false;
+            ConfigLoader.ENABLE_ADCS = false;
             Main.Restart();
             log.warn("ADC Secure mode has been disabled");
         }

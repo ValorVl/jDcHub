@@ -24,10 +24,10 @@
 package ru.sincore.cmd.ExtendedCmds;
 
 import ru.sincore.Client;
-import ru.sincore.SessionManager;
-import ru.sincore.conf.Vars;
-import ru.sincore.util.ADC;
 import ru.sincore.ClientHandler;
+import ru.sincore.ConfigLoader;
+import ru.sincore.SessionManager;
+import ru.sincore.util.ADC;
 
 import java.util.StringTokenizer;
 import java.util.regex.PatternSyntaxException;
@@ -67,7 +67,7 @@ public class ExtRedirect
         StringTokenizer ST = new StringTokenizer(recvbuf);
         ST.nextToken();
         String what = ST.nextToken();
-        String URL = Vars.redirect_url;
+        String URL = ConfigLoader.REDIRECT_URL;
         if (ST.hasMoreTokens())
         {
             URL = ST.nextToken();

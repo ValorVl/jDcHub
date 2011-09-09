@@ -34,11 +34,7 @@ import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 import ru.sincore.Modules.Modulator;
 import ru.sincore.adcs.CertManager;
 import ru.sincore.adcs.SSLManager;
-import ru.sincore.banning.BanList;
 import ru.sincore.banning.bans;
-import ru.sincore.conf.Port;
-import ru.sincore.conf.Variables;
-import ru.sincore.conf.Vars;
 import ru.sincore.util.ADC;
 
 import java.io.*;
@@ -46,8 +42,6 @@ import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
 
 
 /**
@@ -80,7 +74,6 @@ public class HubServer extends Thread
 
     //ClientHandler firstclient;
 
-    private static Variables vars;
     private static RegConfig rcfg;
     private static bans      bcfg;
 
@@ -142,10 +135,6 @@ public class HubServer extends Thread
 
         }
         restart = false;
-        vars = new Variables();
-        reloadregs();
-        reloadconfig();
-        reloadbans();
 
         // port=Vars.Default_Port;
 
@@ -171,13 +160,13 @@ public class HubServer extends Thread
         nsa.setReuseAddress(true);
 
 
-        // cfg = new SocketAcceptorConfig();
+        //cfg = new SocketAcceptorConfig();
         // cfg.setThreadModel(ThreadModel.MANUAL);
 
         //cfg.getSessionConfig().setReceiveBufferSize(102400);
         // cfg.getSessionConfig().setSendBufferSize(102400);
 
-        if (Vars.adcs_mode)
+        if (ConfigLoader.ENABLE_ADCS)
         {
 
             if (adcs_ok)
@@ -189,7 +178,7 @@ public class HubServer extends Thread
             {
                 System.out.println("Couldn't find suitable keys and certificate.\nPlease load them or regenerate.\n" +
                                 "ADC Secure mode has been disabled.");
-                Vars.adcs_mode = false;
+                ConfigLoader.ENABLE_ADCS = false;
             }
 
         }
@@ -204,8 +193,9 @@ public class HubServer extends Thread
         //  filterChainBuilder.addLast("threadPool", new ExecutorFilter(y));
         //cfg.getSessionConfig().setKeepAlive(true);
 
-        acceptor.getSessionConfig().setReadBufferSize(64 * 1024);
+        //acceptor.getSessionConfig().setReadBufferSize(64 * 1024);
         //acceptor.getSessionConfig().WriteBufferSize( 2048000 );
+
         acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 50);
         acceptor.setHandler(new SessionManager());
 //System.out.println(acceptor.getSessionConfig().getWriteTimeout());
@@ -217,24 +207,16 @@ public class HubServer extends Thread
         //  IOSM.startCollectingStats(10000);
         // address=new InetSocketAddress(port);
 
+		try
+		{
 
-        String pop = "";
-        for (Port port : Vars.activePorts)
-        {
-            if (this.addPort(port))
-            {
-                pop += port.portValue + " ";
-            }
-        }
+			acceptor.bind(new InetSocketAddress(ConfigLoader.HUB_PORT));
 
-        if (pop.equals(""))
-        {
-            log.error("Couldn't start server on any set ports.");
-        }
-        else
-        {
-            log.info("Server created. Listening on ports: " + pop + ".");
-        }
+		} catch (IOException e)
+		{
+			log.error(e);
+			shutdown();
+		}
 
 
         Date d = new Date(Main.curtime);
@@ -248,67 +230,16 @@ public class HubServer extends Thread
     }
 
 
-    public boolean addPort(Port port)
-    {
-        // Vars.activePorts.add(port);
-        try
-        {
-            acceptor.bind(new InetSocketAddress(port.portValue));
-            port.setStatus(true);
-
-        }
-        catch (java.net.BindException jbe)
-        {
-            log.warn("Network problem. Unable to listen on port " + port.portValue + "." + jbe);
-            port.setStatus(false);
-            port.MSG = jbe.toString();
-            return false;
-        }
-        catch (java.lang.IllegalArgumentException ee)
-        {
-            log.error("Invalid port " + port.portValue + "." + ee);
-            port.setStatus(false);
-            port.MSG = ee.toString();
-            return false;
-        }
-        catch (IOException ex)
-        {
-            log.debug(ex);
-
-            port.setStatus(false);
-            port.MSG = ex.toString();
-            return false;
-        }
-
-        return true;
-    }
 
 
-    public void delPort(Port port)
-    {
-        //  Vars.activePorts.remove(port);
-        //acceptor.unbind();
-        try
-        {
-            acceptor.unbind(new InetSocketAddress(port.portValue));
-            //    System.out.println("deleted port"+port.portValue);
-        }
-        catch (Exception exception)
-        {
 
-            exception.printStackTrace();
-        }
-    }
+
 
 
     public void shutdown()
     {
-        for (Port x : Vars.activePorts)
-        {
-            delPort(x);
-        }
 
-        //  acceptor.unbind();
+        acceptor.unbind();
         // x.shutdown();
     }
 
@@ -329,352 +260,5 @@ public class HubServer extends Thread
         }
 
         return newclient;
-    }
-
-
-    public static void rewriteconfig()
-    {
-        rewriteconfig("config");
-    }
-
-
-    public static boolean rewriteconfig(String configName)
-    {
-        File MainConfigFile;
-        MainConfigFile = new File(Main.myPath + configName);
-
-        try
-        {
-            FileOutputStream MainConfigFileOutput = new FileOutputStream(MainConfigFile);
-            GZIPOutputStream gzos = new GZIPOutputStream(MainConfigFileOutput);  // Compress.
-            ObjectOutputStream out = new ObjectOutputStream(gzos);  // Save objects
-            out.writeObject(new Variables());
-            out.flush();                 // Always flush the output.
-            out.close();                 // And close the stream.
-
-        }
-        catch (IOException e)
-        {
-            log.debug(e);
-            return false;
-        }
-        return true;
-    }
-
-
-    public static void rewritebans()
-    {
-        rewritebans("banlist");
-    }
-
-
-    public static boolean rewritebans(String banlistName)
-    {
-        File MainBanFile;
-        MainBanFile = new File(Main.myPath + banlistName);
-
-        try
-        {
-            FileOutputStream MainBanFileOutput = new FileOutputStream(MainBanFile);
-            GZIPOutputStream gzos = new GZIPOutputStream(MainBanFileOutput);  // Compress.
-            ObjectOutputStream out = new ObjectOutputStream(gzos);  // Save objects
-            out.writeObject(new bans());
-            out.flush();                 // Always flush the output.
-            out.close();                 // And close the stream.
-
-        }
-        catch (IOException e)
-        {
-            log.debug(e);
-            return false;
-        }
-        return true;
-    }
-
-
-    public static void rewriteregs()
-    {
-        rewriteregs("regs");
-    }
-
-
-    public static boolean rewriteregs(String regName)
-    {
-        File MainRegFile;
-
-        MainRegFile = new File(Main.myPath + regName);
-        try
-        {
-
-            FileOutputStream MainRegFileOutput = new FileOutputStream(MainRegFile);
-            GZIPOutputStream gzosreg = new GZIPOutputStream(MainRegFileOutput);  // Compress.
-            ObjectOutputStream outreg = new ObjectOutputStream(gzosreg);  // Save objects
-            outreg.writeObject(new RegConfig());
-            outreg.flush();                 // Always flush the output.
-            outreg.close();                 // And close the stream.
-
-        }
-        catch (IOException e)
-        {
-            log.debug(e);
-            return false;
-        }
-        return true;
-    }
-
-
-    // TODO move it to ru.sincore.ConfigLoader
-    public void reloadconfig()
-    {
-        File MainConfigFile;
-        MainConfigFile = new File(Main.myPath + "config");
-
-        try
-        {
-            FileInputStream MainConfigFileReader = new FileInputStream(MainConfigFile);
-            GZIPInputStream gzis = new GZIPInputStream(MainConfigFileReader);
-            ObjectInputStream in = new ObjectInputStream(gzis);
-
-
-            vars = (Variables) in.readObject();
-            Vars.Timeout_Login = vars.Timeout_Login;
-            // Vars.Default_Port=vars.Default_Port;
-
-            Vars.HubVersion = vars.HubVersion;
-            Vars.HubDE = vars.HubDE;
-            Vars.HubName = vars.HubName;
-
-
-            Vars.min_ni = vars.min_ni;
-            Vars.max_ni = vars.max_ni;
-            Vars.max_de = vars.max_de;
-            Vars.max_share = vars.max_share;
-            Vars.min_share = vars.min_share;
-            Vars.max_sl = vars.max_sl;
-            Vars.min_sl = vars.min_sl;
-            Vars.max_em = vars.max_em;
-            Vars.max_hubs_op = vars.max_hubs_op;
-            Vars.max_hubs_reg = vars.max_hubs_reg;
-            Vars.max_hubs_user = vars.max_hubs_user;
-            Vars.min_sch_chars = vars.min_sch_chars;
-            Vars.max_sch_chars = vars.max_sch_chars;
-            Vars.max_chat_msg = vars.max_chat_msg;
-            Vars.history_lines = vars.history_lines;
-            Vars.command_pm = vars.command_pm;
-
-            Vars.Opchat_name = vars.Opchat_name;
-            Vars.Opchat_desc = vars.Opchat_desc;
-            Vars.kick_time = vars.kick_time;
-            Vars.Msg_Banned = vars.Msg_Banned;
-            Vars.Msg_Search_Spam = vars.Msg_Search_Spam;
-
-            Vars.reg_only = vars.reg_only;
-            Vars.nick_chars = vars.nick_chars;
-            Vars.max_users = vars.max_users;
-            Vars.Msg_Full = vars.Msg_Full;
-
-            Vars.OpChatCid = vars.OpChatCid;
-            Vars.SecurityCid = vars.SecurityCid;
-
-            Vars.Hub_Host = vars.Hub_Host;
-            Vars.Proxy_Host = vars.Proxy_Host;
-            Vars.Proxy_Port = vars.Proxy_Port;
-            Vars.redirect_url = vars.redirect_url;
-            Vars.adcs_mode = vars.adcs_mode;
-
-            Vars.certlogin = vars.certlogin;
-
-            Vars.chat_interval = vars.chat_interval;
-
-            Vars.savelogs = vars.savelogs;
-            Vars.automagic_search = vars.automagic_search;
-            Vars.search_log_base = vars.search_log_base;
-            Vars.search_steps = vars.search_steps;
-            Vars.search_spam_reset = vars.search_spam_reset;
-            Vars.bot_name = vars.bot_name;
-            Vars.bot_desc = vars.bot_desc;
-
-            Vars.activePlugins = vars.activePlugins;
-            Vars.activePorts = vars.activePorts;
-
-            Vars.lang = vars.lang;
-
-			//TODO WTF ? is needed
-//            if (Vars.lang.length() > 4)
-//            {
-//                Translation.curLocale =
-//                        new Locale(Vars.lang.substring(0, 2), Vars.lang.substring(3));
-//                Locale.setDefault(Translation.curLocale);
-//                try
-//                {
-//                    Translation.Strings = ResourceBundle.getBundle("Translation",
-//                                                                   Translation.curLocale);
-//
-//                }
-//                catch (java.util.MissingResourceException mre)
-//                {
-//                    //System.out.println("Fatal Error : Unable to locate Translation.properties file or any other translation. FAIL.");
-//                    // System.exit(1);
-//                    mre.printStackTrace();
-//                }
-//            }
-
-            Vars.BMSG = vars.BMSG;
-            Vars.EMSG = vars.EMSG;
-            Vars.DMSG = vars.DMSG;
-            Vars.HMSG = vars.HMSG;
-            Vars.FMSG = vars.FMSG;
-
-            Vars.BSTA = vars.BSTA;
-            Vars.ESTA = vars.ESTA;
-            Vars.DSTA = vars.DSTA;
-            Vars.FSTA = vars.FSTA;
-            Vars.HSTA = vars.HSTA;
-
-            Vars.BCTM = vars.BCTM;
-            Vars.DCTM = vars.DCTM;
-            Vars.ECTM = vars.ECTM;
-            Vars.FCTM = vars.FCTM;
-            Vars.HCTM = vars.HCTM;
-
-            Vars.BRCM = vars.BRCM;
-            Vars.DRCM = vars.DRCM;
-            Vars.ERCM = vars.ERCM;
-            Vars.FRCM = vars.FRCM;
-            Vars.HRCM = vars.HRCM;
-
-            Vars.BINF = vars.BINF;
-            Vars.DINF = vars.DINF;
-            Vars.EINF = vars.EINF;
-            Vars.FINF = vars.FINF;
-            Vars.HINF = vars.HINF;
-
-            Vars.BSCH = vars.BSCH;
-            Vars.DSCH = vars.DSCH;
-            Vars.ESCH = vars.ESCH;
-            Vars.FSCH = vars.FSCH;
-            Vars.HSCH = vars.HSCH;
-
-            Vars.BRES = vars.BRES;
-            Vars.DRES = vars.DRES;
-            Vars.ERES = vars.ERES;
-            Vars.FRES = vars.FRES;
-            Vars.HRES = vars.HRES;
-
-            Vars.BPAS = vars.BPAS;
-            Vars.DPAS = vars.DPAS;
-            Vars.EPAS = vars.EPAS;
-            Vars.FPAS = vars.FPAS;
-            Vars.HPAS = vars.HPAS;
-
-            Vars.BSUP = vars.BSUP;
-            Vars.DSUP = vars.DSUP;
-            Vars.ESUP = vars.ESUP;
-            Vars.FSUP = vars.FSUP;
-            Vars.HSUP = vars.HSUP;
-
-            in.close();
-
-        }
-        catch (FileNotFoundException fnfe)
-        {
-            //file not found so were gonna make it
-            log.warn("Generated new PID/CID for OpChat and Hub Security.");
-            rewriteconfig();
-        }
-        catch (IOException e)
-        {
-            log.warn("Error accesing config files. Attempting overwrite with default values.");
-            log.warn("Generated new PID/CID for OpChat and Hub Security.");
-            rewriteconfig();
-        }
-        catch (ClassNotFoundException e)
-        {
-            log.error("Internal Error Config Corrupted Files. FAIL.");
-        }
-    }
-
-
-    public void reloadregs()
-    {
-        File MainRegFile;
-
-        MainRegFile = new File(Main.myPath + "regs");
-        try
-        {
-
-
-            FileInputStream MainRegFileReader = new FileInputStream(MainRegFile);
-            GZIPInputStream gzisreg = new GZIPInputStream(MainRegFileReader);
-            ObjectInputStream inreg = new ObjectInputStream(gzisreg);
-
-            rcfg = (RegConfig) inreg.readObject();
-
-            for (int i = 1; i < rcfg.reg_count; i++)
-            {
-                AccountsConfig.addReg(rcfg.nods[i]);
-            }
-
-
-            inreg.close();
-        }
-        catch (FileNotFoundException fnfe)
-        {
-            //file not found so were gonna make it
-            rewriteregs();
-        }
-        catch (IOException e)
-        {
-            log.warn("Error accesing regs files.Attempting overwrite with default values.");
-            rewriteregs();
-        }
-        catch (ClassNotFoundException e)
-        {
-            log.error("Internal Error Corrupted Regs File. FAIL.");
-        }
-    }
-
-
-    public void reloadbans()
-    {
-        File MainBanFile;
-
-        MainBanFile = new File(Main.myPath + "banlist");
-        try
-        {
-
-
-            FileInputStream MainBanFileReader = new FileInputStream(MainBanFile);
-            GZIPInputStream gzisreg = new GZIPInputStream(MainBanFileReader);
-            ObjectInputStream inreg = new ObjectInputStream(gzisreg);
-
-            bcfg = (bans) inreg.readObject();
-
-            for (int i = 1; i < bcfg.i; i++)
-            {
-                bcfg.bans[i].Next = null;
-                BanList.addban(bcfg.bans[i]);
-            }
-
-
-            inreg.close();
-        }
-        catch (FileNotFoundException fnfe)
-        {
-            //file not found so were gonna make it
-            rewriteregs();
-
-
-        }
-        catch (IOException e)
-        {
-            log.warn("Error accessing bans files.Attempting overwrite with default values.");
-            rewriteregs();
-        }
-        catch (ClassNotFoundException e)
-        {
-            log.error("Internal Error Corrupted Bans File. FAIL.");
-        }
-
     }
 }

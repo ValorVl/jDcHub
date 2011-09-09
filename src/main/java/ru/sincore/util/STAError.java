@@ -1,8 +1,8 @@
 package ru.sincore.util;
 
 import ru.sincore.Client;
+import ru.sincore.ConfigLoader;
 import ru.sincore.Exceptions.STAException;
-import ru.sincore.conf.Vars;
 
 /*
  * STAError.java
@@ -73,13 +73,13 @@ public class STAError
         client.getClientHandler().sendToClient(errorString);
         if (errorCode >= 200)
         {
-            if (!Vars.redirect_url.isEmpty())
+            if (!ConfigLoader.REDIRECT_URL.isEmpty())
             {
                 client.getClientHandler().closingwrite =
                         client.getClientHandler().sendToClient("IQUI " +
                                                                client.getClientHandler().SessionID +
                                                                " RD" +
-                                                               Vars.redirect_url);
+                                                               ConfigLoader.REDIRECT_URL);
             }
             throw new STAException(errorString, errorCode);
         }
@@ -113,13 +113,13 @@ public class STAError
         client.getClientHandler().sendToClient(errorString);
         if (errorCode >= 200)
         {
-            if (!Vars.redirect_url.isEmpty())
+            if (!ConfigLoader.REDIRECT_URL.isEmpty())
             {
                 client.getClientHandler().closingwrite =
                         client.getClientHandler().sendToClient("IQUI " +
                                                                client.getClientHandler().SessionID +
                                                                " RD" +
-                                                               Vars.redirect_url);
+                                                               ConfigLoader.REDIRECT_URL);
             }
             throw new STAException(errorString, errorCode);
         }

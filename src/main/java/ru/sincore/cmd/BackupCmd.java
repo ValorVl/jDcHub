@@ -23,11 +23,6 @@
 
 package ru.sincore.cmd;
 
-import java.util.StringTokenizer;
-
-import ru.sincore.ClientHandler;
-import ru.sincore.Main;
-
 /**
  * A class that implements the backup command
  *
@@ -39,114 +34,114 @@ public class BackupCmd
     /**
      * Creates a new instance of BackupCmd
      */
-    public BackupCmd(ClientHandler cur_client, String cmd)
-    {
-        StringTokenizer curcmd = new StringTokenizer(cmd);
-        curcmd.nextToken();
-        if (!curcmd.hasMoreTokens())
-        {
-            String Help = "\nThe backup command:\n" +
-                          "Usage backup what [where]" +
-                          "\n      \"what\" is one of {all,config,bans,regs} and represents what to backup." +
-                          "\n      \"where\" can be specified only for {config,bans,regs} and is a filename for where to save backup. If no \"where\" specified, files are saved as " +
-                          "name.bak ; also on specifier all, the same name covention used." +
-                          "\nExample: !backup config conf.saved";
-
-            cur_client.sendFromBot(Help);
-            return;
-        }
-        String what = curcmd.nextToken();
-        if (what.equalsIgnoreCase("all"))
-        {
-            String toSend = "";
-
-            if (Main.Server.rewriteconfig("config.bak") == false)
-            {
-                toSend += "Error while writing configuration. ";
-            }
-            else
-            {
-                toSend += "Configuration saved [config.bak]. ";
-            }
-            ;
-            if (Main.Server.rewriteregs("regs.bak") == false)
-            {
-                toSend += "Error while writing regs. ";
-            }
-            else
-            {
-                toSend += "Regs saved [regs.bak].";
-            }
-            ;
-            if (Main.Server.rewritebans("bans.bak") == false)
-            {
-                toSend += "Error while writing bans. ";
-            }
-            else
-            {
-                toSend += "Bans saved [bans.bak]. ";
-            }
-
-            cur_client.sendFromBot(toSend + "\nDone.");
-        }
-        else if (what.equalsIgnoreCase("bans"))
-        {
-            String name = "bans.bak";
-            if (curcmd.hasMoreTokens())
-            {
-                name = curcmd.nextToken();
-            }
-
-            if (Main.Server.rewritebans(name) == true)
-
-            {
-                cur_client.sendFromBot("Bans saved [" + name + "].\nDone.");
-            }
-            else
-            {
-                cur_client.sendFromBot("Error while writing bans.\nDone.");
-            }
-        }
-        else if (what.equalsIgnoreCase("regs"))
-        {
-            String name = "regs.bak";
-            if (curcmd.hasMoreTokens())
-            {
-                name = curcmd.nextToken();
-            }
-
-            if (Main.Server.rewriteregs(name) == true)
-
-            {
-                cur_client.sendFromBot("Regs saved [" + name + "].\nDone.");
-            }
-            else
-            {
-                cur_client.sendFromBot("Error while writing regs.\nDone.");
-            }
-        }
-        else if (what.equalsIgnoreCase("config"))
-        {
-            String name = "config.bak";
-            if (curcmd.hasMoreTokens())
-            {
-                name = curcmd.nextToken();
-            }
-
-            if (Main.Server.rewriteconfig(name) == true)
-
-            {
-                cur_client.sendFromBot("Configuration saved [" + name + "].\nDone.");
-            }
-            else
-            {
-                cur_client.sendFromBot("Error while writing configuration.\nDone.");
-            }
-        }
-        else
-        {
-            cur_client.sendFromBot("Unknown argument.\nDone.");
-        }
-    }
+//    public BackupCmd(ClientHandler cur_client, String cmd)
+//    {
+//        StringTokenizer curcmd = new StringTokenizer(cmd);
+//        curcmd.nextToken();
+//        if (!curcmd.hasMoreTokens())
+//        {
+//            String Help = "\nThe backup command:\n" +
+//                          "Usage backup what [where]" +
+//                          "\n      \"what\" is one of {all,config,bans,regs} and represents what to backup." +
+//                          "\n      \"where\" can be specified only for {config,bans,regs} and is a filename for where to save backup. If no \"where\" specified, files are saved as " +
+//                          "name.bak ; also on specifier all, the same name covention used." +
+//                          "\nExample: !backup config conf.saved";
+//
+//            cur_client.sendFromBot(Help);
+//            return;
+//        }
+//        String what = curcmd.nextToken();
+//        if (what.equalsIgnoreCase("all"))
+//        {
+//            String toSend = "";
+//
+//            if (Main.Server.rewriteconfig("config.bak") == false)
+//            {
+//                toSend += "Error while writing configuration. ";
+//            }
+//            else
+//            {
+//                toSend += "Configuration saved [config.bak]. ";
+//            }
+//            ;
+////            if (Main.Server.rewriteregs("regs.bak") == false)
+////            {
+////                toSend += "Error while writing regs. ";
+////            }
+////            else
+//            {
+//                toSend += "Regs saved [regs.bak].";
+//            }
+//
+//            if (Main.Server.rewritebans("bans.bak") == false)
+//            {
+//                toSend += "Error while writing bans. ";
+//            }
+//            else
+//            {
+//                toSend += "Bans saved [bans.bak]. ";
+//            }
+//
+//            cur_client.sendFromBot(toSend + "\nDone.");
+//        }
+//        else if (what.equalsIgnoreCase("bans"))
+//        {
+//            String name = "bans.bak";
+//            if (curcmd.hasMoreTokens())
+//            {
+//                name = curcmd.nextToken();
+//            }
+//
+//            if (Main.Server.rewritebans(name) == true)
+//
+//            {
+//                cur_client.sendFromBot("Bans saved [" + name + "].\nDone.");
+//            }
+//            else
+//            {
+//                cur_client.sendFromBot("Error while writing bans.\nDone.");
+//            }
+//        }
+//        else if (what.equalsIgnoreCase("regs"))
+//        {
+//            String name = "regs.bak";
+//            if (curcmd.hasMoreTokens())
+//            {
+//                name = curcmd.nextToken();
+//            }
+//
+////            if (Main.Server.rewriteregs(name) == true)
+////
+////            {
+////                cur_client.sendFromBot("Regs saved [" + name + "].\nDone.");
+////            }
+////            else
+////            {
+////                cur_client.sendFromBot("Error while writing regs.\nDone.");
+////            }
+//        }
+//        else if (what.equalsIgnoreCase("config"))
+//        {
+//            String name = "config.bak";
+//            if (curcmd.hasMoreTokens())
+//            {
+//                name = curcmd.nextToken();
+//            }
+//
+//            if (Main.Server.rewriteconfig(name) == true)
+//
+//            {
+//                cur_client.sendFromBot("Configuration saved [" + name + "].\nDone.");
+//            }
+//            else
+//            {
+//                cur_client.sendFromBot("Error while writing configuration.\nDone.");
+//            }
+//        }
+//        else
+//        {
+//            cur_client.sendFromBot("Unknown argument.\nDone.");
+//        }
+//    }
 
 }

@@ -25,8 +25,6 @@ package ru.sincore;
 
 import java.util.Calendar;
 
-import ru.sincore.conf.Vars;
-
 /**
  * Provides broadcasts and feature broadcasts constructors to all connected
  * clients.
@@ -140,7 +138,7 @@ public class Broadcast
             // ClientNod toClient=((ClientHandler)(x[i].getAttachment())).myNod;
             if (STR.startsWith("BMSG ") || STR.startsWith("IMSG "))
             {
-                NI = Vars.bot_name;
+                NI = ConfigLoader.BOT_CHAT_NAME;
                 if (toClientHandler.userok == 1)
 
                 {

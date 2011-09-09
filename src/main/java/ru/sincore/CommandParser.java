@@ -29,18 +29,8 @@ import ru.sincore.Modules.Module;
 import ru.sincore.TigerImpl.Base32;
 import ru.sincore.adcs.AdcsCommand;
 import ru.sincore.banning.BanList;
-import ru.sincore.cmd.BackupCmd;
-import ru.sincore.cmd.ChatControlCmd;
-import ru.sincore.cmd.GrantCmd;
-import ru.sincore.cmd.PlugminCmd;
-import ru.sincore.cmd.PortCmd;
-import ru.sincore.cmd.ExtendedCmds.ExtDrop;
-import ru.sincore.cmd.ExtendedCmds.ExtInfo;
-import ru.sincore.cmd.ExtendedCmds.ExtKick;
-import ru.sincore.cmd.ExtendedCmds.ExtMass;
-import ru.sincore.cmd.ExtendedCmds.ExtRedirect;
-import ru.sincore.conf.CFGConfig;
-import ru.sincore.conf.Vars;
+import ru.sincore.cmd.*;
+import ru.sincore.cmd.ExtendedCmds.*;
 import ru.sincore.util.ADC;
 import ru.sincore.util.TimeConv;
 
@@ -246,18 +236,7 @@ public class CommandParser
             new GrantCmd(client.getClientHandler(), recvbuf);
 
         }
-        else if (recvbuf.toLowerCase().startsWith("backup"))
-        {
-            commandOK = 1;
-            if (!client.getClientHandler().reg.myMask.backup)
-            {
-                client.getClientHandler().sendFromBot("Access denied.");
-                done = true;
-                return;
-            }
-            new BackupCmd(client.getClientHandler(), recvbuf);
-
-        }
+		//TODO remove "backup" command
         else if (recvbuf.toLowerCase().startsWith("adcs"))
         {
             commandOK = 1;
@@ -397,7 +376,7 @@ public class CommandParser
                                                                       +
                                                                       aux +
                                                                       " found, deleted.");
-                                Main.Server.rewriteregs();
+
                                 return;
                             }
                         }
@@ -450,7 +429,6 @@ public class CommandParser
                                         + " CT");
 
                                 temp.getClientHandler().reg = new Nod();
-                                Main.Server.rewriteregs();
                                 return;
                             }
                         }
@@ -460,7 +438,6 @@ public class CommandParser
                 client.getClientHandler().sendFromBot("No such client online.");
 
             }
-            Main.Server.rewriteregs();
 
         }
         else if (recvbuf.toLowerCase().startsWith("reg"))
@@ -529,7 +506,7 @@ public class CommandParser
                                 temp.getClientHandler().LoggedAt = System
                                         .currentTimeMillis();
                                 temp.getClientHandler().reg.LastIP = temp.getClientHandler().RealIP;
-                                Main.Server.rewriteregs();
+
                                 return;
                             }
                         }
@@ -595,7 +572,7 @@ public class CommandParser
                                 temp.getClientHandler().reg.LastIP = temp.getClientHandler().RealIP;
                                 log.info(client.getClientHandler().NI + " regged the CID "
                                          + temp.getClientHandler().ID);
-                                Main.Server.rewriteregs();
+
                                 return;
                             }
                         }
@@ -660,7 +637,7 @@ public class CommandParser
                             temp.getClientHandler().reg.LastIP = temp.getClientHandler().RealIP;
                             log.info(client.getClientHandler().NI + " regged the CID "
                                      + temp.getClientHandler().ID);
-                            Main.Server.rewriteregs();
+
                             return;
                         }
                     }
@@ -670,8 +647,6 @@ public class CommandParser
                 client.getClientHandler().sendFromBot("No such client online.");
 
             }
-
-            Main.Server.rewriteregs();
 
         }
         else if (recvbuf.toLowerCase().equals("help"))
@@ -747,7 +722,7 @@ public class CommandParser
                 aux = aux.substring(0, aux.length() - 1);
             }
             aux = ADC.retADCStr(aux);
-            if (aux.length() < Vars.min_ni)
+            if (aux.length() < ConfigLoader.MIN_NICK_SIZE)
             {
                 {
                     client.getClientHandler()
@@ -756,7 +731,7 @@ public class CommandParser
                     return;
                 }
             }
-            if (aux.length() > Vars.max_ni)
+            if (aux.length() > ConfigLoader.MAX_NICK_SIZE)
             {
                 {
                     client.getClientHandler()
@@ -767,7 +742,7 @@ public class CommandParser
                     }
                 }
             }
-            if (!Vars.ValidateNick(aux))
+            if (! Nick.validateNick(aux))
             {
                 client.getClientHandler()
                         .sendFromBot("Nick not valid, please choose another.");
@@ -804,7 +779,7 @@ public class CommandParser
 
             }
 
-            if (aux.equalsIgnoreCase(Vars.Opchat_name))
+            if (aux.equalsIgnoreCase(ConfigLoader.OP_CHAT_NAME))
             {
                 client.getClientHandler().sendFromBot("Nick taken, please choose another.");
                 {
@@ -812,7 +787,7 @@ public class CommandParser
                     return;
                 }
             }
-            if (aux.equalsIgnoreCase(Vars.bot_name))
+            if (aux.equalsIgnoreCase(ConfigLoader.BOT_CHAT_NAME))
             {
                 client.getClientHandler().sendFromBot("Nick taken, please choose another.");
                 {
@@ -858,7 +833,7 @@ public class CommandParser
                         {
                             //actual renaming.
                             String newnick = ST.nextToken();
-                            if (newnick.length() < Vars.min_ni)
+                            if (newnick.length() < ConfigLoader.MIN_NICK_SIZE)
                             {
                                 {
                                     client.getClientHandler()
@@ -867,7 +842,7 @@ public class CommandParser
                                     return;
                                 }
                             }
-                            if (newnick.length() > Vars.max_ni)
+                            if (newnick.length() > ConfigLoader.MAX_NICK_SIZE)
                             {
                                 {
                                     client.getClientHandler()
@@ -876,7 +851,7 @@ public class CommandParser
                                     return;
                                 }
                             }
-                            if (!Vars.ValidateNick(newnick))
+                            if (!Nick.validateNick(newnick))
                             {
                                 client.getClientHandler()
                                         .sendFromBot("Nick not valid, please choose another.");
@@ -908,14 +883,14 @@ public class CommandParser
 
                             }
 
-                            if (newnick.equals(Vars.Opchat_name))
+                            if (newnick.equals(ConfigLoader.OP_CHAT_NAME))
                             {
                                 client.getClientHandler()
                                         .sendFromBot("Nick taken, please choose another.");
                                 done = true;
                                 return;
                             }
-                            if (newnick.equals(Vars.bot_name))
+                            if (newnick.equals(ConfigLoader.BOT_CHAT_NAME))
                             {
                                 client.getClientHandler()
                                         .sendFromBot("Nick taken, please choose another.");
@@ -1067,7 +1042,6 @@ public class CommandParser
                 }
             }
             client.getClientHandler().sendFromBot("Done.");
-            Main.Server.rewritebans();
 
         }
         else if (recvbuf.toLowerCase().startsWith("bancid "))
@@ -1132,7 +1106,6 @@ public class CommandParser
                                 client.getClientHandler().sendFromBot("Found CID " + aux
                                                                       + ", banning..");
                                 temp.kickMeOut(client.getClientHandler(), reason, 3, -1L);
-                                Main.Server.rewritebans();
                                 return;
                             }
                         }
@@ -1189,10 +1162,9 @@ public class CommandParser
                             {
                                 //BanList.addban (3,temp.ID,-1,handler.NI,reason);
                                 client.getClientHandler().sendFromBot("Found user " + aux
-                                                                      + ", banning..");
+																			  + ", banning..");
                                 temp.kickMeOut(client.getClientHandler(), reason, 3, -1L);
                                 client.getClientHandler().sendFromBot("Done.");
-                                Main.Server.rewritebans();
                                 return;
                             }
                         }
@@ -1260,7 +1232,6 @@ public class CommandParser
 
                             temp.kickMeOut(client.getClientHandler(), reason, 1, -1L);
                             client.getClientHandler().sendFromBot("Done.");
-                            Main.Server.rewritebans();
                             return;
 
                         }
@@ -1272,7 +1243,6 @@ public class CommandParser
             client.getClientHandler().sendFromBot("Found Nick " + aux + ", banning....");
             BanList.addban(1, aux, -1, client.getClientHandler().NI, reason);
 
-            Main.Server.rewritebans();
             client.getClientHandler().sendFromBot("Done.");
         }
 
@@ -1390,7 +1360,6 @@ public class CommandParser
 
                                 temp.kickMeOut(client.getClientHandler(), reason, 2, -1L);
                                 client.getClientHandler().sendFromBot("Done.");
-                                Main.Server.rewritebans();
                                 return;
                             }
                         }
@@ -1402,21 +1371,20 @@ public class CommandParser
 
             }//end catch
             client.getClientHandler().sendFromBot("Done.");
-            Main.Server.rewritebans();
 
         }
-
-        else if (recvbuf.toLowerCase().startsWith("cfg"))
-        {
-            commandOK = 1;
-            if (!client.getClientHandler().reg.myMask.cfg)
-            {
-                client.getClientHandler().sendFromBot("Access denied.");
-                done = true;
-                return;
-            }
-            new CFGConfig(client.getClientHandler(), recvbuf);
-        }
+		//TODO add implementation this command as needed
+//        else if (recvbuf.toLowerCase().startsWith("cfg"))
+//        {
+//            commandOK = 1;
+//            if (!client.getClientHandler().reg.myMask.cfg)
+//            {
+//                client.getClientHandler().sendFromBot("Access denied.");
+//                done = true;
+//                return;
+//            }
+//            new CFGConfig(client.getClientHandler(), recvbuf);
+//        }
         else if (recvbuf.toLowerCase().startsWith("topic"))
         {
             commandOK = 1;
@@ -1428,13 +1396,10 @@ public class CommandParser
             }
             if (recvbuf.toLowerCase().equals("topic"))
             {
-                if (!Vars.HubDE.equals(""))
+                if (!ConfigLoader.HUB_DE.isEmpty())
                 {
                     Broadcast.getInstance().broadcast("IINF DE");
-                }
-                if (!Vars.HubDE.equals(""))
-                {
-                    client.getClientHandler().sendFromBot("Topic \"" + Vars.HubDE
+                    client.getClientHandler().sendFromBot("Topic \"" + ConfigLoader.HUB_DE
                                                           + "\" deleted.");
                     Broadcast.getInstance().broadcast("IMSG Topic was deleted by " + client.getClientHandler().NI, client);
                 }
@@ -1442,7 +1407,8 @@ public class CommandParser
                 {
                     client.getClientHandler().sendFromBot("There wasn't any topic anyway.");
                 }
-                Vars.HubDE = "";
+				//TODO OMFG O_O!
+                ConfigLoader.HUB_DE = "";
 
             }
             else
@@ -1450,17 +1416,17 @@ public class CommandParser
                 String auxbuf = recvbuf.substring(6);
 
                 // Vars.HubDE=Vars.HubDE.replaceAll("\\ "," ");
-                client.getClientHandler().sendFromBot("Topic changed from \"" + Vars.HubDE
+                client.getClientHandler().sendFromBot("Topic changed from \"" + ConfigLoader.HUB_DE
                                                       + "\" " + "to \"" + auxbuf + "\".");
                 auxbuf = auxbuf.replaceAll(" ", "\\ ");
-                Vars.HubDE = auxbuf;
+                ConfigLoader.HUB_DE = auxbuf;
 
                 Broadcast.getInstance().broadcast("IINF DE" + ADC.retADCStr(auxbuf));
                 Broadcast.getInstance().broadcast("IMSG Topic was changed by " + client.getClientHandler().NI
-                                                  + " to \"" + Vars.HubDE + "\"");
+                                                  + " to \"" + ConfigLoader.HUB_DE + "\"");
 
             }
-            Main.Server.rewriteconfig();
+            // TODO remove save "topic" parameter in old config store.
 
         }
         else if (recvbuf.toLowerCase().startsWith("port"))
@@ -1530,11 +1496,11 @@ public class CommandParser
                 return;
             }
             client.getClientHandler().sendFromBot("\n"
-                                                  +
-                                                  Vars.About
-                                                          .replaceAll(" ", "\\ ")
-                                                          .replaceAll("\\x0a",
-                                                                      "\\\n"));
+														  +
+														  ConfigLoader.ABOUT
+																  .replaceAll(" ", "\\ ")
+																  .replaceAll("\\x0a",
+																			  "\\\n"));
         }
         else if (recvbuf.toLowerCase().equals("history"))
         {
@@ -1595,7 +1561,7 @@ public class CommandParser
 
             long up = System.currentTimeMillis() - Main.curtime; //uptime in millis
             String blah = "Death Squad Hub. Version "
-                          + Vars.HubVersion
+                          + ConfigLoader.HUB_VERSION
                           + ".\n"
                           + "  Running on "
                           + Main.Proppies.getProperty("os.name")

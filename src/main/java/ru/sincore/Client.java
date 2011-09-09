@@ -27,7 +27,6 @@ import org.apache.log4j.Logger;
 import org.apache.mina.core.future.IoFutureListener;
 import org.apache.mina.core.future.WriteFuture;
 import ru.sincore.banning.BanList;
-import ru.sincore.conf.Vars;
 import ru.sincore.util.ADC;
 
 
@@ -145,9 +144,9 @@ public class Client implements IoFutureListener<WriteFuture>
         {
             brcast = brcast + " MS" + ADC.retADCStr(kickmsg);
         }
-        if (!Vars.redirect_url.equals(""))
+        if (!ConfigLoader.REDIRECT_URL.equals(""))
         {
-            brcast = brcast + " RD" + ADC.retADCStr(Vars.redirect_url);
+            brcast = brcast + " RD" + ADC.retADCStr(ConfigLoader.REDIRECT_URL);
         }
         Broadcast.getInstance().broadcast(brcast);
 
@@ -166,7 +165,6 @@ public class Client implements IoFutureListener<WriteFuture>
                     " with CID " +
                     handler.ID +
                     " out in flames.");
-        Main.Server.rewritebans();
     }
 
 
@@ -186,15 +184,15 @@ public class Client implements IoFutureListener<WriteFuture>
         {
             if (bantype == 3)
             {
-                BanList.addban(bantype, handler.ID, 1000 * kicktime, Vars.bot_name, kickmsg);
+                BanList.addban(bantype, handler.ID, 1000 * kicktime, ConfigLoader.BOT_CHAT_NAME, kickmsg);
             }
             else if (bantype == 2)
             {
-                BanList.addban(bantype, handler.RealIP, 1000 * kicktime, Vars.bot_name, kickmsg);
+                BanList.addban(bantype, handler.RealIP, 1000 * kicktime, ConfigLoader.BOT_CHAT_NAME, kickmsg);
             }
             else if (bantype == 1)
             {
-                BanList.addban(bantype, handler.NI, 1000 * kicktime, Vars.bot_name, kickmsg);
+                BanList.addban(bantype, handler.NI, 1000 * kicktime, ConfigLoader.BOT_CHAT_NAME, kickmsg);
             }
         }
         else
@@ -202,15 +200,15 @@ public class Client implements IoFutureListener<WriteFuture>
 
             if (bantype == 3)
             {
-                BanList.addban(bantype, handler.ID, kicktime, Vars.bot_name, kickmsg);
+                BanList.addban(bantype, handler.ID, kicktime, ConfigLoader.BOT_CHAT_NAME, kickmsg);
             }
             else if (bantype == 2)
             {
-                BanList.addban(bantype, handler.RealIP, kicktime, Vars.bot_name, kickmsg);
+                BanList.addban(bantype, handler.RealIP, kicktime, ConfigLoader.BOT_CHAT_NAME, kickmsg);
             }
             else if (bantype == 1)
             {
-                BanList.addban(bantype, handler.NI, kicktime, Vars.bot_name, kickmsg);
+                BanList.addban(bantype, handler.NI, kicktime, ConfigLoader.BOT_CHAT_NAME, kickmsg);
             }
 
         }
@@ -220,9 +218,9 @@ public class Client implements IoFutureListener<WriteFuture>
         {
             brcast = brcast + " MS" + ADC.retADCStr(kickmsg);
         }
-        if (!Vars.redirect_url.equals(""))
+        if (!ConfigLoader.REDIRECT_URL.equals(""))
         {
-            brcast = brcast + " RD" + ADC.retADCStr(Vars.redirect_url);
+            brcast = brcast + " RD" + ADC.retADCStr(ConfigLoader.REDIRECT_URL);
         }
         Broadcast.getInstance().broadcast(brcast);
 
@@ -230,25 +228,24 @@ public class Client implements IoFutureListener<WriteFuture>
         this.handler.mySession.close();
 
 
-        log.info(Vars.bot_name +
+        log.info(ConfigLoader.BOT_CHAT_NAME +
                  " kicked user " +
                  handler.NI +
                  " with CID " +
                  handler.ID +
                  " out in flames.");
-        Main.Server.rewritebans();
     }
 
 
     public void kickMeByBot(String kickmsg, int bantype)
     {
-        kickMeByBot(kickmsg, bantype, Long.parseLong(Integer.toString(Vars.kick_time)));
+        kickMeByBot(kickmsg, bantype, Long.parseLong(Integer.toString(ConfigLoader.KICK_DURATION)));
     }
 
 
     public void kickMeOut(ClientHandler whokicked, String kickmsg, int bantype)
     {
-        kickMeOut(whokicked, kickmsg, bantype, Long.parseLong(Integer.toString(Vars.kick_time)));
+        kickMeOut(whokicked, kickmsg, bantype, Long.parseLong(Integer.toString(ConfigLoader.KICK_DURATION)));
     }
 
 
