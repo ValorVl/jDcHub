@@ -8,6 +8,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.Properties;
 
+/**
+ * @author Valor
+ * @since 10.09.2011
+ */
 public class ConfigLoader
 {
 

@@ -75,7 +75,10 @@ public class Messages
 				}
 
 			}
-		}
+		}else
+        {
+            log.error("Localized file directory is not found, create this and try again.");
+        }
 		return dir+"/messages."+selectedLang;
 	}
 

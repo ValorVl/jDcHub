@@ -40,7 +40,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Pietricica
- *
+ * @author Valor
  * @author Alexey 'lh' Antonov
  * @since 2011-09-06
  */
@@ -202,8 +202,7 @@ public class SessionManager extends IoHandlerAdapter
         session.setAttribute("", currentClient);
 
         currentClientHandler.mySession = session;
-        StringTokenizer ST = new StringTokenizer(currentClientHandler.mySession
-                                                         .getRemoteAddress().toString(), "/:");
+        StringTokenizer ST = new StringTokenizer(currentClientHandler.mySession.getRemoteAddress().toString(), "/:");
 
 		currentClientHandler.RealIP = ST.nextToken();
         SID cursid = new SID(currentClientHandler);
