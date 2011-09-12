@@ -32,6 +32,11 @@ public class AccountsConfig
 {
     public static HashMap<String, Nod> nods;
 
+	static
+	{
+		nods = new HashMap<String, Nod>();
+	}
+
 
     /**
      * Creates a new instance of AccountsConfig

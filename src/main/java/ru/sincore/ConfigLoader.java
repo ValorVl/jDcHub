@@ -221,6 +221,9 @@ public class ConfigLoader
 			COMMAND_PM_RETURN									= Boolean.parseBoolean(prop.getProperty("core.hub.command_pm_return","true"));
 			MARK_REGISTRATION_ONLY								= Boolean.parseBoolean(prop.getProperty("core.hub.mark_registration_only","true"));
 			ENABLE_ADCS											= Boolean.parseBoolean(prop.getProperty("core.hub.extension.adcs.adcs_enable","false"));
+			NICK_CHAR											= prop.getProperty("core.hub.nick_chars","([\\\\w\\\\W]*)");
+			MAX_HUBS_USERS										= Integer.parseInt(prop.getProperty("core.hub.max_hubs_users","10"));
+			MAX_HUBS_REGISTERED									= Integer.parseInt(prop.getProperty("core.hub.max_hubs_registered","10"));
 
 
 			// B 	 Broadcast 	 			Hub must send message to all connected clients, including the sender of the message.

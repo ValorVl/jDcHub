@@ -1391,7 +1391,7 @@ public class Command
             throws STAException, CommandException
     {
         currentClient = client;
-		log.info("COMMAND : " +command + "CLIENT"+client);
+		log.debug("COMMAND : " + command + " FROM CLIENT : " + client.getClientHandler().NI+" INFO : "+client.getClientHandler().getINF());
         //System.out.printf("["+handler.NI+"]:%s\n",Issued_command);
 
 
