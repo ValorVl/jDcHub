@@ -1391,14 +1391,11 @@ public class Command
             throws STAException, CommandException
     {
         currentClient = client;
-		log.debug("COMMAND : " + command + " FROM CLIENT : " + client.getClientHandler().NI+" INFO : "+client.getClientHandler().getINF());
-        //System.out.printf("["+handler.NI+"]:%s\n",Issued_command);
 
-
-        //System.out.printf("[Received]:%s\n",Issued_command);
         if (command.equals(""))
         {
-            //System.out.println("("+handler.NI+")"+System.currentTimeMillis ()/1000);
+            log.debug("Empty command from client with nick = \'" + client.getClientHandler().NI +
+                      "\' and SID = \'" + client.getClientHandler().SessionID);
             return;
         }
 

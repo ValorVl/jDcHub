@@ -62,6 +62,7 @@ public class ConfigLoader
     public static String 	HUB_DESCRIPTION;
     public static String 	HUB_OWNER;
 	public static String 	HUB_VERSION;
+    public static String    HUB_GREETING;
 	public static String 	NICK_CHAR;  			// Available nickname char
 	public static String 	REDIRECT_URL;           // The main redirect URL to send faulty users ( or default redirects )
 
@@ -196,6 +197,7 @@ public class ConfigLoader
 			HUB_DESCRIPTION										= prop.getProperty("core.hub.description","");
 			HUB_OWNER											= prop.getProperty("core.hub.owner","");
 			HUB_VERSION											= prop.getProperty("core.hub.version","");
+            HUB_GREETING                                        = prop.getProperty("core.hub.greeting", "");
 			REDIRECT_URL										= prop.getProperty("core.hub.redirect_url","");
 			MIN_CHARS_SEARCH_REQUEST							= Integer.parseInt(prop.getProperty("core.hub.min_char_search_request","5"));
 			MAX_CHARS_SEARCH_REQUEST							= Integer.parseInt(prop.getProperty("core.hub.max_char_search_request","200"));

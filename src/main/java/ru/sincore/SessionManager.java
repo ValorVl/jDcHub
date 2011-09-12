@@ -146,12 +146,12 @@ public class SessionManager extends IoHandlerAdapter
                 return;
             }
             //session.close(false);
-			log.info(stex);
+			log.debug(stex);
         }
         catch (CommandException cfex)
         {
             //session.close(false);
-			log.info(cfex);
+			log.debug(cfex);
         }
 
     }
@@ -161,7 +161,6 @@ public class SessionManager extends IoHandlerAdapter
             throws Exception
     {
         //ok, we're in idle
-		log.info(status);
     }
 
 
