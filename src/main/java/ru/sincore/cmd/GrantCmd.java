@@ -67,7 +67,7 @@ public class GrantCmd
 
             for (Client tempp : SessionManager.getUsers())
             {
-                if (tempp.getClientHandler().userok == 1)
+                if (tempp.getClientHandler().validated == 1)
                 {
                     if (tempp.getClientHandler().NI.equalsIgnoreCase(who) && tempp.getClientHandler().reg.isreg)
                     {
@@ -580,7 +580,7 @@ public class GrantCmd
 
                         for (Client tempx : SessionManager.getUsers())
                         {
-                            if (tempx.getClientHandler().userok == 1)
+                            if (tempx.getClientHandler().validated == 1)
                             {
                                 if (tempx.getClientHandler()
                                         .ID
@@ -608,7 +608,7 @@ public class GrantCmd
 
                         for (Client tempx : SessionManager.getUsers())
                         {
-                            if (tempx.getClientHandler().userok == 1)
+                            if (tempx.getClientHandler().validated == 1)
                             {
                                 if (tempx.getClientHandler()
                                         .ID
@@ -681,7 +681,7 @@ public class GrantCmd
 
                     for (Client tempx : SessionManager.getUsers())
                     {
-                        if (tempx.getClientHandler().userok == 1)
+                        if (tempx.getClientHandler().validated == 1)
                         {
                             if (tempx.getClientHandler().ID.equals(modnod.CID))//if registered guy is online
                             {
@@ -698,7 +698,7 @@ public class GrantCmd
 
                     for (Client tempx : SessionManager.getUsers())
                     {
-                        if (tempx.getClientHandler().userok == 1)
+                        if (tempx.getClientHandler().validated == 1)
                         {
                             if (tempx.getClientHandler().ID.equals(modnod.CID))//if registered guy is online
                             {
@@ -824,7 +824,7 @@ public class GrantCmd
             boolean ok = false;
             for (Client tempp : SessionManager.getUsers())
             {
-                if (tempp.getClientHandler().userok == 1)
+                if (tempp.getClientHandler().validated == 1)
                 {
                     if (tempp.getClientHandler().NI.equalsIgnoreCase(who))
                     {
@@ -1153,7 +1153,7 @@ public class GrantCmd
                         for (Client tempx : SessionManager.getUsers())
                         {
 
-                            if (tempx.getClientHandler().userok == 1)
+                            if (tempx.getClientHandler().validated == 1)
                             {
                                 if (tempx.getClientHandler()
                                         .ID
@@ -1180,7 +1180,7 @@ public class GrantCmd
 
                         for (Client tempx : SessionManager.getUsers())
                         {
-                            if (tempx.getClientHandler().userok == 1)
+                            if (tempx.getClientHandler().validated == 1)
                             {
                                 if (tempx.getClientHandler()
                                         .ID
@@ -1234,7 +1234,7 @@ public class GrantCmd
 
                     for (Client tempx : SessionManager.getUsers())
                     {
-                        if (tempx.getClientHandler().userok == 1)
+                        if (tempx.getClientHandler().validated == 1)
                         {
                             if (tempx.getClientHandler().ID.equals(modnod.CID))//if registered guy is online
                             {
@@ -1251,7 +1251,7 @@ public class GrantCmd
 
                     for (Client tempx : SessionManager.getUsers())
                     {
-                        if (tempx.getClientHandler().userok == 1)
+                        if (tempx.getClientHandler().validated == 1)
                         {
                             if (tempx.getClientHandler().ID.equals(modnod.CID))//if registered guy is online
                             {

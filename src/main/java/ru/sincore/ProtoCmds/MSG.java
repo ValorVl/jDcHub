@@ -455,7 +455,7 @@ public class MSG
                 //cant broadcast coz must send each;s SID
                 for (Client targetClient : SessionManager.getUsers())
                 {
-                    if (targetClient.getClientHandler().userok == 1)
+                    if (targetClient.getClientHandler().validated == 1)
                     {
                         if (targetClient.getClientHandler().reg.isreg && !targetClient.equals(client))
                         {

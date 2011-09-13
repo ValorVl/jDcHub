@@ -71,7 +71,7 @@ public class ExtDrop
 
         for (Client temp : SessionManager.getUsers())
         {
-            if (temp.getClientHandler().userok == 1)
+            if (temp.getClientHandler().validated == 1)
             {
                 if ((temp.getClientHandler().NI.toLowerCase().equals(aux.toLowerCase())))
                 {
@@ -106,7 +106,7 @@ public class ExtDrop
             for (Client temp : SessionManager.getUsers())
             {
 
-                if (temp.getClientHandler().userok == 1)
+                if (temp.getClientHandler().validated == 1)
                 {
                     if ((temp.getClientHandler().NI.toLowerCase().matches(aux.toLowerCase())))
                     {
@@ -146,7 +146,7 @@ public class ExtDrop
                     //kick all shared > number
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Long.parseLong(tempz.getClientHandler().SS) > Number)
                             {
@@ -180,7 +180,7 @@ public class ExtDrop
                     //drop all shared > number
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Long.parseLong(tempz.getClientHandler().HN) > Number)
                             {
@@ -214,7 +214,7 @@ public class ExtDrop
                     //drop all shared > number
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Long.parseLong(tempz.getClientHandler().HR) > Number)
                             {
@@ -248,7 +248,7 @@ public class ExtDrop
                     //kick all shared > number
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Long.parseLong(tempz.getClientHandler().HO) > Number)
                             {
@@ -282,7 +282,7 @@ public class ExtDrop
                     //kick all shared > number
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Long.parseLong(tempz.getClientHandler().SS) > Number)
                             {
@@ -316,7 +316,7 @@ public class ExtDrop
                     //kick all shared > number
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (tempz.getClientHandler().NI.length() > Number)
                             {
@@ -354,10 +354,10 @@ public class ExtDrop
                     //kick all shared > number
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Long.parseLong(tempz.getClientHandler().SS) / 1024 / 1024 <
-                                Number)//&& tempz.userok==1)
+                                Number)//&& tempz.validated==1)
                             {
                                 tempz.dropMe(cur_client);
                             }
@@ -389,7 +389,7 @@ public class ExtDrop
                     //kick all shared > number
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Long.parseLong(tempz.getClientHandler().HN) < Number)
                             {
@@ -423,7 +423,7 @@ public class ExtDrop
                     //kick all shared > number
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Long.parseLong(tempz.getClientHandler().HO) < Number)
                             {
@@ -457,7 +457,7 @@ public class ExtDrop
                     //kick all shared > number
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Long.parseLong(tempz.getClientHandler().HR) < Number)
                             {
@@ -491,7 +491,7 @@ public class ExtDrop
                     //kick all shared > number
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (tempz.getClientHandler().NI.length() < Number)
                             {
@@ -525,7 +525,7 @@ public class ExtDrop
                     //kick all shared > number
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Long.parseLong(tempz.getClientHandler().SL) < Number)
                             {
@@ -563,10 +563,10 @@ public class ExtDrop
                     //kick all shared > number
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Long.parseLong(tempz.getClientHandler().SS) / 1024 / 1024 ==
-                                Number)//&& tempz.userok==1)
+                                Number)//&& tempz.validated==1)
                             {
                                 tempz.dropMe(cur_client);
                             }
@@ -598,7 +598,7 @@ public class ExtDrop
                     //kick all shared > number
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Long.parseLong(tempz.getClientHandler().HO) == Number)
                             {
@@ -632,7 +632,7 @@ public class ExtDrop
                     //kick all shared > number
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Number == 1)
                             {
@@ -678,7 +678,7 @@ public class ExtDrop
                     //kick all shared > number
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Long.parseLong(tempz.getClientHandler().HR) == Number)
                             {
@@ -710,7 +710,7 @@ public class ExtDrop
                     //kick all shared > number
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Number == 1)
                             {
@@ -755,7 +755,7 @@ public class ExtDrop
                     //kick all shared > number
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Long.parseLong(tempz.getClientHandler().HR) == Number)
                             {
@@ -789,7 +789,7 @@ public class ExtDrop
                     //kick all shared > number
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Long.parseLong(tempz.getClientHandler().HN) == Number)
                             {
@@ -816,12 +816,12 @@ public class ExtDrop
                     //kick all shared > number
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (tempz.getClientHandler()
                                     .SU
                                     .toLowerCase()
-                                    .contains(Number.toLowerCase()))//&& tempz.userok==1)
+                                    .contains(Number.toLowerCase()))//&& tempz.validated==1)
                             {
                                 tempz.dropMe(cur_client);
                             }
@@ -851,7 +851,7 @@ public class ExtDrop
                     //kick all shared > number
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (tempz.getClientHandler().NI.length() == Number)
                             {
@@ -885,7 +885,7 @@ public class ExtDrop
                     //kick all shared > number
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Long.parseLong(tempz.getClientHandler().SL) == Number)
                             {
@@ -924,10 +924,10 @@ public class ExtDrop
                     //kick all shared > number
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Long.parseLong(tempz.getClientHandler().SS) / 1024 / 1024 !=
-                                Number)//&& tempz.userok==1)
+                                Number)//&& tempz.validated==1)
                             {
                                 tempz.dropMe(cur_client);
                             }
@@ -959,7 +959,7 @@ public class ExtDrop
                     //kick all shared > number
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Number == 1)
                             {
@@ -1004,7 +1004,7 @@ public class ExtDrop
                     //kick all shared > number
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Long.parseLong(tempz.getClientHandler().AW) != Number)
                             {
@@ -1036,7 +1036,7 @@ public class ExtDrop
                     //kick all shared > number
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Number == 1)
                             {
@@ -1081,7 +1081,7 @@ public class ExtDrop
                     //kick all shared > number
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Long.parseLong(tempz.getClientHandler().HO) != Number)
                             {
@@ -1115,7 +1115,7 @@ public class ExtDrop
                     //kick all shared > number
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Long.parseLong(tempz.getClientHandler().HR) != Number)
                             {
@@ -1149,7 +1149,7 @@ public class ExtDrop
                     //kick all shared > number
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Long.parseLong(tempz.getClientHandler().HN) != Number)
                             {
@@ -1176,12 +1176,12 @@ public class ExtDrop
                     //kick all shared > number
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (!tempz.getClientHandler()
                                     .SU
                                     .toLowerCase()
-                                    .contains(Number.toLowerCase()))//&& tempz.userok==1)
+                                    .contains(Number.toLowerCase()))//&& tempz.validated==1)
                             {
                                 tempz.dropMe(cur_client);
                             }
@@ -1211,7 +1211,7 @@ public class ExtDrop
                     //kick all shared > number
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (tempz.getClientHandler().NI.length() != Number)
                             {
@@ -1245,7 +1245,7 @@ public class ExtDrop
                     //kick all shared > number
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Long.parseLong(tempz.getClientHandler().SL) != Number)
                             {

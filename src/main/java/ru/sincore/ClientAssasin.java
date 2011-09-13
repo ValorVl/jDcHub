@@ -51,7 +51,7 @@ public class ClientAssasin extends Thread
         while (!Main.Server.restart)
         {
 
-            if (SessionManager.users.isEmpty())
+            if (ClientManager.getInstance().getClientsCount() == 0)
             {
                 try
                 {
@@ -59,32 +59,20 @@ public class ClientAssasin extends Thread
                 }
                 catch (InterruptedException ex)
                 {
+                    // ignored
                 }
                 continue;
             }
 
-            for (Client client : SessionManager.getUsers())
+            for (Client client : ClientManager.getInstance().getClients())
             {
                 ClientHandler clientHandler = client.getClientHandler();
 
                 long currentTime = System.currentTimeMillis();
 
-                /*  synchronized (temp.handler.cur_inf)
-                {
-                if (((temp.handler.userok==1)
-                        && (temp.handler.cur_inf!=null))
-                        && (curtime-temp.handler.LastINF>(1000*120L)))
-                {
-                    Broadcast.getInstance().broadcast(temp.handler.cur_inf);
-                    temp.handler.LastINF=curtime;
-                    temp.handler.cur_inf=null;
-        }
-                }
-                */
-
                 if (((clientHandler.kicked != 1)
                      && (clientHandler.InQueueSearch != null))
-                    && (clientHandler.userok == 1))
+                    && (clientHandler.validated == 1))
                 {
 
                     double xy = 1;
@@ -98,7 +86,6 @@ public class ClientAssasin extends Thread
                     {
                         xx = ConfigLoader.SEARCH_SPAM_RESET * 1000;
                     }
-                    // System.out.println(xx);
                     if ((currentTime - clientHandler.Lastsearch) > xx)
                     {
 

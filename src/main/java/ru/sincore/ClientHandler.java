@@ -56,7 +56,11 @@ class ClientFailedException extends Exception
 public class ClientHandler
 {
     public int logged_in = 0;
-    public int userok    = 0;
+
+    /**
+     * User fully authorized and validated
+     */
+    public int validated = 0;
     public int ACTIVE    = 0;
     public int quit      = 0;
 
@@ -249,7 +253,7 @@ public class ClientHandler
     public long    ConnectTimeMillis;
     public String  cur_inf;
 
-    public IoSession mySession;
+    public IoSession session;
 
 
     /**
@@ -283,7 +287,7 @@ public class ClientHandler
     {
         // TODO Add queueing outgoing messages
         //this.Queue.addMsg (bla);
-        return mySession.write(message);
+        return session.write(message);
     }
 
 
@@ -460,7 +464,7 @@ public class ClientHandler
         {
             return;
         }
-        if (this.userok == 1)
+        if (this.validated == 1)
         {
             if (can_receive_cmds && ConfigLoader.COMMAND_PM_RETURN == true)
             {
@@ -476,7 +480,7 @@ public class ClientHandler
 
     public void sendFromBotPM(String text)
     {
-        if (this.userok == 1)
+        if (this.validated == 1)
         {
             this.sendToClient("EMSG DCBA " +
                               this.SessionID +

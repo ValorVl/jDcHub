@@ -354,7 +354,7 @@ public class CommandParser
                 {
                     for (Client temp : SessionManager.getUsers())
                     {
-                        if (temp.getClientHandler().userok == 1)
+                        if (temp.getClientHandler().validated == 1)
                         {
                             if ((temp.getClientHandler().ID.equals(aux)))
                             {
@@ -398,7 +398,7 @@ public class CommandParser
                         .sendFromBot("Not a valid CID, checking for possible users...");
                 for (Client temp : SessionManager.getUsers())
                 {
-                    if (temp.getClientHandler().userok == 1)
+                    if (temp.getClientHandler().validated == 1)
                     {
                         if ((temp.getClientHandler().NI.toLowerCase().equals(aux
                                                                              .toLowerCase())))
@@ -474,7 +474,7 @@ public class CommandParser
                     }
                     for (Client temp : SessionManager.getUsers())
                     {
-                        if (temp.getClientHandler().userok == 1)
+                        if (temp.getClientHandler().validated == 1)
                         {
                             if ((temp.getClientHandler().ID.equals(aux)))
                             {
@@ -525,7 +525,7 @@ public class CommandParser
                     //handler.sendFromBot("Not a CID, trying to add the "+aux+" nick.");
                     for (Client temp : SessionManager.getUsers())
                     {
-                        if (temp.getClientHandler().userok == 1)
+                        if (temp.getClientHandler().validated == 1)
                         {
                             if ((temp.getClientHandler().NI.toLowerCase().equals(aux
                                                                                  .toLowerCase())))
@@ -593,7 +593,7 @@ public class CommandParser
                 //handler.sendFromBot("Not a CID, trying to add the "+aux+" nick.");
                 for (Client temp : SessionManager.getUsers())
                 {
-                    if (temp.getClientHandler().userok == 1)
+                    if (temp.getClientHandler().validated == 1)
                     {
                         if ((temp.getClientHandler().NI.toLowerCase().equals(aux
                                                                              .toLowerCase())))
@@ -763,7 +763,7 @@ public class CommandParser
 
             for (Client tempy : SessionManager.getUsers())
             {
-                if (tempy.getClientHandler().userok == 1)
+                if (tempy.getClientHandler().validated == 1)
                 {
                     if ((tempy.getClientHandler().NI.toLowerCase().equals(aux.toLowerCase())))
                     {
@@ -817,7 +817,7 @@ public class CommandParser
             // aux=ADC.retADCStr(aux);
             for (Client temp : SessionManager.getUsers())
             {
-                if (temp.getClientHandler().userok == 1)
+                if (temp.getClientHandler().validated == 1)
                 {
                     if ((temp.getClientHandler().NI.toLowerCase().equals(aux
                                                                          .toLowerCase())))
@@ -868,7 +868,7 @@ public class CommandParser
                             }
                             for (Client tempy : SessionManager.getUsers())
                             {
-                                if (tempy.getClientHandler().userok == 1)
+                                if (tempy.getClientHandler().validated == 1)
                                 {
                                     if ((tempy.getClientHandler().NI.toLowerCase()
                                                             .equals(newnick.toLowerCase())))
@@ -1082,7 +1082,7 @@ public class CommandParser
                 // boolean banned=false;
                 for (Client temp : SessionManager.getUsers())
                 {
-                    if (temp.getClientHandler().userok == 1)
+                    if (temp.getClientHandler().validated == 1)
                     {
                         if ((temp.getClientHandler().ID.toLowerCase().equals(aux
                                                                              .toLowerCase())))
@@ -1141,7 +1141,7 @@ public class CommandParser
                 client.getClientHandler().sendFromBot("Not a CID, Searching for a nick...");
                 for (Client temp : SessionManager.getUsers())
                 {
-                    if (temp.getClientHandler().userok == 1)
+                    if (temp.getClientHandler().validated == 1)
                     {
                         if ((temp.getClientHandler().NI.toLowerCase().equals(aux
                                                                              .toLowerCase())))
@@ -1210,7 +1210,7 @@ public class CommandParser
             reason = ADC.retADCStr(reason);
             for (Client temp : SessionManager.getUsers())
             {
-                if (temp.getClientHandler().userok == 1)
+                if (temp.getClientHandler().validated == 1)
                 {
                     if ((temp.getClientHandler().NI.toLowerCase().equals(aux
                                                                          .toLowerCase())))
@@ -1281,7 +1281,7 @@ public class CommandParser
 
                 for (Client temp : SessionManager.getUsers())
                 {
-                    if (temp.getClientHandler().userok == 1)
+                    if (temp.getClientHandler().validated == 1)
                     {
                         if (temp.getClientHandler().RealIP.equals(aux))
                         {
@@ -1306,7 +1306,7 @@ public class CommandParser
                 int kickedsome = 0;
                 for (Client temp : SessionManager.getUsers())
                 {
-                    if (temp.getClientHandler().userok == 1)
+                    if (temp.getClientHandler().validated == 1)
                     {
                         if (temp.getClientHandler().RealIP.equals(aux))
                         {
@@ -1331,7 +1331,7 @@ public class CommandParser
                 client.getClientHandler().sendFromBot("Not a IP, Searching for a nick...");
                 for (Client temp : SessionManager.getUsers())
                 {
-                    if (temp.getClientHandler().userok == 1)
+                    if (temp.getClientHandler().validated == 1)
                     {
                         if (temp.getClientHandler().NI.toLowerCase().equals(
                                 aux.toLowerCase()))
@@ -1469,7 +1469,7 @@ public class CommandParser
             int i = 0, j = 0;
             for (Client temp : SessionManager.getUsers())
             {
-                if (temp.getClientHandler().userok == 1)
+                if (temp.getClientHandler().validated == 1)
                 {
                     i++;
                 }
@@ -1547,7 +1547,7 @@ public class CommandParser
             int i = 0, j = 0;
             for (Client client : SessionManager.getUsers())
             {
-                if (client.getClientHandler().userok == 1)
+                if (client.getClientHandler().validated == 1)
                 {
                     i++;
                 }

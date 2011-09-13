@@ -92,7 +92,7 @@ public class ExtMass
 
             for (Client temp : SessionManager.getUsers())
             {
-                if (temp.getClientHandler().userok == 1)
+                if (temp.getClientHandler().validated == 1)
                 {
                     if ((temp.getClientHandler().NI.toLowerCase().matches(extmass.toLowerCase())))
                     {
@@ -132,7 +132,7 @@ public class ExtMass
 
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Long.parseLong(tempz.getClientHandler().SS) / 1024 / 1024 > Number)
                             {
@@ -165,7 +165,7 @@ public class ExtMass
 
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Long.parseLong(tempz.getClientHandler().HN) > Number)
                             {
@@ -198,7 +198,7 @@ public class ExtMass
 
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Long.parseLong(tempz.getClientHandler().HR) > Number)
                             {
@@ -231,7 +231,7 @@ public class ExtMass
 
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Long.parseLong(tempz.getClientHandler().HO) > Number)
                             {
@@ -264,7 +264,7 @@ public class ExtMass
 
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Long.parseLong(tempz.getClientHandler().SS) > Number)
                             {
@@ -297,7 +297,7 @@ public class ExtMass
 
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (tempz.getClientHandler().NI.length() > Number)
                             {
@@ -334,10 +334,10 @@ public class ExtMass
 
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Long.parseLong(tempz.getClientHandler().SS) / 1024 / 1024 <
-                                Number)//&& tempz.getClientHandler().userok==1)
+                                Number)//&& tempz.getClientHandler().validated==1)
                             {
                                 tempz.getClientHandler().sendFromBotPM(aux);
                             }
@@ -368,7 +368,7 @@ public class ExtMass
 
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Long.parseLong(tempz.getClientHandler().HN) < Number)
                             {
@@ -401,7 +401,7 @@ public class ExtMass
 
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Long.parseLong(tempz.getClientHandler().HO) < Number)
                             {
@@ -434,7 +434,7 @@ public class ExtMass
 
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Long.parseLong(tempz.getClientHandler().HR) < Number)
                             {
@@ -467,7 +467,7 @@ public class ExtMass
 
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (tempz.getClientHandler().NI.length() < Number)
                             {
@@ -500,7 +500,7 @@ public class ExtMass
 
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Long.parseLong(tempz.getClientHandler().SL) < Number)
                             {
@@ -537,10 +537,10 @@ public class ExtMass
 
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Long.parseLong(tempz.getClientHandler().SS) / 1024 / 1024 ==
-                                Number)//&& tempz.getClientHandler().userok==1)
+                                Number)//&& tempz.getClientHandler().validated==1)
                             {
                                 tempz.getClientHandler().sendFromBotPM(aux);
                             }
@@ -571,7 +571,7 @@ public class ExtMass
 
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Long.parseLong(tempz.getClientHandler().HO) == Number)
                             {
@@ -604,7 +604,7 @@ public class ExtMass
 
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Number == 1)
                             {
@@ -647,7 +647,7 @@ public class ExtMass
 
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Long.parseLong(tempz.getClientHandler().HR) == Number)
                             {
@@ -678,7 +678,7 @@ public class ExtMass
 
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Number == 1)
                             {
@@ -721,7 +721,7 @@ public class ExtMass
 
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Long.parseLong(tempz.getClientHandler().HR) == Number)
                             {
@@ -754,7 +754,7 @@ public class ExtMass
 
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Long.parseLong(tempz.getClientHandler().HN) == Number)
                             {
@@ -780,12 +780,12 @@ public class ExtMass
 
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (tempz.getClientHandler()
                                     .SU
                                     .toLowerCase()
-                                    .contains(Number.toLowerCase()))//&& tempz.getClientHandler().userok==1)
+                                    .contains(Number.toLowerCase()))//&& tempz.getClientHandler().validated==1)
                             {
                                 tempz.getClientHandler().sendFromBotPM(aux);
                             }
@@ -814,7 +814,7 @@ public class ExtMass
 
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (tempz.getClientHandler().NI.length() == Number)
                             {
@@ -847,7 +847,7 @@ public class ExtMass
 
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Long.parseLong(tempz.getClientHandler().SL) == Number)
                             {
@@ -885,10 +885,10 @@ public class ExtMass
 
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Long.parseLong(tempz.getClientHandler().SS) / 1024 / 1024 !=
-                                Number)//&& tempz.getClientHandler().userok==1)
+                                Number)//&& tempz.getClientHandler().validated==1)
                             {
                                 tempz.getClientHandler().sendFromBotPM(aux);
                             }
@@ -919,7 +919,7 @@ public class ExtMass
 
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Number == 1)
                             {
@@ -962,7 +962,7 @@ public class ExtMass
 
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Long.parseLong(tempz.getClientHandler().AW) != Number)
                             {
@@ -993,7 +993,7 @@ public class ExtMass
 
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Number == 1)
                             {
@@ -1036,7 +1036,7 @@ public class ExtMass
 
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Long.parseLong(tempz.getClientHandler().HO) != Number)
                             {
@@ -1069,7 +1069,7 @@ public class ExtMass
 
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Long.parseLong(tempz.getClientHandler().HR) != Number)
                             {
@@ -1102,7 +1102,7 @@ public class ExtMass
 
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Long.parseLong(tempz.getClientHandler().HN) != Number)
                             {
@@ -1128,12 +1128,12 @@ public class ExtMass
 
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (!tempz.getClientHandler()
                                     .SU
                                     .toLowerCase()
-                                    .contains(Number.toLowerCase()))//&& tempz.getClientHandler().userok==1)
+                                    .contains(Number.toLowerCase()))//&& tempz.getClientHandler().validated==1)
                             {
                                 tempz.getClientHandler().sendFromBotPM(aux);
                             }
@@ -1162,7 +1162,7 @@ public class ExtMass
 
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (tempz.getClientHandler().NI.length() != Number)
                             {
@@ -1195,7 +1195,7 @@ public class ExtMass
 
                     for (Client tempz : SessionManager.getUsers())
                     {
-                        if (tempz.getClientHandler().userok == 1)
+                        if (tempz.getClientHandler().validated == 1)
                         {
                             if (Long.parseLong(tempz.getClientHandler().SL) != Number)
                             {

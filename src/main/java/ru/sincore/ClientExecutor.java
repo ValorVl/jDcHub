@@ -59,7 +59,7 @@ public class ClientExecutor extends Thread
 //            }
 //
 //
-//            for (Client temp : SessionManager.getUsers())
+//            for (Client temp : SessionManager.getClients())
 //            {
 //                synchronized (temp.getClientHandler().Queue)
 //                {
@@ -84,7 +84,7 @@ public class ClientExecutor extends Thread
 //                        temp.getClientHandler().Queue.First = temp.getClientHandler().Queue.First.Next;
 //                    }
 //
-//                    temp.handler.mySession.write(str.substring(0, str.length() - 1));
+//                    temp.handler.session.write(str.substring(0, str.length() - 1));
 //
 //                    try
 //                    {

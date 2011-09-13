@@ -23,7 +23,8 @@ package ru.sincore;
  */
 
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.sincore.Exceptions.CommandException;
 import ru.sincore.Exceptions.STAException;
 import ru.sincore.Modules.Modulator;
@@ -51,7 +52,7 @@ import java.util.StringTokenizer;
 
 public class Command
 {
-	private static final Logger log = Logger.getLogger(Command.class);
+	private static final Logger log = LoggerFactory.getLogger(Command.class);
 
     Client currentClient;
     String command;
@@ -60,36 +61,28 @@ public class Command
 
     private void sendUsersInfs()
     {
-        for (Client client : SessionManager.getUsers())
+        for (Client client : ClientManager.getInstance().getClients())
         {
-            if (client.getClientHandler().userok == 1 && client.equals(currentClient))
+            if (client.getClientHandler().validated == 1 && !client.equals(currentClient))
             {
-                currentClient.getClientHandler().sendToClient(client.getClientHandler().getINF());
+                currentClient.getClientHandler()
+                             .sendToClient(client.getClientHandler().getINF());
             }
-
-
         }
-        // if(!(Infs.equals("")))
-        //handler.sendToClient(Infs);
     }
 
 
     private boolean pushUser()
     {
-        // boolean ok=false;
-        synchronized (SessionManager.users)
+        if (ClientManager.getInstance().containClientByCID(currentClient.getClientHandler().ID))
         {
-            // System.out.println("marimea este "+SessionManager.users.size());
-            if (SessionManager.users.containsKey(currentClient.getClientHandler().ID))
-            {
-                Client ch = SessionManager.users.get(currentClient.getClientHandler().ID);
-                ch.dropMeImGhost();
-            }
-
-
-            SessionManager.users.put(currentClient.getClientHandler().ID, currentClient);
-            currentClient.getClientHandler().inside = true;
+            Client ch = ClientManager.getInstance().getClientByCID(currentClient.getClientHandler().ID);
+            ch.dropMeImGhost();
         }
+
+
+        ClientManager.getInstance().addClient(currentClient);
+        currentClient.getClientHandler().inside = true;
         return true;
     }
 
@@ -129,7 +122,7 @@ public class Command
           for(int i=0;i<x.length;i++)
      {
           Client tempy=((ClientHandler)(x[i].getAttachment())).myNod;
-          if(tempy.handler.userok==1 && !tempy.handler.equals (handler)) //if the user has some inf ... [ meaning he is ok]
+          if(tempy.handler.validated==1 && !tempy.handler.equals (handler)) //if the user has some inf ... [ meaning he is ok]
                 inf=inf.substring(0,inf.length()-1)+tempy.handler.getINF ()+"\n\n";
      }
         */
@@ -150,7 +143,7 @@ public class Command
 
         //ok now must send INF to all clients
         Broadcast.getInstance().broadcast(currentClient.getClientHandler().getINF(), currentClient);
-        currentClient.getClientHandler().userok = 1; //user is OK, logged in and cool.
+        currentClient.getClientHandler().validated = 1; //user is OK, logged in and cool.
         currentClient.getClientHandler().reg.LastLogin = System.currentTimeMillis();
         currentClient.getClientHandler().sendFromBot(ADC.MOTD);
         currentClient.getClientHandler().sendFromBot(currentClient.getClientHandler().reg.HideMe ? "You are currently hidden." : "");
@@ -533,7 +526,7 @@ public class Command
         {
 
             currentClient.getClientHandler().myban = BanList.getban(2, (currentClient.getClientHandler().RealIP));
-            //System.out.println(handler.mySession.getRemoteAddress().toString());
+            //System.out.println(handler.session.getRemoteAddress().toString());
         }
         if (currentClient.getClientHandler().myban == null)
         {
@@ -581,12 +574,13 @@ public class Command
         int i = 0;
 
 
-        for (Client client : SessionManager.getUsers())
+        // TODO Check nick availability
+        for (Client client : ClientManager.getInstance().getClients())
         {
 
             if (!client.equals(currentClient))
             {
-                if (client.getClientHandler().userok == 1)
+                if (client.getClientHandler().validated == 1)
                 {
                     if (client.getClientHandler().NI.toLowerCase().equals(currentClient.getClientHandler().NI.toLowerCase()) &&
                         !client.getClientHandler().ID.equals(currentClient.getClientHandler().ID))
@@ -1039,7 +1033,7 @@ public class Command
                 for(int j=0;j<x.length;j++)
            {
                 Client tempy=((ClientHandler)(x[j].getAttachment())).myNod;
-                if(tempy.handler.userok==1 && !tempy.handler.equals (handler)) //if the user has some inf ... [ meaning he is ok]
+                if(tempy.handler.validated==1 && !tempy.handler.equals (handler)) //if the user has some inf ... [ meaning he is ok]
                       inf=inf.substring(0,inf.length()-1)+tempy.handler.getINF ()+"\n\n";
            }
               inf=inf.substring(0,inf.length()-1)+"BINF DCBA ID"+Vars.SecurityCid+" NI"+ADC.retADCStr(Vars.bot_name)
@@ -1085,7 +1079,7 @@ public class Command
                 currentClient.getClientHandler().sendToClient("ICMD Test CT1 TTTest");
             }
             currentClient.getClientHandler().State = "NORMAL";
-            currentClient.getClientHandler().userok = 1; //user is OK, logged in and cool.
+            currentClient.getClientHandler().validated = 1; //user is OK, logged in and cool.
             currentClient.getClientHandler().sendFromBot(ADC.MOTD);
 
             /** calling plugins...*/
@@ -1396,7 +1390,7 @@ public class Command
         if (command.equals(""))
         {
             log.debug("Empty command from client with nick = \'" + client.getClientHandler().NI +
-                      "\' and SID = \'" + client.getClientHandler().SessionID);
+                      "\' and SID = \'" + client.getClientHandler().SessionID + "\'");
             return;
         }
 

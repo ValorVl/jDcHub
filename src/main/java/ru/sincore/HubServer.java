@@ -23,7 +23,6 @@ package ru.sincore;
  */
 
 
-import org.apache.log4j.Logger;
 import org.apache.mina.core.service.IoAcceptor;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
@@ -31,6 +30,9 @@ import org.apache.mina.filter.codec.textline.TextLineCodecFactory;
 import org.apache.mina.filter.logging.LoggingFilter;
 import org.apache.mina.filter.ssl.SslFilter;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
 import ru.sincore.Modules.Modulator;
 import ru.sincore.adcs.CertManager;
 import ru.sincore.adcs.SSLManager;
@@ -55,39 +57,21 @@ import java.util.Date;
  */
 public class HubServer extends Thread
 {
-    public static final Logger log = Logger.getLogger(HubServer.class);
+    private static final Logger log = LoggerFactory.getLogger(HubServer.class);
 
+    private final String marker = Marker.ANY_MARKER;
     /**
      * Server main socket
      */
-    // private ServerSocket MainSocket;
-
     public SSLManager sslmanager;
-
-    InputStream  IS;
-    OutputStream OS;
-    int          port;
 
     ClientAssasin myAssasin;
 
     public boolean adcs_ok = false;
-
-    //ClientHandler firstclient;
-
-    private static RegConfig rcfg;
-    private static bans      bcfg;
-
     public static boolean done_adcs = false;
-
     public static boolean restart;
-    //public static IoServiceManager IOSM;
-    // public static ServiceManager SM;
-
-    //private SocketAcceptorConfig cfg;
 
     public IoAcceptor acceptor;
-    // private ExecutorService x;//,y;
-    // private InetSocketAddress address;
     public Calendar   MyCalendar;
 
 
@@ -110,11 +94,7 @@ public class HubServer extends Thread
         {
             adcs_ok = true;
         }
-        /* if(adcs_ok)
-             System.out.println("ADCS OK");
-         else
-             System.out.println("ADCS not OK");
-        */
+
         try
         {
             File MotdFile = new File(Main.myPath + "motd");
@@ -136,35 +116,20 @@ public class HubServer extends Thread
         }
         restart = false;
 
-        // port=Vars.Default_Port;
-
         Modulator.findModules();
         try
         {
-            this.sleep(500);
+            Thread.sleep(500);
         }
         catch (Exception e)
         {
+            // ignored
         }
-
-        //   new Client();
-        // ByteBuffer.setUseDirectBuffers(false);
-        //   ByteBuffer.setAllocator(new PooledByteBufferAllocator());
-
-
-        // x=Executors.newCachedThreadPool();
-        //  y=Executors.newCachedThreadPool();
 
         acceptor = new NioSocketAcceptor();
         NioSocketAcceptor nsa = (NioSocketAcceptor) acceptor;
         nsa.setReuseAddress(true);
 
-
-        //cfg = new SocketAcceptorConfig();
-        // cfg.setThreadModel(ThreadModel.MANUAL);
-
-        //cfg.getSessionConfig().setReceiveBufferSize(102400);
-        // cfg.getSessionConfig().setSendBufferSize(102400);
 
         if (ConfigLoader.ENABLE_ADCS)
         {
@@ -189,23 +154,14 @@ public class HubServer extends Thread
         myx.setEncoderMaxLineLength(64 * 1024);
         acceptor.getFilterChain().addLast("codec", new ProtocolCodecFilter(myx));
         MyCalendar = Calendar.getInstance();
-        // DefaultIoFilterChainBuilder filterChainBuilder = cfg.getFilterChain();
-        //  filterChainBuilder.addLast("threadPool", new ExecutorFilter(y));
-        //cfg.getSessionConfig().setKeepAlive(true);
 
+        // TODO Uncomment this when it will be added to config file
         //acceptor.getSessionConfig().setReadBufferSize(64 * 1024);
         //acceptor.getSessionConfig().WriteBufferSize( 2048000 );
+        //acceptor.setCloseOnDeactivation(true);
 
         acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 50);
         acceptor.setHandler(new SessionManager());
-//System.out.println(acceptor.getSessionConfig().getWriteTimeout());
-        // acceptor.setCloseOnDeactivation(true);
-        //cfg.getSessionConfig().
-        //System.out.println(cfg.getSessionConfig().getReceiveBufferSize());
-        // IOSM=new IoServiceManager(acceptor);
-        //SM=new ServiceManager(acceptor);
-        //  IOSM.startCollectingStats(10000);
-        // address=new InetSocketAddress(port);
 
 		try
 		{
@@ -214,7 +170,7 @@ public class HubServer extends Thread
 
 		} catch (IOException e)
 		{
-			log.error(e);
+			log.error(marker,e);
 			shutdown();
 		}
 
@@ -224,41 +180,20 @@ public class HubServer extends Thread
         System.out.print("\n>");
 
         myAssasin = new ClientAssasin();//temporary removed
-        //  ClientExecutor myExecutor=new ClientExecutor();
-
-
     }
-
-
-
-
-
-
 
 
     public void shutdown()
     {
-
         acceptor.unbind();
-        // x.shutdown();
     }
 
 
     // TODO Realize client add method
     public static Client AddClient()
     {
-        if (restart)
-        {
-            return null;
-        }
-
-        Client newclient = new Client();
-
-        synchronized (SessionManager.users)
-        {
-            SessionManager.users.put(newclient.getClientHandler().ID, newclient);
-        }
-
-        return newclient;
+        // TODO pull user while he is in PROTOCOL and IDENTIFY states
+        // into connection pool
+        return null;
     }
 }

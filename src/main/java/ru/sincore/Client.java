@@ -74,7 +74,7 @@ public class Client implements IoFutureListener<WriteFuture>
         if (!future.isWritten())
         {
             // close connection immediately
-            handler.mySession.close(true);
+            handler.session.close(true);
         }
     }
 
@@ -151,7 +151,7 @@ public class Client implements IoFutureListener<WriteFuture>
         Broadcast.getInstance().broadcast(brcast);
 
         handler.kicked = 1;
-        this.handler.mySession.close(true);
+        this.handler.session.close(true);
 
 
         whokicked.sendFromBot("Kicked user " +
@@ -225,7 +225,7 @@ public class Client implements IoFutureListener<WriteFuture>
         Broadcast.getInstance().broadcast(brcast);
 
         handler.kicked = 1;
-        this.handler.mySession.close(true);
+        this.handler.session.close(true);
 
 
         log.info(ConfigLoader.BOT_CHAT_NAME +
@@ -259,7 +259,7 @@ public class Client implements IoFutureListener<WriteFuture>
         }
         handler.kicked = 1;
         handler.inside = false;
-        this.handler.mySession.close(true);
+        this.handler.session.close(true);
     }
 
 
@@ -278,7 +278,7 @@ public class Client implements IoFutureListener<WriteFuture>
         //  handler.reg.TimeOnline+=System.currentTimeMillis()-handler.LoggedAt;
 
         handler.kicked = 1;
-        this.handler.mySession.close(true);
+        this.handler.session.close(true);
 
 
         whokicked.sendFromBot("Dropped user " +
@@ -310,7 +310,7 @@ public class Client implements IoFutureListener<WriteFuture>
         //   handler.reg.TimeOnline+=System.currentTimeMillis()-handler.LoggedAt;
 
         handler.kicked = 1;
-        this.handler.mySession.close(true);
+        this.handler.session.close(true);
 
 
         whokicked.sendFromBot("Redirected user " +

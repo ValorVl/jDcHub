@@ -22,6 +22,7 @@ package ru.sincore.util;
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import ru.sincore.ClientManager;
 import ru.sincore.ConfigLoader;
 import ru.sincore.Main;
 import ru.sincore.SessionManager;
@@ -108,8 +109,8 @@ abstract public class ADC
 
     public static String getPingString()
     {
-        return " HH" + ConfigLoader.HUB_LISTEN + " UC" + SessionManager.getUserCount() + " SS" +
-               SessionManager.getTotalShare() + " SF" + SessionManager.getTotalFileCount() +
+        return " HH" + ConfigLoader.HUB_LISTEN + " UC" + ClientManager.getInstance().getClientsCount() + " SS" +
+               ClientManager.getInstance().getTotalShare() + " SF" + ClientManager.getInstance().getTotalFileCount() +
                " MS" + 1024 * 1024 * ConfigLoader.MIN_SHARE_SIZE + " XS" + 1024 * 1024 * ConfigLoader.MAX_SHARE_SIZE +
                " ML" + ConfigLoader.MIN_SLOT_COUNT + " XL" + ConfigLoader.MAX_SLOT_COUNT + " XU" + ConfigLoader.MAX_HUBS_USERS +
                " XR" + ConfigLoader.MAX_HUBS_REGISTERED + " XO" + ConfigLoader.MAX_OP_IN_HUB +

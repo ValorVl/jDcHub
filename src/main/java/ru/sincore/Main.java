@@ -197,7 +197,7 @@ public class Main extends Thread
         //Main.Server.restart = true;
 
         BanList.First = null;
-        SessionManager.users.clear();
+        ClientManager.getInstance().removeAllClients();
 
         Server.shutdown();
         System.gc(); //calling garbage collectors
@@ -232,7 +232,7 @@ public class Main extends Thread
                 {
                     ClientHandler clientHandler = client.getClientHandler();
 
-                    if (clientHandler.userok == 1)
+                    if (clientHandler.validated == 1)
                     {
                         if ((clientHandler.ID.equals(aux)))
                         {
@@ -282,7 +282,7 @@ public class Main extends Thread
                 {
                     ClientHandler clientHandler = client.getClientHandler();
 
-                    if (clientHandler.userok == 1)
+                    if (clientHandler.validated == 1)
                     {
                         if ((clientHandler.NI.toLowerCase().equals(aux.toLowerCase())))
                         {
@@ -340,7 +340,7 @@ public class Main extends Thread
             {
                 ClientHandler clientHandler = client.getClientHandler();
 
-                if (clientHandler.userok == 1)
+                if (clientHandler.validated == 1)
                 {
                     if ((clientHandler.NI.toLowerCase().equals(aux.toLowerCase())))
                     {

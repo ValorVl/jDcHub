@@ -60,7 +60,7 @@ public class ExtInfo
             String Nicklist = "";
             for (Client temp : SessionManager.getUsers())
             {
-                if (temp.getClientHandler().userok == 1)
+                if (temp.getClientHandler().validated == 1)
                 {
                     if ((temp.getClientHandler().RealIP.equals(aux.toLowerCase())))
                     {
@@ -95,7 +95,7 @@ public class ExtInfo
                     //ok if we are here, its a CID
                     for (Client temp : SessionManager.getUsers())
                     {
-                        if (temp.getClientHandler().userok == 1)
+                        if (temp.getClientHandler().validated == 1)
                         {
                             if ((temp.getClientHandler().ID.equals(aux)))
                             {
@@ -122,7 +122,7 @@ public class ExtInfo
 
             for (Client temp : SessionManager.getUsers())
             {
-                if (temp.getClientHandler().userok == 1)
+                if (temp.getClientHandler().validated == 1)
                 {
                     if ((temp.getClientHandler().NI.toLowerCase().equals(aux.toLowerCase())))
                     {

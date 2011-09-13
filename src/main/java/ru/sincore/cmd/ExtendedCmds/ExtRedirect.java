@@ -78,7 +78,7 @@ public class ExtRedirect
 
             for (Client aux : SessionManager.getUsers())
             {
-                if (aux.getClientHandler().userok == 1)
+                if (aux.getClientHandler().validated == 1)
                 {
                     if (aux.getClientHandler().ID.equalsIgnoreCase(what))
                     {
@@ -100,7 +100,7 @@ public class ExtRedirect
         {
             for (Client aux : SessionManager.getUsers())
             {
-                if (aux.getClientHandler().userok == 1)
+                if (aux.getClientHandler().validated == 1)
                 {
                     if (aux.getClientHandler().NI.equalsIgnoreCase(what))
                     {
@@ -119,7 +119,7 @@ public class ExtRedirect
             "".matches(what);
             for (Client aux : SessionManager.getUsers())
             {
-                if (aux.getClientHandler().userok == 1)
+                if (aux.getClientHandler().validated == 1)
                 {
                     if (aux.getClientHandler().NI.matches(what))
                     {
@@ -162,7 +162,7 @@ public class ExtRedirect
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.getClientHandler().userok == 1)
+                    if (tempz.getClientHandler().validated == 1)
                     {
                         if (Long.parseLong(tempz.getClientHandler().SS) / 1024 / 1024 > Number)
                         {
@@ -196,7 +196,7 @@ public class ExtRedirect
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.getClientHandler().userok == 1)
+                    if (tempz.getClientHandler().validated == 1)
                     {
                         try
                         {
@@ -236,7 +236,7 @@ public class ExtRedirect
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.getClientHandler().userok == 1)
+                    if (tempz.getClientHandler().validated == 1)
                     {
                         try
                         {
@@ -276,7 +276,7 @@ public class ExtRedirect
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.getClientHandler().userok == 1)
+                    if (tempz.getClientHandler().validated == 1)
                     {
                         try
                         {
@@ -316,7 +316,7 @@ public class ExtRedirect
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.getClientHandler().userok == 1)
+                    if (tempz.getClientHandler().validated == 1)
                     {
                         try
                         {
@@ -356,7 +356,7 @@ public class ExtRedirect
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.getClientHandler().userok == 1)
+                    if (tempz.getClientHandler().validated == 1)
                     {
                         if (tempz.getClientHandler().NI.length() > Number)
                         {
@@ -394,10 +394,10 @@ public class ExtRedirect
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.getClientHandler().userok == 1)
+                    if (tempz.getClientHandler().validated == 1)
                     {
                         if (Long.parseLong(tempz.getClientHandler().SS) / 1024 / 1024 <
-                            Number)//&& tempz.userok==1)
+                            Number)//&& tempz.validated==1)
                         {
                             tempz.redirectMe(cur_client, URL);
                         }
@@ -429,7 +429,7 @@ public class ExtRedirect
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.getClientHandler().userok == 1)
+                    if (tempz.getClientHandler().validated == 1)
                     {
                         try
                         {
@@ -469,7 +469,7 @@ public class ExtRedirect
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.getClientHandler().userok == 1)
+                    if (tempz.getClientHandler().validated == 1)
                     {
                         try
                         {
@@ -509,7 +509,7 @@ public class ExtRedirect
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.getClientHandler().userok == 1)
+                    if (tempz.getClientHandler().validated == 1)
                     {
                         try
                         {
@@ -549,7 +549,7 @@ public class ExtRedirect
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.getClientHandler().userok == 1)
+                    if (tempz.getClientHandler().validated == 1)
                     {
                         if (tempz.getClientHandler().NI.length() < Number)
                         {
@@ -583,7 +583,7 @@ public class ExtRedirect
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.getClientHandler().userok == 1)
+                    if (tempz.getClientHandler().validated == 1)
                     {
                         try
                         {
@@ -627,10 +627,10 @@ public class ExtRedirect
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.getClientHandler().userok == 1)
+                    if (tempz.getClientHandler().validated == 1)
                     {
                         if (Long.parseLong(tempz.getClientHandler().SS) / 1024 / 1024 ==
-                            Number)//&& tempz.getClientHandler().userok==1)
+                            Number)//&& tempz.getClientHandler().validated==1)
                         {
                             tempz.redirectMe(cur_client, URL);
                         }
@@ -662,7 +662,7 @@ public class ExtRedirect
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.getClientHandler().userok == 1)
+                    if (tempz.getClientHandler().validated == 1)
                     {
                         try
                         {
@@ -702,7 +702,7 @@ public class ExtRedirect
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.getClientHandler().userok == 1)
+                    if (tempz.getClientHandler().validated == 1)
                     {
                         if (Number == 1)
                         {
@@ -746,7 +746,7 @@ public class ExtRedirect
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.getClientHandler().userok == 1)
+                    if (tempz.getClientHandler().validated == 1)
                     {
                         if (Long.parseLong(tempz.getClientHandler().HR) == Number)
                         {
@@ -778,7 +778,7 @@ public class ExtRedirect
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.getClientHandler().userok == 1)
+                    if (tempz.getClientHandler().validated == 1)
                     {
                         try
                         {
@@ -830,7 +830,7 @@ public class ExtRedirect
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.getClientHandler().userok == 1)
+                    if (tempz.getClientHandler().validated == 1)
                     {
                         try
                         {
@@ -871,7 +871,7 @@ public class ExtRedirect
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.getClientHandler().userok == 1)
+                    if (tempz.getClientHandler().validated == 1)
                     {
                         try
                         {
@@ -904,12 +904,12 @@ public class ExtRedirect
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.getClientHandler().userok == 1)
+                    if (tempz.getClientHandler().validated == 1)
                     {
                         if (tempz.getClientHandler()
                                 .SU
                                 .toLowerCase()
-                                .contains(Number.toLowerCase()))//&& tempz.getClientHandler().userok==1)
+                                .contains(Number.toLowerCase()))//&& tempz.getClientHandler().validated==1)
                         {
                             tempz.redirectMe(cur_client, URL);
                         }
@@ -939,7 +939,7 @@ public class ExtRedirect
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.getClientHandler().userok == 1)
+                    if (tempz.getClientHandler().validated == 1)
                     {
                         if (tempz.getClientHandler().NI.length() == Number)
                         {
@@ -973,7 +973,7 @@ public class ExtRedirect
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.getClientHandler().userok == 1)
+                    if (tempz.getClientHandler().validated == 1)
                     {
                         if (Long.parseLong(tempz.getClientHandler().SL) == Number)
                         {
@@ -1012,10 +1012,10 @@ public class ExtRedirect
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.getClientHandler().userok == 1)
+                    if (tempz.getClientHandler().validated == 1)
                     {
                         if (Long.parseLong(tempz.getClientHandler().SS) / 1024 / 1024 !=
-                            Number)//&& tempz.getClientHandler().userok==1)
+                            Number)//&& tempz.getClientHandler().validated==1)
                         {
                             tempz.redirectMe(cur_client, URL);
                         }
@@ -1047,7 +1047,7 @@ public class ExtRedirect
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.getClientHandler().userok == 1)
+                    if (tempz.getClientHandler().validated == 1)
                     {
                         try
                         {
@@ -1097,7 +1097,7 @@ public class ExtRedirect
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.getClientHandler().userok == 1)
+                    if (tempz.getClientHandler().validated == 1)
                     {
                         try
                         {
@@ -1135,7 +1135,7 @@ public class ExtRedirect
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.getClientHandler().userok == 1)
+                    if (tempz.getClientHandler().validated == 1)
                     {
                         try
                         {
@@ -1185,7 +1185,7 @@ public class ExtRedirect
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.getClientHandler().userok == 1)
+                    if (tempz.getClientHandler().validated == 1)
                     {
                         try
                         {
@@ -1225,7 +1225,7 @@ public class ExtRedirect
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.getClientHandler().userok == 1)
+                    if (tempz.getClientHandler().validated == 1)
                     {
                         try
                         {
@@ -1265,7 +1265,7 @@ public class ExtRedirect
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.getClientHandler().userok == 1)
+                    if (tempz.getClientHandler().validated == 1)
                     {
                         try
                         {
@@ -1298,12 +1298,12 @@ public class ExtRedirect
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.getClientHandler().userok == 1)
+                    if (tempz.getClientHandler().validated == 1)
                     {
                         if (!tempz.getClientHandler()
                                 .SU
                                 .toLowerCase()
-                                .contains(Number.toLowerCase()))//&& tempz.getClientHandler().userok==1)
+                                .contains(Number.toLowerCase()))//&& tempz.getClientHandler().validated==1)
                         {
                             tempz.redirectMe(cur_client, URL);
                         }
@@ -1333,7 +1333,7 @@ public class ExtRedirect
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.getClientHandler().userok == 1)
+                    if (tempz.getClientHandler().validated == 1)
                     {
                         if (tempz.getClientHandler().NI.length() != Number)
                         {
@@ -1367,7 +1367,7 @@ public class ExtRedirect
                 //Redirect all shared > number
                 for (Client tempz : SessionManager.getUsers())
                 {
-                    if (tempz.getClientHandler().userok == 1)
+                    if (tempz.getClientHandler().validated == 1)
                     {
                         try
                         {

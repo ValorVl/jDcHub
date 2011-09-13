@@ -25,9 +25,9 @@ package ru.sincore.ProtoCmds;
 
 import ru.sincore.Client;
 import ru.sincore.ClientHandler;
+import ru.sincore.ClientManager;
 import ru.sincore.ConfigLoader;
 import ru.sincore.Exceptions.STAException;
-import ru.sincore.SessionManager;
 import ru.sincore.util.Constants;
 import ru.sincore.util.STAError;
 
@@ -138,14 +138,13 @@ public class CTM
             }
             aux = tok.nextToken();
             //now must look for the aux SID...
-            for (Client targetClient : SessionManager.getUsers())
+            for (Client targetClient : ClientManager.getInstance().getClients())
             {
-                if (targetClient.getClientHandler().userok == 1)
+                if (targetClient.getClientHandler().validated == 1)
                 {
                     if (targetClient.getClientHandler().SessionID.equals(aux))
                     {
-                        aux =
-                                tok.nextToken(); // this is the string representing protocol, next token is port, next token is TO
+                        aux = tok.nextToken(); // this is the string representing protocol, next token is port, next token is TO
 
                         targetClient.getClientHandler().sendToClient(command);
                         if (command.charAt(0) == 'E')

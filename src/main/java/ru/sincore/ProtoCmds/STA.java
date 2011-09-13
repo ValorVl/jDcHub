@@ -103,7 +103,7 @@ public class STA
             String dsid = TK.nextToken();
             for (Client targetClient : SessionManager.getUsers())
             {
-                if (targetClient.getClientHandler().userok == 1)
+                if (targetClient.getClientHandler().validated == 1)
                 {
                     if (targetClient.getClientHandler().SessionID.equals(dsid))
 
@@ -151,7 +151,7 @@ public class STA
             String esid = TK.nextToken();
             for (Client targetClient : SessionManager.getUsers())
             {
-                if (targetClient.getClientHandler().userok == 1)
+                if (targetClient.getClientHandler().validated == 1)
                 {
                     if (targetClient.getClientHandler().SessionID.equals(esid))
                     {
