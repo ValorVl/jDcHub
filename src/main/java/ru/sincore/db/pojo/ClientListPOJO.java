@@ -218,7 +218,7 @@ public class ClientListPOJO implements Serializable
 	/**
 	 *  Column "bas0Allowed" indicates if client supports old BAS0 messages
 	 */
-	@Column(name = "base_allowed",columnDefinition = "TINYINT(1) DEFAULT 0")
+	@Column(name = "bas0_allowed",columnDefinition = "TINYINT(1) DEFAULT 0")
 	private Boolean		bas0Allowed;
 
 	/**

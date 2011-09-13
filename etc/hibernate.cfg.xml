@@ -18,6 +18,13 @@
   <property name="hibernate.default_entity_mode">pojo</property>
   <property name="hibernate.connection.charSet">UTF-8</property>
   <property name="hibernate.transaction.auto_close_session">true</property>
+  <property name="hibernate.bytecode.use_reflection_optimizer">true</property>
+  <property name="order_updates">true</property>
+  <property name="hibernate.cache.provider_class">org.hibernate.cache.HashtableCacheProvider</property>
+  <property name="hibernate.cache.query_cache_factory">org.hibernate.cache.StandardQueryCacheFactory</property>
+  <property name="hibernate.cache.use_query_cache">true</property>
+  <property name="hibernate.cache.use_second_level_cache">true</property>
+
      <mapping class="ru.sincore.db.pojo.ChatLogPOJO"/>
      <mapping class="ru.sincore.db.pojo.BanListPOJO"/>
      <mapping class="ru.sincore.db.pojo.ClientListPOJO"/>
