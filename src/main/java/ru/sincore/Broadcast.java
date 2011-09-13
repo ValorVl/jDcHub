@@ -174,8 +174,8 @@ public class Broadcast
                 }
             }
 
-            if ((toClientHandler.userok == 1 && toClient != fromClient)
-                || (toClientHandler.userok == 1 && toClient != fromClient
+            if ((toClientHandler.validated == 1 && toClient != fromClient)
+                || (toClientHandler.validated == 1 && toClient != fromClient
                     && state == 1 && toClientHandler.ACTIVE == 1))
             {
                 if (state == STATE_ALL_KEY && !toClientHandler.reg.key)

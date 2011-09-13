@@ -171,7 +171,7 @@ public class SessionManager extends IoHandlerAdapter
         Client currentClient = (Client) (session.getAttribute(""));
         ClientHandler currentClientHandler = currentClient.getClientHandler();
 
-        if (currentClientHandler.userok == 1 && currentClientHandler.kicked != 1)
+        if (currentClientHandler.validated == 1 && currentClientHandler.kicked != 1)
         {
             // TODO COMMAND broadcast client quited message
             //Broadcast.getInstance().broadcast("IQUI " + currentClientHandler.SessionID, currentClient);
@@ -201,8 +201,8 @@ public class SessionManager extends IoHandlerAdapter
 
         session.setAttribute("", currentClient);
 
-        currentClientHandler.mySession = session;
-        StringTokenizer ST = new StringTokenizer(currentClientHandler.mySession.getRemoteAddress().toString(), "/:");
+        currentClientHandler.session = session;
+        StringTokenizer ST = new StringTokenizer(currentClientHandler.session.getRemoteAddress().toString(), "/:");
 
 		currentClientHandler.RealIP = ST.nextToken();
         SID cursid = new SID(currentClientHandler);
@@ -218,7 +218,7 @@ public class SessionManager extends IoHandlerAdapter
         for (Client client : SessionManager.getUsers())
         {
 
-            if (client.getClientHandler().userok == 1)
+            if (client.getClientHandler().validated == 1)
             {
                 ret++;
             }
@@ -235,7 +235,7 @@ public class SessionManager extends IoHandlerAdapter
 
             try
             {
-                if (client.getClientHandler().userok == 1)
+                if (client.getClientHandler().validated == 1)
                 {
                     if (client.getClientHandler().SS != null)
                     {
@@ -259,7 +259,7 @@ public class SessionManager extends IoHandlerAdapter
 
             try
             {
-                if (client.getClientHandler().userok == 1)
+                if (client.getClientHandler().validated == 1)
                 {
                     if (client.getClientHandler().SF != null)
                     {
