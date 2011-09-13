@@ -106,7 +106,7 @@ public class Nod implements Serializable, Cloneable
 
     public String getRegInfo()
     {
-        String retString = "";
+        String retString;
         if (this.key)
         {
             retString = "\nOperator.";
@@ -432,9 +432,6 @@ public class Nod implements Serializable, Cloneable
         {
             Help += "-usercount";
         }
-        ;
-
-
         if (curAcc.accountflyable)
         {
             Help += "+flyable";

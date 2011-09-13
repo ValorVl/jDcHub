@@ -660,7 +660,6 @@ public class CommandParser
                 return;
             }
 
-            ;
             client.getClientHandler().sendFromBot(client.getClientHandler().reg.myHelp.getHelp());
 
         }

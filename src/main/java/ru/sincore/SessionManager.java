@@ -85,7 +85,7 @@ public class SessionManager extends IoHandlerAdapter
 
     public static synchronized Collection<Client> getUsers()
     {
-        return users.values();
+		return users.values();
     }
 
 
@@ -145,12 +145,12 @@ public class SessionManager extends IoHandlerAdapter
             {
                 return;
             }
-            //session.close(false);
+            session.close(false);
 			log.info(stex);
         }
         catch (CommandException cfex)
         {
-            //session.close(false);
+            session.close(false);
 			log.info(cfex);
         }
 
@@ -161,7 +161,6 @@ public class SessionManager extends IoHandlerAdapter
             throws Exception
     {
         //ok, we're in idle
-		log.info(status);
     }
 
 

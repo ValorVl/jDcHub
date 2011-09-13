@@ -23,6 +23,8 @@
 
 package ru.sincore;
 
+import ru.sincore.db.dao.ChatLogDAOImpl;
+
 import java.util.Calendar;
 
 /**
@@ -140,7 +142,6 @@ public class Broadcast
             {
                 NI = ConfigLoader.BOT_CHAT_NAME;
                 if (toClientHandler.userok == 1)
-
                 {
                     if (STR.startsWith("BMSG "))
                     {
@@ -170,7 +171,8 @@ public class Broadcast
                      * and not starts with "IMSG "
                      * put it to history
                      */
-
+					ChatLogDAOImpl chatLoger = new ChatLogDAOImpl();
+					chatLoger.saveMessage(toClientHandler.NI,STR.substring(10));
                 }
             }
 

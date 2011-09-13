@@ -170,9 +170,6 @@ public class Main extends Thread
 
     public static void Exit()
     {
-        //Server.rewriteregs();
-        //Server.rewriteconfig();
-        //Server.rewritebans();
 
         //save Banned Words List
         listaBanate.printFile(Main.myPath + "banwlist.txt");

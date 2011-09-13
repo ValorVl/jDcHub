@@ -1392,13 +1392,9 @@ public class Command
     {
         currentClient = client;
 		log.debug("COMMAND : " + command + " FROM CLIENT : " + client.getClientHandler().NI+" INFO : "+client.getClientHandler().getINF());
-        //System.out.printf("["+handler.NI+"]:%s\n",Issued_command);
 
-
-        //System.out.printf("[Received]:%s\n",Issued_command);
-        if (command.equals(""))
+        if (command.isEmpty())
         {
-            //System.out.println("("+handler.NI+")"+System.currentTimeMillis ()/1000);
             return;
         }
 
