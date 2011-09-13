@@ -201,55 +201,20 @@ public class SUP
 
 
             cur_client.sendToClient(ADC.ISID + " " + cur_client.SessionID);
-            if (!cur_client.ping)
-            {
-                if (ConfigLoader.HUB_DE.isEmpty())
-                {
-                    cur_client.sendToClient("IINF CT32 VE" +
-                                            ADC.retADCStr(ConfigLoader.HUB_VERSION) +
-                                            " NI" +
-                                            ADC.retADCStr(ConfigLoader.HUB_NAME));
-                }
-                else
-                {
-                    cur_client.sendToClient("IINF CT32 VE" +
-                                            ADC.retADCStr(ConfigLoader.HUB_VERSION) +
-                                            " NI" +
-                                            ADC.retADCStr(ConfigLoader.HUB_NAME) +
-                                            " DE" +
-                                            ADC.retADCStr(ConfigLoader.HUB_DE));
-                }
-            }
-
-            else
-                //its a PINGer
-                if (ConfigLoader.HUB_DE.isEmpty())
-                {
-                    cur_client.sendToClient("IINF CT32 VE" +
-                                            ADC.retADCStr(ConfigLoader.HUB_VERSION) +
-                                            " NI" +
-                                            ADC.retADCStr(ConfigLoader.HUB_NAME)
-                                            +
-                                            ADC.getPingString()
-
-
-                                           );
-                }
-                else
-                {
-                    cur_client.sendToClient("IINF CT32 VE" +
-                                            ADC.retADCStr(ConfigLoader.HUB_VERSION) +
-                                            " NI" +
-                                            ADC.retADCStr(ConfigLoader.HUB_NAME) +
-                                            " DE" +
-                                            ADC.retADCStr(ConfigLoader.HUB_DE) +
-                                            ADC.getPingString()
-                                           );
-                }
-
+            cur_client.sendToClient("IINF CT32 VE" +
+                                    ADC.retADCStr(ConfigLoader.HUB_VERSION) +
+                                    " NI" +
+                                    ADC.retADCStr(ConfigLoader.HUB_NAME) +
+                                    // if HUB_DE is not empty, return it
+                                    (!ConfigLoader.HUB_DE.isEmpty() ?
+                                     " DE" + ADC.retADCStr(ConfigLoader.HUB_DE) :
+                                     "") +
+                                    // if client is PINGer than return PingString else empty string
+                                    (cur_client.ping ? ADC.getPingString() : ""));
 
             cur_client.sendToClient("ISTA 000 " +
-                                    "Running\\sKappa\\sVersion\\sof\\sDSHub" +
+                                    // TODO replace String#replace() usage by normal external function
+                                    ConfigLoader.HUB_GREETING.replace(" ", "\\s") +
                                     (ConfigLoader.ENABLE_ADCS ? "\\sin\\sADC\\sSecure\\smode" :
                                      "") +
                                     ".\nISTA 000 Hub\\sis\\sup\\ssince\\s" +
@@ -258,10 +223,6 @@ public class SUP
                                             .getTime()
                                             .toString()
                                             .replaceAll(" ", "\\\\s"));
-
-            //handler. sendToClient("ISTA 000 "+
-            //    "Running\\Iota\\sVersion\\sof\\sDSHub.\nISTA 000 Hub\\sis\\sup\\ssince\\s"+ Main.Server.MyCalendar.getTime ().toString ().replaceAll (" ","\\\\s"));
-
         }
     }
 

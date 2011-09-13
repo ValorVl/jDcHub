@@ -1391,10 +1391,12 @@ public class Command
             throws STAException, CommandException
     {
         currentClient = client;
-		log.debug("COMMAND : " + command + " FROM CLIENT : " + client.getClientHandler().NI+" INFO : "+client.getClientHandler().getINF());
 
-        if (command.isEmpty())
+
+        if (command.equals(""))
         {
+            log.debug("Empty command from client with nick = \'" + client.getClientHandler().NI +
+                      "\' and SID = \'" + client.getClientHandler().SessionID);
             return;
         }
 
