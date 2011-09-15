@@ -3,6 +3,7 @@ package ru.sincore.db.dao;
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import ru.sincore.db.HibernateUtils;
 import ru.sincore.db.pojo.ChatLogPOJO;
 
@@ -28,13 +29,12 @@ public class ChatLogDAOImpl implements ChatLogDAO
 	@Override
 	public void saveMessage(String nick, String message)
 	{
-		Session session = null;
+		Session session = HibernateUtils.getSessionFactory().openSession();
+		Transaction tx = session.getTransaction();
 
 		try{
 
-			session = HibernateUtils.getSessionFactory().openSession();
-
-			session.getTransaction().begin();
+			tx.begin();
 
 			ChatLogPOJO data = new ChatLogPOJO();
 
@@ -44,26 +44,12 @@ public class ChatLogDAOImpl implements ChatLogDAO
 
 			session.save(data);
 
-			session.getTransaction().commit();
+			tx.commit();
 
 		}catch (Exception ex){
 			log.error(ex);
-			if (session == null)
-			{
-				throw new AssertionError();
-			}
-			session.getTransaction().rollback();
-		}finally {
-			try{
-				if (session != null)
-				{
-					session.close();
-				}
-			}catch (Exception ex){
-				log.error(ex);
-			}
+			tx.rollback();
 		}
-
 	}
 
 	/**
@@ -75,12 +61,12 @@ public class ChatLogDAOImpl implements ChatLogDAO
 	public List<ChatLogPOJO> getLast(Integer lastRowCount)
 	{
 
-		Session session = null;
+		Session session = HibernateUtils.getSessionFactory().openSession();
+		Transaction tx = session.getTransaction();
 
 		try{
 
-			session = HibernateUtils.getSessionFactory().openSession();
-			session.getTransaction().begin();
+			tx.begin();
 
 			Query query = session.createQuery("select sendDate, nickName, message from ChatLogPOJO order by sendDate desc");
 
@@ -88,7 +74,7 @@ public class ChatLogDAOImpl implements ChatLogDAO
 
 			ArrayList<ChatLogPOJO> data = new ArrayList<ChatLogPOJO>();
 
-			session.getTransaction().commit();
+			tx.commit();
 
 			for (Object obj : result)
 			{
@@ -110,25 +96,8 @@ public class ChatLogDAOImpl implements ChatLogDAO
 
 		}catch (Exception ex)
 		{
-			log.error("Can not get chat entry >> ",ex);
-			if (session != null)
-			{
-				if (session.isOpen())
-				{
-					session.getTransaction().rollback();
-				}
-			}
-		}
-		finally {
-			try{
-				if(session.isOpen())
-				{
-					session.close();
-				}
-			}catch (Exception ex)
-			{
-				log.error("Can not close entity manager >>",ex);
-			}
+			log.error(ex);
+			tx.rollback();
 		}
 		return null;
 	}

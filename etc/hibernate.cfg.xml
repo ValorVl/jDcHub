@@ -2,7 +2,7 @@
 <!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
                                          "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
- <session-factory name="jdchub">
+ <session-factory>
   <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
   <property name="hibernate.connection.password">Satana666</property>
   <property name="hibernate.connection.url">jdbc:mysql://10.10.10.129/jdchub?characterEncoding=UTF-8</property>
@@ -28,5 +28,8 @@
      <mapping class="ru.sincore.db.pojo.ChatLogPOJO"/>
      <mapping class="ru.sincore.db.pojo.BanListPOJO"/>
      <mapping class="ru.sincore.db.pojo.ClientListPOJO"/>
+     <mapping class="ru.sincore.db.pojo.CmdListPOJO"/>
+     <mapping class="ru.sincore.db.pojo.BigStaticDataPOJO"/>
+
  </session-factory>
 </hibernate-configuration>

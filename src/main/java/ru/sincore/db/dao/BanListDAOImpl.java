@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import ru.sincore.db.HibernateUtils;
 import ru.sincore.db.pojo.BanListPOJO;
 
@@ -43,10 +44,11 @@ public class BanListDAOImpl implements BanListDAO
 						  String email)
 	{
 		Session session = HibernateUtils.getSessionFactory().openSession();
+		Transaction tx = session.getTransaction();
 
 		try{
 
-			session.getTransaction().begin();
+			tx.begin();
 
 			BanListPOJO data = new BanListPOJO();
 
@@ -63,24 +65,13 @@ public class BanListDAOImpl implements BanListDAO
 
 			session.save(data);
 
-			session.beginTransaction().commit();
-			session.close();
+			tx.commit();
 
 		}catch (Exception ex)
 		{
-			session.getTransaction().rollback();
+			tx.rollback();
 			log.error(ex);
 			return false;
-		}finally {
-			try{
-				if (session.isOpen())
-				{
-					session.close();
-				}
-			}catch (Exception ex)
-			{
-				log.error(ex);
-			}
 		}
 
 		return true;
@@ -96,17 +87,19 @@ public class BanListDAOImpl implements BanListDAO
 	public BanListPOJO getBan(String ip, String nick)
 	{
 		Session session = HibernateUtils.getSessionFactory().openSession();
+		Transaction tx = session.getTransaction();
 
 		try{
-			session.getTransaction().begin();
+			tx.begin();
 
-			Query query = session.createQuery("select ip, nick, hostName, banType, dateStart, fateStop, nikOp, reason, shareSize, email from BanListPOJO where ip = :ip or nick = :nick")
-					.setParameter("ip", ip).setParameter("nick", nick);
+			Query query = session.createQuery("select ip, nick, hostName, banType, dateStart, fateStop, nikOp, reason," +
+											  " shareSize, email from BanListPOJO where ip = :ip or nick = :nick")
+												.setParameter("ip", ip).setParameter("nick", nick);
 
 			List<Object> data 		= query.list();
 			BanListPOJO  banList 	= new BanListPOJO();
 
-			session.getTransaction().commit();
+			tx.commit();
 
 			for (Object obj : data)
 			{
@@ -129,17 +122,7 @@ public class BanListDAOImpl implements BanListDAO
 		}catch (Exception ex)
 		{
 			log.error(ex);
-			session.getTransaction().rollback();
-		}finally {
-			try{
-				if (session.isOpen())
-				{
-					session.close();
-				}
-			}catch (Exception ex)
-			{
-				log.error(ex);
-			}
+			tx.rollback();
 		}
 		return null;
 	}
@@ -153,11 +136,10 @@ public class BanListDAOImpl implements BanListDAO
 	public List<BanListPOJO> lsBan(Integer rowCount)
 	{
 		Session session = HibernateUtils.getSessionFactory().openSession();
-
-
+		Transaction tx = session.getTransaction();
 
 		try{
-			session.getTransaction().begin();
+			tx.begin();
 
 			Query query = session.createQuery("select ip, nick, dateStart, fateStop, nikOp, shareSize, reason " +
 											  "from BanListPOJO order by dateStart desc");
@@ -166,7 +148,7 @@ public class BanListDAOImpl implements BanListDAO
 
 			ArrayList<BanListPOJO> data = new ArrayList<BanListPOJO>();
 
-			session.beginTransaction().commit();
+			tx.commit();
 
 			for (Object obj : result)
 			{
@@ -198,16 +180,7 @@ public class BanListDAOImpl implements BanListDAO
 		}catch (HibernateException ex)
 		{
 			log.error(ex);
-		}finally {
-			try{
-				 if (session.isOpen())
-				 {
-					session.close();
-				 }
-			}catch (Exception ex)
-			{
-				log.error(ex);
-			}
+			tx.rollback();
 		}
 
 		return null;
@@ -221,6 +194,6 @@ public class BanListDAOImpl implements BanListDAO
 	@Override
 	public List<BanListPOJO> userBanList(String nick)
 	{
-		return null;
+		return null;  //TODO Coming soon
 	}
 }

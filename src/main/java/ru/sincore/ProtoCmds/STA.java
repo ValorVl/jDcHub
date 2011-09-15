@@ -76,6 +76,7 @@ public class STA
                     return;
                 }
             }
+			// get error code
             StringTokenizer TK = new StringTokenizer(command);
             TK.nextToken();
             if (!TK.hasMoreTokens())

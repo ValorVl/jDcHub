@@ -38,6 +38,13 @@ public class ClientListDAOImpl implements ClientListDAO
 
 			if (!params.equals(null))
 			{
+
+				if (params.getAccountFlyable() == null)
+				{
+					params.setAccountFlyable(false);
+				}
+
+
 				session.save(params);
 				tx.commit();
 			}
@@ -95,7 +102,11 @@ public class ClientListDAOImpl implements ClientListDAO
 		Session session = HibernateUtils.getSessionFactory().openSession();
 		Transaction tx 	= session.getTransaction();
 
-		String query = "from ClientListPOJO where isReg = :flag order by nickName,regDate";
+		String query = 	"select accountFlyable, bas0Allowed,baseAllowed,cid,classMask,commandMask,currentIp,helpMask," +
+						"hideMe,hideShare,id,keyAuthAllowed,isKickable,lastIp,lastLogIn,lastMessage,lastNick,loginCount," +
+						"maximumTimeOnline,nickName,opChatAccess,overrideFull,overrideShare,overrideSpam,password,ping,realIp," +
+						"isReg,regDate,regOwner,renameable,txBytes,tigerAllowed,txBytes,ucmdAllowed" +
+						" from ClientListPOJO where isReg = :flag order by nickName,regDate";
 
 		try
 		{
@@ -120,9 +131,9 @@ public class ClientListDAOImpl implements ClientListDAO
 				pojo.setBaseAllowed((Boolean)		array[2]);
 				pojo.setCid((String)				array[3]);
 				pojo.setClassMask((Integer)			array[4]);
-				pojo.setCommandMask((Byte[])		array[5]);
+				pojo.setCommandMask((byte[])		array[5]);
 				pojo.setCurrentIp((String)			array[6]);
-				pojo.setHelpMask((Byte[])			array[7]);
+				pojo.setHelpMask((byte[])			array[7]);
 				pojo.setHideMe((Boolean)			array[8]);
 				pojo.setHideShare((Boolean)			array[9]);
 				pojo.setId((Long)					array[10]);

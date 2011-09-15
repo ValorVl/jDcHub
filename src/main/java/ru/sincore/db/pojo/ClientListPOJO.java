@@ -14,12 +14,12 @@ import java.util.Date;
  *  @version 0.0.1
  */
 @Entity
-@Table(name = "client_params")
+@Table(name = "client_list")
 public class ClientListPOJO implements Serializable
 {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "id",columnDefinition = "INTEGER", length = 11)
+	@Column(name = "id")
 	private Long 		id;
 
 	/**
@@ -32,27 +32,27 @@ public class ClientListPOJO implements Serializable
 	 *  Column "class_mask" right granted mask
 	 */
 	@Column(name = "class_mask", columnDefinition = "TINYINT(3) DEFAULT 0",nullable = false)
-	private Integer		classMask;
+	private Integer		classMask = 0;
 
 	/**
 	 *  Column "password" encrypted password string
 	 */
-	@Column(name = "password",columnDefinition = "VARCHAR(250)",nullable = false)
+	@Column(name = "password",columnDefinition = "VARCHAR(250)",nullable = true)
 	private String 		password;
 
 	/**
 	 *  Column "key" boolean flag. Indicates that the user can authenticate using SSL key
 	 */
-	@Column(name = "key_auth_allowed", columnDefinition = "TINYINT(1) DEFAULT 0")
-	private Boolean 	keyAuthAllowed;
+	@Column(name = "key_auth_allowed", columnDefinition = "TINYINT(1) DEFAULT 0",nullable = false)
+	private Boolean 	keyAuthAllowed = false;
 
 	/**
 	 *  Column "isReg" boolean flag. Indicates whether the user is registered (or rather his nickname) on the hub or not,
 	 *  if not then respectively the nickname can be registered by another user hub. Details of the behavior of this
 	 *  parameter are configured separately.
 	 */
-	@Column(name = "is_reg",columnDefinition = "TINYINT(1) DEFAULT 0")
-	private Boolean 	isReg;
+	@Column(name = "is_reg",columnDefinition = "TINYINT(1) DEFAULT 0",nullable = false)
+	private Boolean 	isReg = false;
 	/**
 	 *  Column "nickName" String userid hub.
 	 */
@@ -63,20 +63,20 @@ public class ClientListPOJO implements Serializable
 	/**
 	 *  Column "lastNick" Contains the last nickname until it changes or fixation thereof by another user
 	 */
-	@Column(name = "last_nick",columnDefinition = "VARCHAR(200)",nullable = false)
+	@Column(name = "last_nick",columnDefinition = "VARCHAR(200)",nullable = true)
 	private String		lastNick;
 
 	/**
 	 *  Column "regOwner" Contains the OP nickname of registered currant user. Passable DEFAULT value e.g SERVER
 	 *  if user registered automatically.
 	 */
-	@Column(name = "reg_owner",columnDefinition = "VARCHAR(200)",nullable = false)
+	@Column(name = "reg_owner",columnDefinition = "VARCHAR(200)",nullable = true)
 	private String		regOwner;
 
 	/**
 	 *  Column "regDate" Contains user registration datetime.
 	 */
-	@Column(name = "reg_fate",columnDefinition = "DATETIME",nullable = false)
+	@Column(name = "reg_date",columnDefinition = "DATETIME",nullable = true)
 	private Date 		regDate;
 
 	/**
@@ -88,8 +88,8 @@ public class ClientListPOJO implements Serializable
 	/**
 	 *  Column "maximumTimeOnline" Contains the maximum length of user session in seconds (millisecond * 1000)
 	 */
-	@Column(name = "maximum_time_online",columnDefinition = "DEFAULT 0")
-	private Long		maximumTimeOnline;
+	@Column(name = "maximum_time_online",columnDefinition = " BIGINT DEFAULT 0",nullable = false)
+	private Long		maximumTimeOnline = 0L;
 
 	/**
 	 *  Colimn "currentIp" Contains curant IP address (IPv4 or IPv6)
@@ -114,112 +114,112 @@ public class ClientListPOJO implements Serializable
 	/**
 	 *  Column "hideShare" boolean flag. Hidden if a user share.
 	 */
-	@Column(name = "hide_share",columnDefinition = "TINYINT(1) DEFAULT 0")
-	private Boolean		hideShare;
+	@Column(name = "hide_share",columnDefinition = "TINYINT(1) DEFAULT 0",nullable = false)
+	private Boolean		hideShare = false;
 
 	/**
 	 *  Column "hideMe"  boolean flag, mar hub user is hiden
 	 */
-	@Column(name = "hide_me",columnDefinition = "TINYINT(1) DEFAULT 0")
-	private Boolean		hideMe;
+	@Column(name = "hide_me",columnDefinition = "TINYINT(1) DEFAULT 0",nullable = false)
+	private Boolean		hideMe = false;
 
 	/**
 	 *  Column "overrideShare" boolean flag. User miss the check share size.
 	 */
-	@Column(name = "override_share",columnDefinition = "TINYINT(1) DEFAULT 0")
-	private Boolean		overrideShare;
+	@Column(name = "override_share",columnDefinition = "TINYINT(1) DEFAULT 0",nullable = false)
+	private Boolean		overrideShare = false;
 
 	/**
 	 *  Column "overrideSpam" boolean flag. User miss the spam protect.
 	 */
-	@Column(name = "override_spam",columnDefinition = "TINYINT(1) DEFAULT 0")
-	private Boolean		overrideSpam;
+	@Column(name = "override_spam",columnDefinition = "TINYINT(1) DEFAULT 0",nullable = false)
+	private Boolean		overrideSpam = false;
 
 	/**
 	 *  Column "overrideFull" boolean flag. User miss the check hab full, must be addeding in reserved connection slot.
 	 */
-	@Column(name = "override_full",columnDefinition = "TINYINT(1) DEFAULT 0")
-	private Boolean		overrideFull;
+	@Column(name = "override_full",columnDefinition = "TINYINT(1) DEFAULT 0",nullable = false)
+	private Boolean		overrideFull = false;
 
 	/**
 	 *  Column "kickable" boolean flag market the user as non kikable
 	 */
-	@Column(name = "is_kickable",columnDefinition = "TINYINT(1) DEFAULT 0")
-	private Boolean		isKickable;
+	@Column(name = "is_kickable",columnDefinition = "TINYINT(1) DEFAULT 0",nullable = false)
+	private Boolean		isKickable = false;
 
 	/**
 	 *  Column "renameable" boolean. Flag to prevent a user allows to change nickname
 	 */
-	@Column(name = "renameable",columnDefinition = "TINYINT(1) DEFAULT 0")
-	private Boolean		renameable;
+	@Column(name = "renameable",columnDefinition = "TINYINT(1) DEFAULT 0",nullable = false)
+	private Boolean		renameable = false;
 
 	/**
 	 *  TODO define or function this column i`m not understand
 	 */
-	@Column(name = "account_flyable",columnDefinition = "TINYINT(1) DEFAULT 0")
-	private Boolean		accountFlyable;
+	@Column(name = "account_flyable",columnDefinition = "TINYINT(1) DEFAULT 0",nullable = false)
+	private Boolean		accountFlyable = false;
 
 	/**
 	 *  Column "opChatAccess" boolean flag given right to access in OpChat
 	 */
-	@Column(name = "op_chat_access",columnDefinition = "TINYINT(1) DEFAULT 0")
-	private Boolean		opChatAccess;
+	@Column(name = "op_chat_access",columnDefinition = "TINYINT(1) DEFAULT 0",nullable = false)
+	private Boolean		opChatAccess = false;
 
 	/**
 	 *  Column "txBytes" Contains transitional byte count
 	 */
-	@Column(name = "tx_bytes",columnDefinition = "BIGINTEGER DEFAULT 0")
-	private Long 		txBytes;
+	@Column(name = "tx_bytes",columnDefinition = "BIGINT DEFAULT 0")
+	private Long 		txBytes = 0L;
 
 	/**
 	 *  Column "rxBytes" Contains resive byte count
 	 */
-	@Column(name = "rx_bytes",columnDefinition = "BIGINTEGER DEFAULT 0")
-	private Long		rxBytes;
+	@Column(name = "rx_bytes",columnDefinition = "BIGINT DEFAULT 0")
+	private Long		rxBytes = 0L;
 
 	/**
 	 * 	Column "commandMask" contains allowed commands usage - byte mask
 	 */
 	@Lob
 	@Column(name = "command_mask",columnDefinition = "BLOB", nullable = false)
-	private Byte[]		commandMask;
+	private byte[]		commandMask;
 
 	/**
 	 *  Column "helpMask" allowed help commands usage for user - byte mask
 	 */
 	@Lob
 	@Column(name = "help_mask",columnDefinition = "BLOB", nullable = false)
-	private Byte[]		helpMask;
+	private byte[]		helpMask;
 
 	/**
 	 *  Column "ping" indicates if client is a pinger a.k.a. PING extension
 	 */
-	@Column(name = "ping",columnDefinition = "TINYINT(1) DEFAULT 0")
-	private Boolean		ping;
+	@Column(name = "ping",columnDefinition = "TINYINT(1) DEFAULT 0",nullable = false)
+	private Boolean		ping = false;
 
 	/**
 	 *  Column "tigerAllowed" if client supports TIGER hashes or not
 	 */
-	@Column(name = "tiger_allowed",columnDefinition = "TINYINT(1) DEFAULT 0")
-	private Boolean		tigerAllowed;
+	@Column(name = "tiger_allowed",columnDefinition = "TINYINT(1) DEFAULT 0",nullable = false)
+	private Boolean		tigerAllowed = false;
 
 	/**
 	 *  Column "ucmdAllowed" indicates if client supports UCMD messages
 	 */
-	@Column(name = "ucmd_allowed",columnDefinition = "TINYINT(1) DEFAULT 0")
-	private Boolean		ucmdAllowed;
+	@Column(name = "ucmd_allowed",columnDefinition = "TINYINT(1) DEFAULT 0",nullable = false)
+	private Boolean		ucmdAllowed = false;
 
 	/**
 	 *  Column "baseAllowed" indicates if client supports BASE messages
 	 */
-	@Column(name = "base_allowed",columnDefinition = "TINYINT(1) DEFAULT 0")
-	private Boolean		baseAllowed;
+	@Column(name = "base_allowed",columnDefinition = "TINYINT(1) DEFAULT 0",nullable = false)
+	private Boolean		baseAllowed = false;
 
 	/**
 	 *  Column "bas0Allowed" indicates if client supports old BAS0 messages
 	 */
-	@Column(name = "bas0_allowed",columnDefinition = "TINYINT(1) DEFAULT 0")
-	private Boolean		bas0Allowed;
+	@Column(name = "bas0_allowed",columnDefinition = "TINYINT(1) DEFAULT 0",nullable = false)
+	private Boolean		bas0Allowed = false;
 
 	/**
 	 *  Column "lastMessage" last message say user.
@@ -231,7 +231,7 @@ public class ClientListPOJO implements Serializable
 	 *  Column "loginCount" Contains count user loggined actions
 	 */
 	@Column(name = "login_count", columnDefinition = "INTEGER DEFAULT 0")
-	private Long		loginCount;
+	private Long		loginCount = 0L;
 
 	public Long getId()
 	{
@@ -483,22 +483,22 @@ public class ClientListPOJO implements Serializable
 		this.rxBytes = rxBytes;
 	}
 
-	public Byte[] getCommandMask()
+	public byte[] getCommandMask()
 	{
 		return commandMask;
 	}
 
-	public void setCommandMask(Byte[] commandMask)
+	public void setCommandMask(byte[] commandMask)
 	{
 		this.commandMask = commandMask;
 	}
 
-	public Byte[] getHelpMask()
+	public byte[] getHelpMask()
 	{
 		return helpMask;
 	}
 
-	public void setHelpMask(Byte[] helpMask)
+	public void setHelpMask(byte[] helpMask)
 	{
 		this.helpMask = helpMask;
 	}
