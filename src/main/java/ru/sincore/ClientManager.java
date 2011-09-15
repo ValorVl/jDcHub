@@ -41,7 +41,9 @@ public final class ClientManager
 {
     private static final Logger log = LoggerFactory.getLogger(ClientManager.class);
 
-    public static ConcurrentHashMap<String, Client> clients;
+    public static ConcurrentHashMap<String, Client> clientsByCID;
+    private static ConcurrentHashMap<String, Client> clientsByNick;
+    private static ConcurrentHashMap<String, Client> clientsBySID;
 
 // *********************** Singleton implementation start ********************************
     private static volatile Strategy strategy = new CreateAndReturnStrategy();
@@ -90,20 +92,24 @@ public final class ClientManager
     private ClientManager()
     {
         // TODO move initial capacity and load factor to config
-        clients = new ConcurrentHashMap<String, Client>(3000, (float) 0.75);
+        clientsByCID    = new ConcurrentHashMap<String, Client>(3000, (float) 0.75);
+        clientsByNick   = new ConcurrentHashMap<String, Client>(3000, (float) 0.75);
+        clientsBySID    = new ConcurrentHashMap<String, Client>(3000, (float) 0.75);
     }
 
 
-    public void addClient (Client client)
+    synchronized public void addClient (Client client)
     {
-        clients.put(client.getClientHandler().ID, client);
+        clientsByCID.put(client.getClientHandler().ID, client);
+        clientsByNick.put(client.getClientHandler().NI, client);
+        clientsByCID.put(client.getClientHandler().SessionID, client);
     }
 
 
-    public void removeAllClients()
+    synchronized public void removeAllClients()
     {
-        // For all clients
-        for (Client client : clients.values())
+        // For all clientsByCID
+        for (Client client : clientsByCID.values())
         {
             // Remove client attribute from all sessions
             client.getClientHandler().session.removeAttribute("client", client);
@@ -111,17 +117,17 @@ public final class ClientManager
             client.getClientHandler().session.close(true);
         }
 
-        // Remove all clients from client list
-        clients.clear();
+        // Remove all clientsByCID from client list
+        clientsByCID.clear();
     }
 
     /**
-     * Return collection of clients
-     * @return collection of clients
+     * Return collection of clientsByCID
+     * @return collection of clientsByCID
      */
     public Collection<Client> getClients()
     {
-        return clients.values();
+        return clientsByCID.values();
     }
 
 
@@ -132,13 +138,13 @@ public final class ClientManager
      */
     public Client getClientByCID (String cid)
     {
-        return clients.get(cid);
+        return clientsByCID.get(cid);
     }
 
 
     public int getClientsCount()
     {
-        return clients.size();
+        return clientsByCID.size();
     }
 
 
@@ -146,7 +152,7 @@ public final class ClientManager
     {
         int count = 0;
 
-        for (Client client : clients.values())
+        for (Client client : clientsByCID.values())
         {
             if (client.getClientHandler().validated == 1)
                 count++;
@@ -159,16 +165,13 @@ public final class ClientManager
     public long getTotalShare()
     {
         long ret = 0;
-        for (Client client : clients.values())
+        for (Client client : clientsByCID.values())
         {
             try
             {
-                if (client.getClientHandler().validated == 1)
+                if (client.getClientHandler().SS != null)
                 {
-                    if (client.getClientHandler().SS != null)
-                    {
-                        ret += Long.parseLong(client.getClientHandler().SS);
-                    }
+                    ret += Long.parseLong(client.getClientHandler().SS);
                 }
             }
             catch (NumberFormatException ignored)
@@ -182,16 +185,13 @@ public final class ClientManager
     public long getTotalFileCount()
     {
         long ret = 0;
-        for (Client client : clients.values())
+        for (Client client : clientsByCID.values())
         {
             try
             {
-                if (client.getClientHandler().validated == 1)
+                if (client.getClientHandler().SF != null)
                 {
-                    if (client.getClientHandler().SF != null)
-                    {
-                        ret += Long.parseLong(client.getClientHandler().SF);
-                    }
+                    ret += Long.parseLong(client.getClientHandler().SF);
                 }
             }
             catch (NumberFormatException ignored)
@@ -204,9 +204,12 @@ public final class ClientManager
 
     public boolean removeClient (Client client)
     {
-        Client removedClient = clients.remove(client.getClientHandler().ID);
+        Client removedClient = clientsByCID.remove(client.getClientHandler().ID);
+        clientsByNick.remove(client.getClientHandler().NI);
+        clientsBySID.remove(client.getClientHandler().SessionID);
+
         if (removedClient == null)
-            log.debug("User with cid = \'" + client.getClientHandler().ID + "\' not in clients.");
+            log.debug("User with cid = \'" + client.getClientHandler().ID + "\' not in clientsByCID.");
         else
             log.debug("User with cid = \'" + removedClient.getClientHandler().ID + "\' and nick = \'" + removedClient.getClientHandler().NI + "\' was removed.");
 
@@ -216,9 +219,12 @@ public final class ClientManager
 
     public void removeClientByCID (String cid)
     {
-        Client client = clients.remove(cid);
+        Client client = clientsByCID.remove(cid);
+        clientsBySID.remove(client.getClientHandler().ID);
+        clientsByNick.remove(client.getClientHandler().NI);
+
         if (client == null)
-            log.debug("User with cid = \'" + cid + "\' not in clients.");
+            log.debug("User with cid = \'" + cid + "\' not in clientsByCID.");
         else
             log.debug("User with cid = \'" + cid + "\' and nick = \'" + client.getClientHandler().NI + "\' was removed.");
     }
@@ -226,6 +232,6 @@ public final class ClientManager
 
     public boolean containClientByCID(String cid)
     {
-        return clients.containsKey(cid);
+        return clientsByCID.containsKey(cid);
     }
 }

@@ -1,4 +1,6 @@
 (C) Copyright 2007-2008 by Eugen Hristev
+(C) Copyright 2011 by Alexey 'lh' Antonov
+(C) Copyright 2011 by Viktor 'Valor' Maksimov
 
 Here's the full license text :
 

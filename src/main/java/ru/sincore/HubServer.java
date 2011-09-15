@@ -136,12 +136,11 @@ public class HubServer extends Thread
 
             if (adcs_ok)
             {
-                acceptor.getFilterChain()
-                        .addLast("sslFilter", sslfilter);
+                acceptor.getFilterChain().addLast("sslFilter", sslfilter);
             }
             else
             {
-                System.out.println("Couldn't find suitable keys and certificate.\nPlease load them or regenerate.\n" +
+                log.info("Couldn't find suitable keys and certificate.\nPlease load them or regenerate.\n" +
                                 "ADC Secure mode has been disabled.");
                 ConfigLoader.ENABLE_ADCS = false;
             }

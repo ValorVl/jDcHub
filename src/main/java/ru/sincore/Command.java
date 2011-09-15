@@ -76,8 +76,8 @@ public class Command
     {
         if (ClientManager.getInstance().containClientByCID(currentClient.getClientHandler().ID))
         {
-            Client ch = ClientManager.getInstance().getClientByCID(currentClient.getClientHandler().ID);
-            ch.dropMeImGhost();
+            Client client = ClientManager.getInstance().getClientByCID(currentClient.getClientHandler().ID);
+            client.dropMeImGhost();
         }
 
 
@@ -114,18 +114,7 @@ public class Command
         }
 
 
-        //ok now must send to handler the inf of all others
-
-
-        /*  IoSession [] x= Main.Server.SM.getSessions().toArray(new IoSession[0]);
-      String inf="\n";
-          for(int i=0;i<x.length;i++)
-     {
-          Client tempy=((ClientHandler)(x[i].getAttachment())).myNod;
-          if(tempy.handler.validated==1 && !tempy.handler.equals (handler)) //if the user has some inf ... [ meaning he is ok]
-                inf=inf.substring(0,inf.length()-1)+tempy.handler.getINF ()+"\n\n";
-     }
-        */
+        //ok now sending infs of all others to the handler
         sendUsersInfs();
 
         currentClient.getClientHandler().sendToClient("BINF DCBA ID" +
@@ -138,10 +127,9 @@ public class Command
 		log.info(ConfigLoader.SECURITY_CID);
         currentClient.getClientHandler().putOpchat(true);
         currentClient.getClientHandler().sendToClient(currentClient.getClientHandler().getINF());  //sending inf about itself too
-        //handler.sendToClient(inf);
 
 
-        //ok now must send INF to all clients
+        //ok now must send INF to all clientsByCID
         Broadcast.getInstance().broadcast(currentClient.getClientHandler().getINF(), currentClient);
         currentClient.getClientHandler().validated = 1; //user is OK, logged in and cool.
         currentClient.getClientHandler().reg.LastLogin = System.currentTimeMillis();
@@ -153,7 +141,6 @@ public class Command
 
 
         /** calling plugins...*/
-
         for (Module myMod : Modulator.myModules)
         {
             myMod.onConnect(currentClient.getClientHandler());
@@ -195,40 +182,13 @@ public class Command
             return;
         }
 
-        // handler.cur_inf="BINF ADDD EMtest NIbla";
-        //command="ADDD NImu DEblah";
-        //     synchronized(handler.cur_inf)
-        //      {
-        //    if(handler.cur_inf!=null)
-        //     {
-        //     StringTokenizer inftok=new StringTokenizer(handler.cur_inf.substring(9));
-
-        //    while(inftok.hasMoreTokens())
-        //    {
-        //         String y=inftok.nextToken();
-        //         if(command.contains(y.substring(0,2)))
-        //        {
-        //            handler.cur_inf=handler.cur_inf.substring(0,handler.cur_inf.indexOf(y))+handler.cur_inf.substring(handler.cur_inf.indexOf(y)+y.length());
-        //           // inftok=new StringTokenizer(handler.cur_inf);
-        //      }
-
-        //   }
-        //   command+=handler.cur_inf.substring(9);
-        //   }
         tok = new StringTokenizer(command);
         tok.nextToken();
-        //    }
-        //   if(command.endsWith(" "))
-        //         command=command.substring(0,command.length()-1);
 
-        // System.out.println(command);
         while (tok.hasMoreElements())
         {
-
             String aux = tok.nextToken();
 
-
-            // System.out.println(aux);
             if (aux.startsWith("ID"))//meaning we have the ID thingy
             {
 
@@ -237,14 +197,12 @@ public class Command
                     new STAError(currentClient, 100, "Can't change CID while connected.");
                     return;
                 }
+
                 currentClient.getClientHandler().ID = aux.substring(2);
                 cur_inf = cur_inf + " ID" + currentClient.getClientHandler().ID;
-                //System.out.println (handler.ID);
             }
             else if (aux.startsWith("NI"))
             {
-
-
                 if (! Nick.validateNick(aux.substring(2)))
                 {
                     new STAError(currentClient,
@@ -252,6 +210,7 @@ public class Command
                                  "Nick not valid, please choose another");
                     return;
                 }
+
                 currentClient.getClientHandler().NI = aux.substring(2);
 
                 if (!state.equals("PROTOCOL"))
@@ -266,30 +225,26 @@ public class Command
             }
             else if (aux.startsWith("PD"))//the PiD
             {
-
-
                 if (!state.equals("PROTOCOL"))
                 {
                     new STAError(currentClient, 100, "Can't change PID while connected.");
                     return;
                 }
 
-
                 currentClient.getClientHandler().PD = aux.substring(2);
             }
             else if (aux.startsWith("I4"))
             {
-
                 currentClient.getClientHandler().I4 = aux.substring(2);
+
                 if (aux.substring(2).equals("0.0.0.0") ||
                     aux.substring(2).equals("localhost"))//only if active client
                 {
                     currentClient.getClientHandler().I4 = currentClient.getClientHandler().RealIP;
                 }
-
-
-                else if (!aux.substring(2).equals(currentClient.getClientHandler().RealIP) && !aux.substring(2).equals("")
-                         && !currentClient.getClientHandler().RealIP.equals("127.0.0.1"))
+                else if (!aux.substring(2).equals(currentClient.getClientHandler().RealIP) &&
+                         !aux.substring(2).equals("") &&
+                         !currentClient.getClientHandler().RealIP.equals("127.0.0.1"))
                 {
                     new STAError(currentClient,
                                  200 + Constants.STA_INVALID_IP,
@@ -298,8 +253,8 @@ public class Command
                                  currentClient.getClientHandler().RealIP);
                     return;
                 }
-                cur_inf = cur_inf + " I4" + currentClient.getClientHandler().I4;
 
+                cur_inf = cur_inf + " I4" + currentClient.getClientHandler().I4;
             }
             else if (aux.startsWith("I6"))
             {
@@ -431,8 +386,6 @@ public class Command
                 //  return ;
                 cur_inf = cur_inf + " " + aux;
             }
-
-
         }
         if (state.equals("PROTOCOL"))
         {
@@ -509,29 +462,25 @@ public class Command
                              "HN");
                 return;
             }
+
             currentClient.getClientHandler().reg = AccountsConfig.getnod(currentClient.getClientHandler().ID);
+
             if (currentClient.getClientHandler().reg == null)
             {
                 currentClient.getClientHandler().reg = new Nod();
             }
-            //handler.reg.CH=handler;
-            // if(!handler.reg.isreg)
-            //         handler.HN=String.valueOf(Integer.parseInt(handler.HN)+1);
         }
 
 
-        /* check if user is banned first*/
+        /* TODO check if user is banned first */
         currentClient.getClientHandler().myban = BanList.getban(3, currentClient.getClientHandler().ID);
         if (currentClient.getClientHandler().myban == null)
         {
-
             currentClient.getClientHandler().myban = BanList.getban(2, (currentClient.getClientHandler().RealIP));
-            //System.out.println(handler.session.getRemoteAddress().toString());
         }
         if (currentClient.getClientHandler().myban == null)
         {
             currentClient.getClientHandler().myban = BanList.getban(1, currentClient.getClientHandler().NI);
-
         }
         if (currentClient.getClientHandler().myban != null) //banned
         {
@@ -543,13 +492,14 @@ public class Command
                              currentClient.getClientHandler().myban.banreason +
                              "\n" +
 							 Messages.BAN_MESSAGE;
-                //System.out.println(msg);
-                new STAError(currentClient, 200 + Constants.STA_PERMANENTLY_BANNED, msg);
 
+                new STAError(currentClient, 200 + Constants.STA_PERMANENTLY_BANNED, msg);
                 return;
             }
-            long TL =
-                    System.currentTimeMillis() - currentClient.getClientHandler().myban.timeofban - currentClient.getClientHandler().myban.time;
+
+            long TL = System.currentTimeMillis() -
+                      currentClient.getClientHandler().myban.timeofban -
+                      currentClient.getClientHandler().myban.time;
             TL = -TL;
             if (TL > 0)
             {
@@ -563,16 +513,11 @@ public class Command
                              Messages.BAN_MESSAGE +
                              " TL" +
                              Long.toString(TL / 1000);
-                //System.out.println(msg);
-                new STAError(currentClient, 200 + Constants.STA_TEMP_BANNED, msg);
 
+                new STAError(currentClient, 200 + Constants.STA_TEMP_BANNED, msg);
                 return;
             }
         }
-        //else System.out.println("no nick ban");
-
-        int i = 0;
-
 
         // TODO Check nick availability
         for (Client client : ClientManager.getInstance().getClients())
@@ -597,12 +542,7 @@ public class Command
                     new STAError(handler,200+Constants.STA_CID_TAKEN,"CID taken. Please go to Settings and pick new PID.");
                     return;
                 }*/
-
-                // handler.CIDsecure=true;
-                i++;
             }
-
-
         }
 
 
@@ -625,18 +565,17 @@ public class Command
             }
 
 
-            if (ConfigLoader.MAX_USERS <= i && !currentClient.getClientHandler().reg.overridefull)
+            if (ConfigLoader.MAX_USERS <= ClientManager.getInstance().getClientsCount() &&
+                !currentClient.getClientHandler().reg.overridefull)
             {
                 new STAError(currentClient,
                              200 + Constants.STA_HUB_FULL,
                              "Hello there. Hub is full, there are " +
-                             String.valueOf(i) +
+                             String.valueOf(ClientManager.getInstance().getClientsCount()) +
                              " users online.\n" +
                              Messages.HUB_FULL_MESSAGE);
                 return;
             }
-
-
         }
 
         if (!currentClient.getClientHandler().reg.overridespam)
@@ -887,7 +826,6 @@ public class Command
         }
 
         if (state.equals("PROTOCOL"))
-
         {
             try
             {
@@ -912,8 +850,6 @@ public class Command
                 {
                     throw new IllegalArgumentException();
                 }
-
-
             }
 
 
@@ -969,7 +905,6 @@ public class Command
                     currentClient.getClientHandler().reg.LastIP = currentClient.getClientHandler().RealIP;
                     completeLogIn();
                     return;
-
                 }
                 currentClient.getClientHandler().sendToClient("ISTA 000 Registered,\\stype\\syour\\spassword.");
                 /* creates some hash for the GPA random data*/
@@ -1012,7 +947,7 @@ public class Command
                     currentClient.getClientHandler().State = "VERIFY";
                     return;
                 }
-                else if (ConfigLoader.MARK_REGISTRATION_ONLY == true)
+                else if (ConfigLoader.MARK_REGISTRATION_ONLY)
                 {
                     new STAError(currentClient, 200 + Constants.STA_REG_ONLY, "Registered only hub.");
                     return;
@@ -1025,23 +960,6 @@ public class Command
         //ok now must send to handler client the inf of all others
         if (state.equals("PROTOCOL"))
         {
-            //ok now must send to handler the inf of all others
-
-
-            /* IoSession [] x= Main.Server.SM.getSessions().toArray(new IoSession[0]);
-            String inf="\n";
-                for(int j=0;j<x.length;j++)
-           {
-                Client tempy=((ClientHandler)(x[j].getAttachment())).myNod;
-                if(tempy.handler.validated==1 && !tempy.handler.equals (handler)) //if the user has some inf ... [ meaning he is ok]
-                      inf=inf.substring(0,inf.length()-1)+tempy.handler.getINF ()+"\n\n";
-           }
-              inf=inf.substring(0,inf.length()-1)+"BINF DCBA ID"+Vars.SecurityCid+" NI"+ADC.retADCStr(Vars.bot_name)
-                    +" BO1 OP1 DE"+ADC.retADCStr(Vars.bot_desc)+"\n";
-
-                    inf+=handler.getINF ();  //sending inf about itself too
-            handler.sendToClient(inf);*/
-
             boolean ok = pushUser();
 
             if (!ok)
@@ -1060,19 +978,14 @@ public class Command
 																  +
 																  " CT5 DE" +
 																  ADC.retADCStr(ConfigLoader.BOT_CHAT_DESCRIPTION));
-            //handler.sendToClient("BINF DCBA IDaa NIbla");
-            //      if(true)return;
+
             currentClient.getClientHandler().putOpchat(true);
             currentClient.getClientHandler().sendToClient(currentClient.getClientHandler().getINF());  //sending inf about itself too
 
-            //ok now must send INF to all clients
+            //ok now must send INF to all clientsByCID
             Broadcast.getInstance().broadcast(currentClient.getClientHandler().getINF(), currentClient);
-            // System.out.println("acum am trimis ca a intrat "+handler.ID);
 
 
-            //Main.PopMsg(handler.NI+" with SID "+handler.SessionID+" just entered.");
-            //  handler.sendFromBot(""+Main.Server.myPath.replaceAll (" ","\\ "));
-            //ok now that we passed to normal state and user is ok, check if it has UCMD, and if so, send a test command
             if (currentClient.getClientHandler().ucmd == 1)
             {
                 //ok, he is ucmd ok, so
@@ -1083,7 +996,6 @@ public class Command
             currentClient.getClientHandler().sendFromBot(ADC.MOTD);
 
             /** calling plugins...*/
-
             for (Module myMod : Modulator.myModules)
             {
                 myMod.onConnect(currentClient.getClientHandler());
@@ -1091,19 +1003,7 @@ public class Command
             return;
         }
 
-        //  if(state.equals ("NORMAL"))
-        //  {
-        //      if(System.currentTimeMillis()-handler.LastINF>(1000*120L))
-        //      {
         Broadcast.getInstance().broadcast(cur_inf);
-        //        handler.LastINF=System.currentTimeMillis();
-        //        handler.cur_inf=null;
-        //      }
-        //      else
-        //         handler.cur_inf=cur_inf;
-
-        //   }
-
     }
 
 
