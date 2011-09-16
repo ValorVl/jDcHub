@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
-                                         "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+                                         "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
  <session-factory>
   <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
@@ -8,10 +8,12 @@
   <property name="hibernate.connection.url">jdbc:mysql://10.10.10.129/jdchub?characterEncoding=UTF-8</property>
   <property name="hibernate.connection.username">valor</property>
   <property name="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</property>
-  <property name="hibernate.c3p0.min_size">5</property>
-  <property name="hibernate.c3p0.max_size">10</property>
-  <property name="hibernate.c3p0.idle_test_period">300</property>
-  <property name="hibernate.c3p0.timeout">30</property>
+  <property name="hibernate.c3p0.acquire_increment">1</property>
+  <property name="hibernate.c3p0.idle_test_period">100</property> <!-- seconds -->
+  <property name="hibernate.c3p0.max_size">100</property>
+  <property name="hibernate.c3p0.max_statements">0</property>
+  <property name="hibernate.c3p0.min_size">10</property>
+  <property name="hibernate.c3p0.timeout">100</property> <!-- seconds -->
   <property name="hibernate.show_sql">true</property>
   <property name="hibernate.hbm2ddl.auto">update</property>
   <property name="hibernate.format_sql">true</property>
@@ -19,7 +21,6 @@
   <property name="hibernate.connection.charSet">UTF-8</property>
   <property name="hibernate.transaction.auto_close_session">true</property>
   <property name="hibernate.bytecode.use_reflection_optimizer">true</property>
-  <property name="order_updates">true</property>
   <property name="hibernate.cache.provider_class">org.hibernate.cache.HashtableCacheProvider</property>
   <property name="hibernate.cache.query_cache_factory">org.hibernate.cache.StandardQueryCacheFactory</property>
   <property name="hibernate.cache.use_query_cache">true</property>

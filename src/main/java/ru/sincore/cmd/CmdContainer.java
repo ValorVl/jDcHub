@@ -10,7 +10,7 @@ public class CmdContainer
 {
 	private static volatile CmdContainer instance = new CmdContainer();
 
-	private ConcurrentHashMap<String, Class<?>> commands;
+	private ConcurrentHashMap<String, AbstractCmd> commands;
 
 
 	public static synchronized CmdContainer getInstance()
@@ -20,13 +20,13 @@ public class CmdContainer
 
 	private CmdContainer()
 	{
-		buildList();
+
 	}
 
-	private void buildList()
+	public void buildList()
 	{
 
-		commands = new ConcurrentHashMap<String, Class<?>>();
+		commands = new ConcurrentHashMap<String, AbstractCmd>();
 
 		CmdListDAOImpl cmdList = new CmdListDAOImpl();
 
@@ -36,17 +36,29 @@ public class CmdContainer
 		{
 			try
 			{
-				commands.put(cmd.getCommandName(),Class.forName(cmd.getCommandExecutorClass()));
+				AbstractCmd clazz = (AbstractCmd) Class.forName(cmd.getCommandExecutorClass()).newInstance();
+				commands.put(cmd.getCommandName(),clazz);
 			} catch (ClassNotFoundException e)
+			{
+				e.printStackTrace();
+			} catch (InstantiationException e)
+			{
+				e.printStackTrace();
+			} catch (IllegalAccessException e)
 			{
 				e.printStackTrace();
 			}
 		}
 	}
 
+	public AbstractCmd getCommandExecutor(String name)
+	{
+		return commands.get(name);
+	}
+
 	public void clearCommandList()
 	{
-		if (commands.size() != 0)
+		if (!commands.isEmpty())
 		{
 			commands.clear();
 		}

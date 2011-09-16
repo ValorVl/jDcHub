@@ -26,6 +26,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import ru.sincore.TigerImpl.Base32;
 import ru.sincore.banning.BanList;
+import ru.sincore.db.HibernateUtils;
 import ru.sincore.i18n.Messages;
 import ru.sincore.python.PythonManager;
 
@@ -62,6 +63,8 @@ public class Main extends Thread
 		ConfigLoader.init();
 		Messages.loadClientMessages();
 		Messages.loadServerMessages();
+
+		HibernateUtils.getSessionFactory();
 
 
 		ClassLoader cl = ClassLoader.getSystemClassLoader();
