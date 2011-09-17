@@ -65,6 +65,10 @@ public class ConfigLoader
     public static String    HUB_GREETING;
 	public static String 	NICK_CHAR;  			// Available nickname char
 	public static String 	REDIRECT_URL;           // The main redirect URL to send faulty users ( or default redirects )
+	// Command engine
+	public static String    OP_COMMAND_PREFIX;
+	public static String    USER_COMMAND_PREFIX;
+
 
 	// Search settings
 	public static Integer   MIN_CHARS_SEARCH_REQUEST;
@@ -226,6 +230,8 @@ public class ConfigLoader
 			NICK_CHAR											= prop.getProperty("core.hub.nick_chars","([\\\\w\\\\W]*)");
 			MAX_HUBS_USERS										= Integer.parseInt(prop.getProperty("core.hub.max_hubs_users","10"));
 			MAX_HUBS_REGISTERED									= Integer.parseInt(prop.getProperty("core.hub.max_hubs_registered","10"));
+			OP_COMMAND_PREFIX									= prop.getProperty("core.hub.command.engine.op_prefix","!");
+			USER_COMMAND_PREFIX									= prop.getProperty("core.hub.command.engine.user_prefix","+");
 
 
 			// B 	 Broadcast 	 			Hub must send message to all connected clients, including the sender of the message.

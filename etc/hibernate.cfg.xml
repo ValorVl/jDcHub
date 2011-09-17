@@ -31,6 +31,7 @@
      <mapping class="ru.sincore.db.pojo.ClientListPOJO"/>
      <mapping class="ru.sincore.db.pojo.CmdListPOJO"/>
      <mapping class="ru.sincore.db.pojo.BigStaticDataPOJO"/>
+     <mapping class="ru.sincore.db.pojo.CmdLogPOJO"/>
 
  </session-factory>
 </hibernate-configuration>

@@ -36,8 +36,9 @@ public class CmdContainer
 		{
 			try
 			{
-				AbstractCmd clazz = (AbstractCmd) Class.forName(cmd.getCommandExecutorClass()).newInstance();
-				commands.put(cmd.getCommandName(),clazz);
+				AbstractCmd cmdInstance = (AbstractCmd) Class.forName(cmd.getCommandExecutorClass()).newInstance();
+				initCmdInstance(cmd, cmdInstance);
+				commands.put(cmd.getCommandName(),cmdInstance);
 			} catch (ClassNotFoundException e)
 			{
 				e.printStackTrace();
@@ -49,6 +50,23 @@ public class CmdContainer
 				e.printStackTrace();
 			}
 		}
+	}
+
+	/**
+	 * Initialize command instance with values from db
+	 * @param cmdPojo entity mapped to db with command properties
+	 * @param cmdInstance command instance
+	 */
+	private void initCmdInstance(CmdListPOJO cmdPojo, AbstractCmd cmdInstance)
+	{
+		cmdInstance.setCmdArgs(cmdPojo.getCommandArgs());
+		cmdInstance.setCmdDescription(cmdPojo.getCommandDescription());
+		cmdInstance.setCmdExecutorClass(cmdPojo.getCommandExecutorClass());
+		cmdInstance.setCmdNames(cmdPojo.getCommandName());
+		cmdInstance.setCmdSyntax(cmdPojo.getCommandSyntax());
+		cmdInstance.setCmdWeight(cmdPojo.getCommandWeight());
+		cmdInstance.setEnabled(cmdPojo.getEnabled());
+		cmdInstance.setLogged(cmdPojo.getLogged());
 	}
 
 	public AbstractCmd getCommandExecutor(String name)

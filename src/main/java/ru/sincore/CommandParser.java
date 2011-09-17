@@ -660,7 +660,7 @@ public class CommandParser
                 return;
             }
 
-            client.getClientHandler().sendFromBot(client.getClientHandler().reg.myHelp.getHelp());
+            client.getClientHandler().sendFromBot("TODO: show help ");
 
         }
         else if (recvbuf.toLowerCase().startsWith("info "))
@@ -1437,7 +1437,7 @@ public class CommandParser
                 done = true;
                 return;
             }
-            new PortCmd(client.getClientHandler(), recvbuf);
+            //new PortCmd(client.getClientHandler(), recvbuf);
             /*try
                {
                int x=Integer.parseInt(recvbuf.substring(5));

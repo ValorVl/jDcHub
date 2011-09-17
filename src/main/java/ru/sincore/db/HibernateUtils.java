@@ -2,7 +2,7 @@ package ru.sincore.db;
 
 import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
-import org.hibernate.cfg.AnnotationConfiguration;
+import org.hibernate.cfg.Configuration;
 
 import java.io.File;
 
@@ -16,7 +16,7 @@ public class HibernateUtils
 	{
         try
 		{
-			return  new AnnotationConfiguration().configure(new File("./etc/hibernate.cfg.xml")).buildSessionFactory();
+			return  new Configuration().configure(new File("./etc/hibernate.cfg.xml")).buildSessionFactory();
         }
         catch (Throwable ex)
 		{
