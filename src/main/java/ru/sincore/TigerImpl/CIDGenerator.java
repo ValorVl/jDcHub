@@ -1,5 +1,8 @@
 package ru.sincore.TigerImpl;
 
+/**
+ * @author Valor
+ */
 public class CIDGenerator
 {
 	public String genCid()

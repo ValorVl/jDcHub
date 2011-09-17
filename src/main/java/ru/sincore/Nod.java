@@ -57,7 +57,7 @@ public class Nod implements Serializable, Cloneable
     public boolean opchataccess;
 
     public CommandMask myMask;
-    public HelpFile    myHelp;
+    //public HelpFile    myHelp;
     public boolean     nickprotected;
 
     public boolean additionalModules;
@@ -84,7 +84,7 @@ public class Nod implements Serializable, Cloneable
         LastLogin = 0L;
         TimeOnline = 0L;
         myMask = new CommandMask();
-        myHelp = new HelpFile(this);
+        //myHelp = new HelpFile(this);
         nickprotected = true;
         additionalModules = false;
     }
