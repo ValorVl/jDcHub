@@ -31,7 +31,7 @@ import ru.sincore.Exceptions.CommandException;
 import ru.sincore.Exceptions.STAException;
 import ru.sincore.Modules.Modulator;
 import ru.sincore.Modules.Module;
-import ru.sincore.TigerImpl.Base32;
+import ru.sincore.TigerImpl.SIDGenerator;
 import ru.sincore.util.STAError;
 
 import java.util.Collection;
@@ -205,10 +205,8 @@ public class SessionManager extends IoHandlerAdapter
         StringTokenizer ST = new StringTokenizer(currentClientHandler.session.getRemoteAddress().toString(), "/:");
 
 		currentClientHandler.RealIP = ST.nextToken();
-        SID cursid = new SID(currentClientHandler);
-        currentClientHandler.SessionID = Base32.encode(cursid.cursid).substring(0, 4);
-        currentClientHandler.sid = cursid.cursid;
-
+        // TODO doesn't now is substring needed
+        currentClientHandler.SessionID = SIDGenerator.generate().substring(0, 4);
     }
 
 

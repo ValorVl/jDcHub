@@ -78,6 +78,6 @@ public class SID extends Action
     @Override
     public String toString()
     {
-        return null;
+        return messageType.toString() + "SID " + params;
     }
 }

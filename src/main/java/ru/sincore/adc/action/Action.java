@@ -61,25 +61,25 @@ public abstract class Action
     }
 
 
-    public Client getFromClient()
+    public Client getFromClient ()
     {
         return fromClient;
     }
 
 
-    public Client getToClient()
+    public Client getToClient ()
     {
         return toClient;
     }
 
 
-    public void setFromClient(Client fromClient)
+    public void setFromClient (Client fromClient)
     {
         this.fromClient = fromClient;
     }
 
 
-    public void setToClient(Client toClient)
+    public void setToClient (Client toClient)
     {
         this.toClient = toClient;
     }
@@ -93,6 +93,10 @@ public abstract class Action
         if ((availableContexts & context) == Context.INVALID_CONTEXT)
             return false;
 
+        if ((fromClient != null) &&
+            (availableStates & fromClient.getClientHandler().state) == State.INVALID_STATE)
+            return false;
+
         if ((toClient != null) &&
             (availableStates & toClient.getClientHandler().state) == State.INVALID_STATE)
             return false;
@@ -100,9 +104,17 @@ public abstract class Action
         if (!paramsAreValid)
             return false;
 
+        if (!isInternallyValid())
+            return false;
+
         return true;
     }
 
-    public abstract String toString();
-    protected abstract boolean parse(String args);
+    protected boolean isInternallyValid ()
+    {
+        return true;
+    }
+
+    public abstract String toString ();
+    protected abstract boolean parse (String args);
 }

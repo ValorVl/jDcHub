@@ -25,8 +25,8 @@ public class ConfigLoader
 	static
 	{
 		HUB_CONFIG 		= "./etc/hub.properties";
-		OP_CHAT_CID  	= cid.genCid();
-		SECURITY_CID 	= cid.genCid();
+		OP_CHAT_CID  	= cid.generate();
+		SECURITY_CID 	= cid.generate();
 	}
 
     /**

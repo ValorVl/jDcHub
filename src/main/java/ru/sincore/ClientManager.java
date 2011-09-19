@@ -144,6 +144,12 @@ public final class ClientManager
     }
 
 
+    public Client getClientBySID (String sid)
+    {
+        return clientsBySID.get(sid);
+    }
+
+
     public int getClientsCount()
     {
         if (clientsByCID.size() != clientsByNick.size() ||
