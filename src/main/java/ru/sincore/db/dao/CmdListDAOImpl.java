@@ -10,7 +10,6 @@ import org.slf4j.Marker;
 import ru.sincore.db.HibernateUtils;
 import ru.sincore.db.pojo.CmdListPOJO;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -140,46 +139,13 @@ public class CmdListDAOImpl implements CmdListDAO
 
 			tx.begin();
 
-			Query query = session.createQuery("select id,commandName,commandExecutorClass," +
-						"commandWeight,commandArgs,commandSyntax,commandDescription,enabled,logged from CmdListPOJO");
+			Query query = session.createQuery("from CmdListPOJO");
 
-			List<?> resultList = query.list();
-
-			ArrayList<CmdListPOJO> result 	= new ArrayList<CmdListPOJO>();
+			List<CmdListPOJO> resultList = (List<CmdListPOJO>) query.list();
 
 			tx.commit();
 
-			for (Object obj : resultList)
-			{
-
-				Object[] array = (Object[]) obj;
-
-				Long 	id		    	= (Long)			array[0];
-				String  commandName 	= (String)			array[1];
-				String	commandExec 	= (String)			array[2];
-				Integer commandWeight 	= (Integer)			array[3];
-				String  commandArgs		= (String)			array[4];
-				String  commandSyntax	= (String)			array[5];
-				String  commandDesc		= (String)			array[6];
-				Boolean enabled			= (Boolean)			array[7];
-				Boolean logged			= (Boolean)			array[8];
-
-				CmdListPOJO pojo 		= new CmdListPOJO();
-
-				pojo.setId(id);
-				pojo.setCommandName(commandName);
-				pojo.setCommandExecutorClass(commandExec);
-				pojo.setCommandWeight(commandWeight);
-				pojo.setCommandArgs(commandArgs);
-				pojo.setCommandSyntax(commandSyntax);
-				pojo.setCommandDescription(commandDesc);
-				pojo.setEnabled(enabled);
-				pojo.setLogged(logged);
-
-				result.add(pojo);
-			}
-
-			return result;
+			return resultList;
 
 		}catch (HibernateException ex)
 		{

@@ -7,7 +7,6 @@ import org.hibernate.Transaction;
 import ru.sincore.db.HibernateUtils;
 import ru.sincore.db.pojo.ChatLogPOJO;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -68,31 +67,13 @@ public class ChatLogDAOImpl implements ChatLogDAO
 
 			tx.begin();
 
-			Query query = session.createQuery("select sendDate, nickName, message from ChatLogPOJO order by sendDate desc");
+			Query query = session.createQuery("from ChatLogPOJO order by sendDate desc");
 
-			List<?>	result =  query.setMaxResults(lastRowCount).list();
-
-			ArrayList<ChatLogPOJO> data = new ArrayList<ChatLogPOJO>();
+			List<ChatLogPOJO> result = (List<ChatLogPOJO>) query.setMaxResults(lastRowCount).list();
 
 			tx.commit();
 
-			for (Object obj : result)
-			{
-				Object[] 	array 	= (Object[]) obj;
-				Date		date 	= (Date) 	array[0];
-				String 		nick 	= (String) 	array[1];
-				String 		message = (String) 	array[2];
-
-				ChatLogPOJO pojo = new ChatLogPOJO();
-
-				pojo.setSendDate(date);
-				pojo.setNickName(nick);
-				pojo.setMessage(message);
-
-				data.add(pojo);
-			}
-
-			return data;
+			return result;
 
 		}catch (Exception ex)
 		{

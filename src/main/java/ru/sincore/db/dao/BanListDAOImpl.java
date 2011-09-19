@@ -8,7 +8,6 @@ import org.hibernate.Transaction;
 import ru.sincore.db.HibernateUtils;
 import ru.sincore.db.pojo.BanListPOJO;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -79,12 +78,13 @@ public class BanListDAOImpl implements BanListDAO
 
 	/**
 	 * Check ip address, or nickname in the presence of the banned list
+	 *
 	 * @param ip ip address hub user
 	 * @param nick nickname hub user
 	 * @return BanListPOJO object
 	 */
 	@Override
-	public BanListPOJO getBan(String ip, String nick)
+	public List<BanListPOJO> getBan(String ip, String nick)
 	{
 		Session session = HibernateUtils.getSessionFactory().openSession();
 		Transaction tx = session.getTransaction();
@@ -92,32 +92,15 @@ public class BanListDAOImpl implements BanListDAO
 		try{
 			tx.begin();
 
-			Query query = session.createQuery("select ip, nick, hostName, banType, dateStart, fateStop, nikOp, reason," +
-											  " shareSize, email from BanListPOJO where ip = :ip or nick = :nick")
-												.setParameter("ip", ip).setParameter("nick", nick);
+			Query query = session.createQuery("from BanListPOJO where ip = :ip or nick = :nick");
+			query.setParameter("ip", ip).setParameter("nick", nick);
 
-			List<Object> data 		= query.list();
-			BanListPOJO  banList 	= new BanListPOJO();
+			List<BanListPOJO> result 		= (List<BanListPOJO>) query.list();
 
 			tx.commit();
 
-			for (Object obj : data)
-			{
-				Object[] array = (Object[]) obj;
 
-				banList.setIp((String)			array[0]);
-				banList.setNick((String) 		array[1]);
-				banList.setHostName((String) 	array[2]);
-				banList.setBanType((Integer) 	array[3]);
-				banList.setDateStart((Date) 	array[4]);
-				banList.setFateStop((Date) 		array[5]);
-				banList.setNikOp((String) 		array[6]);
-				banList.setReason((String) 		array[7]);
-				banList.setShareSize((Long) 	array[8]);
-				banList.setEmail((String) 		array[9]);
-			}
-
-			return banList;
+			return result;
 
 		}catch (Exception ex)
 		{
@@ -141,41 +124,13 @@ public class BanListDAOImpl implements BanListDAO
 		try{
 			tx.begin();
 
-			Query query = session.createQuery("select ip, nick, dateStart, fateStop, nikOp, shareSize, reason " +
-											  "from BanListPOJO order by dateStart desc");
+			Query query = session.createQuery("from BanListPOJO order by dateStart desc");
 
-			List<?> result = query.setMaxResults(rowCount).list();
-
-			ArrayList<BanListPOJO> data = new ArrayList<BanListPOJO>();
+			List<BanListPOJO> result = (List<BanListPOJO>) query.setMaxResults(rowCount).list();
 
 			tx.commit();
 
-			for (Object obj : result)
-			{
-				Object[] array = (Object[]) obj;
-
-				String 		ip 			= (String) 	array[0];
-				String      nick 		= (String) 	array[1];
-				Date		dateStart 	= (Date) 	array[2];
-				Date		stopDate 	= (Date) 	array[3];
-				String		nickOp 		= (String) 	array[4];
-				Long		shareSize 	= (Long) 	array[5];
-				String 		reason 		= (String) 	array[6];
-
-				BanListPOJO pojo = new BanListPOJO();
-
-				pojo.setIp(ip);
-				pojo.setNick(nick);
-				pojo.setDateStart(dateStart);
-				pojo.setFateStop(stopDate);
-				pojo.setNikOp(nickOp);
-				pojo.setShareSize(shareSize);
-				pojo.setReason(reason);
-
-				data.add(pojo);
-			}
-
-			return data;
+			return result;
 
 		}catch (HibernateException ex)
 		{
