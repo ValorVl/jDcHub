@@ -10,7 +10,6 @@ import org.slf4j.Marker;
 import ru.sincore.db.HibernateUtils;
 import ru.sincore.db.pojo.CmdLogPOJO;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -64,34 +63,15 @@ public class CmdLogDAOImpl implements CmdLogDAO
 		{
 			tx.begin();
 
-			Query query = session.createQuery("select commandArgs,commandName,executeDate,executeResult,id,nickName " +
-											  "from CmdLogPOJO where executeDate = :execdate or commandName = :cmdname");
+			Query query = session.createQuery("from CmdLogPOJO where executeDate = :execdate or commandName = :cmdname");
 
 			query.setParameter("execdate",putLogDate).setParameter("cmdname",commandName);
 
-			List<CmdLogPOJO> result = query.list();
+			List<CmdLogPOJO> result = (List<CmdLogPOJO>) query.list();
 
 			tx.commit();
 
-			ArrayList<CmdLogPOJO> searchSummary = new ArrayList<CmdLogPOJO>();
-
-			for(Object obj : result)
-			{
-				Object[] array = (Object[]) obj;
-
-				CmdLogPOJO pojo = new CmdLogPOJO();
-
-				pojo.setCommandArgs((String)		array[0]);
-				pojo.setCommandName((String)		array[1]);
-				pojo.setExecuteDate((Date)			array[2]);
-				pojo.setExecuteResult((String)		array[3]);
-				pojo.setId((Long)					array[4]);
-				pojo.setNickName((String)			array[5]);
-
-				searchSummary.add(pojo);
-			}
-
-			return searchSummary;
+			return result;
 
 		}catch (HibernateException ex)
 		{

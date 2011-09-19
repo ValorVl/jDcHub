@@ -233,7 +233,7 @@ public class CommandParser
                 done = true;
                 return;
             }
-            new GrantCmd(client.getClientHandler(), recvbuf);
+            //new GrantCmd(client.getClientHandler(), recvbuf);
 
         }
 		//TODO remove "backup" command
@@ -939,7 +939,7 @@ public class CommandParser
                 done = true;
                 return;
             }
-            new PlugminCmd(client.getClientHandler(), recvbuf);
+            //new PlugminCmd(client.getClientHandler(), recvbuf);
 
         }
         else if (recvbuf.toLowerCase().startsWith("chatcontrol"))

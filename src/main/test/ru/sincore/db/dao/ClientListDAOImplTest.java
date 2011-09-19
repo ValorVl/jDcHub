@@ -51,7 +51,7 @@ public class ClientListDAOImplTest
 
 		for(ClientListPOJO list : clients)
 		{
-			System.out.println(">>>"+list.getCid());
+			System.out.println(">>> "+list.getCid());
 		}
 	}
 

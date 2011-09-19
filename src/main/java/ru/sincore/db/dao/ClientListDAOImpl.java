@@ -9,8 +9,6 @@ import org.slf4j.Marker;
 import ru.sincore.db.HibernateUtils;
 import ru.sincore.db.pojo.ClientListPOJO;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -102,71 +100,19 @@ public class ClientListDAOImpl implements ClientListDAO
 		Session session = HibernateUtils.getSessionFactory().openSession();
 		Transaction tx 	= session.getTransaction();
 
-		String query = 	"select accountFlyable, bas0Allowed,baseAllowed,cid,classMask,commandMask,currentIp,helpMask," +
-						"hideMe,hideShare,id,keyAuthAllowed,isKickable,lastIp,lastLogIn,lastMessage,lastNick,loginCount," +
-						"maximumTimeOnline,nickName,opChatAccess,overrideFull,overrideShare,overrideSpam,password,ping,realIp," +
-						"isReg,regDate,regOwner,renameable,txBytes,tigerAllowed,txBytes,ucmdAllowed" +
-						" from ClientListPOJO where isReg = :flag order by nickName,regDate";
+		String query = 	"from ClientListPOJO where isReg = :flag order by nickName,regDate";
 
 		try
 		{
 			tx.begin();
 
-			ArrayList<ClientListPOJO> data = new ArrayList<ClientListPOJO>();
-
 			Query request = session.createQuery(query).setParameter("flag",regOnly);
 
-			List<?> result = request.list();
+			List<ClientListPOJO> result = (List<ClientListPOJO>) request.list();
 
 			tx.commit();
 
-			for (Object obj : result)
-			{
-				ClientListPOJO pojo = new ClientListPOJO();
-
-				Object[] array = (Object[]) obj;
-
-				pojo.setAccountFlyable((Boolean) 	array[0]);
-				pojo.setBas0Allowed((Boolean)		array[1]);
-				pojo.setBaseAllowed((Boolean)		array[2]);
-				pojo.setCid((String)				array[3]);
-				pojo.setClassMask((Integer)			array[4]);
-				pojo.setCommandMask((byte[])		array[5]);
-				pojo.setCurrentIp((String)			array[6]);
-				pojo.setHelpMask((byte[])			array[7]);
-				pojo.setHideMe((Boolean)			array[8]);
-				pojo.setHideShare((Boolean)			array[9]);
-				pojo.setId((Long)					array[10]);
-				pojo.setKeyAuthAllowed((Boolean)	array[11]);
-				pojo.setKickable((Boolean)			array[12]);
-				pojo.setLastIp((String)				array[13]);
-				pojo.setLastLogIn((Date)			array[14]);
-				pojo.setLastMessage((String)		array[15]);
-				pojo.setLastNick((String)			array[16]);
-				pojo.setLoginCount((Long)			array[17]);
-				pojo.setMaximumTimeOnline((Long) 	array[18]);
-				pojo.setNickName((String)			array[19]);
-				pojo.setOpChatAccess((Boolean)		array[20]);
-				pojo.setOverrideFull((Boolean)		array[21]);
-				pojo.setOverrideShare((Boolean)		array[22]);
-				pojo.setOverrideSpam((Boolean)		array[23]);
-				pojo.setPassword((String)			array[24]);
-				pojo.setPing((Boolean)				array[25]);
-				pojo.setRealIp((String)				array[26]);
-				pojo.setReg((Boolean)				array[27]);
-				pojo.setRegDate((Date)				array[28]);
-				pojo.setRegOwner((String)			array[29]);
-				pojo.setRenameable((Boolean)		array[30]);
-				pojo.setRxBytes((Long)				array[31]);
-				pojo.setTigerAllowed((Boolean)		array[32]);
-				pojo.setTxBytes((Long)				array[33]);
-				pojo.setUcmdAllowed((Boolean)		array[34]);
-
-				data.add(pojo);
-
-			}
-
-			return data;
+			return result;
 
 		}catch (Exception ex)
 		{
