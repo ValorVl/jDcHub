@@ -110,7 +110,7 @@ public class SUP
         }
         if (state.equals("VERIFY") || state.equals("IDENTIFY"))
         {
-            new STAError(client, 200 + Constants.STA_INVALID_STATE, "SUP Invalid State.");
+            new STAError(client, 200 + Constants.STA_INVALID_STATE, "SUP Invalid state.");
             return;
         }
         command = command.substring(4);

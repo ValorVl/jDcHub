@@ -58,7 +58,7 @@ public class SCH
         {
             new STAError(client,
                          200 + Constants.STA_INVALID_STATE,
-                         "SCH Invalid State.",
+                         "SCH Invalid state.",
                          "FC",
                          command.substring(0, 4));
             return;

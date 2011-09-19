@@ -24,6 +24,7 @@ package ru.sincore;
 
 import org.apache.mina.core.future.WriteFuture;
 import org.apache.mina.core.session.IoSession;
+import ru.sincore.adc.State;
 import ru.sincore.banning.Ban;
 import ru.sincore.util.ADC;
 
@@ -87,7 +88,7 @@ public class ClientHandler
     public long LastCTM;
     public long LastINF;
 
-    public String State = "PROTOCOL";
+    public int state = State.PROTOCOL;
 
     public String RealIP;
 

@@ -57,7 +57,7 @@ public class MSG
         {
             new STAError(client,
                          200 + Constants.STA_INVALID_STATE,
-                         "MSG Invalid State.",
+                         "MSG Invalid state.",
                          "FC",
                          command.substring(0, 4));
             return;

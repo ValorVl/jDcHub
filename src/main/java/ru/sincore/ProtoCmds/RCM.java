@@ -57,7 +57,7 @@ public class RCM
         {
             new STAError(client,
                          100 + Constants.STA_INVALID_STATE,
-                         "RCM Invalid State.",
+                         "RCM Invalid state.",
                          "FC",
                          command.substring(0, 4));
             return;

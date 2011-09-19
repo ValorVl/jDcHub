@@ -61,7 +61,7 @@ public class RES
         {
             new STAError(client,
                          100 + Constants.STA_INVALID_STATE,
-                         "RES Invalid State.",
+                         "RES Invalid state.",
                          "FC",
                          command.substring(0, 4));
             return;

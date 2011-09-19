@@ -65,7 +65,7 @@ public class CTM
         {
             new STAError(client,
                          100 + Constants.STA_INVALID_STATE,
-                         "CTM Invalid State.",
+                         "CTM Invalid state.",
                          "FC",
                          command.substring(0, 4));
             return;

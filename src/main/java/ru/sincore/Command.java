@@ -32,6 +32,7 @@ import ru.sincore.Modules.Module;
 import ru.sincore.ProtoCmds.*;
 import ru.sincore.TigerImpl.Base32;
 import ru.sincore.TigerImpl.Tiger;
+import ru.sincore.adc.State;
 import ru.sincore.banning.BanList;
 import ru.sincore.i18n.Messages;
 import ru.sincore.util.ADC;
@@ -56,7 +57,7 @@ public class Command
 
     Client currentClient;
     String command;
-    String state;
+    int    state;
 
 
     private void sendUsersInfs()
@@ -137,7 +138,7 @@ public class Command
         currentClient.getClientHandler().sendFromBot(currentClient.getClientHandler().reg.HideMe ? "You are currently hidden." : "");
 
         currentClient.getClientHandler().LoggedAt = System.currentTimeMillis();
-        currentClient.getClientHandler().State = "NORMAL";
+        currentClient.getClientHandler().state = State.NORMAL;
 
 
         /** calling plugins...*/
@@ -192,7 +193,7 @@ public class Command
             if (aux.startsWith("ID"))//meaning we have the ID thingy
             {
 
-                if (!state.equals("PROTOCOL"))
+                if (state != State.PROTOCOL)
                 {
                     new STAError(currentClient, 100, "Can't change CID while connected.");
                     return;
@@ -213,7 +214,7 @@ public class Command
 
                 currentClient.getClientHandler().NI = aux.substring(2);
 
-                if (!state.equals("PROTOCOL"))
+                if (state != State.PROTOCOL)
                 {
                     if (currentClient.getClientHandler().reg.isreg)
                     {
@@ -225,7 +226,7 @@ public class Command
             }
             else if (aux.startsWith("PD"))//the PiD
             {
-                if (!state.equals("PROTOCOL"))
+                if (state != State.PROTOCOL)
                 {
                     new STAError(currentClient, 100, "Can't change PID while connected.");
                     return;
@@ -326,7 +327,7 @@ public class Command
             {
                 currentClient.getClientHandler().HN = aux.substring(2);
 
-                if (state.equals("NORMAL"))
+                if (state == State.NORMAL)
                 {
                     cur_inf = cur_inf + " HN" + currentClient.getClientHandler().HN;
                 }
@@ -387,7 +388,7 @@ public class Command
                 cur_inf = cur_inf + " " + aux;
             }
         }
-        if (state.equals("PROTOCOL"))
+        if (state == State.PROTOCOL)
         {
             if (currentClient.getClientHandler().ID == null)
             {
@@ -548,14 +549,14 @@ public class Command
 
         if (AccountsConfig.nickReserved(currentClient.getClientHandler().NI, currentClient.getClientHandler().ID))
         {
-            int x = (state.equals("PROTOCOL")) ? 200 : 100;
+            int x = (state == State.PROTOCOL) ? 200 : 100;
             new STAError(currentClient,
                          x + Constants.STA_NICK_TAKEN,
                          "Nick reserved. Please choose another.");
             return;
         }
         // now must check if hub is full...
-        if (state.equals("PROTOCOL")) //otherwise is already connected, no point in checking this
+        if (state == State.PROTOCOL) //otherwise is already connected, no point in checking this
         {
             /** must check the hideme var*/
             if (currentClient.getClientHandler().reg.HideMe)
@@ -585,7 +586,7 @@ public class Command
                 if (!ValidateField(currentClient.getClientHandler().EM))
                 {
                     new STAError(currentClient,
-                                 state.equals("PROTOCOL") ? 200 : 100,
+                                 state == State.PROTOCOL ? 200 : 100,
                                  "E-mail contains forbidden words.");
                     return;
                 }
@@ -598,7 +599,7 @@ public class Command
                 if (!ValidateField(currentClient.getClientHandler().DE))
                 {
                     new STAError(currentClient,
-                                 state.equals("PROTOCOL") ? 200 : 100,
+                                 state == State.PROTOCOL ? 200 : 100,
                                  "Description contains forbidden words");
                     return;
                 }
@@ -825,7 +826,7 @@ public class Command
             return;
         }
 
-        if (state.equals("PROTOCOL"))
+        if (state == State.PROTOCOL)
         {
             try
             {
@@ -890,7 +891,7 @@ public class Command
         }
         /*------------ok now must see if the pid is registered...---------------*/
 
-        if (state.equals("PROTOCOL"))
+        if (state == State.PROTOCOL)
         {
             if (currentClient.getClientHandler().reg.isreg)
             {
@@ -919,7 +920,7 @@ public class Command
                 byte[] finalTiger = myTiger.engineDigest();
                 currentClient.getClientHandler().RandomData = Base32.encode(finalTiger);
                 currentClient.getClientHandler().sendToClient("IGPA " + currentClient.getClientHandler().RandomData);
-                currentClient.getClientHandler().State = "VERIFY";
+                currentClient.getClientHandler().state = State.VERIFY;
                 return;
             }
             else
@@ -944,7 +945,7 @@ public class Command
                     currentClient.getClientHandler().RandomData = Base32.encode(finalTiger);
                     currentClient.getClientHandler().sendToClient("IGPA " + currentClient.getClientHandler().RandomData);
                     currentClient.getClientHandler().reg = k;
-                    currentClient.getClientHandler().State = "VERIFY";
+                    currentClient.getClientHandler().state = State.VERIFY;
                     return;
                 }
                 else if (ConfigLoader.MARK_REGISTRATION_ONLY)
@@ -958,7 +959,7 @@ public class Command
 
 
         //ok now must send to handler client the inf of all others
-        if (state.equals("PROTOCOL"))
+        if (state == State.PROTOCOL)
         {
             boolean ok = pushUser();
 
@@ -991,7 +992,7 @@ public class Command
                 //ok, he is ucmd ok, so
                 currentClient.getClientHandler().sendToClient("ICMD Test CT1 TTTest");
             }
-            currentClient.getClientHandler().State = "NORMAL";
+            currentClient.getClientHandler().state = State.NORMAL;
             currentClient.getClientHandler().validated = 1; //user is OK, logged in and cool.
             currentClient.getClientHandler().sendFromBot(ADC.MOTD);
 
@@ -1026,7 +1027,8 @@ public class Command
         if (command.substring(1).startsWith("INF"))
         {
 
-            if (state.equals("IDENTIFY") || state.equals("VERIFY"))
+            //if (state.equals("IDENTIFY") || state.equals("VERIFY"))
+            if ((state & (State.IDENTIFY | State.VERIFY)) != State.INVALID_STATE)
             {
                 new STAError(currentClient,
                              200 + Constants.STA_INVALID_STATE,
@@ -1149,7 +1151,7 @@ public class Command
             }
             if (command.charAt(0) != 'H')
             {
-                if (state.equals("NORMAL"))
+                if (state == State.NORMAL)
                 {
                     throw new CommandException("FAIL state:PROTOCOL reason:NOT BASE CLIENT");
                 }
@@ -1225,36 +1227,36 @@ public class Command
         /**********************SUP COMMAND******************************/
         if (command.substring(1).startsWith("SUP"))
         {
-            new SUP(currentClient, state, command);
+            new SUP(currentClient, State.toString(state), command);
         }
 
         /********************************MSG COMMAND************************************/
         if (command.substring(1).startsWith("MSG"))
         {
-            new MSG(currentClient, state, command);
+            new MSG(currentClient, State.toString(state), command);
         }
 
         if (command.substring(1).startsWith("SCH"))
         {
-            new SCH(currentClient, state, command);
+            new SCH(currentClient, State.toString(state), command);
         }
 
         if (command.substring(1).startsWith("STA"))
         {
-            new STA(currentClient, state, command);
+            new STA(currentClient, State.toString(state), command);
         }
 
         if (command.substring(1).startsWith("RES ")) //direct search result, only active to passive must send this
         {
-            new RES(currentClient, state, command);
+            new RES(currentClient, State.toString(state), command);
         }
         else if (command.substring(1).startsWith("CTM ")) //direct connect to me
         {
-            new CTM(currentClient, state, command);
+            new CTM(currentClient, State.toString(state), command);
         }
         else if (command.substring(1).startsWith("RCM ")) //reverse connect to me
         {
-            new RCM(currentClient, state, command);
+            new RCM(currentClient, State.toString(state), command);
         }
 
 
@@ -1295,7 +1297,7 @@ public class Command
         }
 
         this.command = command;
-        state = currentClient.getClientHandler().State;
+        state = currentClient.getClientHandler().state;
         HandleIssuedCommand();
     }
 

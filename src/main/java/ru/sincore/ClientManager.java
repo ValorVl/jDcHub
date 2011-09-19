@@ -1,5 +1,5 @@
 /*
- * UserManager.java
+ * ClientManager.java
  *
  * Created on 12 september 2011, 15:30
  *
@@ -119,11 +119,13 @@ public final class ClientManager
 
         // Remove all clientsByCID from client list
         clientsByCID.clear();
+        clientsByNick.clear();
+        clientsBySID.clear();
     }
 
     /**
-     * Return collection of clientsByCID
-     * @return collection of clientsByCID
+     * Return collection of clients
+     * @return collection of clients
      */
     public Collection<Client> getClients()
     {
@@ -144,6 +146,10 @@ public final class ClientManager
 
     public int getClientsCount()
     {
+        if (clientsByCID.size() != clientsByNick.size() ||
+            clientsByNick.size() != clientsBySID.size())
+            log.error("Sizes of client hashmaps not equal!");
+
         return clientsByCID.size();
     }
 
@@ -211,7 +217,9 @@ public final class ClientManager
         if (removedClient == null)
             log.debug("User with cid = \'" + client.getClientHandler().ID + "\' not in clientsByCID.");
         else
-            log.debug("User with cid = \'" + removedClient.getClientHandler().ID + "\' and nick = \'" + removedClient.getClientHandler().NI + "\' was removed.");
+            log.debug("User with cid = \'" + removedClient.getClientHandler().ID +
+                      "\' and nick = \'" + removedClient.getClientHandler().NI +
+                      "\' was removed.");
 
         return removedClient != null;
     }
