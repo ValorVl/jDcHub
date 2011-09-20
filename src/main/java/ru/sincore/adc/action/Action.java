@@ -63,25 +63,25 @@ public abstract class Action
     }
 
 
-    public Client getFromClient()
+    public Client getFromClient ()
     {
         return fromClient;
     }
 
 
-    public Client getToClient()
+    public Client getToClient ()
     {
         return toClient;
     }
 
 
-    public void setFromClient(Client fromClient)
+    public void setFromClient (Client fromClient)
     {
         this.fromClient = fromClient;
     }
 
 
-    public void setToClient(Client toClient)
+    public void setToClient (Client toClient)
     {
         this.toClient = toClient;
     }
@@ -95,11 +95,18 @@ public abstract class Action
         if ((availableContexts & context) == Context.INVALID_CONTEXT)
             return false;
 
+        if ((fromClient != null) &&
+            (availableStates & fromClient.getClientHandler().state) == State.INVALID_STATE)
+            return false;
+
         if ((toClient != null) &&
             (availableStates & toClient.getClientHandler().state) == State.INVALID_STATE)
             return false;
 
         if (!paramsAreValid)
+            return false;
+
+        if (!isInternallyValid())
             return false;
 
         return true;
@@ -111,5 +118,15 @@ public abstract class Action
     }
 
     public abstract String toString ();
-    protected abstract boolean parse (String args) throws STAException, CommandException;
+    /**
+     * Parse additional parameters.
+     * For incoming messages that means incoming string without
+     * 5 heading simbols containing message type, command and separator (space).
+     *
+     * @param params command parameters
+     * @return parsing status. True if parameters were parsed, False otherwise
+     * @throws CommandException
+     * @throws STAException
+     */
+    protected abstract boolean parse (String params) throws STAException, CommandException;
 }

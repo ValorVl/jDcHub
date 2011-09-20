@@ -1094,9 +1094,7 @@ public class Command
         }
 
         /************************PAS COMMAND****************************/
-        if (command.charAt(1) == 'P' &&
-            command.charAt(2) == 'A' &&
-            command.charAt(3) == 'S')
+        if (command.substring(1).startsWith("PAS"))
         {
 
             if (!currentClient.getClientHandler().reg.overridespam)

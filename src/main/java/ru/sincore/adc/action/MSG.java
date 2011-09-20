@@ -1,7 +1,7 @@
 /*
- * SID.java
+ * MSG.java
  *
- * Created on 16 september 2011, 13:45
+ * Created on 20 september 2011, 11:15
  *
  * Copyright (C) 2011 Alexey 'lh' Antonov
  *
@@ -30,42 +30,45 @@ import ru.sincore.adc.MessageType;
 import ru.sincore.adc.State;
 
 /**
- * Class for SID action.
+ * Class for MSG action.
  * Description look at <a href="http://adc.sourceforge.net/ADC.html#_actions">ADC Actions</a>
- * section 5.3.3
+ * section 5.3.5
  *
  * @author Alexey 'lh' Antonov
- * @since 2011-09-16
+ * @since 2011-09-20
  */
-public class SID extends Action
+public class MSG extends Action
 {
-    private static final Logger log = LoggerFactory.getLogger(SID.class);
+    private static final Logger log = LoggerFactory.getLogger(MSG.class);
 
 
-    private SID(MessageType messageType,
-           int context,
-           Client toClient)
+    private MSG(MessageType messageType, int context, Client fromClient, Client toClient)
     {
-        super(messageType, context, null, toClient);
+        super(messageType, context, fromClient, toClient);
 
-        // setup available contexts and states for this action
-        super.availableContexts = Context.F;
-        super.availableStates = State.PROTOCOL;
+        super.availableContexts = Context.F | Context.T;
+        super.availableStates   = State.NORMAL;
+    }
+
+
+    public MSG(MessageType messageType, int context, Client client)
+    {
+        this(messageType,
+             context,
+             (context == Context.F ? client : null),
+             (context == Context.T ? null : client));
     }
 
 
     /**
-     * This command assigns a SID to a user who is currently logging on.
+     * A chat message.
      *
      * @param messageType message type
      * @param context current command context
-     * @param client client to send sid
-     * @param params sid
+     * @param client client to send message or from message was recieved
+     * @param params message text, additional flags
      */
-    public SID(MessageType messageType,
-           int context,
-           Client client,
-           String params)
+    public MSG(MessageType messageType, int context, Client client, String params)
     {
         this(messageType, context, client);
         this.params = params;
@@ -74,25 +77,30 @@ public class SID extends Action
 
 
     @Override
-    protected boolean parse(String params)
+    public String toString()
     {
-        // TODO replace with right SID validation
-        if (params.length() != 4)
-            return false;
-
-        this.params = params;
-        paramsAreValid = true;
-
-        return true;
+        return null;
     }
 
 
     @Override
-    public String toString()
+    protected boolean parse(String params)
     {
-        if (paramsAreValid)
-            return messageType.toString() + "SID " + params;
-        else
-            return null;
+        switch (context)
+        {
+            case Context.F:
+                break;
+            case Context.T:
+                return parseIncomingMessage(params);
+            default:
+                break;
+        }
+
+        return false;
+    }
+
+    private boolean parseIncomingMessage(String params)
+    {
+        return false;
     }
 }
