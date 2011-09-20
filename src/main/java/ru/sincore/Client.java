@@ -27,7 +27,7 @@ import org.apache.log4j.Logger;
 import org.apache.mina.core.future.IoFutureListener;
 import org.apache.mina.core.future.WriteFuture;
 import ru.sincore.banning.BanList;
-import ru.sincore.util.ADC;
+import ru.sincore.util.AdcUtils;
 
 
 /**
@@ -91,7 +91,7 @@ public class Client implements IoFutureListener<WriteFuture>
                           Long kicktime,
                           String extraStr)
     {
-        kickmsg = ADC.retNormStr(kickmsg);
+        kickmsg = AdcUtils.retNormStr(kickmsg);
         if (!handler.reg.kickable)
         {
             whokicked.sendFromBot("" + handler.NI + " is unkickable.");
@@ -142,11 +142,11 @@ public class Client implements IoFutureListener<WriteFuture>
         handler.reg.TimeOnline += System.currentTimeMillis() - handler.LoggedAt;
         if (!kickmsg.equals(""))
         {
-            brcast = brcast + " MS" + ADC.retADCStr(kickmsg);
+            brcast = brcast + " MS" + AdcUtils.retADCStr(kickmsg);
         }
         if (!ConfigLoader.REDIRECT_URL.equals(""))
         {
-            brcast = brcast + " RD" + ADC.retADCStr(ConfigLoader.REDIRECT_URL);
+            brcast = brcast + " RD" + AdcUtils.retADCStr(ConfigLoader.REDIRECT_URL);
         }
         Broadcast.getInstance().broadcast(brcast);
 
@@ -170,7 +170,7 @@ public class Client implements IoFutureListener<WriteFuture>
 
     public void kickMeByBot(String kickmsg, int bantype, Long kicktime)
     {
-        kickmsg = ADC.retNormStr(kickmsg);
+        kickmsg = AdcUtils.retNormStr(kickmsg);
         if (!handler.reg.kickable)
         {
 
@@ -216,11 +216,11 @@ public class Client implements IoFutureListener<WriteFuture>
         handler.reg.TimeOnline += System.currentTimeMillis() - handler.LoggedAt;
         if (!kickmsg.equals(""))
         {
-            brcast = brcast + " MS" + ADC.retADCStr(kickmsg);
+            brcast = brcast + " MS" + AdcUtils.retADCStr(kickmsg);
         }
         if (!ConfigLoader.REDIRECT_URL.equals(""))
         {
-            brcast = brcast + " RD" + ADC.retADCStr(ConfigLoader.REDIRECT_URL);
+            brcast = brcast + " RD" + AdcUtils.retADCStr(ConfigLoader.REDIRECT_URL);
         }
         Broadcast.getInstance().broadcast(brcast);
 
@@ -286,7 +286,7 @@ public class Client implements IoFutureListener<WriteFuture>
                               " with CID " +
                               handler.ID +
                               " down from the sky.");
-        //  Main.Server.rewritebans ();
+        //  Main.server.rewritebans ();
     }
 
 

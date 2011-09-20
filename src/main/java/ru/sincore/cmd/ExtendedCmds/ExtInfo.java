@@ -25,7 +25,7 @@ package ru.sincore.cmd.ExtendedCmds;
 
 import ru.sincore.SessionManager;
 import ru.sincore.TigerImpl.Base32;
-import ru.sincore.util.ADC;
+import ru.sincore.util.AdcUtils;
 import ru.sincore.ClientHandler;
 import ru.sincore.Client;
 
@@ -51,10 +51,10 @@ public class ExtInfo
         {
             aux += ST.nextToken();
         }
-        aux = ADC.retADCStr(aux);
+        aux = AdcUtils.retADCStr(aux);
         Client tempx = null;
 
-        if (ADC.isIP(aux))//we have an IP address
+        if (AdcUtils.isIP(aux))//we have an IP address
         {
             //Client temp=Client.FirstClient.NextClient;
             String Nicklist = "";
@@ -128,7 +128,7 @@ public class ExtInfo
                     {
 
                         String blah11 = "User Info\nNick " +
-                                        ADC.retNormStr(temp.getClientHandler().NI) +
+                                        AdcUtils.retNormStr(temp.getClientHandler().NI) +
                                         "\nCID " +
                                         temp.getClientHandler().ID +
                                         "\nShare Size " +
@@ -136,11 +136,11 @@ public class ExtInfo
                                         " Bytes\n" +
                                         "Description " +
                                         (temp.getClientHandler().DE != null ?
-                                         ADC.retNormStr(temp.getClientHandler().DE) :
+                                         AdcUtils.retNormStr(temp.getClientHandler().DE) :
                                          "") +
                                         "\nTag ";
 
-                        String Tag = "<" + ADC.retNormStr(temp.getClientHandler().VE) + ",M:";
+                        String Tag = "<" + AdcUtils.retNormStr(temp.getClientHandler().VE) + ",M:";
                         if (temp.getClientHandler().ACTIVE == 1)
                         {
                             Tag = Tag + "A";

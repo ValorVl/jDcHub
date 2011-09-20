@@ -24,7 +24,7 @@ package ru.sincore.adc;
 
 /**
  * Contains all available contexts defined in protocol.
- * More info look at <a href="http://adc.sourceforge.net/ADC.html#_base_messages">ADC#Contexts</a>
+ * More info look at <a href="http://adc.sourceforge.net/AdcUtils.html#_base_messages">AdcUtils#Contexts</a>
  *
  * @author Alexey 'lh' Antonov
  * @since 2011-09-16
@@ -36,4 +36,5 @@ public class Context
     public static final int T = 0x2;
     public static final int C = 0x4;
     public static final int U = 0x8;
+
 }

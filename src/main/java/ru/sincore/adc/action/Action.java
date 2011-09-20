@@ -23,6 +23,8 @@
 package ru.sincore.adc.action;
 
 import ru.sincore.Client;
+import ru.sincore.Exceptions.CommandException;
+import ru.sincore.Exceptions.STAException;
 import ru.sincore.adc.Context;
 import ru.sincore.adc.MessageType;
 import ru.sincore.adc.State;
@@ -61,25 +63,25 @@ public abstract class Action
     }
 
 
-    public Client getFromClient ()
+    public Client getFromClient()
     {
         return fromClient;
     }
 
 
-    public Client getToClient ()
+    public Client getToClient()
     {
         return toClient;
     }
 
 
-    public void setFromClient (Client fromClient)
+    public void setFromClient(Client fromClient)
     {
         this.fromClient = fromClient;
     }
 
 
-    public void setToClient (Client toClient)
+    public void setToClient(Client toClient)
     {
         this.toClient = toClient;
     }
@@ -93,18 +95,11 @@ public abstract class Action
         if ((availableContexts & context) == Context.INVALID_CONTEXT)
             return false;
 
-        if ((fromClient != null) &&
-            (availableStates & fromClient.getClientHandler().state) == State.INVALID_STATE)
-            return false;
-
         if ((toClient != null) &&
             (availableStates & toClient.getClientHandler().state) == State.INVALID_STATE)
             return false;
 
         if (!paramsAreValid)
-            return false;
-
-        if (!isInternallyValid())
             return false;
 
         return true;
@@ -116,5 +111,5 @@ public abstract class Action
     }
 
     public abstract String toString ();
-    protected abstract boolean parse (String args);
+    protected abstract boolean parse (String args) throws STAException, CommandException;
 }

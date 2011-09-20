@@ -34,7 +34,7 @@ import ru.sincore.util.STAError;
 import java.util.StringTokenizer;
 
 /**
- * Basic implementation of ADC STA command, in client to hub context.
+ * Basic implementation of AdcUtils STA command, in client to hub context.
  *
  * @author Pietricica
  *
@@ -47,7 +47,7 @@ public class STA
     /**
      * Creates a new instance of STA
      * @param client reference to client
-     * @param state command state. See ADC protocol specs.
+     * @param state command state. See AdcUtils protocol specs.
      * @param command incoming command // TODO really?
      * @throws STAException exception, cause the something gone wrong =)
      */

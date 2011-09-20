@@ -4,7 +4,7 @@ package ru.sincore;
  *
  * Created on 03 martie 2007, 23:00
  *
- * DSHub ADC HubSoft
+ * DSHub AdcUtils HubSoft
  * Copyright (C) 2007,2008  Eugen Hristev
  *
  * This program is free software; you can redistribute it and/or
@@ -36,10 +36,8 @@ import org.slf4j.Marker;
 import ru.sincore.Modules.Modulator;
 import ru.sincore.adcs.CertManager;
 import ru.sincore.adcs.SSLManager;
-import ru.sincore.banning.bans;
-import ru.sincore.util.ADC;
 
-import java.io.*;
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 import java.util.Calendar;
@@ -61,7 +59,7 @@ public class HubServer extends Thread
 
     private final String marker = Marker.ANY_MARKER;
     /**
-     * Server main socket
+     * server main socket
      */
     public SSLManager sslmanager;
 
@@ -73,7 +71,7 @@ public class HubServer extends Thread
 
     public IoAcceptor acceptor;
     public Calendar   MyCalendar;
-
+	private BigTextManager bigTextManager = null;
 
     /**
      * Creates a new instance of HubServer
@@ -86,8 +84,6 @@ public class HubServer extends Thread
     @Override
     public void run()
     {
-
-
         sslmanager = new SSLManager(new CertManager());
         SslFilter sslfilter = sslmanager.getSSLFilter();
         if (sslfilter != null)
@@ -95,25 +91,10 @@ public class HubServer extends Thread
             adcs_ok = true;
         }
 
-        try
-        {
-            File MotdFile = new File(Main.myPath + "motd");
-            FileReader mr = new FileReader(MotdFile);
-            BufferedReader mb = new BufferedReader(mr);
-            Main.MOTD = "";
-            while ((Main.auxhelp = mb.readLine()) != null)
-            {
-                Main.MOTD = Main.MOTD + Main.auxhelp + "\n";
-            }
-            mb.close();
-            Main.MOTD = Main.MOTD.substring(0, Main.MOTD.length() - 1);
-            ADC.MOTD = Main.MOTD;
-        }
-        catch (IOException e)
-        {
-            Main.MOTD = ADC.MOTD;
+		// Get and send MOTD text
+		bigTextManager = new BigTextManager();
+        Main.MOTD = bigTextManager.getMOTD();
 
-        }
         restart = false;
 
         Modulator.findModules();
@@ -141,7 +122,7 @@ public class HubServer extends Thread
             else
             {
                 log.info("Couldn't find suitable keys and certificate.\nPlease load them or regenerate.\n" +
-                                "ADC Secure mode has been disabled.");
+                                "AdcUtils Secure mode has been disabled.");
                 ConfigLoader.ENABLE_ADCS = false;
             }
 
@@ -184,6 +165,7 @@ public class HubServer extends Thread
 
     public void shutdown()
     {
+		//TODO realize correctly shutdown server,notify clients, store all collection containers, drop buffers and caches.
         acceptor.unbind();
     }
 }

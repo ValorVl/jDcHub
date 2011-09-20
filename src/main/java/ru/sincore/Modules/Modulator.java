@@ -24,10 +24,7 @@
 package ru.sincore.Modules;
 
 
-import ru.sincore.Main;
-
 import java.io.File;
-import java.lang.NoClassDefFoundError;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -46,7 +43,6 @@ public final class Modulator
     public Modulator()
     {
 
-
     }
 
 
@@ -63,7 +59,7 @@ public final class Modulator
     {
 
         myModules.clear();
-        File curPath = new File((Main.myPath.equals("") ? "" : (Main.myPath + "/")) + "modules");
+        File curPath = new File("");
 
         File[] Modules = curPath.listFiles();
 

@@ -35,19 +35,19 @@ public class ConfigLoader
 
 	// General
 	// Big static text file storage, DB or FILE, if selected FILE, needed to specify file path
-	public static String	BIG_FILE_STORAGE; 				// Available DB and FILE; default FILE;
-	public static String	ABOUT_FILE_LOCATION;
-	public static String	ABOUT;
-	public static String	LICENSE_FILE_LOCATION;
-	public static String	MOTD_FILE_LOCATION;
-	public static String	RULES_FILE_LOCATION;
+	public static int		BIG_FILE_STORAGE; 				// Available DB and FILE; default FILE;
+	public static String	FILE_STORAGE_LOCATION;
+	public static String	ABOUT_FILE;
+	public static String	LICENSE_FILE;
+	public static String	MOTD_FILE;
+	public static String	RULES_FILE;
 
+	public static String	HUB_DEFAULT_LOCALE;			// Default en_US if client not present self locale, all messages must be show default locale
     public static String 	HUB_LISTEN;
     public static Integer 	HUB_PORT;
 	public static Integer 	MAX_USERS;
 	public static Integer   MAX_HUBS_USERS;
 	public static Integer	MAX_HUBS_REGISTERED;		// ?
-	public static String	HUB_DE;						// ?
 	public static Long 		MAX_SHARE_SIZE;
 	public static Long 		MIN_SHARE_SIZE;
 	public static Integer 	MAX_NICK_SIZE;
@@ -97,12 +97,13 @@ public class ConfigLoader
 	public static String 	REG_CHAT_DESCRIPTION;
     public static Boolean 	COMMAND_PM_RETURN;      // If true, return command result in private chat
 	public static Boolean   MARK_REGISTRATION_ONLY;	// Mark chat or command for registration users only
-	// ADC Extensions
+	// AdcUtils Extensions
+	public static String 	ADC_EXTENSION_LIST;		// space separated adc extension list, send in first message to connected client.
 	public static Boolean	ENABLE_ADCS;			// Enable or disable adcs extensions support;
 	public static Boolean	CERT_LOGIN;				// Mmm.. maybe it certificate authorisation ? - no forgot add in properties
 
 	/**
-	 * ADC Context configuration
+	 * AdcUtils Context configuration
 	 */
 
 	public static Integer 	ADC_BMSG;
@@ -181,8 +182,6 @@ public class ConfigLoader
 
             prop.load(buffInput);
 
-            _log.info("Load hub properties");
-
 			HUB_PORT											= Integer.parseInt(prop.getProperty("core.listen.port","411"));
 			HUB_LISTEN											= prop.getProperty("core.listen.network","0.0.0.0");
 			MAX_USERS											= Integer.parseInt(prop.getProperty("core.hub.max_users","1000"));
@@ -197,7 +196,6 @@ public class ConfigLoader
 			MAX_OP_IN_HUB										= Integer.parseInt(prop.getProperty("core.hub.max_op_in_chat","10"));
 			MAX_CHAT_MESSAGE_SIZE								= Integer.parseInt(prop.getProperty("core.hub.max_chat_message_size","100000"));
 			HUB_NAME											= prop.getProperty("core.hub.name","");
-			HUB_DE												= prop.getProperty("core.hub.de","");
 			HUB_DESCRIPTION										= prop.getProperty("core.hub.description","");
 			HUB_OWNER											= prop.getProperty("core.hub.owner","");
 			HUB_VERSION											= prop.getProperty("core.hub.version","");
@@ -232,6 +230,15 @@ public class ConfigLoader
 			MAX_HUBS_REGISTERED									= Integer.parseInt(prop.getProperty("core.hub.max_hubs_registered","10"));
 			OP_COMMAND_PREFIX									= prop.getProperty("core.hub.command.engine.op_prefix","!");
 			USER_COMMAND_PREFIX									= prop.getProperty("core.hub.command.engine.user_prefix","+");
+			BIG_FILE_STORAGE									= Integer.parseInt(prop.getProperty("core.hub.big_file_storage","0"));
+			ABOUT_FILE											= prop.getProperty("core.hub.about_file","about.%s.txt");
+			LICENSE_FILE										= prop.getProperty("core.hub.license_file","locense.%s.txt");
+			MOTD_FILE											= prop.getProperty("core.hub.motd_file","motd.%s.txt");
+			RULES_FILE											= prop.getProperty("core.hub.rules_file","rules.%s.txt");
+			FILE_STORAGE_LOCATION								= prop.getProperty("core.hub.file_storage_location","etc");
+			HUB_DEFAULT_LOCALE									= prop.getProperty("core.hub.default_locale","en_US");
+			ADC_EXTENSION_LIST									= prop.getProperty("core.hub.adc_extension_list","");
+
 
 
 			// B 	 Broadcast 	 			Hub must send message to all connected clients, including the sender of the message.
@@ -298,7 +305,6 @@ public class ConfigLoader
 			ADC_FSUP											= Integer.parseInt(prop.getProperty("ADC.FSUP","0"));
 			ADC_HSUP											= Integer.parseInt(prop.getProperty("ADC.HSUP","1"));
 
-			_log.info("All settings loaded successfully!");
 		 	buffInput.close();
         }
         catch (Exception e)

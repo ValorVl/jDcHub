@@ -3,7 +3,7 @@
  *
  * Created on 11 mai 2007, 18:59
  *
- * DSHub ADC HubSoft
+ * DSHub AdcUtils HubSoft
  * Copyright (C) 2007,2008  Eugen Hristev
  *
  * This program is free software; you can redistribute it and/or

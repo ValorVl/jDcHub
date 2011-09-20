@@ -24,7 +24,7 @@ package ru.sincore.adc;
 
 /**
  * Contains all available client states defined in protocol.
- * More info look at <a href="http://adc.sourceforge.net/ADC.html#_client_hub_communication">ADC#Client states</a>
+ * More info look at <a href="http://adc.sourceforge.net/AdcUtils.html#_client_hub_communication">AdcUtils#Client states</a>
  *
  * @author Alexey 'lh' Antonov
  * @since 2011-09-16

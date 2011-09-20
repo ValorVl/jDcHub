@@ -92,7 +92,7 @@ public void onConnect(ClientHandler cur_client)
     	 return;
      String cmd= ST.nextToken(); // this should be the actual command
      if(cmd.startsWith("+feed"))
-     new  feed(cur_client,ADC.retNormStr(cmd.substring(1)),true);
+     new  feed(cur_client, AdcUtils.retNormStr(cmd.substring(1)),true);
      if(cmd.startsWith("+help"))
          cur_client.sendFromBot("[rss feed: ] RSS Feed Module Help:\n"+
                  "Available commands:\nfeed -- a rss feed tool, use with no parameters for details.");

@@ -16,6 +16,9 @@ public class BigStaticDataPOJO implements Serializable
 	@Column(name = "data",columnDefinition = "LONGBLOB",nullable = false)
 	private byte[] data;
 
+	@Column(name = "locale",length = 5,nullable = false)
+	private String locale;
+
 	public Long getId()
 	{
 		return id;
@@ -44,5 +47,15 @@ public class BigStaticDataPOJO implements Serializable
 	public void setData(byte[] data)
 	{
 		this.data = data;
+	}
+
+	public String getLocale()
+	{
+		return locale;
+	}
+
+	public void setLocale(String locale)
+	{
+		this.locale = locale;
 	}
 }

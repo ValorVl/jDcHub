@@ -1,6 +1,6 @@
 package ru.sincore;
 
-import ru.sincore.util.ADC;
+import ru.sincore.util.AdcUtils;
 
 public class Nick
 {
@@ -10,11 +10,11 @@ public class Nick
         if (!nick.matches(ConfigLoader.NICK_CHAR))
 		     return false;
 
-		 if (ADC.isIP(nick))
+		 if (AdcUtils.isIP(nick))
         {
             return false;
         }
-        if (ADC.isCID(nick))
+        if (AdcUtils.isCID(nick))
         {
             return false;
         }

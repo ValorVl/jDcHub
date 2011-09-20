@@ -24,7 +24,7 @@
 package ru.sincore.ProtoCmds;
 
 import ru.sincore.Exceptions.STAException;
-import ru.sincore.util.ADC;
+import ru.sincore.util.AdcUtils;
 import ru.sincore.util.Constants;
 import ru.sincore.util.STAError;
 import ru.sincore.*;
@@ -32,7 +32,7 @@ import ru.sincore.*;
 import java.util.StringTokenizer;
 
 /**
- * Implementation of the MSG command in ADC protocol.
+ * Implementation of the MSG command in AdcUtils protocol.
  *
  * @author Pietricica
  *
@@ -45,7 +45,7 @@ public class MSG
     /**
      * Creates a new instance of MSG
      * @param client reference to client
-     * @param state command state. See ADC protocol specs.
+     * @param state command state. See AdcUtils protocol specs.
      * @param command incoming command // TODO realy?
      * @throws STAException exception, cause the something gone wrong =)
      */
@@ -208,9 +208,9 @@ public class MSG
                     {
                         //System.out.println("flag contine 32");
                         command = command.replace(message,
-                                                                ADC.retADCStr(Main.listaBanate
-                                                                                      .getReplAt(
-                                                                                              index)));
+                                                                AdcUtils.retADCStr(Main.listaBanate
+																						   .getReplAt(
+																								   index)));
 
                     }
                     what /= 2;
@@ -331,20 +331,20 @@ public class MSG
                      message.toLowerCase().startsWith("+adc")) &&
                     (message.length() <= 4 || message.toLowerCase().charAt(4) != 's'))//adc adv config panel
                 {
-                    cur_client.sendFromBot("[adc:] " + ADC.retNormStr(message));
+                    cur_client.sendFromBot("[adc:] " + AdcUtils.retNormStr(message));
                     //new ADCConfig(cur_client, message);
 
                 }
                 else if (message.toLowerCase().startsWith("!cfg") ||
                          message.toLowerCase().startsWith("+cfg"))//config settings
                 {
-                    cur_client.sendFromBot("[config:] " + ADC.retNormStr(message));
+                    cur_client.sendFromBot("[config:] " + AdcUtils.retNormStr(message));
                     new CommandParser(client, message);
 
                 }
                 else
                 {
-                    cur_client.sendFromBot("[command:] " + ADC.retNormStr(message));
+                    cur_client.sendFromBot("[command:] " + AdcUtils.retNormStr(message));
                     new CommandParser(client, message);
 
                 }
@@ -406,20 +406,20 @@ public class MSG
                     if (message.toLowerCase().startsWith("!adc") ||
                         message.toLowerCase().startsWith("+adc"))//adc adv config panel
                     {
-                        cur_client.sendFromBot("[adc:] " + ADC.retNormStr(message));
+                        cur_client.sendFromBot("[adc:] " + AdcUtils.retNormStr(message));
                         //new ADCConfig(cur_client, message);
 
                     }
                     else if (message.toLowerCase().startsWith("!cfg") ||
                              message.toLowerCase().startsWith("+cfg"))//config settings
                     {
-                        cur_client.sendFromBot("[config:] " + ADC.retNormStr(message));
+                        cur_client.sendFromBot("[config:] " + AdcUtils.retNormStr(message));
                         new CommandParser(client, message);
 
                     }
                     else
                     {
-                        cur_client.sendFromBot("[command:] " + ADC.retNormStr(message));
+                        cur_client.sendFromBot("[command:] " + AdcUtils.retNormStr(message));
                         new CommandParser(client, message);
 
                     }
@@ -498,7 +498,7 @@ public class MSG
                 if (cur_client.reg.isreg && message.charAt(0) == '!' ||
                     cur_client.reg.isreg && message.charAt(0) == '+') //ok.. command mode.
                 {
-                    cur_client.sendFromBot("[command:] " + ADC.retNormStr(message));
+                    cur_client.sendFromBot("[command:] " + AdcUtils.retNormStr(message));
                     new CommandParser(client, message);
                 }
             }

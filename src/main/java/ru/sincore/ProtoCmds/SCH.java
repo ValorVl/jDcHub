@@ -32,7 +32,7 @@ import ru.sincore.util.STAError;
 import java.util.StringTokenizer;
 
 /**
- * Basic implementation of ADC SCH command.
+ * Basic implementation of AdcUtils SCH command.
  *
  * @author Pietricica
  *
@@ -45,7 +45,7 @@ public class SCH
     /**
      * Creates a new instance of SCH
      * @param client reference to client
-     * @param state command state. See ADC protocol specs.
+     * @param state command state. See AdcUtils protocol specs.
      * @param command incoming command // TODO realy?
      * @throws STAException exception, cause the something gone wrong =)
      */

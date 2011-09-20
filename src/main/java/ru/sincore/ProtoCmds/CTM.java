@@ -47,7 +47,7 @@ public class CTM
     /**
      * Creates a new instance of CTM
      * @param client reference to client
-     * @param state command state. See ADC protocol specs.
+     * @param state command state. See AdcUtils protocol specs.
      * @param command incoming command // TODO realy?
      * @throws STAException exception, cause the something gone wrong =)
      */

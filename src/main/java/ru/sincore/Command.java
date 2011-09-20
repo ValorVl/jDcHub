@@ -4,7 +4,7 @@ package ru.sincore;
  *
  * Created on 06 martie 2007, 16:20
  *
- * DSHub ADC HubSoft
+ * DSHub AdcUtils HubSoft
  * Copyright (C) 2007,2008  Eugen Hristev
  *
  * This program is free software; you can redistribute it and/or
@@ -35,14 +35,14 @@ import ru.sincore.TigerImpl.Tiger;
 import ru.sincore.adc.State;
 import ru.sincore.banning.BanList;
 import ru.sincore.i18n.Messages;
-import ru.sincore.util.ADC;
+import ru.sincore.util.AdcUtils;
 import ru.sincore.util.Constants;
 import ru.sincore.util.STAError;
 
 import java.util.StringTokenizer;
 
 /**
- * Provides a parsing for each ADC command received from client, and makes the states transitions
+ * Provides a parsing for each AdcUtils command received from client, and makes the states transitions
  * Updates all information and ensures stability.
  *
  * @author Eugen Hristev
@@ -58,6 +58,7 @@ public class Command
     Client currentClient;
     String command;
     int    state;
+	private BigTextManager bigTextManager = new BigTextManager();
 
 
     private void sendUsersInfs()
@@ -121,20 +122,21 @@ public class Command
         currentClient.getClientHandler().sendToClient("BINF DCBA ID" +
 															  ConfigLoader.SECURITY_CID +
 															  " NI" +
-															  ADC.retADCStr(ConfigLoader.BOT_CHAT_NAME)
+															  AdcUtils.retADCStr(ConfigLoader.BOT_CHAT_NAME)
 															  +
 															  " CT5 DE" +
-															  ADC.retADCStr(ConfigLoader.BOT_CHAT_DESCRIPTION));
+															  AdcUtils.retADCStr(ConfigLoader.BOT_CHAT_DESCRIPTION));
 		log.info(ConfigLoader.SECURITY_CID);
         currentClient.getClientHandler().putOpchat(true);
         currentClient.getClientHandler().sendToClient(currentClient.getClientHandler().getINF());  //sending inf about itself too
+
 
 
         //ok now must send INF to all clientsByCID
         Broadcast.getInstance().broadcast(currentClient.getClientHandler().getINF(), currentClient);
         currentClient.getClientHandler().validated = 1; //user is OK, logged in and cool.
         currentClient.getClientHandler().reg.LastLogin = System.currentTimeMillis();
-        currentClient.getClientHandler().sendFromBot(ADC.MOTD);
+        currentClient.getClientHandler().sendFromBot(bigTextManager.getMOTD());
         currentClient.getClientHandler().sendFromBot(currentClient.getClientHandler().reg.HideMe ? "You are currently hidden." : "");
 
         currentClient.getClientHandler().LoggedAt = System.currentTimeMillis();
@@ -146,7 +148,7 @@ public class Command
         {
             myMod.onConnect(currentClient.getClientHandler());
         }
-        //handler.sendFromBot( ADC.MOTD);
+        //handler.sendFromBot( AdcUtils.MOTD);
         currentClient.getClientHandler().can_receive_cmds = true;
 
 
@@ -871,7 +873,7 @@ public class Command
         {
             new STAError(currentClient,
                          200 + Constants.STA_GENERIC_PROTOCOL_ERROR,
-                         "Your client uses a very old ADC version. Please update in order to connect to this hub. You can get a new version usually by visiting the developer's webpage from Help/About menu.");
+                         "Your client uses a very old AdcUtils version. Please update in order to connect to this hub. You can get a new version usually by visiting the developer's webpage from Help/About menu.");
         }
 
 
@@ -975,10 +977,10 @@ public class Command
             currentClient.getClientHandler().sendToClient("BINF DCBA ID" +
 																  ConfigLoader.SECURITY_CID +
 																  " NI" +
-																  ADC.retADCStr(ConfigLoader.BOT_CHAT_NAME)
+																  AdcUtils.retADCStr(ConfigLoader.BOT_CHAT_NAME)
 																  +
 																  " CT5 DE" +
-																  ADC.retADCStr(ConfigLoader.BOT_CHAT_DESCRIPTION));
+																  AdcUtils.retADCStr(ConfigLoader.BOT_CHAT_DESCRIPTION));
 
             currentClient.getClientHandler().putOpchat(true);
             currentClient.getClientHandler().sendToClient(currentClient.getClientHandler().getINF());  //sending inf about itself too
@@ -994,7 +996,7 @@ public class Command
             }
             currentClient.getClientHandler().state = State.NORMAL;
             currentClient.getClientHandler().validated = 1; //user is OK, logged in and cool.
-            currentClient.getClientHandler().sendFromBot(ADC.MOTD);
+            currentClient.getClientHandler().sendFromBot(bigTextManager.getMOTD());
 
             /** calling plugins...*/
             for (Module myMod : Modulator.myModules)
@@ -1009,7 +1011,7 @@ public class Command
 
 
     /**
-     * Main command handling function, ADC specific.
+     * Main command handling function, AdcUtils specific.
      */
     void HandleIssuedCommand()
             throws CommandException, STAException
@@ -1201,7 +1203,7 @@ public class Command
             {
                 currentClient.getClientHandler().sendToClient("IMSG Authenticated.");
 
-                currentClient.getClientHandler().sendFromBot(ADC.MOTD);
+                currentClient.getClientHandler().sendFromBot(bigTextManager.getMOTD());
 
                 //System.out.println ("pwla");
                 currentClient.getClientHandler().reg.LastNI = currentClient.getClientHandler().NI;

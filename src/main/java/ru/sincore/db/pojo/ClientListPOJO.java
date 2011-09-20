@@ -192,9 +192,9 @@ public class ClientListPOJO implements Serializable
 	private byte[]		helpMask;
 
 	/**
-	 *  Column "ping" indicates if client is a pinger a.k.a. PING extension
+	 *  Column "isPing" indicates if client is a pinger a.k.a. PING extension
 	 */
-	@Column(name = "ping",columnDefinition = "TINYINT(1) DEFAULT 0",nullable = false)
+	@Column(name = "isPing",columnDefinition = "TINYINT(1) DEFAULT 0",nullable = false)
 	private Boolean		ping = false;
 
 	/**
@@ -232,6 +232,9 @@ public class ClientListPOJO implements Serializable
 	 */
 	@Column(name = "login_count", columnDefinition = "INTEGER DEFAULT 0")
 	private Long		loginCount = 0L;
+
+	@Column(name = "locale",length = 5,nullable = true)
+	private String locale;
 
 	public Long getId()
 	{
@@ -581,5 +584,15 @@ public class ClientListPOJO implements Serializable
 	public void setMaximumTimeOnline(Long maximumTimeOnline)
 	{
 		this.maximumTimeOnline = maximumTimeOnline;
+	}
+
+	public String getLocale()
+	{
+		return locale;
+	}
+
+	public void setLocale(String locale)
+	{
+		this.locale = locale;
 	}
 }

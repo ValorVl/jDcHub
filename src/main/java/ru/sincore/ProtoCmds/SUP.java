@@ -28,15 +28,13 @@ import ru.sincore.ClientHandler;
 import ru.sincore.ConfigLoader;
 import ru.sincore.Exceptions.CommandException;
 import ru.sincore.Exceptions.STAException;
-import ru.sincore.Main;
-import ru.sincore.util.ADC;
 import ru.sincore.util.Constants;
 import ru.sincore.util.STAError;
 
 import java.util.StringTokenizer;
 
 /**
- * Implementation of the ADC SUP command, feature checker of clients.
+ * Implementation of the AdcUtils SUP command, feature checker of clients.
  *
  * @author Pietricica
  *
@@ -49,7 +47,7 @@ public class SUP
     /**
      * Creates a new instance of SUP
      * @param client reference to client
-     * @param state command state. See ADC protocol specs.
+     * @param state command state. See AdcUtils protocol specs.
      * @param command incoming command // TODO realy?
      * @throws STAException exception, cause the something gone wrong =)
      * @throws CommandException exception, cause the something gone wrong =)
@@ -144,7 +142,7 @@ public class SUP
             }
             else if (aux.startsWith("PIN") && aux.length() == 4)
             {
-                cur_client.ping = enable;
+                cur_client.isPing = enable;
             }
             else if (aux.startsWith("UCM") && aux.length() == 4)
             {
@@ -158,18 +156,18 @@ public class SUP
         if (cur_client.bas0)
         {
             //System.out.println("bas0");
-            /* handler. sendToClient(ADC.Init);
+            /* handler. sendToClient(AdcUtils.Init);
 
 
-              handler.sendToClient(ADC.ISID+" "+handler.SessionID);
+              handler.sendToClient(AdcUtils.ISID+" "+handler.SessionID);
              if(Vars.HubDE.equals (""))
-                 handler.sendToClient("IINF CT32 VE"+ADC.retADCStr (Vars.HubVersion)+" NI"+ADC.retADCStr(Vars.HubName));
+                 handler.sendToClient("IINF CT32 VE"+AdcUtils.retADCStr (Vars.HubVersion)+" NI"+AdcUtils.retADCStr(Vars.HubName));
              else
-                handler. sendToClient("IINF CT32 VE"+ADC.retADCStr (Vars.HubVersion)+" NI"+ADC.retADCStr(Vars.HubName)+ " DE"+ADC.retADCStr(Vars.HubDE));
+                handler. sendToClient("IINF CT32 VE"+AdcUtils.retADCStr (Vars.HubVersion)+" NI"+AdcUtils.retADCStr(Vars.HubName)+ " DE"+AdcUtils.retADCStr(Vars.HubDE));
             */
             new STAError(client,
                          100 + Constants.STA_GENERIC_PROTOCOL_ERROR,
-                         "Your client uses a very old ADC version. Please update in order to connect to this hub. You can get a new version usually by visiting the developer's webpage from Help/About menu.");
+                         "Your client uses a very old AdcUtils version. Please update in order to connect to this hub. You can get a new version usually by visiting the developer's webpage from Help/About menu.");
         }
 
         if (cur_client.base == 0)
@@ -195,35 +193,35 @@ public class SUP
         }
 
 
-        if (state.equals("PROTOCOL"))
-        {
-            cur_client.sendToClient(ADC.Init);
-
-
-            cur_client.sendToClient(ADC.ISID + " " + cur_client.SessionID);
-            cur_client.sendToClient("IINF CT32 VE" +
-                                    ADC.retADCStr(ConfigLoader.HUB_VERSION) +
-                                    " NI" +
-                                    ADC.retADCStr(ConfigLoader.HUB_NAME) +
-                                    // if HUB_DE is not empty, return it
-                                    (!ConfigLoader.HUB_DE.isEmpty() ?
-                                     " DE" + ADC.retADCStr(ConfigLoader.HUB_DE) :
-                                     "") +
-                                    // if client is PINGer than return PingString else empty string
-                                    (cur_client.ping ? ADC.getPingString() : ""));
-
-            cur_client.sendToClient("ISTA 000 " +
-                                    // TODO replace String#replace() usage by normal external function
-                                    ConfigLoader.HUB_GREETING.replace(" ", "\\s") +
-                                    (ConfigLoader.ENABLE_ADCS ? "\\sin\\sADC\\sSecure\\smode" :
-                                     "") +
-                                    ".\nISTA 000 Hub\\sis\\sup\\ssince\\s" +
-                                    Main.Server
-                                            .MyCalendar
-                                            .getTime()
-                                            .toString()
-                                            .replaceAll(" ", "\\\\s"));
-        }
-    }
+//        if (state.equals("PROTOCOL"))
+//        {
+//            cur_client.sendToClient(AdcUtils.Init);
+//
+//
+//            cur_client.sendToClient(AdcUtils.ISID + " " + cur_client.SessionID);
+//            cur_client.sendToClient("IINF CT32 VE" +
+//                                    AdcUtils.retADCStr(ConfigLoader.HUB_VERSION) +
+//                                    " NI" +
+//                                    AdcUtils.retADCStr(ConfigLoader.HUB_NAME) +
+//                                    // if HUB_DE is not empty, return it
+//                                    (!ConfigLoader.HUB_DE.isEmpty() ?
+//                                     " DE" + AdcUtils.retADCStr(ConfigLoader.HUB_DE) :
+//                                     "") +
+//                                    // if client is PINGer than return PingString else empty string
+//                                    (cur_client.isPing ? AdcUtils.getPingString() : ""));
+//
+//            cur_client.sendToClient("ISTA 000 " +
+//                                    // TODO replace String#replace() usage by normal external function
+//                                    ConfigLoader.HUB_GREETING.replace(" ", "\\s") +
+//                                    (ConfigLoader.ENABLE_ADCS ? "\\sin\\sAdcUtils\\sSecure\\smode" :
+//                                     "") +
+//                                    ".\nISTA 000 Hub\\sis\\sup\\ssince\\s" +
+//                                    Main.server
+//                                            .MyCalendar
+//                                            .getTime()
+//                                            .toString()
+//                                            .replaceAll(" ", "\\\\s"));
+//        }
+   }
 
 }

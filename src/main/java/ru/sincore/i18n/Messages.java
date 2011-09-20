@@ -44,6 +44,7 @@ public class Messages
 	public static String BAN_MESSAGE;
 	public static String HUB_FULL_MESSAGE;
 	public static String SEARCH_SPAM_MESSAGE;
+	public static String TIGER_ERROR;
 
 	//Empty constructor
 	Messages(){}
@@ -101,6 +102,7 @@ public class Messages
 
 			REG_MESSAGE 			= messages.getProperty("core.reg_message");
 			SEARCH_SPAM_MESSAGE		= messages.getProperty("core.search_spam_detected");
+			TIGER_ERROR				= messages.getProperty("tiger.error");
 
 		} catch (Exception ex)
 		{

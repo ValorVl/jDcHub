@@ -26,24 +26,9 @@ import org.apache.mina.core.future.WriteFuture;
 import org.apache.mina.core.session.IoSession;
 import ru.sincore.adc.State;
 import ru.sincore.banning.Ban;
-import ru.sincore.util.ADC;
+import ru.sincore.util.AdcUtils;
 
 import java.util.Queue;
-
-
-class ClientFailedException extends Exception
-{
-    ClientFailedException()
-    {
-
-    }
-
-
-    ClientFailedException(String s)
-    {
-        super(s);
-    }
-}
 
 /**
  * Main client class, keeps all info regarding a client.
@@ -184,6 +169,7 @@ public class ClientHandler
     public String TO;
     /**
      * Client (user) type, 1=bot, 2=registered user, 4=operator,
+     * <p/>
      * 8=super user, 16=hub owner, 32=hub (used when the hub sends an INF about itself).
      * Multiple types are specified by adding the numbers together.
      */
@@ -222,15 +208,14 @@ public class ClientHandler
     public static int user_count = 0;
     public        int kicked     = 0;
 
-    /**
-     * Unique session ID
-     * SID is unique in one hub
-     */
     public String SessionID;
+    byte[] sid;
     /**
      * indicates if client is a pinger a.k.a. PING extension
      */
-    public boolean ping;
+    public boolean isPing;
+
+
     /**
      * indicates if client supports UCMD messages
      */
@@ -243,6 +228,7 @@ public class ClientHandler
      * indicates if client supports old BAS0 messages
      */
     public boolean bas0;
+
     /**
      * if client supports TIGER hashes or not
      */
@@ -265,6 +251,7 @@ public class ClientHandler
         ClientHandler.user_count++;
         base = 0;
         ucmd = 0;
+        sid = null;
         myban = null;
         LastChatMsg = 0;
         LastCTM = 0L;
@@ -465,13 +452,13 @@ public class ClientHandler
         }
         if (this.validated == 1)
         {
-            if (can_receive_cmds && ConfigLoader.COMMAND_PM_RETURN)
+            if (can_receive_cmds && ConfigLoader.COMMAND_PM_RETURN == true)
             {
                 sendFromBotPM(text);
             }
             else
             {
-                this.sendToClient("EMSG DCBA " + this.SessionID + " " + ADC.retADCStr(text));
+                this.sendToClient("EMSG DCBA " + this.SessionID + " " + AdcUtils.retADCStr(text));
             }
         }
     }
@@ -484,7 +471,7 @@ public class ClientHandler
             this.sendToClient("EMSG DCBA " +
                               this.SessionID +
                               " " +
-                              ADC.retADCStr(text) +
+                              AdcUtils.retADCStr(text) +
                               " PMDCBA");
         }
     }
@@ -499,9 +486,9 @@ public class ClientHandler
                 this.sendToClient("BINF ABCD ID" +
                                   ConfigLoader.OP_CHAT_CID +
                                   " NI" +
-                                  ADC.retADCStr(ConfigLoader.OP_CHAT_NAME) +
+                                  AdcUtils.retADCStr(ConfigLoader.OP_CHAT_NAME) +
                                   " CT5 DE" +
-                                  ADC.retADCStr(ConfigLoader.OP_CHAT_DESCRIPTION));
+                                  AdcUtils.retADCStr(ConfigLoader.OP_CHAT_DESCRIPTION));
             }
         }
         else

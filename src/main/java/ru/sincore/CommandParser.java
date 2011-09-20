@@ -31,7 +31,7 @@ import ru.sincore.adcs.AdcsCommand;
 import ru.sincore.banning.BanList;
 import ru.sincore.cmd.*;
 import ru.sincore.cmd.ExtendedCmds.*;
-import ru.sincore.util.ADC;
+import ru.sincore.util.AdcUtils;
 import ru.sincore.util.TimeConv;
 
 import java.util.Calendar;
@@ -58,6 +58,7 @@ public class CommandParser
     List<String> history;
     boolean done = false;
 
+	private BigTextManager bigTextManager = new BigTextManager();
 
     /**
      * Creates a new instance of CommandParser
@@ -89,7 +90,7 @@ public class CommandParser
 
         String STR = command;
         String NI = client.getClientHandler().NI;
-        String recvbuf = ADC.retNormStr(command.substring(1));
+        String recvbuf = AdcUtils.retNormStr(command.substring(1));
 
         for (Module myMod : Modulator.myModules)
         {
@@ -132,7 +133,7 @@ public class CommandParser
     public void runx()
     {
 
-        String recvbuf = ADC.retNormStr(command.substring(1));
+        String recvbuf = AdcUtils.retNormStr(command.substring(1));
         //	String STR = command;
         //	String NI = handler.NI;
 
@@ -148,9 +149,9 @@ public class CommandParser
             }
 
             client.getClientHandler().sendFromBot("Closing down hub...");
-            //	Main.Server.rewriteregs();
-            //	Main.Server.rewriteconfig();
-            //	Main.Server.rewritebans();
+            //	Main.server.rewriteregs();
+            //	Main.server.rewriteconfig();
+            //	Main.server.rewritebans();
             //save Banned Words List
             //Main.listaBanate.printFile(Main.myPath + "banwlist.txt");
 
@@ -182,10 +183,10 @@ public class CommandParser
 
             // TODO remove this crapy code !!!
             client.dropMe(client.getClientHandler());
-            //Main.Server.rewriteregs();
-            //Main.Server.rewriteconfig();
-            //Main.Server.rewritebans();
-            //Main.Server.restart = true;
+            //Main.server.rewriteregs();
+            //Main.server.rewriteconfig();
+            //Main.server.rewritebans();
+            //Main.server.restart = true;
             //AccountsConfig.First = null;
             //	BanList.First = null;
 
@@ -709,7 +710,7 @@ public class CommandParser
                 done = true;
                 return;
             }
-            StringTokenizer ST = new StringTokenizer(ADC.retNormStr(recvbuf));
+            StringTokenizer ST = new StringTokenizer(AdcUtils.retNormStr(recvbuf));
             ST.nextToken();
             String aux = "";
             while (ST.hasMoreTokens())
@@ -720,7 +721,7 @@ public class CommandParser
             {
                 aux = aux.substring(0, aux.length() - 1);
             }
-            aux = ADC.retADCStr(aux);
+            aux = AdcUtils.retADCStr(aux);
             if (aux.length() < ConfigLoader.MIN_NICK_SIZE)
             {
                 {
@@ -810,11 +811,11 @@ public class CommandParser
                 done = true;
                 return;
             }
-            //handler.sendFromBot(""+ADC.retADCStr("Sorry but renaming features are temporary disabled until DC++ has UCMD's ( because !rename mister bla new nick has 4 entities and its quite hard to guess what is first nick and what is 2nd nick."));
+            //handler.sendFromBot(""+AdcUtils.retADCStr("Sorry but renaming features are temporary disabled until DC++ has UCMD's ( because !rename mister bla new nick has 4 entities and its quite hard to guess what is first nick and what is 2nd nick."));
             StringTokenizer ST = new StringTokenizer(recvbuf);
             ST.nextToken();
             String aux = ST.nextToken(); //the nick to rename;
-            // aux=ADC.retADCStr(aux);
+            // aux=AdcUtils.retADCStr(aux);
             for (Client temp : SessionManager.getUsers())
             {
                 if (temp.getClientHandler().validated == 1)
@@ -973,7 +974,7 @@ public class CommandParser
                 done = true;
                 return;
             }
-            StringTokenizer ST = new StringTokenizer(ADC.retNormStr(recvbuf));
+            StringTokenizer ST = new StringTokenizer(AdcUtils.retNormStr(recvbuf));
             ST.nextToken();
             if (!ST.hasMoreTokens())
             {
@@ -984,7 +985,7 @@ public class CommandParser
             String aux = ST.nextToken(); //the thing to unban;
             //al right,now must check if that is a nick, cid or ip
             //first if its a cid...
-            aux = ADC.retADCStr(aux);
+            aux = AdcUtils.retADCStr(aux);
             try
             {
                 Base32.decode(aux);
@@ -1010,7 +1011,7 @@ public class CommandParser
             {
                 //ok its not a cid, lets check if its some IP address...
                 client.getClientHandler().sendFromBot("Not a CID, Searching...");
-                if (ADC.isIP(aux))
+                if (AdcUtils.isIP(aux))
                 {
                     client.getClientHandler().sendFromBot("Is IP ...checking if banned...");
                     if (BanList.delban(2, aux))
@@ -1052,7 +1053,7 @@ public class CommandParser
                 done = true;
                 return;
             }
-            StringTokenizer ST = new StringTokenizer(ADC.retNormStr(recvbuf));
+            StringTokenizer ST = new StringTokenizer(AdcUtils.retNormStr(recvbuf));
             ST.nextToken();
             if (!ST.hasMoreTokens())
             {
@@ -1060,7 +1061,7 @@ public class CommandParser
                 return;
             }
             String aux = ST.nextToken(); //the thing to Ban;
-            aux = ADC.retADCStr(aux);
+            aux = AdcUtils.retADCStr(aux);
             //al right,now must check if that is a nick, cid or ip
             //first if its a cid...
             String reason = "";
@@ -1074,9 +1075,9 @@ public class CommandParser
             {
                 reason = reason.substring(0, reason.length() - 1);
             }
-            reason = ADC.retADCStr(reason);
+            reason = AdcUtils.retADCStr(reason);
             // System.out.println (reason);
-            if (ADC.isCID(aux))
+            if (AdcUtils.isCID(aux))
             {
                 //ok if we got here it really is a CID so:
                 // boolean banned=false;
@@ -1185,7 +1186,7 @@ public class CommandParser
                 client.getClientHandler().sendFromBot("Access denied.");
                 return;
             }
-            StringTokenizer ST = new StringTokenizer(ADC.retNormStr(recvbuf));
+            StringTokenizer ST = new StringTokenizer(AdcUtils.retNormStr(recvbuf));
             ST.nextToken();
             if (!ST.hasMoreTokens())
             {
@@ -1193,7 +1194,7 @@ public class CommandParser
                 return;
             }
             String aux = ST.nextToken(); //the thing to Ban;
-            aux = ADC.retADCStr(aux);
+            aux = AdcUtils.retADCStr(aux);
             //al right,now must check if that is a nick online of offline
 
             String reason = "";
@@ -1207,7 +1208,7 @@ public class CommandParser
             {
                 reason = reason.substring(0, reason.length() - 1);
             }
-            reason = ADC.retADCStr(reason);
+            reason = AdcUtils.retADCStr(reason);
             for (Client temp : SessionManager.getUsers())
             {
                 if (temp.getClientHandler().validated == 1)
@@ -1253,7 +1254,7 @@ public class CommandParser
                 client.getClientHandler().sendFromBot("Access denied.");
                 return;
             }
-            StringTokenizer ST = new StringTokenizer(ADC.retNormStr(recvbuf));
+            StringTokenizer ST = new StringTokenizer(AdcUtils.retNormStr(recvbuf));
             ST.nextToken();
             if (!ST.hasMoreTokens())
             {
@@ -1261,7 +1262,7 @@ public class CommandParser
                 return;
             }
             String aux = ST.nextToken(); //the thing to Ban;
-            aux = ADC.retADCStr(aux);
+            aux = AdcUtils.retADCStr(aux);
             //al right,now must check if that is a  ip or nick
             //first if its a ip...
             String reason = "";
@@ -1274,8 +1275,8 @@ public class CommandParser
             {
                 reason = reason.substring(0, reason.length() - 1);
             }
-            reason = ADC.retADCStr(reason);
-            if (ADC.isIP(aux))
+            reason = AdcUtils.retADCStr(reason);
+            if (AdcUtils.isIP(aux))
             {
                 //ok if we got here it really is a IP so:
 
@@ -1395,10 +1396,10 @@ public class CommandParser
             }
             if (recvbuf.toLowerCase().equals("topic"))
             {
-                if (!ConfigLoader.HUB_DE.isEmpty())
+                if (!ConfigLoader.HUB_DESCRIPTION.isEmpty())
                 {
                     Broadcast.getInstance().broadcast("IINF DE");
-                    client.getClientHandler().sendFromBot("Topic \"" + ConfigLoader.HUB_DE
+                    client.getClientHandler().sendFromBot("Topic \"" + ConfigLoader.HUB_DESCRIPTION
                                                           + "\" deleted.");
                     Broadcast.getInstance().broadcast("IMSG Topic was deleted by " + client.getClientHandler().NI, client);
                 }
@@ -1407,7 +1408,7 @@ public class CommandParser
                     client.getClientHandler().sendFromBot("There wasn't any topic anyway.");
                 }
 				//TODO OMFG O_O!
-                ConfigLoader.HUB_DE = "";
+                ConfigLoader.HUB_DESCRIPTION = "";
 
             }
             else
@@ -1415,14 +1416,14 @@ public class CommandParser
                 String auxbuf = recvbuf.substring(6);
 
                 // Vars.HubDE=Vars.HubDE.replaceAll("\\ "," ");
-                client.getClientHandler().sendFromBot("Topic changed from \"" + ConfigLoader.HUB_DE
+                client.getClientHandler().sendFromBot("Topic changed from \"" + ConfigLoader.HUB_DESCRIPTION
                                                       + "\" " + "to \"" + auxbuf + "\".");
                 auxbuf = auxbuf.replaceAll(" ", "\\ ");
-                ConfigLoader.HUB_DE = auxbuf;
+                ConfigLoader.HUB_DESCRIPTION = auxbuf;
 
-                Broadcast.getInstance().broadcast("IINF DE" + ADC.retADCStr(auxbuf));
+                Broadcast.getInstance().broadcast("IINF DE" + AdcUtils.retADCStr(auxbuf));
                 Broadcast.getInstance().broadcast("IMSG Topic was changed by " + client.getClientHandler().NI
-                                                  + " to \"" + ConfigLoader.HUB_DE + "\"");
+                                                  + " to \"" + ConfigLoader.HUB_DESCRIPTION + "\"");
 
             }
             // TODO remove save "topic" parameter in old config store.
@@ -1450,7 +1451,7 @@ public class CommandParser
                handler.sendFromBot("New default port change from "+Vars.Default_Port+" to "+recvbuf.substring(5)+". Restart for settings to take effect.");
                Vars.Default_Port=x;
 
-               Main.Server.rewriteconfig();;
+               Main.server.rewriteconfig();;
                }
                catch(NumberFormatException nfe)
                {
@@ -1496,7 +1497,7 @@ public class CommandParser
             }
             client.getClientHandler().sendFromBot("\n"
 														  +
-														  ConfigLoader.ABOUT
+														  bigTextManager.getABOUT()
 																  .replaceAll(" ", "\\ ")
 																  .replaceAll("\\x0a",
 																			  "\\\n"));
@@ -1528,7 +1529,7 @@ public class CommandParser
 
             for (String historyCommand : history)
             {
-                blah00 = blah00 + ADC.retNormStr(historyCommand);
+                blah00 = blah00 + AdcUtils.retNormStr(historyCommand);
             }
 
             client.getClientHandler().sendFromBot(blah00.substring(0, blah00.length() - 1));
@@ -1563,19 +1564,19 @@ public class CommandParser
                           + ConfigLoader.HUB_VERSION
                           + ".\n"
                           + "  Running on "
-                          + Main.Proppies.getProperty("os.name")
+                          + Main.proppies.getProperty("os.name")
                           + " Version "
-                          + Main.Proppies.getProperty("os.version")
+                          + Main.proppies.getProperty("os.version")
                           + " on Architecture "
-                          + Main.Proppies.getProperty("os.arch")
+                          + Main.proppies.getProperty("os.arch")
                           + "\n"
                           + "  Java Runtime Environment "
-                          + Main.Proppies.getProperty("java.version")
+                          + Main.proppies.getProperty("java.version")
                           + " from "
-                          + Main.Proppies.getProperty("java.vendor")
+                          + Main.proppies.getProperty("java.vendor")
                           + "\n"
                           + "  Java Virtual Machine "
-                          + Main.Proppies
+                          + Main.proppies
                     .getProperty("java.vm.specification.version")
                           + "\n" + "  Available CPU's to JVM "
                           + Integer.toString(myRun.availableProcessors()) + "\n"
@@ -1586,12 +1587,12 @@ public class CommandParser
                           + Integer.toString(i) + "\n" + "  Connecting users: "
                           + Integer.toString(j) + "\n" + "  Uptime: "
                           + TimeConv.getStrTime(up) //+//+ "\n  Bytes read per second: "
-                    //	+ Main.Server.IOSM.getTotalByteReadThroughput()
-                    //	    "\n  Bytes read per second: "+Main.Server.acceptor.getReadBytesThroughput()+
-                    //    "\n  Bytes written per second: "+Main.Server.acceptor.getWrittenBytesThroughput()
+                    //	+ Main.server.IOSM.getTotalByteReadThroughput()
+                    //	    "\n  Bytes read per second: "+Main.server.acceptor.getReadBytesThroughput()+
+                    //    "\n  Bytes written per second: "+Main.server.acceptor.getWrittenBytesThroughput()
 
                     //+ "\n  Bytes written per second: "
-                    //+ Main.Server.IOSM.getTotalByteWrittenThroughput()
+                    //+ Main.server.IOSM.getTotalByteWrittenThroughput()
 
                     ;
 

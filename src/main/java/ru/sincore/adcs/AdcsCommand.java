@@ -46,8 +46,8 @@ public class AdcsCommand
         if (!curcmd.hasMoreTokens())
         {
             String Help =
-                    "\nThe adcs command. ADC Secure is a standard ADC extension that enables" +
-                    " running the ADC protocol over the TLS/SSL layer. To enable ADCS you need to setup your " +
+                    "\nThe adcs command. AdcUtils Secure is a standard AdcUtils extension that enables" +
+                    " running the AdcUtils protocol over the TLS/SSL layer. To enable ADCS you need to setup your " +
                     " keys and certificate first, either by regenerating them or loading them from a file." +
                     " After this operation you may try to enable ADCS.\n" +
                     "Usage: adcs switch" +
@@ -55,7 +55,7 @@ public class AdcsCommand
                     "\n      regen -- regenerates (and overwrites if they exist) the current keys and certificate." +
                     "\n      load <path> -- loads the keys and certificate previously generated from the file specified in <path>." +
                     "\n      enable -- if keys and certificate are ok, then this command enables ADCS and restarts your hub." +
-                    "\n      disable -- this command disables ADCS and restarts your hub in normal ADC mode." +
+                    "\n      disable -- this command disables ADCS and restarts your hub in normal AdcUtils mode." +
                     "\n      certlogin [on|off] -- the on/off switch enables/disables the certificate based login ( no passwords )." +
                     "\nCurrently, ADCS mode is" +
                     (ConfigLoader.ENABLE_ADCS ? " running ok " : " disabled ") +
@@ -68,7 +68,7 @@ public class AdcsCommand
         if (what.equalsIgnoreCase("regen"))
         {
             cur_client.sendFromBot("Regenerating keys and certificate... ( this may take a while )");
-            boolean keygenerated = Main.Server.sslmanager.getCertManager().recreateKeysCerts();
+            boolean keygenerated = Main.server.sslmanager.getCertManager().recreateKeysCerts();
             // JOptionPane.showConfirmDialog(null,"New pair of keys and certificate were created and saved into key.crt",
             //        Vars.HubName,JOptionPane.OK_OPTION,JOptionPane.INFORMATION_MESSAGE);
             if (keygenerated)
@@ -76,7 +76,7 @@ public class AdcsCommand
                 log.info("New pair of keys and certificate were created and saved into key.crt");
                 cur_client.sendFromBot(
                         "New pair of keys and certificate were created and saved into key.crt");
-                Main.Server.adcs_ok = true;
+                Main.server.adcs_ok = true;
             }
             else
             {
@@ -91,13 +91,13 @@ public class AdcsCommand
         {
             HubServer.done_adcs = false;
             cur_client.sendFromBot("Attempting to enable ADCS.... ( Hub will restart )...");
-            if (!Main.Server.adcs_ok)
+            if (!Main.server.adcs_ok)
             {
                 return;//cannot start adcs mode.. bug ?
             }
             ConfigLoader.ENABLE_ADCS = true;
             Main.Restart();
-            log.info("ADC Secure mode has been enabled");
+            log.info("AdcUtils Secure mode has been enabled");
             return;
         }
 
@@ -107,7 +107,7 @@ public class AdcsCommand
             cur_client.sendFromBot("Disabling ADCS.... ( Hub will restart )...");
             ConfigLoader.ENABLE_ADCS = false;
             Main.Restart();
-            log.warn("ADC Secure mode has been disabled");
+            log.warn("AdcUtils Secure mode has been disabled");
         }
         cur_client.sendFromBot("Unknown switch. Try to use with no parameters for details.");
 

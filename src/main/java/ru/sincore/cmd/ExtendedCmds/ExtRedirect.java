@@ -27,7 +27,7 @@ import ru.sincore.Client;
 import ru.sincore.ClientHandler;
 import ru.sincore.ConfigLoader;
 import ru.sincore.SessionManager;
-import ru.sincore.util.ADC;
+import ru.sincore.util.AdcUtils;
 
 import java.util.StringTokenizer;
 import java.util.regex.PatternSyntaxException;
@@ -73,7 +73,7 @@ public class ExtRedirect
             URL = ST.nextToken();
         }
 
-        if (ADC.isCID(what))
+        if (AdcUtils.isCID(what))
         {
 
             for (Client aux : SessionManager.getUsers())

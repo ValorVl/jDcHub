@@ -48,7 +48,7 @@ public class ClientAssasin extends Thread
     public void run()
     {
 
-        while (!Main.Server.restart)
+        while (!Main.server.restart)
         {
 
             if (ClientManager.getInstance().getClientsCount() == 0)

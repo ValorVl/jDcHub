@@ -9,7 +9,7 @@ import ru.sincore.Exceptions.STAException;
  *
  * Created on 17 martie 2007, 11:14
  *
- * DSHub ADC HubSoft
+ * DSHub AdcUtils HubSoft
  * Copyright (C) 2007,2008  Eugen Hristev
  *
  * This program is free software; you can redistribute it and/or
@@ -59,7 +59,7 @@ public class STAError
         this.client = client;
         this.errorCode = errorCode;
 
-        this.errorDescription = ADC.retADCStr(errorDescription).replaceAll("\\\\sTL", " TL");
+        this.errorDescription = AdcUtils.retADCStr(errorDescription).replaceAll("\\\\sTL", " TL");
         String errorString;
         if (errorCode == 0)
         {
@@ -101,7 +101,7 @@ public class STAError
         this.client = client;
         this.errorCode = errorCode;
 
-        this.errorDescription = ADC.retADCStr(errorDescription);
+        this.errorDescription = AdcUtils.retADCStr(errorDescription);
 
 
 

@@ -61,28 +61,28 @@ public class HostTester
             PrintStream out = new PrintStream(testS.getOutputStream());
             out.println("HSUP ADBASE ADTIGR");
             String SUP = in.readLine();
-            if (!SUP.equals(ADC.Init))
-            {
-                throw new Exception("Init not the same" + SUP + " " + ADC.Init);
-            }
-            in.readLine();
+//            if (!SUP.equals(AdcUtils.Init))
+//            {
+//                throw new Exception("Init not the same" + SUP + " " + AdcUtils.Init);
+//            }
+//            in.readLine();
             String INF = in.readLine();
             String test = "";
-            if (ConfigLoader.HUB_DE.isEmpty())
+            if (ConfigLoader.HUB_DESCRIPTION.isEmpty())
             {
                 test = "IINF CT32 VE" +
-                       ADC.retADCStr(ConfigLoader.HUB_VERSION) +
+                       AdcUtils.retADCStr(ConfigLoader.HUB_VERSION) +
                        " NI" +
-                       ADC.retADCStr(ConfigLoader.HUB_NAME);
+                       AdcUtils.retADCStr(ConfigLoader.HUB_NAME);
             }
             else
             {
                 test = "IINF CT32 VE" +
-                       ADC.retADCStr(ConfigLoader.HUB_VERSION) +
+                       AdcUtils.retADCStr(ConfigLoader.HUB_VERSION) +
                        " NI" +
-                       ADC.retADCStr(ConfigLoader.HUB_NAME) +
+                       AdcUtils.retADCStr(ConfigLoader.HUB_NAME) +
                        " DE" +
-                       ADC.retADCStr(ConfigLoader.HUB_DE);
+                       AdcUtils.retADCStr(ConfigLoader.HUB_DESCRIPTION);
             }
             if (!INF.equals(test))
             {
@@ -90,12 +90,12 @@ public class HostTester
                                     INF +
                                     "\n" +
                                     "IINF CT32 VE" +
-                                    ADC.retADCStr(ConfigLoader.HUB_VERSION)
+                                    AdcUtils.retADCStr(ConfigLoader.HUB_VERSION)
                                     +
                                     " NI" +
-                                    ADC.retADCStr(ConfigLoader.HUB_NAME) +
-                                    ((ConfigLoader.HUB_DE.equals("")) ?
-                                     (" DE" + ADC.retADCStr(ConfigLoader.HUB_DE)) :
+                                    AdcUtils.retADCStr(ConfigLoader.HUB_NAME) +
+                                    ((ConfigLoader.HUB_DESCRIPTION.equals("")) ?
+                                     (" DE" + AdcUtils.retADCStr(ConfigLoader.HUB_DESCRIPTION)) :
                                      ""));
             }
 

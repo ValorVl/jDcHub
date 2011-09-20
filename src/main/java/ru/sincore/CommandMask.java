@@ -29,6 +29,8 @@ import java.io.Serializable;
  * Basic command mask for each registered user, keeps registration information about
  * account possibilites.
  *
+ * //TODO Not needed, must be removed
+ *
  * @author Pietricica
  */
 public class CommandMask implements Serializable
