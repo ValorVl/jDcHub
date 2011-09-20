@@ -102,7 +102,7 @@ public final class ClientManager
     {
         clientsByCID.put(client.getClientHandler().ID, client);
         clientsByNick.put(client.getClientHandler().NI, client);
-        clientsByCID.put(client.getClientHandler().SessionID, client);
+        clientsBySID.put(client.getClientHandler().SessionID, client);
     }
 
 
@@ -122,6 +122,7 @@ public final class ClientManager
         clientsByNick.clear();
         clientsBySID.clear();
     }
+
 
     /**
      * Return collection of clients
@@ -154,7 +155,7 @@ public final class ClientManager
     {
         if (clientsByCID.size() != clientsByNick.size() ||
             clientsByNick.size() != clientsBySID.size())
-            log.error("Sizes of client hashmaps not equal!");
+            log.error("Sizes of hashmaps with links to clients not equal!");
 
         return clientsByCID.size();
     }
@@ -234,13 +235,16 @@ public final class ClientManager
     public void removeClientByCID (String cid)
     {
         Client client = clientsByCID.remove(cid);
-        clientsBySID.remove(client.getClientHandler().ID);
-        clientsByNick.remove(client.getClientHandler().NI);
-
         if (client == null)
             log.debug("User with cid = \'" + cid + "\' not in clientsByCID.");
-        else
+
+        if (client != null)
+        {
+            clientsBySID.remove(client.getClientHandler().ID);
+            clientsByNick.remove(client.getClientHandler().NI);
+
             log.debug("User with cid = \'" + cid + "\' and nick = \'" + client.getClientHandler().NI + "\' was removed.");
+        }
     }
 
 

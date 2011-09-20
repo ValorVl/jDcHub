@@ -5,6 +5,8 @@
  *
  * DSHub ADC HubSoft
  * Copyright (C) 2007,2008  Eugen Hristev
+
+ * Copyright (C) 2011 Alexey 'lh' Antonov
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -23,10 +25,11 @@
 
 package ru.sincore;
 
-import org.apache.log4j.Logger;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.sincore.Exceptions.CommandException;
 import ru.sincore.Exceptions.STAException;
 import ru.sincore.Modules.Modulator;
@@ -36,7 +39,6 @@ import ru.sincore.util.STAError;
 
 import java.util.Collection;
 import java.util.StringTokenizer;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Pietricica
@@ -46,16 +48,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class SessionManager extends IoHandlerAdapter
 {
-    public static final Logger log = Logger.getLogger(SessionManager.class);
-
-    public static ConcurrentHashMap<String, Client> users;
-
-
-    static
-    {
-        users = new ConcurrentHashMap<String, Client>(3000, (float) 0.75);
-    }
-
+    public static final Logger log = LoggerFactory.getLogger(SessionManager.class);
 
     /**
      * Creates a new instance of SessionManager
@@ -67,7 +60,7 @@ public class SessionManager extends IoHandlerAdapter
 
     public void Disconnect(IoSession session)
     {
-        ClientHandler cur_client = ((ClientHandler) (session.getAttribute("")));
+        ClientHandler cur_client = ((ClientHandler) (session.getAttribute("client")));
         if (cur_client.closingwrite != null)
         {
             try
@@ -76,7 +69,7 @@ public class SessionManager extends IoHandlerAdapter
             }
             catch (InterruptedException e)
             {
-                log.error(e);
+                log.error(e.toString());
             }
         }
         session.close(false);
@@ -93,34 +86,27 @@ public class SessionManager extends IoHandlerAdapter
     public void exceptionCaught(IoSession session, Throwable t)
             throws Exception
     {
-        //System.out.println(t.getMessage());
-        //t.printStackTrace();
-        // if((t.getMessage().contains("IOException")))
         try
         {
             if (t instanceof java.io.IOException)
             {
-                // Main.PopMsg(t.getMessage());
-                //t.printStackTrace();
-                //session.close(false);
                 return;
             }
             if (t.getMessage().contains("java.nio.charset.MalformedInputException"))
             {
-                ((ClientHandler) (session.getAttribute("")))
+                ((ClientHandler) (session.getAttribute("client")))
                         .sendFromBot(
                                 "Unicode Exception. Your client sent non-Unicode chars. Ignored.");
                 return;
             }
             if ((t.getMessage().contains("BufferDataException: Line is too long")))
             {
-                new STAError((Client) (session.getAttribute("")), 100,
+                new STAError((Client) (session.getAttribute("client")), 100,
                              "Message exceeds buffer." + t.getMessage());
             }
             else
             {
-                log.debug(t);
-                //session.close(false);
+                log.debug(t.toString());
             }
         }
         catch (Exception e)
@@ -138,7 +124,7 @@ public class SessionManager extends IoHandlerAdapter
 
         try
         {
-            new Command((Client) (session.getAttribute("")), str);
+            new Command((Client) (session.getAttribute("client")), str);
         }
         catch (STAException stex)
         {
@@ -146,13 +132,11 @@ public class SessionManager extends IoHandlerAdapter
             {
                 return;
             }
-            //session.close(false);
-			log.debug(stex);
+			log.debug(stex.toString());
         }
         catch (CommandException cfex)
         {
-            //session.close(false);
-			log.debug(cfex);
+			log.debug(cfex.toString());
         }
 
     }
@@ -168,7 +152,7 @@ public class SessionManager extends IoHandlerAdapter
     public void sessionClosed(IoSession session)
             throws Exception
     {
-        Client currentClient = (Client) (session.getAttribute(""));
+        Client currentClient = (Client) (session.getAttribute("client"));
         ClientHandler currentClientHandler = currentClient.getClientHandler();
 
         if (currentClientHandler.validated == 1 && currentClientHandler.kicked != 1)
@@ -182,94 +166,33 @@ public class SessionManager extends IoHandlerAdapter
         {
             myMod.onClientQuit(currentClientHandler);
         }
-        currentClientHandler.reg.TimeOnline += System.currentTimeMillis()
-                                     - currentClientHandler.LoggedAt;
+        currentClientHandler.reg.TimeOnline += System.currentTimeMillis() - currentClientHandler.LoggedAt;
 
-        log.info(currentClientHandler.NI+" with SID " + currentClientHandler.SessionID + " just quited.");
+        log.info(currentClientHandler.NI + " with SID " + currentClientHandler.SessionID + " just quited.");
 
-        SessionManager.users.remove(currentClientHandler.ID);
+        ClientManager.getInstance().removeClientByCID(currentClientHandler.ID);
     }
 
 
     public void sessionOpened(IoSession session)
             throws Exception
     {
+        // TODO Realize client add method
+        // TODO push user into connection pool while he is in PROTOCOL and IDENTIFY states
 
-		Client currentClient = HubServer.AddClient();
+		Client currentClient = null;
+
+        assert currentClient == null : "There is no authorization pull realized. New client acceptions interrupted.";
 
 		ClientHandler currentClientHandler = currentClient.getClientHandler();
 
-        session.setAttribute("", currentClient);
+        session.setAttribute("client", currentClient);
 
         currentClientHandler.session = session;
         StringTokenizer ST = new StringTokenizer(currentClientHandler.session.getRemoteAddress().toString(), "/:");
 
 		currentClientHandler.RealIP = ST.nextToken();
-        // TODO doesn't now is substring needed
+        // TODO doesn't know is substring needed
         currentClientHandler.SessionID = SIDGenerator.generate().substring(0, 4);
     }
-
-
-    public static int getUserCount()
-    {
-        int ret = 0;
-        for (Client client : SessionManager.getUsers())
-        {
-
-            if (client.getClientHandler().validated == 1)
-            {
-                ret++;
-            }
-        }
-        return ret;
-    }
-
-
-    public static long getTotalShare()
-    {
-        long ret = 0;
-        for (Client client : SessionManager.getUsers())
-        {
-
-            try
-            {
-                if (client.getClientHandler().validated == 1)
-                {
-                    if (client.getClientHandler().SS != null)
-                    {
-                        ret += Long.parseLong(client.getClientHandler().SS);
-                    }
-                }
-            }
-            catch (NumberFormatException ignored)
-            {
-            }
-        }
-        return ret;
-    }
-
-
-    public static long getTotalFileCount()
-    {
-        long ret = 0;
-        for (Client client : SessionManager.getUsers())
-        {
-
-            try
-            {
-                if (client.getClientHandler().validated == 1)
-                {
-                    if (client.getClientHandler().SF != null)
-                    {
-                        ret += Long.parseLong(client.getClientHandler().SF);
-                    }
-                }
-            }
-            catch (NumberFormatException ignored)
-            {
-            }
-        }
-        return ret;
-    }
-
 }

@@ -465,7 +465,7 @@ public class ClientHandler
         }
         if (this.validated == 1)
         {
-            if (can_receive_cmds && ConfigLoader.COMMAND_PM_RETURN == true)
+            if (can_receive_cmds && ConfigLoader.COMMAND_PM_RETURN)
             {
                 sendFromBotPM(text);
             }

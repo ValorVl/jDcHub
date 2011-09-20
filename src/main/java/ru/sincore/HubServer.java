@@ -186,13 +186,4 @@ public class HubServer extends Thread
     {
         acceptor.unbind();
     }
-
-
-    // TODO Realize client add method
-    public static Client AddClient()
-    {
-        // TODO pull user while he is in PROTOCOL and IDENTIFY states
-        // into connection pool
-        return null;
-    }
 }
