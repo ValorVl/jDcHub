@@ -25,6 +25,8 @@ package ru.sincore.adc.action;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.sincore.Client;
+import ru.sincore.Exceptions.CommandException;
+import ru.sincore.Exceptions.STAException;
 import ru.sincore.adc.Context;
 import ru.sincore.adc.MessageType;
 import ru.sincore.adc.State;
@@ -69,6 +71,7 @@ public class MSG extends Action
      * @param params message text, additional flags
      */
     public MSG(MessageType messageType, int context, Client client, String params)
+            throws CommandException, STAException
     {
         this(messageType, context, client);
         this.params = params;
@@ -82,22 +85,6 @@ public class MSG extends Action
         return null;
     }
 
-
-    @Override
-    protected boolean parse(String params)
-    {
-        switch (context)
-        {
-            case Context.F:
-                break;
-            case Context.T:
-                return parseIncomingMessage(params);
-            default:
-                break;
-        }
-
-        return false;
-    }
 
     private boolean parseIncomingMessage(String params)
     {

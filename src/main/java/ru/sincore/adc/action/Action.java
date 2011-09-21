@@ -28,6 +28,7 @@ import ru.sincore.Exceptions.STAException;
 import ru.sincore.adc.Context;
 import ru.sincore.adc.MessageType;
 import ru.sincore.adc.State;
+import ru.sincore.util.STAError;
 
 
 /**
@@ -117,7 +118,6 @@ public abstract class Action
         return true;
     }
 
-    public abstract String toString ();
     /**
      * Parse additional parameters.
      * For incoming messages that means incoming string without
@@ -128,5 +128,68 @@ public abstract class Action
      * @throws CommandException
      * @throws STAException
      */
-    protected abstract boolean parse (String params) throws STAException, CommandException;
+    public final boolean parse (String params) throws STAException, CommandException
+    {
+        this.params = params;
+
+        try
+        {
+        switch (context)
+        {
+            case Context.F:
+                return parseOutgoing();
+            case Context.T:
+                return parseIncoming();
+            case Context.C:
+                //TODO realize passive transition message.
+                return parsePassiveTransition();
+            case Context.U:
+                return parseUDP();
+            default:
+                new STAError(fromClient,100,"Invalid context : " + context);
+                    break;
+        }
+        }
+        catch (STAException sta)
+        {
+            //ignored
+        }
+        catch (CommandException ce)
+        {
+            //ignored
+        }
+
+        return false;
+    }
+
+
+    protected boolean parseIncoming()
+            throws STAException
+    {
+        new STAError(fromClient,100,"Invalid context : " + context);
+        return false;
+    }
+
+    protected boolean parseOutgoing()
+            throws STAException, CommandException
+    {
+        new STAError(fromClient,100,"Invalid context : " + context);
+        return false;
+    }
+
+    protected boolean parsePassiveTransition()
+            throws STAException
+    {
+        new STAError(fromClient,100,"Invalid context : " + context);
+        return false;
+    }
+
+    protected boolean parseUDP()
+            throws STAException
+    {
+        new STAError(fromClient,100,"Invalid context : " + context);
+        return false;
+    }
+
+    public abstract String toString ();
 }

@@ -53,32 +53,9 @@ public class SUP extends Action
 	}
 
 	@Override
-	protected boolean parse(String args) throws STAException, CommandException
+    protected boolean parseIncoming()
 	{
-
-		switch (context)
-		{
-			case Context.F:
-				outgoing();
-					break;
-			case Context.T:
-				incoming();
-					break;
-			case Context.C:
-				//TODO realize passive transition message.
-					break;
-			default:
-				new STAError(fromClient,100,"Invalid context : " + context);
-					break;
-		}
-
-
-		return false;
-	}
-
-	private void incoming()
-	{
-
+        return false;
 	}
 
 	/**
@@ -87,7 +64,8 @@ public class SUP extends Action
 	 * @throws STAException STA action, error code and reason response to client
 	 * @throws CommandException command exception
 	 */
-	private void outgoing() throws STAException, CommandException
+	@Override
+    protected boolean parseOutgoing() throws STAException, CommandException
 	{
 
 		// Check message type HUB if not throw exception
@@ -136,9 +114,11 @@ public class SUP extends Action
 		toClient.getClientHandler().sendToClient(inf.toString());
 
 
-	}
+        return true;
+    }
 
-	/**
+
+    /**
 	 * Method build PING request string
 	 * @return ping request string
 	 */
