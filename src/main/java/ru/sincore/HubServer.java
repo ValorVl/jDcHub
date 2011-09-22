@@ -93,7 +93,6 @@ public class HubServer extends Thread
 
 		// Get and send MOTD text
 		bigTextManager = new BigTextManager();
-        Main.MOTD = bigTextManager.getMOTD();
 
         restart = false;
 

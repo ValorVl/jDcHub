@@ -742,6 +742,8 @@ public class CommandParser
                     }
                 }
             }
+// TODO validate nick
+/*
             if (! Nick.validateNick(aux))
             {
                 client.getClientHandler()
@@ -752,6 +754,7 @@ public class CommandParser
                     return;
                 }
             }
+*/
             if (AccountsConfig.nickReserved(aux, client.getClientHandler().ID))
             {
 
@@ -851,6 +854,8 @@ public class CommandParser
                                     return;
                                 }
                             }
+// TODO validate nick
+/*
                             if (!Nick.validateNick(newnick))
                             {
                                 client.getClientHandler()
@@ -858,6 +863,7 @@ public class CommandParser
                                 done = true;
                                 return;
                             }
+*/
                             if (AccountsConfig.nickReserved(newnick,
                                                             temp.getClientHandler().ID))
                             {

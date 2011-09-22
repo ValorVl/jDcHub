@@ -136,7 +136,7 @@ public class Command
         Broadcast.getInstance().broadcast(currentClient.getClientHandler().getINF(), currentClient);
         currentClient.getClientHandler().validated = 1; //user is OK, logged in and cool.
         currentClient.getClientHandler().reg.LastLogin = System.currentTimeMillis();
-        currentClient.getClientHandler().sendFromBot(bigTextManager.getMOTD());
+        currentClient.getClientHandler().sendFromBot(bigTextManager.getMOTD(currentClient));
         currentClient.getClientHandler().sendFromBot(currentClient.getClientHandler().reg.HideMe ? "You are currently hidden." : "");
 
         currentClient.getClientHandler().LoggedAt = System.currentTimeMillis();
@@ -206,6 +206,8 @@ public class Command
             }
             else if (aux.startsWith("NI"))
             {
+                // TODO validate nick
+/*
                 if (! Nick.validateNick(aux.substring(2)))
                 {
                     new STAError(currentClient,
@@ -213,6 +215,7 @@ public class Command
                                  "Nick not valid, please choose another");
                     return;
                 }
+*/
 
                 currentClient.getClientHandler().NI = aux.substring(2);
 
@@ -996,7 +999,7 @@ public class Command
             }
             currentClient.getClientHandler().state = State.NORMAL;
             currentClient.getClientHandler().validated = 1; //user is OK, logged in and cool.
-            currentClient.getClientHandler().sendFromBot(bigTextManager.getMOTD());
+            currentClient.getClientHandler().sendFromBot(bigTextManager.getMOTD(currentClient));
 
             /** calling plugins...*/
             for (Module myMod : Modulator.myModules)
@@ -1201,7 +1204,7 @@ public class Command
             {
                 currentClient.getClientHandler().sendToClient("IMSG Authenticated.");
 
-                currentClient.getClientHandler().sendFromBot(bigTextManager.getMOTD());
+                currentClient.getClientHandler().sendFromBot(bigTextManager.getMOTD(currentClient));
 
                 //System.out.println ("pwla");
                 currentClient.getClientHandler().reg.LastNI = currentClient.getClientHandler().NI;

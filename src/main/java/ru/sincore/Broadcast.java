@@ -132,60 +132,11 @@ public class Broadcast
 
         public void run()
         {
-            String NI = "";
             ClientHandler toClientHandler = toClient.getClientHandler();
-            // x[i]= ((IoSession) (x[i]));
-            // ClientNod toClient=((ClientHandler)(x[i].getAttachment())).myNod;
-            if (STR.startsWith("BMSG ") || STR.startsWith("IMSG "))
-            {
-                NI = ConfigLoader.BOT_CHAT_NAME;
-                if (toClientHandler.validated == 1)
 
-                {
-                    if (STR.startsWith("BMSG "))
-                    {
-                        if (toClientHandler.SessionID.equals(STR.substring(5, 9)))
-                        {
-                            NI = toClientHandler.NI;
-                        }
-                    }
-                }
-
-                if ((STR.startsWith("BMSG ") && toClientHandler.SessionID
-                        .equals(STR.substring(5, 9)))
-                    || STR.startsWith("IMSG "))
-                {
-
-                    String message = "[" +
-                                   Calendar.getInstance().getTime().toString() +
-                                   "] <" + NI + "> " +
-                                   (STR.startsWith("BMSG ") ?
-                                    STR.substring(10) :
-                                    STR.substring(5)) +
-                                   "\n";
-
-                    /**
-                     * TODO add save message to history
-                     * if string not equal to last string
-                     * and not starts with "IMSG "
-                     * put it to history
-                     */
-
-                }
-            }
-
-            if ((toClientHandler.validated == 1 && toClient != fromClient)
-                || (toClientHandler.validated == 1 && toClient != fromClient
+            if ((toClientHandler.validated == 1 && toClient != fromClient
                     && state == 1 && toClientHandler.ACTIVE == 1))
             {
-                if (state == STATE_ALL_KEY && !toClientHandler.reg.key)
-                {
-                    return;
-                }
-                if (toClientHandler.ACTIVE != 1 && state == STATE_ACTIVE)
-                {
-                    return;
-                }
                 // TODO may be buggie
                 if (!STR.startsWith("E") && toClient.equals(fromClient))
                 {
