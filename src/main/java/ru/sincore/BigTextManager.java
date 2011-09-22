@@ -4,6 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 
+import java.io.File;
+
 /**
  * This class manages the preparation for sending the customer a very large blocks of text,
  * such as text files from MOTD, RULES, etc ..
@@ -23,9 +25,20 @@ public class BigTextManager
 	 * A method prepare MOTD text block
 	 * @return MOTD localized text
 	 */
-	public String getMOTD()
+	public String getMOTD(Client client)
 	{
-		return "";
+		String motd = "Hell is here";
+
+		if (storageType == 0)
+		{
+			File file = new File("");
+		}
+		else if (storageType == 1)
+		{
+
+		}
+
+		return motd;
 	}
 
 	public String getABOUT()

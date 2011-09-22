@@ -17,6 +17,9 @@ import ru.sincore.util.AdcUtils;
 import ru.sincore.util.Constants;
 import ru.sincore.util.STAError;
 
+import javax.management.ObjectName;
+import java.util.StringTokenizer;
+
 /**
  * Class implementation SUP action
  *
@@ -52,9 +55,35 @@ public class SUP extends Action
 		return null;
 	}
 
+	/**
+	 *  The method handles incoming messages.
+	 * @return
+	 */
 	@Override
     protected boolean parseIncoming()
 	{
+		StringTokenizer incomingToken = new StringTokenizer();
+
+		while (incomingToken.hasMoreTokens())
+		{
+			String endToken = incomingToken.nextToken();
+
+			boolean enabled = false;
+
+			if (endToken.startsWith("AD"))
+			{
+				enabled = true;
+			}
+			else if (endToken.startsWith("RM"))
+			{
+				enabled = false;
+			}
+			else
+			{
+				new STAError(fromClient,)
+			}
+		}
+
         return false;
 	}
 
