@@ -17,7 +17,6 @@ import ru.sincore.util.AdcUtils;
 import ru.sincore.util.Constants;
 import ru.sincore.util.STAError;
 
-import javax.management.ObjectName;
 import java.util.StringTokenizer;
 
 /**
@@ -60,28 +59,81 @@ public class SUP extends Action
 	 * @return
 	 */
 	@Override
-    protected boolean parseIncoming()
+    protected boolean parseIncoming() throws STAException, CommandException
 	{
-		StringTokenizer incomingToken = new StringTokenizer();
+		if (params.charAt(0) != 'H')
+		{
+			throw new CommandException("FAIL state:PROTOCOL reason:NOT BASE CLIENT");
+		}
+
+		StringTokenizer incomingToken = new StringTokenizer(params);
 
 		while (incomingToken.hasMoreTokens())
 		{
 			String endToken = incomingToken.nextToken();
 
-			boolean enabled = false;
+			boolean enable = false;
 
 			if (endToken.startsWith("AD"))
 			{
-				enabled = true;
+				enable = true;
 			}
 			else if (endToken.startsWith("RM"))
 			{
-				enabled = false;
+				enable = false;
 			}
 			else
 			{
-				new STAError(fromClient,)
+				new STAError(fromClient, 100, "Unknown SUP token (not an \'AD\' or \'RM\').");
 			}
+
+			//TODO [Valor] maybe rewrite this ?
+			endToken = endToken.substring(2);
+           	if (endToken.equals("BAS0"))
+           	{
+            	fromClient.getClientHandler().bas0 = enable;
+            	fromClient.getClientHandler().base = 1;
+		   	}
+		   	else if (endToken.equals("BASE"))
+		   	{
+				fromClient.getClientHandler().base = (enable ? 2 : 0);
+		   	}
+		   	else if (endToken.startsWith("PIN") && endToken.length() == 4)
+		   	{
+				fromClient.getClientHandler().isPing = enable;
+		   	}
+		   	else if (endToken.startsWith("UCM") && endToken.length() == 4)
+		   	{
+				fromClient.getClientHandler().ucmd = (enable ? 1 : 0);
+		   	}
+		   	else if (endToken.startsWith("TIGR") && endToken.length() == 4)
+		   	{
+				fromClient.getClientHandler().tigr = enable;
+		   	}
+		}
+
+		// Check support old protocol version
+		if (!fromClient.getClientHandler().bas0)
+		{
+			new STAError(fromClient,
+						 Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
+						 "Your client uses a very old AdcUtils version. Please update in order to connect to this hub.");
+		}
+
+		// Check support version new ADC protocol, if 0 - not support, 1 - first version, 2 - second version..
+		if (fromClient.getClientHandler().base == 0)
+		{
+			new STAError(fromClient,
+                         Constants.STA_SEVERITY_FATAL + Constants.STA_GENERIC_PROTOCOL_ERROR,
+                         "You removed BASE features therefore you can't stay on hub anymore.");
+		}
+
+		// Check support TIGER hash..
+		if (!fromClient.getClientHandler().tigr)
+		{
+			new STAError(fromClient,
+                         Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_NO_HASH_OVERLAP,
+                         "Cannot find any compatible hash function to use. Defaulting to TIGER.");
 		}
 
         return false;

@@ -23,11 +23,14 @@ public class BigTextManager
 
 	/**
 	 * A method prepare MOTD text block
+	 * @param client client handler, if null will send MOTD in default locale
 	 * @return MOTD localized text
 	 */
 	public String getMOTD(Client client)
 	{
 		String motd = "Hell is here";
+
+
 
 		if (storageType == 0)
 		{

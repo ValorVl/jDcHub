@@ -91,13 +91,17 @@ public class ConfigLoader
 	public static int 		LAST_MESSAGES_COUNT; 	// History messages line count
 	public static String 	OP_CHAT_NAME;
 	public static String 	OP_CHAT_DESCRIPTION;
+	public static Integer	OP_CHAT_WEIGHT;
 	public static String 	BOT_CHAT_NAME;
 	public static String 	BOT_CHAT_DESCRIPTION;
+	public static Integer	BOT_CHAT_WEIGHT;
     public static String    BOT_CHAT_SID;
 	public static String 	VIP_CHAT_NAME;
 	public static String 	VIP_CHAT_DESCRIPTION;
+	public static Integer	VIP_CHAT_WEIGHT;
 	public static String 	REG_CHAT_NAME;
 	public static String 	REG_CHAT_DESCRIPTION;
+	public static Integer	REG_CHAT_WEIGHT;
     public static Boolean 	COMMAND_PM_RETURN;      // If true, return command result in private chat
 	public static Boolean   MARK_REGISTRATION_ONLY;	// Mark chat or command for registration users only
 	// AdcUtils Extensions
@@ -228,6 +232,10 @@ public class ConfigLoader
 			BOT_CHAT_NAME										= prop.getProperty("core.hub.bot_chat_name","BotChat");
 			BOT_CHAT_DESCRIPTION								= prop.getProperty("core.hub.bot_chat_description","");
             BOT_CHAT_SID                                        = prop.getProperty("core.hub.bot_chat_sid", "DCBA");
+			BOT_CHAT_WEIGHT										= Integer.parseInt(prop.getProperty("core.hub.bot_chat_weight","0"));
+			OP_CHAT_WEIGHT										= Integer.parseInt(prop.getProperty("core.hub.op_chat_weight","0"));
+			VIP_CHAT_WEIGHT										= Integer.parseInt(prop.getProperty("core.hub.vip_chat_weight","0"));
+			REG_CHAT_WEIGHT										= Integer.parseInt(prop.getProperty("core.hub.reg_chat_weight","0"));
             if (BOT_CHAT_SID.length() != 4)
             {
                 log.error("core.hub.bot_chat_sid doesn\'t contain 4 symbols! Property will be set to default value = \'DCBA\'.");
@@ -253,7 +261,6 @@ public class ConfigLoader
 			FILE_STORAGE_LOCATION								= prop.getProperty("core.hub.file_storage_location","etc");
 			HUB_DEFAULT_LOCALE									= prop.getProperty("core.hub.default_locale","en_US");
 			ADC_EXTENSION_LIST									= prop.getProperty("core.hub.adc_extension_list","");
-
 
 
 			// B 	 Broadcast 	 			Hub must send message to all connected clients, including the sender of the message.
