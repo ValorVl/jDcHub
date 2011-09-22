@@ -34,14 +34,6 @@ public class ActionTest
         {
             return null;
         }
-
-
-        @Override
-        protected boolean parse(String args)
-        {
-            paramsAreValid = true;
-            return true;
-        }
     }
 
     @BeforeMethod

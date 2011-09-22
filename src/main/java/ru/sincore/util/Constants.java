@@ -29,6 +29,11 @@ package ru.sincore.util;
  */
 public final class Constants
 {
+    // STA Severity codes block
+    public static final int STA_SEVERITY_SUCCESS                = 0;
+    public static final int STA_SEVERITY_RECOVERABLE            = 100;
+    public static final int STA_SEVERITY_FATAL                  = 200;
+
 
 	// STA Error codes block
     public static final int STA_GENERIC_HUB_ERROR              	= 10;
@@ -55,6 +60,5 @@ public final class Constants
     public static final int STA_NO_HASH_OVERLAP                	= 47;
 
 	//Other const block
-
 	public static final String EMPTY_STR 						= "";
 }

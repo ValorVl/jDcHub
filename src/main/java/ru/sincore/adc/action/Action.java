@@ -22,6 +22,9 @@
 
 package ru.sincore.adc.action;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
 import ru.sincore.Client;
 import ru.sincore.Exceptions.CommandException;
 import ru.sincore.Exceptions.STAException;
@@ -39,6 +42,9 @@ import ru.sincore.util.STAError;
  */
 public abstract class Action
 {
+    private final static Logger log = LoggerFactory.getLogger(Action.class);
+    private String marker = Marker.ANY_MARKER;
+
     protected int   availableContexts = Context.INVALID_CONTEXT;
     protected int   availableStates   = State.INVALID_STATE;
 
@@ -134,29 +140,28 @@ public abstract class Action
 
         try
         {
-        switch (context)
-        {
-            case Context.F:
-                return parseOutgoing();
-            case Context.T:
-                return parseIncoming();
-            case Context.C:
-                //TODO realize passive transition message.
-                return parsePassiveTransition();
-            case Context.U:
-                return parseUDP();
-            default:
-                new STAError(fromClient,100,"Invalid context : " + context);
+            switch (context)
+            {
+                case Context.F:
+                    return parseOutgoing();
+                case Context.T:
+                    return parseIncoming();
+                case Context.C:
+                    return parsePassiveTransition();
+                case Context.U:
+                    return parseUDP();
+                default:
+                    new STAError(fromClient, 100, "Invalid context : " + context);
                     break;
-        }
+            }
         }
         catch (STAException sta)
         {
-            //ignored
+            log.debug(marker, sta);
         }
         catch (CommandException ce)
         {
-            //ignored
+            log.debug(marker, ce);
         }
 
         return false;
@@ -166,28 +171,28 @@ public abstract class Action
     protected boolean parseIncoming()
             throws STAException
     {
-        new STAError(fromClient,100,"Invalid context : " + context);
+        new STAError(fromClient, 100, "Invalid context : " + context);
         return false;
     }
 
     protected boolean parseOutgoing()
             throws STAException, CommandException
     {
-        new STAError(fromClient,100,"Invalid context : " + context);
+        new STAError(fromClient, 100, "Invalid context : " + context);
         return false;
     }
 
     protected boolean parsePassiveTransition()
             throws STAException
     {
-        new STAError(fromClient,100,"Invalid context : " + context);
+        new STAError(fromClient, 100, "Invalid context : " + context);
         return false;
     }
 
     protected boolean parseUDP()
             throws STAException
     {
-        new STAError(fromClient,100,"Invalid context : " + context);
+        new STAError(fromClient, 100, "Invalid context : " + context);
         return false;
     }
 

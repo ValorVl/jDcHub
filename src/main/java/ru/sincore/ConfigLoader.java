@@ -1,6 +1,7 @@
 package ru.sincore;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.sincore.TigerImpl.CIDGenerator;
 
 import java.io.BufferedInputStream;
@@ -15,7 +16,7 @@ import java.util.Properties;
 public class ConfigLoader
 {
 
-    private static final Logger _log = Logger.getLogger(ConfigLoader.class);
+    private static final Logger log = LoggerFactory.getLogger(ConfigLoader.class);
 
 	private static final String HUB_CONFIG;
 	private static CIDGenerator cid = new CIDGenerator();
@@ -65,6 +66,7 @@ public class ConfigLoader
     public static String    HUB_GREETING;
 	public static String 	NICK_CHAR;  			// Available nickname char
 	public static String 	REDIRECT_URL;           // The main redirect URL to send faulty users ( or default redirects )
+    public static String    HUB_SID;
 	// Command engine
 	public static String    OP_COMMAND_PREFIX;
 	public static String    USER_COMMAND_PREFIX;
@@ -91,6 +93,7 @@ public class ConfigLoader
 	public static String 	OP_CHAT_DESCRIPTION;
 	public static String 	BOT_CHAT_NAME;
 	public static String 	BOT_CHAT_DESCRIPTION;
+    public static String    BOT_CHAT_SID;
 	public static String 	VIP_CHAT_NAME;
 	public static String 	VIP_CHAT_DESCRIPTION;
 	public static String 	REG_CHAT_NAME;
@@ -201,6 +204,12 @@ public class ConfigLoader
 			HUB_VERSION											= prop.getProperty("core.hub.version","");
             HUB_GREETING                                        = prop.getProperty("core.hub.greeting", "");
 			REDIRECT_URL										= prop.getProperty("core.hub.redirect_url","");
+            HUB_SID                                             = prop.getProperty("core.hub.sid", "ABCD");
+            if (HUB_SID.length() != 4)
+            {
+                log.error("core.hub.sid doesn\'t contain 4 symbols! Property will be set to default value = \'ABCD\'.");
+                HUB_SID = "ABCD";
+            }
 			MIN_CHARS_SEARCH_REQUEST							= Integer.parseInt(prop.getProperty("core.hub.min_char_search_request","5"));
 			MAX_CHARS_SEARCH_REQUEST							= Integer.parseInt(prop.getProperty("core.hub.max_char_search_request","200"));
 			SAVE_SEARCH_LOG										= Boolean.parseBoolean(prop.getProperty("core.hub.save_search_log","true"));
@@ -218,6 +227,12 @@ public class ConfigLoader
 			OP_CHAT_DESCRIPTION									= prop.getProperty("core.hub.op_chat_description","");
 			BOT_CHAT_NAME										= prop.getProperty("core.hub.bot_chat_name","BotChat");
 			BOT_CHAT_DESCRIPTION								= prop.getProperty("core.hub.bot_chat_description","");
+            BOT_CHAT_SID                                        = prop.getProperty("core.hub.bot_chat_sid", "DCBA");
+            if (BOT_CHAT_SID.length() != 4)
+            {
+                log.error("core.hub.bot_chat_sid doesn\'t contain 4 symbols! Property will be set to default value = \'DCBA\'.");
+                BOT_CHAT_SID = "DCBA";
+            }
 			VIP_CHAT_NAME										= prop.getProperty("core.hub.vip_chat_name","VipChat");
 			VIP_CHAT_DESCRIPTION								= prop.getProperty("core.hub.vip_chat_description","");
 			REG_CHAT_NAME										= prop.getProperty("core.hub.reg_chat_name","RegChat");
@@ -309,7 +324,7 @@ public class ConfigLoader
         }
         catch (Exception e)
         {
-            _log.fatal("Fatal error>>>", e);
+            log.error("Fatal error>>>", e);
 			System.exit(0);
         }
     }

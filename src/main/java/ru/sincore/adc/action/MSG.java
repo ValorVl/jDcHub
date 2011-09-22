@@ -30,6 +30,12 @@ import ru.sincore.Exceptions.STAException;
 import ru.sincore.adc.Context;
 import ru.sincore.adc.MessageType;
 import ru.sincore.adc.State;
+import ru.sincore.util.Constants;
+import ru.sincore.util.STAError;
+
+import java.util.List;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 /**
  * Class for MSG action.
@@ -87,7 +93,146 @@ public class MSG extends Action
 
 
     private boolean parseIncomingMessage(String params)
+            throws STAException
     {
+        StringTokenizer tokenizer = new StringTokenizer(params, " ");
+
+        String mySID = null;
+        String targetSID = null;
+        StringBuilder message = new StringBuilder();
+        String pmSID = null;
+        boolean haveME = false;
+        List<String> requiredFeatureList = new Vector<String>();
+        List<String> excludedFeatureList = new Vector<String>();
+
+        // parse header
+        switch (messageType)
+        {
+            case INVALID_MESSAGE_TYPE:
+                break;
+
+            case B:
+                // get sender SID
+                mySID = tokenizer.nextToken();
+                // get message
+                message.append(tokenizer.nextToken());
+                // get flags and parse it
+                while (tokenizer.hasMoreTokens())
+                {
+                    String token = tokenizer.nextToken();
+                    if (token.startsWith("PM"))
+                    {
+                        pmSID = token.substring(2);
+                        if (pmSID.length() != 4)
+                            new STAError(fromClient,
+                                         Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
+                                         "MSG Invalid Flag.");
+                    }
+                    else if (token.startsWith("ME"))
+                    {
+                        if (token.substring(2).equals("1"))
+                            haveME = true;
+                        else
+                            new STAError(fromClient,
+                                         Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
+                                         "MSG Invalid Flag.");
+                    }
+                }
+                break;
+
+            case C:
+            case I:
+            case H:
+                // get message
+                message.append(tokenizer.nextToken());
+                // get flags and parse it
+                while (tokenizer.hasMoreTokens())
+                {
+                    String token = tokenizer.nextToken();
+                    if (token.startsWith("PM"))
+                    {
+                        pmSID = token.substring(2);
+                        if (pmSID.length() != 4)
+                            new STAError(fromClient,
+                                         Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
+                                         "MSG Invalid Flag.");
+                    }
+                    else if (token.startsWith("ME"))
+                    {
+                        if (token.substring(2).equals("1"))
+                            haveME = true;
+                        else
+                            new STAError(fromClient,
+                                         Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
+                                         "MSG Invalid Flag.");
+                    }
+                }
+                break;
+
+            case D:
+            case E:
+                // get sender SID
+                mySID = tokenizer.nextToken();
+                // get reciever SID
+                targetSID = tokenizer.nextToken();
+                // get message
+                message.append(tokenizer.nextToken());
+                // get flags and parse it
+                while (tokenizer.hasMoreTokens())
+                {
+                    String token = tokenizer.nextToken();
+                    if (token.startsWith("PM"))
+                    {
+                        pmSID = token.substring(2);
+                        if (pmSID.length() != 4)
+                            new STAError(fromClient,
+                                         Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
+                                         "MSG Invalid Flag.");
+                    }
+                    else if (token.startsWith("ME"))
+                    {
+                        if (token.substring(2).equals("1"))
+                            haveME = true;
+                        else
+                            new STAError(fromClient,
+                                         Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
+                                         "MSG Invalid Flag.");
+                    }
+                }
+                break;
+
+            case F:
+                // get sender SID
+                mySID = tokenizer.nextToken();
+                // get message
+                message.append(tokenizer.nextToken());
+                // get flags and parse it
+                while (tokenizer.hasMoreTokens())
+                {
+                    String token = tokenizer.nextToken();
+                    if (token.startsWith("PM"))
+                    {
+                        pmSID = token.substring(2);
+                        if (pmSID.length() != 4)
+                            new STAError(fromClient,
+                                         Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
+                                         "MSG Invalid Flag.");
+                    }
+                    else if (token.startsWith("ME"))
+                    {
+                        if (token.substring(2).equals("1"))
+                            haveME = true;
+                        else
+                            new STAError(fromClient,
+                                         Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
+                                         "MSG Invalid Flag.");
+                    }
+                }
+                break;
+
+            case U:
+                break;
+        }
         return false;
     }
 }

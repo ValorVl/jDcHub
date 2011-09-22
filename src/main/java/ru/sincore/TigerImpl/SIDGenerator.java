@@ -25,6 +25,8 @@
 package ru.sincore.TigerImpl;
 
 import ru.sincore.ClientManager;
+import ru.sincore.ConfigLoader;
+import ru.sincore.util.Constants;
 
 import java.util.Random;
 
@@ -61,8 +63,8 @@ public class SIDGenerator
             if (ClientManager.getInstance().getClientBySID(Base32.encode(sid)) != null)
                 continue;
 
-            if (Base32.encode(sid).substring(0, 4).equals("ABCD") ||
-                Base32.encode(sid).substring(0, 4).equals("DCBA"))
+            if (Base32.encode(sid).substring(0, 4).equals(ConfigLoader.HUB_SID) ||
+                Base32.encode(sid).substring(0, 4).equals(ConfigLoader.BOT_CHAT_SID))
                 ok = false;
         }
 
