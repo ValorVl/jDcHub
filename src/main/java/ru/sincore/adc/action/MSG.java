@@ -25,6 +25,7 @@ package ru.sincore.adc.action;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.sincore.Client;
+import ru.sincore.ConfigLoader;
 import ru.sincore.Exceptions.CommandException;
 import ru.sincore.Exceptions.STAException;
 import ru.sincore.adc.Context;
@@ -48,6 +49,15 @@ import java.util.Vector;
 public class MSG extends Action
 {
     private static final Logger log = LoggerFactory.getLogger(MSG.class);
+
+
+    String mySID = null;
+    String targetSID = null;
+    StringBuilder message = new StringBuilder();
+    String pmSID = null;
+    boolean haveME = false;
+    List<String> requiredFeatureList = new Vector<String>();
+    List<String> excludedFeatureList = new Vector<String>();
 
 
     private MSG(MessageType messageType, int context, Client fromClient, Client toClient)
@@ -92,18 +102,93 @@ public class MSG extends Action
     }
 
 
-    private boolean parseIncomingMessage(String params)
+    private void parseFeatures(StringTokenizer tokenizer)
+    {
+        String features = tokenizer.nextToken();
+        // TODO feature parser
+    }
+
+
+    private void parseFlags(StringTokenizer tokenizer)
+            throws STAException
+    {
+        while (tokenizer.hasMoreTokens())
+        {
+            String token = tokenizer.nextToken();
+            if (token.startsWith("PM"))
+            {
+                pmSID = token.substring(2);
+                if (pmSID.length() != 4)
+                    new STAError(fromClient,
+                                 Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
+                                 "MSG Invalid flag value.");
+                // TODO check : pm_sid must be not equal to my_sid
+            }
+            else if (token.startsWith("ME"))
+            {
+                if (token.substring(2).equals("1"))
+                    haveME = true;
+                else
+                    new STAError(fromClient,
+                                 Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
+                                 "MSG Invalid Flag.");
+            }
+        }
+    }
+
+
+    private void parseMessage(StringTokenizer tokenizer)
+            throws STAException
+    {
+        String messageText = tokenizer.nextToken();
+        if (messageText.length() > ConfigLoader.MAX_CHAT_MESSAGE_SIZE)
+            new STAError(fromClient,
+                         Constants.STA_SEVERITY_RECOVERABLE,
+                         "MSG Message exceeds maximum length.");
+        message.append(messageText);
+        // TODO parse message for commands
+    }
+
+
+    private void parseMySID(StringTokenizer tokenizer)
+            throws STAException
+    {
+        mySID = tokenizer.nextToken();
+
+        if (mySID.length() != 4)
+            new STAError(fromClient,
+                     Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
+                     "MSG contains wrong my_sid value!");
+
+        if (!mySID.equals(fromClient.getClientHandler().SessionID))
+            new STAError(fromClient,
+                         Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
+                         "MSG my_sid not equal to sender\'s sid.");
+    }
+
+
+    private void parseTargetSID(StringTokenizer tokenizer)
+            throws STAException
+    {
+        targetSID = tokenizer.nextToken();
+
+        if (targetSID.length() != 4)
+            new STAError(fromClient,
+                         Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
+                         "MSG contains wrong target_sid value!");
+
+        if (targetSID.equals(fromClient.getClientHandler().SessionID))
+            new STAError(fromClient,
+                         Constants.STA_SEVERITY_RECOVERABLE,
+                         "MSG PM not returning to self.");
+    }
+
+
+    @Override
+    protected void parseIncoming()
             throws STAException
     {
         StringTokenizer tokenizer = new StringTokenizer(params, " ");
-
-        String mySID = null;
-        String targetSID = null;
-        StringBuilder message = new StringBuilder();
-        String pmSID = null;
-        boolean haveME = false;
-        List<String> requiredFeatureList = new Vector<String>();
-        List<String> excludedFeatureList = new Vector<String>();
 
         // parse header
         switch (messageType)
@@ -113,126 +198,45 @@ public class MSG extends Action
 
             case B:
                 // get sender SID
-                mySID = tokenizer.nextToken();
+                parseMySID(tokenizer);
                 // get message
-                message.append(tokenizer.nextToken());
+                parseMessage(tokenizer);
                 // get flags and parse it
-                while (tokenizer.hasMoreTokens())
-                {
-                    String token = tokenizer.nextToken();
-                    if (token.startsWith("PM"))
-                    {
-                        pmSID = token.substring(2);
-                        if (pmSID.length() != 4)
-                            new STAError(fromClient,
-                                         Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
-                                         "MSG Invalid Flag.");
-                    }
-                    else if (token.startsWith("ME"))
-                    {
-                        if (token.substring(2).equals("1"))
-                            haveME = true;
-                        else
-                            new STAError(fromClient,
-                                         Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
-                                         "MSG Invalid Flag.");
-                    }
-                }
+                parseFlags(tokenizer);
                 break;
 
             case C:
             case I:
             case H:
                 // get message
-                message.append(tokenizer.nextToken());
+                parseMySID(tokenizer);
                 // get flags and parse it
-                while (tokenizer.hasMoreTokens())
-                {
-                    String token = tokenizer.nextToken();
-                    if (token.startsWith("PM"))
-                    {
-                        pmSID = token.substring(2);
-                        if (pmSID.length() != 4)
-                            new STAError(fromClient,
-                                         Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
-                                         "MSG Invalid Flag.");
-                    }
-                    else if (token.startsWith("ME"))
-                    {
-                        if (token.substring(2).equals("1"))
-                            haveME = true;
-                        else
-                            new STAError(fromClient,
-                                         Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
-                                         "MSG Invalid Flag.");
-                    }
-                }
+                parseFlags(tokenizer);
                 break;
 
             case D:
             case E:
                 // get sender SID
-                mySID = tokenizer.nextToken();
+                parseMySID(tokenizer);
                 // get reciever SID
-                targetSID = tokenizer.nextToken();
+                parseTargetSID(tokenizer);
                 // get message
-                message.append(tokenizer.nextToken());
+                parseMessage(tokenizer);
                 // get flags and parse it
-                while (tokenizer.hasMoreTokens())
-                {
-                    String token = tokenizer.nextToken();
-                    if (token.startsWith("PM"))
-                    {
-                        pmSID = token.substring(2);
-                        if (pmSID.length() != 4)
-                            new STAError(fromClient,
-                                         Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
-                                         "MSG Invalid Flag.");
-                    }
-                    else if (token.startsWith("ME"))
-                    {
-                        if (token.substring(2).equals("1"))
-                            haveME = true;
-                        else
-                            new STAError(fromClient,
-                                         Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
-                                         "MSG Invalid Flag.");
-                    }
-                }
+                parseFlags(tokenizer);
                 break;
 
             case F:
                 // get sender SID
-                mySID = tokenizer.nextToken();
+                parseMySID(tokenizer);
                 // get message
-                message.append(tokenizer.nextToken());
+                parseFeatures(tokenizer);
                 // get flags and parse it
-                while (tokenizer.hasMoreTokens())
-                {
-                    String token = tokenizer.nextToken();
-                    if (token.startsWith("PM"))
-                    {
-                        pmSID = token.substring(2);
-                        if (pmSID.length() != 4)
-                            new STAError(fromClient,
-                                         Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
-                                         "MSG Invalid Flag.");
-                    }
-                    else if (token.startsWith("ME"))
-                    {
-                        if (token.substring(2).equals("1"))
-                            haveME = true;
-                        else
-                            new STAError(fromClient,
-                                         Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
-                                         "MSG Invalid Flag.");
-                    }
-                }
+                parseFlags(tokenizer);
                 break;
 
             case U:
                 break;
         }
-        return false;
     }
 }

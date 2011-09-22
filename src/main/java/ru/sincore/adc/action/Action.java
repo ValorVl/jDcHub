@@ -31,6 +31,7 @@ import ru.sincore.Exceptions.STAException;
 import ru.sincore.adc.Context;
 import ru.sincore.adc.MessageType;
 import ru.sincore.adc.State;
+import ru.sincore.util.Constants;
 import ru.sincore.util.STAError;
 
 
@@ -134,7 +135,7 @@ public abstract class Action
      * @throws CommandException
      * @throws STAException
      */
-    public final boolean parse (String params) throws STAException, CommandException
+    public final void parse (String params) throws STAException, CommandException
     {
         this.params = params;
 
@@ -143,15 +144,19 @@ public abstract class Action
             switch (context)
             {
                 case Context.F:
-                    return parseOutgoing();
+                    parseOutgoing();
+                    break;
                 case Context.T:
-                    return parseIncoming();
+                    parseIncoming();
+                    break;
                 case Context.C:
-                    return parsePassiveTransition();
+                    parsePassiveTransition();
+                    break;
                 case Context.U:
-                    return parseUDP();
+                    parseUDP();
+                    break;
                 default:
-                    new STAError(fromClient, 100, "Invalid context : " + context);
+                    new STAError(fromClient, Constants.STA_SEVERITY_RECOVERABLE, "Invalid context : " + context);
                     break;
             }
         }
@@ -164,36 +169,32 @@ public abstract class Action
             log.debug(marker, ce);
         }
 
-        return false;
+        paramsAreValid = true;
     }
 
 
-    protected boolean parseIncoming()
+    protected void parseIncoming()
             throws STAException
     {
-        new STAError(fromClient, 100, "Invalid context : " + context);
-        return false;
+        new STAError(fromClient, Constants.STA_SEVERITY_RECOVERABLE, "Invalid context : " + context);
     }
 
-    protected boolean parseOutgoing()
+    protected void parseOutgoing()
             throws STAException, CommandException
     {
-        new STAError(fromClient, 100, "Invalid context : " + context);
-        return false;
+        new STAError(fromClient, Constants.STA_SEVERITY_RECOVERABLE, "Invalid context : " + context);
     }
 
-    protected boolean parsePassiveTransition()
+    protected void parsePassiveTransition()
             throws STAException
     {
-        new STAError(fromClient, 100, "Invalid context : " + context);
-        return false;
+        new STAError(fromClient, Constants.STA_SEVERITY_RECOVERABLE, "Invalid context : " + context);
     }
 
-    protected boolean parseUDP()
+    protected void parseUDP()
             throws STAException
     {
-        new STAError(fromClient, 100, "Invalid context : " + context);
-        return false;
+        new STAError(fromClient, Constants.STA_SEVERITY_RECOVERABLE, "Invalid context : " + context);
     }
 
     public abstract String toString ();
