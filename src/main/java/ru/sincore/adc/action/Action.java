@@ -55,7 +55,7 @@ public abstract class Action
     protected Client fromClient;
     protected Client toClient;
 
-    protected String params;
+    protected String rawCommand;
     protected boolean paramsAreValid = false;
 
 
@@ -134,14 +134,14 @@ public abstract class Action
      * For incoming messages that means incoming string without
      * 5 heading simbols containing message type, command and separator (space).
      *
-     * @param params command parameters
+     * @param rawCommand raw command string
      * @return parsing status. True if parameters were parsed, False otherwise
      * @throws CommandException
      * @throws STAException
      */
-    public final void parse (String params) throws STAException, CommandException
+    public final void parse (String rawCommand) throws STAException, CommandException
     {
-        this.params = params;
+        this.rawCommand = rawCommand;
 
         try
         {

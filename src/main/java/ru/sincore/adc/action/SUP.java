@@ -61,12 +61,15 @@ public class SUP extends Action
 	@Override
     protected void parseIncoming() throws STAException, CommandException
 	{
-		if (params.charAt(0) != 'H')
+		if (messageType != MessageType.H)
 		{
 			throw new CommandException("FAIL state:PROTOCOL reason:NOT BASE CLIENT");
 		}
 
-		StringTokenizer incomingToken = new StringTokenizer(params);
+		StringTokenizer incomingToken = new StringTokenizer(rawCommand);
+
+        // pass first 5 symbols: message type, command name and whitespace
+        incomingToken.nextToken();
 
 		while (incomingToken.hasMoreTokens())
 		{

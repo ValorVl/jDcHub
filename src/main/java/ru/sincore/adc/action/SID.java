@@ -25,6 +25,8 @@ package ru.sincore.adc.action;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.sincore.Client;
+import ru.sincore.Exceptions.CommandException;
+import ru.sincore.Exceptions.STAException;
 import ru.sincore.adc.Context;
 import ru.sincore.adc.MessageType;
 import ru.sincore.adc.State;
@@ -66,32 +68,32 @@ public class SID extends Action
            int context,
            Client client,
            String params)
+            throws CommandException, STAException
     {
         this(messageType, context, client);
-        this.params = params;
-        //parse(params);
+        this.rawCommand = params;
+        parse(params);
     }
 
 
-//    @Override
-//    protected boolean parse(String params)
-//    {
-//        // TODO replace with right SID validation
-//        if (params.length() != 4)
-//            return false;
-//
-//        this.params = params;
-//        paramsAreValid = true;
-//
-//        return true;
-//    }
+    @Override
+    public void parseOutgoing()
+    {
+        // TODO replace with right SID validation
+        if (rawCommand.length() != 4)
+        {
+            return;
+        }
+
+        paramsAreValid = true;
+    }
 
 
     @Override
     public String toString()
     {
         if (paramsAreValid)
-            return messageType.toString() + "SID " + params;
+            return rawCommand;
         else
             return null;
     }

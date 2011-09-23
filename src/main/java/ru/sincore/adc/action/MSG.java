@@ -24,6 +24,7 @@ package ru.sincore.adc.action;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.sincore.Broadcast;
 import ru.sincore.Client;
 import ru.sincore.ConfigLoader;
 import ru.sincore.Exceptions.CommandException;
@@ -31,6 +32,8 @@ import ru.sincore.Exceptions.STAException;
 import ru.sincore.adc.Context;
 import ru.sincore.adc.MessageType;
 import ru.sincore.adc.State;
+import ru.sincore.cmd.CmdEngine;
+import ru.sincore.util.AdcUtils;
 import ru.sincore.util.Constants;
 import ru.sincore.util.STAError;
 
@@ -53,7 +56,7 @@ public class MSG extends Action
 
     String mySID = null;
     String targetSID = null;
-    StringBuilder message = new StringBuilder();
+    String message = null;
     String pmSID = null;
     boolean haveME = false;
     List<String> requiredFeatureList = new Vector<String>();
@@ -84,14 +87,14 @@ public class MSG extends Action
      * @param messageType message type
      * @param context current command context
      * @param client client to send message or from message was recieved
-     * @param params message text, additional flags
+     * @param rawCommand message text, additional flags
      */
-    public MSG(MessageType messageType, int context, Client client, String params)
+    public MSG(MessageType messageType, int context, Client client, String rawCommand)
             throws CommandException, STAException
     {
         this(messageType, context, client);
-        this.params = params;
-        parse(params);
+        this.rawCommand = rawCommand;
+        parse(rawCommand);
     }
 
 
@@ -99,6 +102,37 @@ public class MSG extends Action
     public String toString()
     {
         return null;
+    }
+
+
+    private boolean parseAndExecuteCommandInMessage()
+    {
+        String normalMessage = AdcUtils.retNormStr(message);
+        if (normalMessage.startsWith(ConfigLoader.OP_COMMAND_PREFIX) ||
+                normalMessage.startsWith(ConfigLoader.USER_COMMAND_PREFIX))
+        {
+            StringTokenizer commandTokenizer = new StringTokenizer(normalMessage);
+
+            CmdEngine cmd = new CmdEngine();
+            String command = commandTokenizer.nextToken();
+            if (!cmd.commandExist(command.substring(1)))
+            {
+                 // TODO say to client that command doesn't exist
+
+                // return result like command was executed
+                // that needed to don't broadcast message
+                return true;
+            }
+
+            // command params is a message string without leading command name and whitespace
+            String commandParams = message.substring(command.length() + 1);
+
+            cmd.executeCmd(command, commandParams, fromClient);
+
+            return true;
+        }
+
+        return false;
     }
 
 
@@ -122,7 +156,11 @@ public class MSG extends Action
                     new STAError(fromClient,
                                  Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
                                  "MSG Invalid flag value.");
-                // TODO check : pm_sid must be not equal to my_sid
+
+                if (pmSID.equals(mySID))
+                    new STAError(fromClient,
+                                 Constants.STA_SEVERITY_RECOVERABLE,
+                                 "MSG Can\'t send private message to yourself.");
             }
             else if (token.startsWith("ME"))
             {
@@ -141,12 +179,13 @@ public class MSG extends Action
             throws STAException
     {
         String messageText = tokenizer.nextToken();
+
         if (messageText.length() > ConfigLoader.MAX_CHAT_MESSAGE_SIZE)
             new STAError(fromClient,
                          Constants.STA_SEVERITY_RECOVERABLE,
                          "MSG Message exceeds maximum length.");
-        message.append(messageText);
-        // TODO parse message for commands
+
+        message = messageText;
     }
 
 
@@ -188,7 +227,10 @@ public class MSG extends Action
     protected void parseIncoming()
             throws STAException
     {
-        StringTokenizer tokenizer = new StringTokenizer(params, " ");
+        StringTokenizer tokenizer = new StringTokenizer(rawCommand, " ");
+
+        // pass first 5 symbols: message type, command name and whitespace
+        tokenizer.nextToken();
 
         // parse header
         switch (messageType)
@@ -203,6 +245,10 @@ public class MSG extends Action
                 parseMessage(tokenizer);
                 // get flags and parse it
                 parseFlags(tokenizer);
+                // try to find command in message and execute it
+                if (!parseAndExecuteCommandInMessage())
+                    Broadcast.getInstance().broadcast(rawCommand);
+
                 break;
 
             case C:

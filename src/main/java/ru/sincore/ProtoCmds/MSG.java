@@ -78,10 +78,10 @@ public class MSG
             new STAError(client, 200, "Protocol Error. Wrong SID supplied.");
             return;
         }
-        String pmsid = null;
+        String targetSID = null;
         if (command.charAt(0) == 'D' || command.charAt(0) == 'E')
         {
-            pmsid = tok.nextToken();
+            targetSID = tok.nextToken();
         }
         String message = tok.nextToken();
 
@@ -95,14 +95,14 @@ public class MSG
             }
         }
 
-        String thissid = null;
+        String pmSID = null;
         int me = 0;
         while (tok.hasMoreElements())
         {
             aux = tok.nextToken();
             if (aux.startsWith("PM"))
             {
-                thissid = aux.substring(2);
+                pmSID = aux.substring(2);
             }
             if (aux.startsWith("ME"))
             {
@@ -147,7 +147,7 @@ public class MSG
 
         if (command.charAt(0) == 'B') //broadcast
         {
-            if (pmsid != null)
+            if (targetSID != null)
             {
                 new STAError(client, Constants.STA_SEVERITY_RECOVERABLE, "MSG Can't Broadcast PM.");
                 return;
@@ -157,20 +157,20 @@ public class MSG
         }
         else if (command.charAt(0) == 'E') //echo direct msg
         {
-            if (pmsid == null)
+            if (targetSID == null)
             {
                 new STAError(client, Constants.STA_SEVERITY_RECOVERABLE, "MSG Can't PM to Nobody.");
                 return;
             }
-            if (!thissid.equals(cur_client.SessionID))
+            if (!pmSID.equals(cur_client.SessionID))
             {
                 new STAError(client, Constants.STA_SEVERITY_RECOVERABLE, "MSG PM not returning to self.");
                 return;
             }
 
-            if (!pmsid.equals("ABCD"))
+            if (!targetSID.equals("ABCD"))
             {
-                Client tempClient = ClientManager.getInstance().getClientBySID(pmsid);
+                Client tempClient = ClientManager.getInstance().getClientBySID(targetSID);
                 if (tempClient != null)
                 {
                     tempClient.getClientHandler().sendToClient(command);
@@ -215,20 +215,20 @@ public class MSG
         }
         else if (command.charAt(0) == 'D') //direct direct msg
         {
-            if (pmsid == null)
+            if (targetSID == null)
             {
                 new STAError(client, Constants.STA_SEVERITY_RECOVERABLE, "MSG Can't PM to Nobody.");
                 return;
             }
-            if (!thissid.equals(cur_client.SessionID))
+            if ((pmSID != null) && (pmSID.equals(cur_client.SessionID)))
             {
                 new STAError(client, Constants.STA_SEVERITY_RECOVERABLE, "MSG PM not returning to self.");
                 return;
             }
 
-            if (!pmsid.equals("ABCD"))
+            if (!targetSID.equals("ABCD"))
             {
-                Client tempClient = ClientManager.getInstance().getClientBySID(pmsid);
+                Client tempClient = ClientManager.getInstance().getClientBySID(targetSID);
                 if (tempClient != null)
                 {
                     tempClient.getClientHandler().sendToClient(command);
