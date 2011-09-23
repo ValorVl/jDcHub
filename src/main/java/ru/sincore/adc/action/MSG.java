@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.sincore.Broadcast;
 import ru.sincore.Client;
+import ru.sincore.ClientManager;
 import ru.sincore.ConfigLoader;
 import ru.sincore.Exceptions.CommandException;
 import ru.sincore.Exceptions.STAException;
@@ -105,6 +106,11 @@ public class MSG extends Action
     }
 
 
+    /**
+     * Checking message is command. If it is, execute it.
+     *
+     * @return true if it is command, false instead.
+     */
     private boolean parseAndExecuteCommandInMessage()
     {
         String normalMessage = AdcUtils.retNormStr(message);
@@ -196,8 +202,8 @@ public class MSG extends Action
 
         if (mySID.length() != 4)
             new STAError(fromClient,
-                     Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
-                     "MSG contains wrong my_sid value!");
+                         Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
+                         "MSG contains wrong my_sid value!");
 
         if (!mySID.equals(fromClient.getClientHandler().SessionID))
             new STAError(fromClient,
@@ -220,6 +226,14 @@ public class MSG extends Action
             new STAError(fromClient,
                          Constants.STA_SEVERITY_RECOVERABLE,
                          "MSG PM not returning to self.");
+
+        Client tempClient = ClientManager.getInstance().getClientBySID(targetSID);
+        if (tempClient == null)
+            new STAError(fromClient,
+                         Constants.STA_SEVERITY_RECOVERABLE,
+                         "MSG User not found."); //not kick, maybe the other client just left after he sent the msg;
+
+        toClient = tempClient;
     }
 
 
@@ -248,7 +262,6 @@ public class MSG extends Action
                 // try to find command in message and execute it
                 if (!parseAndExecuteCommandInMessage())
                     Broadcast.getInstance().broadcast(rawCommand);
-
                 break;
 
             case C:
@@ -270,6 +283,8 @@ public class MSG extends Action
                 parseMessage(tokenizer);
                 // get flags and parse it
                 parseFlags(tokenizer);
+                // send message directly to client
+                sendMessageToClient();
                 break;
 
             case F:
@@ -279,10 +294,26 @@ public class MSG extends Action
                 parseFeatures(tokenizer);
                 // get flags and parse it
                 parseFlags(tokenizer);
+                // send message dependent from features
+                sendMessageDependentFromFeatures();
                 break;
 
             case U:
                 break;
         }
+    }
+
+
+    private void sendMessageDependentFromFeatures()
+    {
+    }
+
+
+    private void sendMessageToClient()
+            throws STAException
+    {
+        toClient.getClientHandler().sendToClient(rawCommand);
+        if (messageType == MessageType.E)
+            fromClient.getClientHandler().sendToClient(rawCommand);
     }
 }
