@@ -23,11 +23,8 @@
 
 package ru.sincore.ProtoCmds;
 
-import ru.sincore.Client;
-import ru.sincore.ClientHandler;
-import ru.sincore.ConfigLoader;
+import ru.sincore.*;
 import ru.sincore.Exceptions.STAException;
-import ru.sincore.SessionManager;
 import ru.sincore.util.Constants;
 import ru.sincore.util.STAError;
 
@@ -102,20 +99,15 @@ public class STA
                 return;
             }
             String dsid = TK.nextToken();
-            for (Client targetClient : SessionManager.getUsers())
-            {
-                if (targetClient.getClientHandler().validated == 1)
-                {
-                    if (targetClient.getClientHandler().SessionID.equals(dsid))
-
-                    {
-                        targetClient.getClientHandler().sendToClient(command);
-                        return;
-                    }
-                }
-            }
-
-            new STAError(client, 100, "Invalid Target Sid.");
+			Client targetClient = ClientManager.getInstance().getClientBySID(dsid);
+			if ((targetClient != null) && (targetClient.getClientHandler().validated == 1))
+			{
+				targetClient.getClientHandler().sendToClient(command);
+			}
+			else
+			{
+				new STAError(client, 100, "Invalid Target Sid.");
+			}
         }
         else if (command.charAt(0) == 'E')
         {
@@ -150,19 +142,16 @@ public class STA
                 return;
             }
             String esid = TK.nextToken();
-            for (Client targetClient : SessionManager.getUsers())
-            {
-                if (targetClient.getClientHandler().validated == 1)
-                {
-                    if (targetClient.getClientHandler().SessionID.equals(esid))
-                    {
-                        targetClient.getClientHandler().sendToClient(command);
-                        cur_client.sendToClient(command);
-                    }
-                }
-            }
 
-            new STAError(client, 100, "Invalid Target Sid.");
+			Client targetClient = ClientManager.getInstance().getClientBySID(esid);
+			if ((targetClient != null) && targetClient.getClientHandler().validated == 1)
+			{
+				targetClient.getClientHandler().sendToClient(command);
+			}
+			else
+			{
+				new STAError(client, 100, "Invalid Target Sid.");
+			}
         }
         else if (command.charAt(0) == 'F')
         {

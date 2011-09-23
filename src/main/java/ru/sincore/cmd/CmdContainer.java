@@ -1,5 +1,8 @@
 package ru.sincore.cmd;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
 import ru.sincore.db.dao.CmdListDAOImpl;
 import ru.sincore.db.pojo.CmdListPOJO;
 
@@ -8,6 +11,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class CmdContainer
 {
+	private static final Logger log = LoggerFactory.getLogger(CmdContainer.class);
+	private String marker = Marker.ANY_MARKER;
+
 	private static volatile CmdContainer instance = new CmdContainer();
 
 	private ConcurrentHashMap<String, AbstractCmd> commands;
@@ -41,13 +47,13 @@ public class CmdContainer
 				commands.put(cmd.getCommandName(),cmdInstance);
 			} catch (ClassNotFoundException e)
 			{
-				e.printStackTrace();
+				log.error(marker,e);
 			} catch (InstantiationException e)
 			{
-				e.printStackTrace();
+				log.error(marker,e);
 			} catch (IllegalAccessException e)
 			{
-				e.printStackTrace();
+				log.error(marker,e);
 			}
 		}
 	}
