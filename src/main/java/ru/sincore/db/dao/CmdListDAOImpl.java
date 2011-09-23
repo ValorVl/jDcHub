@@ -27,7 +27,7 @@ public class CmdListDAOImpl implements CmdListDAO
 	public boolean addCommand(String name,
 							  int weight,
 							  String executorClass,
-							  String[] args,
+							  String args,
 							  String description,
 							  String syntax,
 							  Boolean enabled,
@@ -45,7 +45,7 @@ public class CmdListDAOImpl implements CmdListDAO
 			pojo.setCommandName(name);
 			pojo.setCommandWeight(weight);
 			pojo.setCommandExecutorClass(executorClass);
-			pojo.setCommandArgs(args.toString());
+			pojo.setCommandArgs(args);
 			pojo.setCommandDescription(description);
 			pojo.setCommandSyntax(syntax);
 			pojo.setEnabled(enabled);

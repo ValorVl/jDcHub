@@ -69,22 +69,22 @@ public class SID extends Action
     {
         this(messageType, context, client);
         this.params = params;
-        parse(params);
+        //parse(params);
     }
 
 
-    @Override
-    protected boolean parse(String params)
-    {
-        // TODO replace with right SID validation
-        if (params.length() != 4)
-            return false;
-
-        this.params = params;
-        paramsAreValid = true;
-
-        return true;
-    }
+//    @Override
+//    protected boolean parse(String params)
+//    {
+//        // TODO replace with right SID validation
+//        if (params.length() != 4)
+//            return false;
+//
+//        this.params = params;
+//        paramsAreValid = true;
+//
+//        return true;
+//    }
 
 
     @Override

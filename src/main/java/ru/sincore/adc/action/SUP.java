@@ -59,7 +59,7 @@ public class SUP extends Action
 	 * @return
 	 */
 	@Override
-    protected boolean parseIncoming() throws STAException, CommandException
+    protected void parseIncoming() throws STAException, CommandException
 	{
 		if (params.charAt(0) != 'H')
 		{
@@ -136,7 +136,6 @@ public class SUP extends Action
                          "Cannot find any compatible hash function to use. Defaulting to TIGER.");
 		}
 
-        return false;
 	}
 
 	/**
@@ -146,7 +145,7 @@ public class SUP extends Action
 	 * @throws CommandException command exception
 	 */
 	@Override
-    protected boolean parseOutgoing() throws STAException, CommandException
+    protected void parseOutgoing() throws STAException, CommandException
 	{
 
 		// Check message type HUB if not throw exception
@@ -162,6 +161,7 @@ public class SUP extends Action
 		}
 
 		String extensionList = ConfigLoader.ADC_EXTENSION_LIST;
+
 		// Check extension list, if list empty, send error message in log file and stop server
 		if (!extensionList.isEmpty())
 		{
@@ -194,8 +194,6 @@ public class SUP extends Action
 
 		toClient.getClientHandler().sendToClient(inf.toString());
 
-
-        return true;
     }
 
 

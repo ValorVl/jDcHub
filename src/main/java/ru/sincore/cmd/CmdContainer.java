@@ -69,12 +69,12 @@ public class CmdContainer
 		cmdInstance.setLogged(cmdPojo.getLogged());
 	}
 
-	public AbstractCmd getCommandExecutor(String name)
+	public synchronized AbstractCmd getCommandExecutor(String name)
 	{
 		return commands.get(name);
 	}
 
-	public void clearCommandList()
+	public synchronized void clearCommandList()
 	{
 		if (!commands.isEmpty())
 		{
@@ -82,10 +82,14 @@ public class CmdContainer
 		}
 	}
 
-
-	public void registryCommand()
+	public synchronized ConcurrentHashMap<String, AbstractCmd> getConteiner()
 	{
+		return commands;
+	}
 
+	public synchronized void registryCommand(String name, AbstractCmd executor)
+	{
+		commands.put(name,executor);
 	}
 
 }

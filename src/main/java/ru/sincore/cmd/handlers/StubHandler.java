@@ -10,6 +10,12 @@ public class StubHandler extends AbstractCmd
 
 	private static final Logger log = LoggerFactory.getLogger(StubHandler.class);
 
+	public StubHandler()
+	{
+		this.setCmdArgs("wkhewher");
+		this.setCmdDescription("iuwieurywr");
+	}
+
 	@Override
 	public void execute(String cmd, String args, Client client)
 	{

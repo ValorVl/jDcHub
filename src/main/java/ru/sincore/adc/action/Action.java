@@ -70,8 +70,12 @@ public abstract class Action
         this.toClient = toClient;
     }
 
+	public Action()
+	{
+	}
 
-    public Client getFromClient ()
+
+	public Client getFromClient ()
     {
         return fromClient;
     }
@@ -174,8 +178,8 @@ public abstract class Action
 
 
     protected void parseIncoming()
-            throws STAException
-    {
+            throws STAException, CommandException
+	{
         new STAError(fromClient, Constants.STA_SEVERITY_RECOVERABLE, "Invalid context : " + context);
     }
 
