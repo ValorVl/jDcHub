@@ -69,8 +69,6 @@ public class CmdEngine
 			AbstractCmd executorObject = (AbstractCmd) Class.forName(executor).newInstance();
 			container.registryCommand(cmdName,executorObject);
 
-
-
 			CmdListDAOImpl cmdListDAO = new CmdListDAOImpl();
 
 			String args = executorObject.getCmdArgs();

@@ -37,6 +37,7 @@ public class State
     public static final int VERIFY = 0x4;
     public static final int NORMAL = 0x8;
     public static final int DATA = 0x16;
+	public static final int ALL  = INVALID_STATE | PROTOCOL | IDENTIFY | VERIFY | NORMAL | DATA;
 
 
     // TODO Remove this code when all actions will be written
