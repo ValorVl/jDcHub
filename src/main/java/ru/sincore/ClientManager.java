@@ -100,9 +100,6 @@ public final class ClientManager
 
     synchronized public void addClient (Client client)
     {
-        if (client.getClientHandler().ID.length() == 0)
-            throw new Exception("New client doesn\'t have SID");
-
         clientsByCID.put(client.getClientHandler().ID, client);
         clientsByNick.put(client.getClientHandler().NI, client);
         clientsBySID.put(client.getClientHandler().SID, client);
@@ -111,7 +108,7 @@ public final class ClientManager
 
     synchronized public void removeAllClients()
     {
-        // For all clientsByCID
+        // For all clients
         for (Client client : clientsByCID.values())
         {
             // Remove client attribute from all sessions
@@ -120,7 +117,7 @@ public final class ClientManager
             client.getClientHandler().session.close(true);
         }
 
-        // Remove all clientsByCID from client list
+        // Remove all clients from client lists
         clientsByCID.clear();
         clientsByNick.clear();
         clientsBySID.clear();
