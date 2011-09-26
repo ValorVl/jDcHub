@@ -261,7 +261,7 @@ public class CommandParser
             if (!client.getClientHandler().reg.HideMe)
             {
                 Broadcast.getInstance().broadcast(
-                        "BINF " + client.getClientHandler().SessionID + " HI1");
+                        "BINF " + client.getClientHandler().SID + " HI1");
                 client.getClientHandler()
                         .sendFromBot("You are now hidden, not appearing in userlist no more.");
                 client.getClientHandler().reg.HideMe = true;
@@ -269,7 +269,7 @@ public class CommandParser
             else
             {
                 Broadcast.getInstance().broadcast(
-                        "BINF " + client.getClientHandler().SessionID + " HI");
+                        "BINF " + client.getClientHandler().SID + " HI");
                 client.getClientHandler()
                         .sendFromBot("You are now revealed, appearing again in userlist.");
                 client.getClientHandler().reg.HideMe = false;
@@ -367,7 +367,7 @@ public class CommandParser
                                 temp.getClientHandler().CT = "0";
                                 temp.getClientHandler().can_receive_cmds = false;
                                 Broadcast.getInstance().broadcast(
-                                        "BINF " + temp.getClientHandler().SessionID
+                                        "BINF " + temp.getClientHandler().SID
                                         + " CT");
                                 temp.getClientHandler().reg = new Nod();
                                 client.getClientHandler().sendFromBot("User "
@@ -426,7 +426,7 @@ public class CommandParser
                                 temp.getClientHandler().can_receive_cmds = false;
 
                                 Broadcast.getInstance().broadcast(
-                                        "BINF " + temp.getClientHandler().SessionID
+                                        "BINF " + temp.getClientHandler().SID
                                         + " CT");
 
                                 temp.getClientHandler().reg = new Nod();
@@ -500,13 +500,13 @@ public class CommandParser
 
                                 Broadcast.getInstance().broadcast("BINF "
                                                                   +
-                                                                  temp.getClientHandler().SessionID +
+                                                                  temp.getClientHandler().SID +
                                                                   " CT2");
                                 temp.getClientHandler().can_receive_cmds = true;
                                 temp.getClientHandler().reg.isreg = true;
-                                temp.getClientHandler().LoggedAt = System
+                                temp.getClientHandler().loggedAt = System
                                         .currentTimeMillis();
-                                temp.getClientHandler().reg.LastIP = temp.getClientHandler().RealIP;
+                                temp.getClientHandler().reg.LastIP = temp.getClientHandler().realIP;
 
                                 return;
                             }
@@ -564,13 +564,13 @@ public class CommandParser
                                 temp.getClientHandler().can_receive_cmds = true;
                                 Broadcast.getInstance().broadcast("BINF "
                                                                   +
-                                                                  temp.getClientHandler().SessionID +
+                                                                  temp.getClientHandler().SID +
                                                                   " CT2");
 
                                 temp.getClientHandler().reg.isreg = true;
-                                temp.getClientHandler().LoggedAt = System
+                                temp.getClientHandler().loggedAt = System
                                         .currentTimeMillis();
-                                temp.getClientHandler().reg.LastIP = temp.getClientHandler().RealIP;
+                                temp.getClientHandler().reg.LastIP = temp.getClientHandler().realIP;
                                 log.info(client.getClientHandler().NI + " regged the CID "
                                          + temp.getClientHandler().ID);
 
@@ -630,12 +630,12 @@ public class CommandParser
                             temp.getClientHandler().putOpchat(true);
                             temp.getClientHandler().CT = "2";
 
-                            Broadcast.getInstance().broadcast("BINF " + temp.getClientHandler().SessionID
+                            Broadcast.getInstance().broadcast("BINF " + temp.getClientHandler().SID
                                                               + " CT2");
                             temp.getClientHandler().can_receive_cmds = true;
-                            temp.getClientHandler().LoggedAt = System
+                            temp.getClientHandler().loggedAt = System
                                     .currentTimeMillis();
-                            temp.getClientHandler().reg.LastIP = temp.getClientHandler().RealIP;
+                            temp.getClientHandler().reg.LastIP = temp.getClientHandler().realIP;
                             log.info(client.getClientHandler().NI + " regged the CID "
                                      + temp.getClientHandler().ID);
 
@@ -799,7 +799,7 @@ public class CommandParser
                 }
             }
 
-            Broadcast.getInstance().broadcast("BINF " + client.getClientHandler().SessionID + " NI" + aux);
+            Broadcast.getInstance().broadcast("BINF " + client.getClientHandler().SID + " NI" + aux);
 
             Broadcast.getInstance().broadcast("IMSG " + client.getClientHandler().NI + " is now known as " + aux);
             client.getClientHandler().NI = aux;
@@ -903,7 +903,7 @@ public class CommandParser
                                 done = true;
                                 return;
                             }
-                            Broadcast.getInstance().broadcast("BINF " + temp.getClientHandler().SessionID
+                            Broadcast.getInstance().broadcast("BINF " + temp.getClientHandler().SID
                                                               + " NI" + newnick);
 
                             client.getClientHandler().sendFromBot("Renamed user "
@@ -1290,7 +1290,7 @@ public class CommandParser
                 {
                     if (temp.getClientHandler().validated == 1)
                     {
-                        if (temp.getClientHandler().RealIP.equals(aux))
+                        if (temp.getClientHandler().realIP.equals(aux))
                         {
                             if (!temp.getClientHandler().reg.kickable)
                             {
@@ -1315,7 +1315,7 @@ public class CommandParser
                 {
                     if (temp.getClientHandler().validated == 1)
                     {
-                        if (temp.getClientHandler().RealIP.equals(aux))
+                        if (temp.getClientHandler().realIP.equals(aux))
                         {
 
                             temp.kickMeOut(client.getClientHandler(), reason, 2, -1L);
@@ -1350,7 +1350,7 @@ public class CommandParser
                                                                       temp.getClientHandler().NI +
                                                                       " with IP "
                                                                       +
-                                                                      temp.getClientHandler().RealIP
+                                                                      temp.getClientHandler().realIP
                                                                       +
                                                                       ", but its unkickable.Not banned.");
                             }
@@ -1360,7 +1360,7 @@ public class CommandParser
                                 client.getClientHandler().sendFromBot("Found user " + aux
                                                                       +
                                                                       " with IP " +
-                                                                      temp.getClientHandler().RealIP
+                                                                      temp.getClientHandler().realIP
                                                                       +
                                                                       ", banning..");
 

@@ -84,7 +84,7 @@ public class STA
                 return;
             }
             String cursid = TK.nextToken();
-            if (!cursid.equals(cur_client.SessionID))
+            if (!cursid.equals(cur_client.SID))
             {
                 new STAError(client,
                              100 + Constants.STA_GENERIC_PROTOCOL_ERROR,
@@ -127,7 +127,7 @@ public class STA
                 return;
             }
             String cursid = TK.nextToken();
-            if (!cursid.equals(cur_client.SessionID))
+            if (!cursid.equals(cur_client.SID))
             {
                 new STAError(client,
                              200 + Constants.STA_GENERIC_PROTOCOL_ERROR,

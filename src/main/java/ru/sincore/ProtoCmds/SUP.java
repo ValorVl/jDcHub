@@ -159,7 +159,7 @@ public class SUP
             /* handler. sendToClient(AdcUtils.Init);
 
 
-              handler.sendToClient(AdcUtils.ISID+" "+handler.SessionID);
+              handler.sendToClient(AdcUtils.ISID+" "+handler.SID);
              if(Vars.HubDE.equals (""))
                  handler.sendToClient("IINF CT32 VE"+AdcUtils.retADCStr (Vars.HubVersion)+" NI"+AdcUtils.retADCStr(Vars.HubName));
              else
@@ -198,7 +198,7 @@ public class SUP
 //            cur_client.sendToClient(AdcUtils.Init);
 //
 //
-//            cur_client.sendToClient(AdcUtils.ISID + " " + cur_client.SessionID);
+//            cur_client.sendToClient(AdcUtils.ISID + " " + cur_client.SID);
 //            cur_client.sendToClient("IINF CT32 VE" +
 //                                    AdcUtils.retADCStr(ConfigLoader.HUB_VERSION) +
 //                                    " NI" +

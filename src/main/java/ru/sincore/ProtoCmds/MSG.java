@@ -73,7 +73,7 @@ public class MSG
             return;
         }
 
-        if (!tok.nextToken().equals(cur_client.SessionID))
+        if (!tok.nextToken().equals(cur_client.SID))
         {
             new STAError(client, 200, "Protocol Error. Wrong SID supplied.");
             return;
@@ -122,9 +122,9 @@ public class MSG
 
         }
         long now = System.currentTimeMillis();
-        if (cur_client.LastChatMsg != 0)
+        if (cur_client.lastMSG != 0)
         {
-            if (now - cur_client.LastChatMsg < ConfigLoader.CHAT_REFRESH)
+            if (now - cur_client.lastMSG < ConfigLoader.CHAT_REFRESH)
             {
                 if (!cur_client.reg.overridespam)
 
@@ -134,7 +134,7 @@ public class MSG
                                  "Chatting Too Fast. Minimum chat interval " +
                                  String.valueOf(ConfigLoader.CHAT_REFRESH) +
                                  " .You made " +
-                                 String.valueOf(now - cur_client.LastChatMsg) +
+                                 String.valueOf(now - cur_client.lastMSG) +
                                  ".");
                     return;
                 }
@@ -142,7 +142,7 @@ public class MSG
             }
         }
 
-        cur_client.LastChatMsg = now;
+        cur_client.lastMSG = now;
 
 
         if (command.charAt(0) == 'B') //broadcast
@@ -162,7 +162,7 @@ public class MSG
                 new STAError(client, Constants.STA_SEVERITY_RECOVERABLE, "MSG Can't PM to Nobody.");
                 return;
             }
-            if (!pmSID.equals(cur_client.SessionID))
+            if (!pmSID.equals(cur_client.SID))
             {
                 new STAError(client, Constants.STA_SEVERITY_RECOVERABLE, "MSG PM not returning to self.");
                 return;
@@ -200,9 +200,9 @@ public class MSG
                         {
                             targetClient.getClientHandler()
                                     .sendToClient("EMSG " +
-														  cur_client.SessionID +
+														  cur_client.SID +
 														  " " +
-														  targetClient.getClientHandler().SessionID +
+														  targetClient.getClientHandler().SID +
 														  " " +
 														  message +
 														  " PMABCD");
@@ -220,7 +220,7 @@ public class MSG
                 new STAError(client, Constants.STA_SEVERITY_RECOVERABLE, "MSG Can't PM to Nobody.");
                 return;
             }
-            if ((pmSID != null) && (pmSID.equals(cur_client.SessionID)))
+            if ((pmSID != null) && (pmSID.equals(cur_client.SID)))
             {
                 new STAError(client, Constants.STA_SEVERITY_RECOVERABLE, "MSG PM not returning to self.");
                 return;
@@ -252,9 +252,9 @@ public class MSG
                     {
                         tempClient.getClientHandler()
                                 .sendToClient("DMSG " +
-                                              cur_client.SessionID +
+                                              cur_client.SID +
                                               " " +
-                                              tempClient.getClientHandler().SessionID +
+                                              tempClient.getClientHandler().SID +
                                               " " +
                                               message +
                                               " PMABCD");

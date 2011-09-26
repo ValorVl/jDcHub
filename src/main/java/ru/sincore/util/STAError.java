@@ -76,7 +76,7 @@ public class STAError
             if (!ConfigLoader.REDIRECT_URL.isEmpty())
             {
                 client.getClientHandler().closingwrite = client.getClientHandler().sendToClient("IQUI " +
-                                                               client.getClientHandler().SessionID +
+                                                               client.getClientHandler().SID +
                                                                " RD" +
                                                                ConfigLoader.REDIRECT_URL);
             }
@@ -116,7 +116,7 @@ public class STAError
             {
                 client.getClientHandler().closingwrite =
                         client.getClientHandler().sendToClient("IQUI " +
-                                                               client.getClientHandler().SessionID +
+                                                               client.getClientHandler().SID +
                                                                " RD" +
                                                                ConfigLoader.REDIRECT_URL);
             }

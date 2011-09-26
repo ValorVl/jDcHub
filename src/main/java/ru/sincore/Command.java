@@ -139,7 +139,7 @@ public class Command
         currentClient.getClientHandler().sendFromBot(bigTextManager.getMOTD(currentClient));
         currentClient.getClientHandler().sendFromBot(currentClient.getClientHandler().reg.HideMe ? "You are currently hidden." : "");
 
-        currentClient.getClientHandler().LoggedAt = System.currentTimeMillis();
+        currentClient.getClientHandler().loggedAt = System.currentTimeMillis();
         currentClient.getClientHandler().state = State.NORMAL;
 
 
@@ -174,10 +174,10 @@ public class Command
         command = command.substring(4);
         StringTokenizer tok = new StringTokenizer(command);
 
-        String cur_inf = "BINF " + currentClient.getClientHandler().SessionID;
+        String cur_inf = "BINF " + currentClient.getClientHandler().SID;
 
         String thesid = tok.nextToken();
-        if (!thesid.equals(currentClient.getClientHandler().SessionID))
+        if (!thesid.equals(currentClient.getClientHandler().SID))
         {
             new STAError(currentClient,
                          200 + Constants.STA_GENERIC_PROTOCOL_ERROR,
@@ -246,17 +246,17 @@ public class Command
                 if (aux.substring(2).equals("0.0.0.0") ||
                     aux.substring(2).equals("localhost"))//only if active client
                 {
-                    currentClient.getClientHandler().I4 = currentClient.getClientHandler().RealIP;
+                    currentClient.getClientHandler().I4 = currentClient.getClientHandler().realIP;
                 }
-                else if (!aux.substring(2).equals(currentClient.getClientHandler().RealIP) &&
+                else if (!aux.substring(2).equals(currentClient.getClientHandler().realIP) &&
                          !aux.substring(2).equals("") &&
-                         !currentClient.getClientHandler().RealIP.equals("127.0.0.1"))
+                         !currentClient.getClientHandler().realIP.equals("127.0.0.1"))
                 {
                     new STAError(currentClient,
                                  200 + Constants.STA_INVALID_IP,
                                  "Wrong IP address supplied.",
                                  "I4",
-                                 currentClient.getClientHandler().RealIP);
+                                 currentClient.getClientHandler().realIP);
                     return;
                 }
 
@@ -482,7 +482,7 @@ public class Command
         currentClient.getClientHandler().myban = BanList.getban(3, currentClient.getClientHandler().ID);
         if (currentClient.getClientHandler().myban == null)
         {
-            currentClient.getClientHandler().myban = BanList.getban(2, (currentClient.getClientHandler().RealIP));
+            currentClient.getClientHandler().myban = BanList.getban(2, (currentClient.getClientHandler().realIP));
         }
         if (currentClient.getClientHandler().myban == null)
         {
@@ -886,11 +886,11 @@ public class Command
             {
                 if (currentClient.getClientHandler().SU.contains("TCP4"))
                 {
-                    currentClient.getClientHandler().ACTIVE = 1;
+                    currentClient.getClientHandler().active = 1;
                 }
                 else
                 {
-                    currentClient.getClientHandler().ACTIVE = 0;
+                    currentClient.getClientHandler().active = 0;
                 }
             }
         }
@@ -908,7 +908,7 @@ public class Command
 
 
                     currentClient.getClientHandler().reg.LastNI = currentClient.getClientHandler().NI;
-                    currentClient.getClientHandler().reg.LastIP = currentClient.getClientHandler().RealIP;
+                    currentClient.getClientHandler().reg.LastIP = currentClient.getClientHandler().realIP;
                     completeLogIn();
                     return;
                 }
@@ -923,8 +923,8 @@ public class Command
                 myTiger.engineUpdate(T, 0, T.length);
 
                 byte[] finalTiger = myTiger.engineDigest();
-                currentClient.getClientHandler().RandomData = Base32.encode(finalTiger);
-                currentClient.getClientHandler().sendToClient("IGPA " + currentClient.getClientHandler().RandomData);
+                currentClient.getClientHandler().encryptionSolt = Base32.encode(finalTiger);
+                currentClient.getClientHandler().sendToClient("IGPA " + currentClient.getClientHandler().encryptionSolt);
                 currentClient.getClientHandler().state = State.VERIFY;
                 return;
             }
@@ -947,8 +947,8 @@ public class Command
                     myTiger.engineUpdate(T, 0, T.length);
 
                     byte[] finalTiger = myTiger.engineDigest();
-                    currentClient.getClientHandler().RandomData = Base32.encode(finalTiger);
-                    currentClient.getClientHandler().sendToClient("IGPA " + currentClient.getClientHandler().RandomData);
+                    currentClient.getClientHandler().encryptionSolt = Base32.encode(finalTiger);
+                    currentClient.getClientHandler().sendToClient("IGPA " + currentClient.getClientHandler().encryptionSolt);
                     currentClient.getClientHandler().reg = k;
                     currentClient.getClientHandler().state = State.VERIFY;
                     return;
@@ -1175,7 +1175,7 @@ public class Command
                 // removed old adc support;
                 //  byte [] bytecid=Base32.decode (handler.ID);
                 byte[] pas = currentClient.getClientHandler().reg.Password.getBytes();
-                byte[] random = Base32.decode(currentClient.getClientHandler().RandomData);
+                byte[] random = Base32.decode(currentClient.getClientHandler().encryptionSolt);
 
                 byte[] result = new byte[pas.length + random.length];
                 //for(int i=0;i<bytecid.length;i++)
@@ -1209,7 +1209,7 @@ public class Command
                 //System.out.println ("pwla");
                 currentClient.getClientHandler().reg.LastNI = currentClient.getClientHandler().NI;
                 // handler.reg.LastNI=handler.NI;
-                currentClient.getClientHandler().reg.LastIP = currentClient.getClientHandler().RealIP;
+                currentClient.getClientHandler().reg.LastIP = currentClient.getClientHandler().realIP;
 
                 if (!currentClient.getClientHandler().ID.equals(currentClient.getClientHandler().reg.CID))
                 {
@@ -1289,13 +1289,14 @@ public class Command
     public Command(Client client, String command)
             throws STAException, CommandException
     {
+        log.debug("Incoming command parser thread = " + Thread.currentThread().getName());
         currentClient = client;
 
 
         if (command.equals(""))
         {
             log.debug("Empty command from client with nick = \'" + client.getClientHandler().NI +
-                      "\' and SID = \'" + client.getClientHandler().SessionID + "\'");
+                      "\' and SID = \'" + client.getClientHandler().SID + "\'");
             return;
         }
 

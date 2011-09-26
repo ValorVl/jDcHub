@@ -62,7 +62,7 @@ public class ExtInfo
             {
                 if (temp.getClientHandler().validated == 1)
                 {
-                    if ((temp.getClientHandler().RealIP.equals(aux.toLowerCase())))
+                    if ((temp.getClientHandler().realIP.equals(aux.toLowerCase())))
                     {
                         Nicklist = Nicklist + temp.getClientHandler().NI + "\n";
                     }
@@ -141,7 +141,7 @@ public class ExtInfo
                                         "\nTag ";
 
                         String Tag = "<" + AdcUtils.retNormStr(temp.getClientHandler().VE) + ",M:";
-                        if (temp.getClientHandler().ACTIVE == 1)
+                        if (temp.getClientHandler().active == 1)
                         {
                             Tag = Tag + "A";
                         }
@@ -183,7 +183,7 @@ public class ExtInfo
                                   temp.getClientHandler().SU :
                                   "nothing special") +
                                  "\nIp address " +
-                                 temp.getClientHandler().RealIP;
+                                 temp.getClientHandler().realIP;
                         if (temp.getClientHandler().reg.isreg)
                         {
 

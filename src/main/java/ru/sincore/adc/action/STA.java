@@ -68,7 +68,7 @@ public class STA extends Action
 			return;
 		}
 		String curSid = tk.nextToken();
-		if (!curSid.equals(fromClient.getClientHandler().SessionID))
+		if (!curSid.equals(fromClient.getClientHandler().SID))
 		{
 			new STAError(fromClient,
 						 Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
@@ -106,7 +106,7 @@ public class STA extends Action
 			return;
 		}
 		String curSid = tk.nextToken();
-		if (!curSid.equals(fromClient.getClientHandler().SessionID))
+		if (!curSid.equals(fromClient.getClientHandler().SID))
 		{
 			new STAError(fromClient,
 						 Constants.STA_SEVERITY_FATAL + Constants.STA_GENERIC_PROTOCOL_ERROR,

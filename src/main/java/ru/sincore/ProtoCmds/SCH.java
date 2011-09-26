@@ -120,7 +120,7 @@ public class SCH
         String TOken = "";
         int activeonly = 0;
         int len = 0;
-        if (!tok.nextToken().equals(cur_client.SessionID))
+        if (!tok.nextToken().equals(cur_client.SID))
         {
             new STAError(client,
                          200 + Constants.STA_GENERIC_PROTOCOL_ERROR,
@@ -203,14 +203,14 @@ public class SCH
         long curtime = System.currentTimeMillis();
         if (!automagic)
         {
-            if (curtime - cur_client.Lastsearch > ConfigLoader.SEARCH_SPAM_RESET * 1000)
+            if (curtime - cur_client.lastSearch > ConfigLoader.SEARCH_SPAM_RESET * 1000)
             {
-                cur_client.search_step = 0;
+                cur_client.searchStep = 0;
             }
-            else if (cur_client.search_step < ConfigLoader.SEARCH_STEPS)
+            else if (cur_client.searchStep < ConfigLoader.SEARCH_STEPS)
             {
                 double x = 1;
-                for (int i = 0; i < cur_client.search_step; i++)
+                for (int i = 0; i < cur_client.searchStep; i++)
                 {
                     x *= ((double) ConfigLoader.SEARCH_BASE_INTERVAL) / 1000;
                 }
@@ -218,14 +218,14 @@ public class SCH
                 long xx = (long) x;
 
                 //System.out.println(xx+ "ok");
-                if (curtime - cur_client.Lastsearch < xx)
+                if (curtime - cur_client.lastSearch < xx)
                 {
                     //handler.sendToClient (Issued_Command);
                     String[] messages = Messages.SEARCH_SPAM_MESSAGE.split("\\\n");
                     for (int j = 0; j < messages.length; j++)
                     {
                         cur_client.sendToClient("DRES DCBA " +
-                                                cur_client.SessionID +
+                                                cur_client.SID +
                                                 " SI1 SL1 FN/Searching: " +
                                                 Key +
                                                 " -- " +
@@ -233,13 +233,13 @@ public class SCH
                                                 " TRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA TO" +
                                                 TOken);
                     }
-                    if (cur_client.InQueueSearch == null)
+                    if (cur_client.inQueueSearch == null)
                     {
-                        cur_client.search_step++;
-                        // handler.Lastsearch=System.currentTimeMillis ();
+                        cur_client.searchStep++;
+                        // handler.lastSearch=System.currentTimeMillis ();
                     }
 
-                    cur_client.InQueueSearch = command;
+                    cur_client.inQueueSearch = command;
                     return;
                 }
 
@@ -250,7 +250,7 @@ public class SCH
                 long xx = ConfigLoader.SEARCH_SPAM_RESET * 1000;
 
                 //System.out.println(xx);
-                if (curtime - cur_client.Lastsearch < xx)
+                if (curtime - cur_client.lastSearch < xx)
                 {
                     //handler.sendToClient (Issued_Command);
                     String[] messages = Messages.SEARCH_SPAM_MESSAGE.split("\\\n");
@@ -258,7 +258,7 @@ public class SCH
                     for (String mess : messages)
                     {
                         cur_client.sendToClient("DRES DCBA " +
-                                                cur_client.SessionID +
+                                                cur_client.SID +
                                                 " SI1 SL1 FN/Searching: " +
                                                 Key +
                                                 " -- " +
@@ -266,28 +266,28 @@ public class SCH
                                                 " TRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA TO" +
                                                 TOken);
                     }
-                    if (cur_client.InQueueSearch == null)
+                    if (cur_client.inQueueSearch == null)
                     {
-                        cur_client.search_step++;
-                        //handler.Lastsearch=System.currentTimeMillis ();
+                        cur_client.searchStep++;
+                        //handler.lastSearch=System.currentTimeMillis ();
                     }
-                    cur_client.InQueueSearch = command;
+                    cur_client.inQueueSearch = command;
                     return;
                 }
 
             }
 
-            cur_client.search_step++;
-            cur_client.Lastsearch = curtime;
+            cur_client.searchStep++;
+            cur_client.lastSearch = curtime;
         }
         else
         {
-            if (curtime - cur_client.Lastautomagic < ConfigLoader.AUTOMATIC_SEARCH_INTERVAL * 1000)
+            if (curtime - cur_client.lastAutomagicSearch < ConfigLoader.AUTOMATIC_SEARCH_INTERVAL * 1000)
             {
 
                 return;
             }
-            cur_client.Lastautomagic = curtime;
+            cur_client.lastAutomagicSearch = curtime;
 
         }
         if (command.charAt(0) == 'B')

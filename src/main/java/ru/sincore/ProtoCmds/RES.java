@@ -52,7 +52,7 @@ public class RES
             throws STAException
     {
         ClientHandler cur_client = client.getClientHandler();
-        if (cur_client.ACTIVE == 0)
+        if (cur_client.active == 0)
         {
             new STAError(client, 100, "Error: Must be TCP active to use RES.");
             return;
@@ -114,7 +114,7 @@ public class RES
             // TODO is it realy works?
             String aux = tok.nextToken();
             aux = tok.nextToken();
-            if (!aux.equals(cur_client.SessionID))
+            if (!aux.equals(cur_client.SID))
             {
                 new STAError(client,
                              200 + Constants.STA_GENERIC_PROTOCOL_ERROR,
@@ -125,7 +125,7 @@ public class RES
             //now must look for the aux SID...
             for (Client targetClient : SessionManager.getUsers())
             {
-                if (targetClient.getClientHandler().SessionID.equals(aux))
+                if (targetClient.getClientHandler().SID.equals(aux))
                 {
                     aux = tok.nextToken(); // this is the effective result
 

@@ -100,9 +100,12 @@ public final class ClientManager
 
     synchronized public void addClient (Client client)
     {
+        if (client.getClientHandler().ID.length() == 0)
+            throw new Exception("New client doesn\'t have SID");
+
         clientsByCID.put(client.getClientHandler().ID, client);
         clientsByNick.put(client.getClientHandler().NI, client);
-        clientsBySID.put(client.getClientHandler().SessionID, client);
+        clientsBySID.put(client.getClientHandler().SID, client);
     }
 
 
@@ -219,7 +222,7 @@ public final class ClientManager
     {
         Client removedClient = clientsByCID.remove(client.getClientHandler().ID);
         clientsByNick.remove(client.getClientHandler().NI);
-        clientsBySID.remove(client.getClientHandler().SessionID);
+        clientsBySID.remove(client.getClientHandler().SID);
 
         if (removedClient == null)
             log.debug("User with cid = \'" + client.getClientHandler().ID + "\' not in clientsByCID.");

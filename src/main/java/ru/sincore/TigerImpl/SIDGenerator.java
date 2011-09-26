@@ -50,24 +50,26 @@ public class SIDGenerator
     public static String generate()
     {
         byte[] sid = new byte[3];
+        String tempSID = null;
 
-        boolean ok = false;
-        while (!ok)
+        boolean newSIDGenerated = false;
+
+        while (!newSIDGenerated)
         {
-            ok = true;
+            newSIDGenerated = true;
 
             // Generate new bytes for SID
             random.nextBytes(sid);
 
-            // if sid not unique, regenerate sid
-            if (ClientManager.getInstance().getClientBySID(Base32.encode(sid)) != null)
-                continue;
+            tempSID = Base32.encode(sid).substring(0, 4);
 
-            if (Base32.encode(sid).substring(0, 4).equals(ConfigLoader.HUB_SID) ||
-                Base32.encode(sid).substring(0, 4).equals(ConfigLoader.BOT_CHAT_SID))
-                ok = false;
+            // if sid not unique, regenerate sid
+            if ((ClientManager.getInstance().getClientBySID(tempSID) != null) ||
+                tempSID.equals(ConfigLoader.HUB_SID) ||
+                tempSID.equals(ConfigLoader.BOT_CHAT_SID))
+                newSIDGenerated = false;
         }
 
-        return Base32.encode(sid);
+        return tempSID;
     }
 }

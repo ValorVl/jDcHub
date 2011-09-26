@@ -177,7 +177,7 @@ public class SUP extends Action
 			Main.server.shutdown();
 		}
 
-		toClient.getClientHandler().sendToClient("ISID " + toClient.getClientHandler().SessionID);
+		toClient.getClientHandler().sendToClient("ISID " + toClient.getClientHandler().SID);
 
 		StringBuilder inf = new StringBuilder(8);
 

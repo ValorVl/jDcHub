@@ -62,7 +62,7 @@ import java.net.UnknownHostException;
                 return;
             }
             try {
-            InetAddress addr = InetAddress.getByName(user.handler.RealIP);
+            InetAddress addr = InetAddress.getByName(user.handler.realIP);
             cur_client.sendFromBot("Fetching Reverse DNS Information... (please be patient)");
             cur_client.sendFromBot(addr.getHostName());
             }
@@ -104,7 +104,7 @@ import java.net.UnknownHostException;
             theSocket = new Socket("whois.ripe.net", 43);
             ps = new PrintStream(theSocket.getOutputStream());
       
-            ps.print(user.handler.RealIP+"\r\n");
+            ps.print(user.handler.realIP +"\r\n");
             theWhoisStream = new DataInputStream(theSocket.getInputStream());
             String s;
             while ((s = theWhoisStream.readLine()) != null) {
@@ -139,7 +139,7 @@ import java.net.UnknownHostException;
                 return;
             }
             cur_client.sendFromBot("Fetching Traceroute Information... (please be patient)");
-            cur_client.sendFromBot(TraceRoute.Trace(user.handler.RealIP));
+            cur_client.sendFromBot(TraceRoute.Trace(user.handler.realIP));
                         
             }   
             else if( carrier.equalsIgnoreCase("nslookup")) // Begining of NSLookup Code
@@ -195,7 +195,7 @@ import java.net.UnknownHostException;
             int i=0;
            
             String ip;
-            ip = user.handler.RealIP;
+            ip = user.handler.realIP;
             String pingResult = "";
             String pingCmd = "isPing " + ip;
             

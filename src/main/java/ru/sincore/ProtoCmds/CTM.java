@@ -56,7 +56,7 @@ public class CTM
     {
         ClientHandler cur_client = client.getClientHandler();
 
-        if (cur_client.ACTIVE == 0)
+        if (cur_client.active == 0)
         {
             new STAError(client, 100, "Error: Must be TCP active to use CTM.");
             return;
@@ -113,7 +113,7 @@ public class CTM
             }
         }
 
-        /*  if(System.currentTimeMillis()-handler.LastCTM<1000*30)
+        /*  if(System.currentTimeMillis()-handler.lastCTM<1000*30)
     {
     if(!(handler.reg.overridespam))
     {
@@ -122,14 +122,14 @@ public class CTM
     }
     }
     else
-        handler.LastCTM=System.currentTimeMillis();*/
+        handler.lastCTM=System.currentTimeMillis();*/
 
         if (command.charAt(0) == 'D' || command.charAt(0) == 'E')
         {
             StringTokenizer tok = new StringTokenizer(command);
             String aux = tok.nextToken();
             aux = tok.nextToken();
-            if (!aux.equals(cur_client.SessionID))
+            if (!aux.equals(cur_client.SID))
             {
                 new STAError(client,
                              200 + Constants.STA_GENERIC_PROTOCOL_ERROR,
@@ -142,7 +142,7 @@ public class CTM
             {
                 if (targetClient.getClientHandler().validated == 1)
                 {
-                    if (targetClient.getClientHandler().SessionID.equals(aux))
+                    if (targetClient.getClientHandler().SID.equals(aux))
                     {
                         aux = tok.nextToken(); // this is the string representing protocol, next token is port, next token is TO
 

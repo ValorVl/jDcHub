@@ -157,8 +157,8 @@ public class SessionManager extends IoHandlerAdapter
 
         if (currentClientHandler.validated == 1 && currentClientHandler.kicked != 1)
         {
-            // TODO COMMAND broadcast client quited message
-            //Broadcast.getInstance().broadcast("IQUI " + currentClientHandler.SessionID, currentClient);
+            // broadcast client quited message
+            Broadcast.getInstance().broadcast("IQUI " + currentClientHandler.SID, currentClient);
         }
         /** calling plugins...*/
 
@@ -166,9 +166,9 @@ public class SessionManager extends IoHandlerAdapter
         {
             myMod.onClientQuit(currentClientHandler);
         }
-        currentClientHandler.reg.TimeOnline += System.currentTimeMillis() - currentClientHandler.LoggedAt;
+        currentClientHandler.reg.TimeOnline += System.currentTimeMillis() - currentClientHandler.loggedAt;
 
-        log.info(currentClientHandler.NI + " with SID " + currentClientHandler.SessionID + " just quited.");
+        log.info(currentClientHandler.NI + " with SID " + currentClientHandler.SID + " just quited.");
 
         ClientManager.getInstance().removeClientByCID(currentClientHandler.ID);
     }
@@ -180,9 +180,11 @@ public class SessionManager extends IoHandlerAdapter
         // TODO Realize client add method
         // TODO push user into connection pool while he is in PROTOCOL and IDENTIFY states
 
-		Client currentClient = null;
+		Client currentClient = new Client();
 
-        assert currentClient == null : "There is no authorization pull realized. New client acceptions interrupted.";
+        assert currentClient != null : "There is no authorization pull realized. New client acceptions interrupted.";
+
+        ClientManager.getInstance().addClient(currentClient);
 
 		ClientHandler currentClientHandler = currentClient.getClientHandler();
 
@@ -191,8 +193,8 @@ public class SessionManager extends IoHandlerAdapter
         currentClientHandler.session = session;
         StringTokenizer ST = new StringTokenizer(currentClientHandler.session.getRemoteAddress().toString(), "/:");
 
-		currentClientHandler.RealIP = ST.nextToken();
+		currentClientHandler.realIP = ST.nextToken();
         // TODO doesn't know is substring needed
-        currentClientHandler.SessionID = SIDGenerator.generate().substring(0, 4);
+        currentClientHandler.SID = SIDGenerator.generate().substring(0, 4);
     }
 }

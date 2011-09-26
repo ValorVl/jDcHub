@@ -109,7 +109,7 @@ public class Client implements IoFutureListener<WriteFuture>
             }
             else if (bantype == 2)
             {
-                BanList.addban(bantype, handler.RealIP, 1000 * kicktime, whokicked.NI, kickmsg);
+                BanList.addban(bantype, handler.realIP, 1000 * kicktime, whokicked.NI, kickmsg);
             }
             else if (bantype == 1)
             {
@@ -125,7 +125,7 @@ public class Client implements IoFutureListener<WriteFuture>
             }
             else if (bantype == 2)
             {
-                BanList.addban(bantype, handler.RealIP, kicktime, whokicked.NI, kickmsg);
+                BanList.addban(bantype, handler.realIP, kicktime, whokicked.NI, kickmsg);
             }
             else if (bantype == 1)
             {
@@ -134,12 +134,12 @@ public class Client implements IoFutureListener<WriteFuture>
 
         }
         String brcast = "IQUI " +
-                        handler.SessionID +
+                        handler.SID +
                         " ID" +
-                        whokicked.SessionID +
+                        whokicked.SID +
                         " TL" +
                         Long.toString(kicktime);
-        handler.reg.TimeOnline += System.currentTimeMillis() - handler.LoggedAt;
+        handler.reg.TimeOnline += System.currentTimeMillis() - handler.loggedAt;
         if (!kickmsg.equals(""))
         {
             brcast = brcast + " MS" + AdcUtils.retADCStr(kickmsg);
@@ -188,7 +188,7 @@ public class Client implements IoFutureListener<WriteFuture>
             }
             else if (bantype == 2)
             {
-                BanList.addban(bantype, handler.RealIP, 1000 * kicktime, ConfigLoader.BOT_CHAT_NAME, kickmsg);
+                BanList.addban(bantype, handler.realIP, 1000 * kicktime, ConfigLoader.BOT_CHAT_NAME, kickmsg);
             }
             else if (bantype == 1)
             {
@@ -204,7 +204,7 @@ public class Client implements IoFutureListener<WriteFuture>
             }
             else if (bantype == 2)
             {
-                BanList.addban(bantype, handler.RealIP, kicktime, ConfigLoader.BOT_CHAT_NAME, kickmsg);
+                BanList.addban(bantype, handler.realIP, kicktime, ConfigLoader.BOT_CHAT_NAME, kickmsg);
             }
             else if (bantype == 1)
             {
@@ -212,8 +212,8 @@ public class Client implements IoFutureListener<WriteFuture>
             }
 
         }
-        String brcast = "IQUI " + handler.SessionID + " IDDCBA TL" + Long.toString(kicktime);
-        handler.reg.TimeOnline += System.currentTimeMillis() - handler.LoggedAt;
+        String brcast = "IQUI " + handler.SID + " IDDCBA TL" + Long.toString(kicktime);
+        handler.reg.TimeOnline += System.currentTimeMillis() - handler.loggedAt;
         if (!kickmsg.equals(""))
         {
             brcast = brcast + " MS" + AdcUtils.retADCStr(kickmsg);
@@ -253,9 +253,9 @@ public class Client implements IoFutureListener<WriteFuture>
     {
         if (handler.inside)
         {
-            Broadcast.getInstance().broadcast("IQUI " + handler.SessionID, this);
+            Broadcast.getInstance().broadcast("IQUI " + handler.SID, this);
 
-            //    handler.reg.TimeOnline+=System.currentTimeMillis()-handler.LoggedAt;
+            //    handler.reg.TimeOnline+=System.currentTimeMillis()-handler.loggedAt;
         }
         handler.kicked = 1;
         handler.inside = false;
@@ -273,9 +273,9 @@ public class Client implements IoFutureListener<WriteFuture>
 
 
         Broadcast.getInstance()
-                 .broadcast("IQUI " + handler.SessionID + " ID" + whokicked.SessionID);
+                 .broadcast("IQUI " + handler.SID + " ID" + whokicked.SID);
 
-        //  handler.reg.TimeOnline+=System.currentTimeMillis()-handler.LoggedAt;
+        //  handler.reg.TimeOnline+=System.currentTimeMillis()-handler.loggedAt;
 
         handler.kicked = 1;
         this.handler.session.close(true);
@@ -301,13 +301,13 @@ public class Client implements IoFutureListener<WriteFuture>
 
         Broadcast.getInstance()
                  .broadcast("IQUI " +
-                            handler.SessionID +
+                            handler.SID +
                             " ID" +
-                            whokicked.SessionID +
+                            whokicked.SID +
                             " RD" +
                             URL);
 
-        //   handler.reg.TimeOnline+=System.currentTimeMillis()-handler.LoggedAt;
+        //   handler.reg.TimeOnline+=System.currentTimeMillis()-handler.loggedAt;
 
         handler.kicked = 1;
         this.handler.session.close(true);

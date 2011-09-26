@@ -25,10 +25,7 @@ package ru.sincore;
 import org.apache.mina.core.future.WriteFuture;
 import org.apache.mina.core.session.IoSession;
 import ru.sincore.adc.State;
-import ru.sincore.banning.Ban;
 import ru.sincore.util.AdcUtils;
-
-import java.util.Queue;
 
 /**
  * Main client class, keeps all info regarding a client.
@@ -47,39 +44,55 @@ public class ClientHandler
      * User fully authorized and validated
      */
     public int validated = 0;
-    public int ACTIVE    = 0;
-    public int quit      = 0;
+
+    /**
+     * Is client uses active (if true) or passive (if false) mode.
+     */
+    public int active = 0;
 
     public boolean can_receive_cmds = false;
-    // TODO remove this, cause it's not nessesary
-    /**
-     * Indicates is current client in SessionManager.User map
-     */
-    public boolean inside           = false;
-
-    public WriteFuture closingwrite = null;
-    public long        LoggedAt     = 0l;
 
     /**
-     * Node to registred client from AccountsConfig
+     * Time when client was logged in.
      */
-    public Nod    reg;
-    public Ban    myban;
-    public String RandomData;
+    public long loggedAt = 0L;
 
-    public long LastChatMsg;
-    public long LastKeepAlive;
+    /**
+     * Solt for encryption algorithm.
+     * Needed while session is live.
+     */
+    public String encryptionSolt;
 
-    public long LastCTM;
-    public long LastINF;
+    /**
+     * Time when last MSG command was recieved.
+     */
+    public long lastMSG = 0L;
 
-    public int state = State.PROTOCOL;
+    /**
+     * Time when last CTM command was recieved.
+     */
+    public long lastCTM = 0L;
 
-    public String RealIP;
+    /**
+     * Time when last INF command was recieved.
+     */
+    public long lastINF = 0L;
 
-    public boolean CIDsecure = false;
+    // TODO use it in SessionManager#sessionIdle function
+    /**
+     * Time when last keep alive packed recieved
+     */
+    public long lastKeepAlive;
 
-    public Queue<String> Queue;
+    /**
+     * Client state
+     */
+    public int state = State.INVALID_STATE;
+
+    /**
+     * Real client ip
+     */
+    public String realIP;
 
     /**
      * The CID of the client. Mandatory for C-C connections.
@@ -198,18 +211,34 @@ public class ClientHandler
      */
     public String RF;
 
-    public int  search_step   = 0;
-    public long Lastsearch    = 0L;
-    public long Lastautomagic = 0L;
+    /**
+     * Client search step
+     */
+    public int searchStep = 0;
+
+    /**
+     * Time when client runs last search
+     */
+    public long lastSearch = 0L;
+
+    /**
+     * Time when client do last automagic search
+     */
+    public long lastAutomagicSearch = 0L;
 
 
-    public String InQueueSearch = null;
+    public String inQueueSearch = null;
 
-    public static int user_count = 0;
+    /**
+     * Flag indicates about client was kicked
+     */
     public        int kicked     = 0;
 
-    public String SessionID;
-    byte[] sid;
+    /**
+     * Client session id.
+     */
+    public String SID;
+
     /**
      * indicates if client is a pinger a.k.a. PING extension
      */
@@ -219,11 +248,11 @@ public class ClientHandler
     /**
      * indicates if client supports UCMD messages
      */
-    public int     ucmd;
+    public int ucmd = 0;
     /**
      * indicates if client supports BASE messages
      */
-    public int     base;
+    public int base = 0;
     /**
      * indicates if client supports old BAS0 messages
      */
@@ -236,9 +265,11 @@ public class ClientHandler
     /**
      * Client Connect time in millis as Syste.gettimemillis() ; ;)
      */
-    public long    ConnectTimeMillis;
-    public String  cur_inf;
+    public long connectTime;
 
+    /**
+     * Client NIO session.
+     */
     public IoSession session;
 
 
@@ -248,18 +279,7 @@ public class ClientHandler
 
     public ClientHandler()
     {
-        ClientHandler.user_count++;
-        base = 0;
-        ucmd = 0;
-        sid = null;
-        myban = null;
-        LastChatMsg = 0;
-        LastCTM = 0L;
-        LastINF = 0L;
-        cur_inf = null;
-        reg = new Nod();
-
-        ConnectTimeMillis = System.currentTimeMillis();
+        connectTime = System.currentTimeMillis();
     }
 
 
@@ -280,7 +300,7 @@ public class ClientHandler
     public String getINF()
     {
         String auxstr = "";
-        auxstr = auxstr + "BINF " + SessionID + " ID" + ID + " NI" + NI;
+        auxstr = auxstr + "BINF " + SID + " ID" + ID + " NI" + NI;
         //these were mandatory fields.. now adding the extra...
         if (I4 != null)
         {
@@ -458,7 +478,7 @@ public class ClientHandler
             }
             else
             {
-                this.sendToClient("EMSG DCBA " + this.SessionID + " " + AdcUtils.retADCStr(text));
+                this.sendToClient("EMSG DCBA " + this.SID + " " + AdcUtils.retADCStr(text));
             }
         }
     }
@@ -469,7 +489,7 @@ public class ClientHandler
         if (this.validated == 1)
         {
             this.sendToClient("EMSG DCBA " +
-                              this.SessionID +
+                              this.SID +
                               " " +
                               AdcUtils.retADCStr(text) +
                               " PMDCBA");

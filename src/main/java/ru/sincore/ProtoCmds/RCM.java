@@ -108,7 +108,7 @@ public class RCM
             StringTokenizer tok = new StringTokenizer(command);
             String aux = tok.nextToken();
             aux = tok.nextToken();
-            if (!aux.equals(cur_client.SessionID))
+            if (!aux.equals(cur_client.SID))
             {
                 new STAError(client,
                              200 + Constants.STA_GENERIC_PROTOCOL_ERROR,
@@ -119,7 +119,7 @@ public class RCM
             //now must look for the aux SID...
             for (Client targetClient : SessionManager.getUsers())
             {
-                if (targetClient.getClientHandler().SessionID.equals(aux))
+                if (targetClient.getClientHandler().SID.equals(aux))
                 {
                     aux =
                             tok.nextToken(); // this is the string representing protocol, next token is port, next token is TO

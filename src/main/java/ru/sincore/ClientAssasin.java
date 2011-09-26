@@ -71,35 +71,35 @@ public class ClientAssasin extends Thread
                 long currentTime = System.currentTimeMillis();
 
                 if (((clientHandler.kicked != 1)
-                     && (clientHandler.InQueueSearch != null))
+                     && (clientHandler.inQueueSearch != null))
                     && (clientHandler.validated == 1))
                 {
 
                     double xy = 1;
-                    for (int i = 0; i < clientHandler.search_step; i++)
+                    for (int i = 0; i < clientHandler.searchStep; i++)
                     {
                         xy *= ((double) ConfigLoader.SEARCH_BASE_INTERVAL) / 1000;
                     }
                     xy *= 1000;
                     long xx = (long) xy;
-                    if (clientHandler.search_step >= ConfigLoader.SEARCH_STEPS)
+                    if (clientHandler.searchStep >= ConfigLoader.SEARCH_STEPS)
                     {
                         xx = ConfigLoader.SEARCH_SPAM_RESET * 1000;
                     }
-                    if ((currentTime - clientHandler.Lastsearch) > xx)
+                    if ((currentTime - clientHandler.lastSearch) > xx)
                     {
 
-                        if (clientHandler.InQueueSearch.startsWith("B"))
+                        if (clientHandler.inQueueSearch.startsWith("B"))
                         {
-                            Broadcast.getInstance().broadcast(clientHandler.InQueueSearch);
+                            Broadcast.getInstance().broadcast(clientHandler.inQueueSearch);
                         }
                         else
                         {
                             Broadcast.getInstance()
-                                     .broadcast(clientHandler.InQueueSearch, Broadcast.STATE_ACTIVE);
+                                     .broadcast(clientHandler.inQueueSearch, Broadcast.STATE_ACTIVE);
                         }
-                        clientHandler.InQueueSearch = null;
-                        clientHandler.Lastsearch = currentTime;
+                        clientHandler.inQueueSearch = null;
+                        clientHandler.lastSearch = currentTime;
                     }
 
                 }

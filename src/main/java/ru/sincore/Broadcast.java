@@ -23,8 +23,6 @@
 
 package ru.sincore;
 
-import java.util.Calendar;
-
 /**
  * Provides broadcasts and feature broadcasts constructors to all connected
  * clients.
@@ -135,7 +133,7 @@ public class Broadcast
             ClientHandler toClientHandler = toClient.getClientHandler();
 
             if ((toClientHandler.validated == 1 && toClient != fromClient
-                    && state == 1 && toClientHandler.ACTIVE == 1))
+                    && state == 1 && toClientHandler.active == 1))
             {
                 // TODO may be buggie
                 if (!STR.startsWith("E") && toClient.equals(fromClient))

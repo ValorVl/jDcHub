@@ -24,7 +24,7 @@ package ru.sincore.TigerImpl;
  */
 public class CIDGenerator
 {
-	public String generate()
+	public static String generate()
 	{
 		Tiger tiger = new Tiger();
 		tiger.engineReset();
