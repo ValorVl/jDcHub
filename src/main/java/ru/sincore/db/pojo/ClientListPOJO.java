@@ -31,8 +31,8 @@ public class ClientListPOJO implements Serializable
 	/**
 	 *  Column "class_mask" right granted mask
 	 */
-	@Column(name = "class_mask", columnDefinition = "TINYINT(3) DEFAULT 0",nullable = false)
-	private Integer		classMask = 0;
+	@Column(name = "weight", columnDefinition = "TINYINT(3) DEFAULT 0",nullable = false)
+	private Integer		weight = 0;
 
 	/**
 	 *  Column "password" encrypted password string
@@ -258,12 +258,12 @@ public class ClientListPOJO implements Serializable
 
 	public Integer getClassMask()
 	{
-		return classMask;
+		return weight;
 	}
 
-	public void setClassMask(Integer classMask)
+	public void setClassMask(Integer weight)
 	{
-		this.classMask = classMask;
+		this.weight = weight;
 	}
 
 	public String getPassword()

@@ -343,6 +343,44 @@ public class ClientHandler
      */
     public IoSession session;
 
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//
+	// Stored client params
+	//
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	/**
+	 * Client password
+	 */
+    private String  password;
+
+	/**
+	 *  Client registration flag
+	 */
+    private boolean isReg;
+    private String  lastNick;
+    private String  whoRegged;
+    private Long    createdOn;
+    private Long    lastLogin;
+    private Long    timeOnline;
+    private String  lastIp;
+
+    private boolean hideShare;
+    private boolean hideMe;
+
+    private boolean overrideShare;
+    private boolean overrideSpam;
+    private boolean overrideSull;
+    private boolean kickable;
+	private boolean renameable;
+    private boolean accountFlyable;
+    private boolean opchatAccess;
+    private boolean nickProtected;
+
+	/**
+	 *  Client rights weight, default 0
+	 */
+	private int		weight = 0;
 
     /**
      * Creates a new instance of ClientHandler
@@ -351,6 +389,22 @@ public class ClientHandler
     {
         connectTime = System.currentTimeMillis();
     }
+
+	public void initStoreParamsFromDb()
+	{
+
+	}
+
+	public void storePramsInDb()
+	{
+
+	}
+
+	public String getClientINF()
+	{
+		return null;
+	}
+
 
 
     /**
@@ -566,7 +620,7 @@ public class ClientHandler
     {
         if (x)
         {
-            if (this.reg.isreg && this.reg.opchataccess)
+            if (this.isReg && this.opchatAccess)
             {
                 this.sendToClient("BINF ABCD ID" +
                                   ConfigLoader.OP_CHAT_CID +
@@ -578,7 +632,7 @@ public class ClientHandler
         }
         else
         {
-            if (this.reg.isreg && this.reg.opchataccess)
+            if (this.isReg && this.opchatAccess)
             {
                 this.sendToClient("IQUI ABCD");
             }
