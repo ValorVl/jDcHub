@@ -60,18 +60,6 @@ public class SessionManager extends IoHandlerAdapter
 
     public void Disconnect(IoSession session)
     {
-        ClientHandler cur_client = ((ClientHandler) (session.getAttribute("client")));
-        if (cur_client.closingwrite != null)
-        {
-            try
-            {
-                cur_client.closingwrite.await();
-            }
-            catch (InterruptedException e)
-            {
-                log.error(e.toString());
-            }
-        }
         session.close(false);
     }
 
@@ -155,10 +143,10 @@ public class SessionManager extends IoHandlerAdapter
         Client currentClient = (Client) (session.getAttribute("client"));
         ClientHandler currentClientHandler = currentClient.getClientHandler();
 
-        if (currentClientHandler.validated == 1 && currentClientHandler.kicked != 1)
+        if (currentClientHandler.isValidated() && !currentClientHandler.isKicked())
         {
             // broadcast client quited message
-            Broadcast.getInstance().broadcast("IQUI " + currentClientHandler.SID, currentClient);
+            Broadcast.getInstance().broadcast("IQUI " + currentClientHandler.getSID(), currentClient);
         }
         /** calling plugins...*/
 
@@ -166,35 +154,36 @@ public class SessionManager extends IoHandlerAdapter
         {
             myMod.onClientQuit(currentClientHandler);
         }
-        currentClientHandler.reg.TimeOnline += System.currentTimeMillis() - currentClientHandler.loggedAt;
+        currentClientHandler.increaseTimeOnline(System.currentTimeMillis() -
+                                                currentClientHandler.getLoggedAt());
 
-        log.info(currentClientHandler.NI + " with SID " + currentClientHandler.SID + " just quited.");
+        log.info(currentClientHandler.getNI() +
+                 " with SID " +
+                 currentClientHandler.getSID() +
+                 " just quited.");
 
-        ClientManager.getInstance().removeClientByCID(currentClientHandler.ID);
+        ClientManager.getInstance().removeClientByCID(currentClientHandler.getID());
     }
 
 
     public void sessionOpened(IoSession session)
             throws Exception
     {
-        // TODO Realize client add method
-        // TODO push user into connection pool while he is in PROTOCOL and IDENTIFY states
+		Client newClient = new Client();
 
-		Client currentClient = new Client();
+        session.setAttribute("client", newClient);
 
-        assert currentClient != null : "There is no authorization pull realized. New client acceptions interrupted.";
+        newClient.getClientHandler().setSession(session);
+        StringTokenizer ST = new StringTokenizer(newClient.getClientHandler().getSession().getRemoteAddress().toString(), "/:");
 
-        ClientManager.getInstance().addClient(currentClient);
+		newClient.getClientHandler().setRealIP(ST.nextToken());
+        newClient.getClientHandler().setSID(SIDGenerator.generate());
 
-		ClientHandler currentClientHandler = currentClient.getClientHandler();
-
-        session.setAttribute("client", currentClient);
-
-        currentClientHandler.session = session;
-        StringTokenizer ST = new StringTokenizer(currentClientHandler.session.getRemoteAddress().toString(), "/:");
-
-		currentClientHandler.realIP = ST.nextToken();
-        // TODO doesn't know is substring needed
-        currentClientHandler.SID = SIDGenerator.generate().substring(0, 4);
+        /**
+         * Client will be moved from uninitialized to regular map after
+         * handshacke will be done.
+         * See {@link ru.sincore.adc.action.INF#parseIncoming()}
+         */
+        ClientManager.getInstance().addNewClient(newClient);
     }
 }

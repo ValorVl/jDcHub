@@ -27,7 +27,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
+import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Provides user management control functionality
@@ -44,6 +46,8 @@ public final class ClientManager
     public static ConcurrentHashMap<String, Client> clientsByCID;
     private static ConcurrentHashMap<String, Client> clientsByNick;
     private static ConcurrentHashMap<String, Client> clientsBySID;
+
+    private static Vector<Client> uninitializedClients;
 
 // *********************** Singleton implementation start ********************************
     private static volatile Strategy strategy = new CreateAndReturnStrategy();
@@ -95,16 +99,32 @@ public final class ClientManager
         clientsByCID    = new ConcurrentHashMap<String, Client>(3000, (float) 0.75);
         clientsByNick   = new ConcurrentHashMap<String, Client>(3000, (float) 0.75);
         clientsBySID    = new ConcurrentHashMap<String, Client>(3000, (float) 0.75);
+
+        // TODO move connection initial capacity to config
+        uninitializedClients = new Vector<Client>(1000);
     }
 
 
     synchronized public void addClient (Client client)
     {
-        clientsByCID.put(client.getClientHandler().ID, client);
-        clientsByNick.put(client.getClientHandler().NI, client);
-        clientsBySID.put(client.getClientHandler().SID, client);
+        clientsByCID.put(client.getClientHandler().getID(), client);
+        clientsByNick.put(client.getClientHandler().getNI(), client);
+        clientsBySID.put(client.getClientHandler().getSID(), client);
     }
 
+
+    public void addNewClient(Client client)
+    {
+        uninitializedClients.add(client);
+    }
+
+    synchronized public void moveClientToRegularMap(Client client)
+    {
+        if (!uninitializedClients.remove(client))
+            log.error("Client was not in uninitialized clients vector!");
+
+        addClient(client);
+    }
 
     synchronized public void removeAllClients()
     {
@@ -112,9 +132,9 @@ public final class ClientManager
         for (Client client : clientsByCID.values())
         {
             // Remove client attribute from all sessions
-            client.getClientHandler().session.removeAttribute("client", client);
+            client.getClientHandler().getSession().removeAttribute("client", client);
             // Close connection
-            client.getClientHandler().session.close(true);
+            client.getClientHandler().getSession().close(true);
         }
 
         // Remove all clients from client lists
@@ -135,7 +155,7 @@ public final class ClientManager
 
 
     /**
-     * Return client with {@link ClientHandler#ID} equals cid
+     * Return client with {@link ClientHandler#ID} equals to cid
      * @param cid Client ID {@link ClientHandler#ID}
      * @return Client
      */
@@ -145,6 +165,23 @@ public final class ClientManager
     }
 
 
+    /**
+     * Return client with {@link ClientHandler#NI} equals to nick
+     *
+     * @param nick Client NI {@link ClientHandler#NI}
+     * @return Client
+     */
+    public Client getClientByNick(String nick)
+    {
+        return clientsByNick.get(nick);
+    }
+
+
+    /**
+     * Return client with {@link ClientHandler#SID} equals to sid
+     * @param sid Client SID {@link ClientHandler#SID}
+     * @return Client
+     */
     public Client getClientBySID (String sid)
     {
         return clientsBySID.get(sid);
@@ -167,7 +204,7 @@ public final class ClientManager
 
         for (Client client : clientsByCID.values())
         {
-            if (client.getClientHandler().validated == 1)
+            if (client.getClientHandler().isValidated())
                 count++;
         }
 
@@ -182,13 +219,11 @@ public final class ClientManager
         {
             try
             {
-                if (client.getClientHandler().SS != null)
-                {
-                    ret += Long.parseLong(client.getClientHandler().SS);
-                }
+                ret += client.getClientHandler().getSS();
             }
-            catch (NumberFormatException ignored)
+            catch (ArithmeticException ae)
             {
+                log.error("Exception in total share size calculation : " + ae);
             }
         }
         return ret;
@@ -202,13 +237,11 @@ public final class ClientManager
         {
             try
             {
-                if (client.getClientHandler().SF != null)
-                {
-                    ret += Long.parseLong(client.getClientHandler().SF);
-                }
+                ret += client.getClientHandler().getSF();
             }
-            catch (NumberFormatException ignored)
+            catch (ArithmeticException ae)
             {
+                log.error("Exception in total file count calculation : " + ae);
             }
         }
         return ret;
@@ -217,15 +250,15 @@ public final class ClientManager
 
     public boolean removeClient (Client client)
     {
-        Client removedClient = clientsByCID.remove(client.getClientHandler().ID);
-        clientsByNick.remove(client.getClientHandler().NI);
-        clientsBySID.remove(client.getClientHandler().SID);
+        Client removedClient = clientsByCID.remove(client.getClientHandler().getID());
+        clientsByNick.remove(client.getClientHandler().getNI());
+        clientsBySID.remove(client.getClientHandler().getSID());
 
         if (removedClient == null)
-            log.debug("User with cid = \'" + client.getClientHandler().ID + "\' not in clientsByCID.");
+            log.debug("User with cid = \'" + client.getClientHandler().getID() + "\' not in clientsByCID.");
         else
-            log.debug("User with cid = \'" + removedClient.getClientHandler().ID +
-                      "\' and nick = \'" + removedClient.getClientHandler().NI +
+            log.debug("User with cid = \'" + removedClient.getClientHandler().getID() +
+                      "\' and nick = \'" + removedClient.getClientHandler().getNI() +
                       "\' was removed.");
 
         return removedClient != null;
@@ -240,10 +273,10 @@ public final class ClientManager
 
         if (client != null)
         {
-            clientsBySID.remove(client.getClientHandler().ID);
-            clientsByNick.remove(client.getClientHandler().NI);
+            clientsBySID.remove(client.getClientHandler().getID());
+            clientsByNick.remove(client.getClientHandler().getNI());
 
-            log.debug("User with cid = \'" + cid + "\' and nick = \'" + client.getClientHandler().NI + "\' was removed.");
+            log.debug("User with cid = \'" + cid + "\' and nick = \'" + client.getClientHandler().getNI() + "\' was removed.");
         }
     }
 

@@ -33,7 +33,7 @@ import java.net.UnknownHostException;
             
             if ( ! ( ST.hasMoreTokens() ) ) 
         {
-            cur_client.sendFromBot("The lookup command list\n\nUsage:\n\n!lookup <switch> <input>\n\nAvailable Switches:\n\nCommand		Input	  Information\n\nnslookup		<dns>	- Shows DNS to IP information in client\nisPing		<nick>	- Shows isPing statistics in client\nrevdns		<nick>	- Shows hostname of user\ntraceroute	<nick>	- Shows route to user taken by server\nwhois 		<nick>	- Shows ripe information on user" );
+            cur_client.sendFromBot("The lookup command list\n\nUsage:\n\n!lookup <switch> <input>\n\nAvailable Switches:\n\nCommand		Input	  Information\n\nnslookup		<dns>	- Shows DNS to IP information in client\nping		<nick>	- Shows ping statistics in client\nrevdns		<nick>	- Shows hostname of user\ntraceroute	<nick>	- Shows route to user taken by server\nwhois 		<nick>	- Shows ripe information on user" );
             return; //1
         }
             String carrier = ST.nextToken();  
@@ -166,12 +166,12 @@ import java.net.UnknownHostException;
             cur_client.sendFromBot("Unrecognized host");
         }
     }
-     else if( carrier.equalsIgnoreCase("isPing")) // Begining of Ping Code
+     else if( carrier.equalsIgnoreCase("ping")) // Begining of Ping Code
             {
             if ( ! ( ST.hasMoreTokens() ) )
                    
                     { 
-                    cur_client.sendFromBot( "Error: couldn't retrive isPing information" );
+                    cur_client.sendFromBot( "Error: couldn't retrive ping information" );
                     return;
                     }
                
@@ -197,7 +197,7 @@ import java.net.UnknownHostException;
             String ip;
             ip = user.handler.realIP;
             String pingResult = "";
-            String pingCmd = "isPing " + ip;
+            String pingCmd = "ping " + ip;
             
             try 
             {

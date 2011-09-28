@@ -75,10 +75,10 @@ public class STAError
         {
             if (!ConfigLoader.REDIRECT_URL.isEmpty())
             {
-                client.getClientHandler().closingwrite = client.getClientHandler().sendToClient("IQUI " +
-                                                               client.getClientHandler().SID +
-                                                               " RD" +
-                                                               ConfigLoader.REDIRECT_URL);
+                client.getClientHandler().sendToClient("IQUI " +
+                                                       client.getClientHandler().getSID() +
+                                                       " RD" +
+                                                       ConfigLoader.REDIRECT_URL);
             }
             throw new STAException(errorString, errorCode);
         }
@@ -114,11 +114,10 @@ public class STAError
         {
             if (!ConfigLoader.REDIRECT_URL.isEmpty())
             {
-                client.getClientHandler().closingwrite =
-                        client.getClientHandler().sendToClient("IQUI " +
-                                                               client.getClientHandler().SID +
-                                                               " RD" +
-                                                               ConfigLoader.REDIRECT_URL);
+                client.getClientHandler().sendToClient("IQUI " +
+                                                       client.getClientHandler().getSID() +
+                                                       " RD" +
+                                                       ConfigLoader.REDIRECT_URL);
             }
             throw new STAException(errorString, errorCode);
         }

@@ -208,7 +208,7 @@ public class SUP
 //                                     " DE" + AdcUtils.retADCStr(ConfigLoader.HUB_DE) :
 //                                     "") +
 //                                    // if client is PINGer than return PingString else empty string
-//                                    (cur_client.isPing ? AdcUtils.getPingString() : ""));
+//                                    (cur_client.isPingExtensionSupports ? AdcUtils.getPingString() : ""));
 //
 //            cur_client.sendToClient("ISTA 000 " +
 //                                    // TODO replace String#replace() usage by normal external function

@@ -260,7 +260,7 @@ public class ConfigLoader
 			RULES_FILE											= prop.getProperty("core.hub.rules_file","rules.%s.txt");
 			FILE_STORAGE_LOCATION								= prop.getProperty("core.hub.file_storage_location","etc");
 			HUB_DEFAULT_LOCALE									= prop.getProperty("core.hub.default_locale","en_US");
-			ADC_EXTENSION_LIST									= prop.getProperty("core.hub.adc_extension_list","");
+			ADC_EXTENSION_LIST									= prop.getProperty("core.hub.adc_extension_list","").trim();
 
 
 			// B 	 Broadcast 	 			Hub must send message to all connected clients, including the sender of the message.

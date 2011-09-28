@@ -38,66 +38,66 @@ import ru.sincore.util.AdcUtils;
  */
 public class ClientHandler
 {
-    public int logged_in = 0;
+    private int loggedIn = 0;
 
     /**
      * User fully authorized and validated
      */
-    public int validated = 0;
+    private boolean validated = false;
 
     /**
      * Is client uses active (if true) or passive (if false) mode.
      */
-    public int active = 0;
+    private int active = 0;
 
-    public boolean can_receive_cmds = false;
+    private boolean canReceiveCmds = false;
 
     /**
      * Time when client was logged in.
      */
-    public long loggedAt = 0L;
+    private long loggedAt = 0L;
 
     /**
      * Solt for encryption algorithm.
      * Needed while session is live.
      */
-    public String encryptionSolt;
+    private String encryptionSolt;
 
     /**
      * Time when last MSG command was recieved.
      */
-    public long lastMSG = 0L;
+    private long lastMSG = 0L;
 
     /**
      * Time when last CTM command was recieved.
      */
-    public long lastCTM = 0L;
+    private long lastCTM = 0L;
 
     /**
      * Time when last INF command was recieved.
      */
-    public long lastINF = 0L;
+    private long lastINF = 0L;
 
     // TODO use it in SessionManager#sessionIdle function
     /**
      * Time when last keep alive packed recieved
      */
-    public long lastKeepAlive;
+    private long lastKeepAlive;
 
     /**
      * Client state
      */
-    public int state = State.INVALID_STATE;
+    private int state = State.INVALID_STATE;
 
     /**
      * Real client ip
      */
-    public String realIP;
+    private String realIP;
 
     /**
      * The CID of the client. Mandatory for C-C connections.
      */
-    public String ID = "";
+    private String ID = "";
 
     /**
      * The PID of the client.
@@ -105,7 +105,7 @@ public class ClientHandler
      * discard the field before broadcasting it to other clients.
      * Must not be sent in C-C connections.
      */
-    public String PD;
+    private String PD;
 
     /**
      * IPv4 address without port.
@@ -119,7 +119,7 @@ public class ClientHandler
      * Any client that supports incoming TCPv4 connections must also
      * add the feature TCP4 to their SU field.
      */
-    public String I4;
+    private String I4;
 
     /**
      * IPv6 address without port.
@@ -128,31 +128,31 @@ public class ClientHandler
      * Any client that supports incoming TCPv6 connections must also
      * add the feature TCP6 to their SU field.
      */
-    public String I6;
+    private String I6;
 
     /**
      * Client UDP port.
      * Any client that supports incoming UDPv4 packets must also
      * add the feature UDP4 to their SU field.
      */
-    public String U4;
+    private String U4;
 
     /**
      * Same as U4, but for IPv6.
      * Any client that supports incoming UDPv6 packets must also
      * add the feature UDP6 to their SU field.
      */
-    public String U6;
+    private String U6;
 
     /**
      * Share size in bytes, integer.
      */
-    public Long SS;
+    private Long SS;
 
     /**
      * Number of shared files, integer
      */
-    public Long SF;
+    private Long SF;
 
     /**
      * Client identification,
@@ -162,22 +162,22 @@ public class ClientHandler
      * their VE tag but instead rely on SUP when it comes to
      * which clients should be allowed (for example, we only want regex clients).
      */
-    public String VE;
+    private String VE;
 
     /**
      * Maximum upload speed, bits/sec, integer
      */
-    public Long US;
+    private Long US;
 
     /**
      * Maximum download speed, bits/sec, integer
      */
-    public Long DS;
+    private Long DS;
 
     /**
      * Upload slots open, integer
      */
-    public Integer SL;
+    private Integer SL;
 
     /**
      * Automatic slot allocator speed limit, bytes/sec, integer.
@@ -185,17 +185,17 @@ public class ClientHandler
      * the client keeps opening slots as long as its total upload speed
      * doesn't exceed this value. SL then serves as a minimum number of slots open.
      */
-    public Long AS;
+    private Long AS;
 
     /**
      * Maximum number of slots open in automatic slot manager mode, integer.
      */
-    public Long AM;
+    private Long AM;
 
     /**
      * E-mail address, string.
      */
-    public String EM;
+    private String EM;
 
     /**
      * Nickname, string.
@@ -205,7 +205,7 @@ public class ClientHandler
      * When sent for hub, this is the nick that should be displayed before messages from the hub,
      * and may also be used as short name for the hub.
      */
-    public String NI = "";
+    private String NI = "";
 
     /**
      * Description, string.
@@ -214,7 +214,7 @@ public class ClientHandler
      * When sent by hub, this string should be displayed
      * in the window title of the hub window (if one exists)
      */
-    public String DE;
+    private String DE;
 
     /**
      * Hubs where user is a normal user and in NORMAL state, integer.
@@ -222,126 +222,126 @@ public class ClientHandler
      * Hubs should increase one of the three the hub counts by one
      * before passing the client to NORMAL state.
      */
-    public String HN;
+    private Integer HN;
 
     /**
      * Hubs where user is registered (had to supply password) and in NORMAL state, integer.
      */
-    public String HR;
+    private Integer HR;
 
     /**
      * Hubs where user is op and in NORMAL state, integer.
      */
-    public String HO;
+    private Integer HO;
 
     /**
      * Token, as received in RCM/CTM, when establishing a C-C connection.
      */
-    public String TO;
+    private String TO;
 
     /**
      * Client (user) type, 1=bot, 2=registered user, 4=operator,
      * 8=super user, 16=hub owner, 32=hub (used when the hub sends an INF about itself).
      * Multiple types are specified by adding the numbers together.
      */
-    public String CT = "0";
+    private String CT = "0";
 
     /**
      * 1=Away
      * 2=Extended away, not interested in hub chat
      * (hubs may skip sending broadcast type MSG commands to clients with this flag)
      */
-    public Integer AW;
+    private Integer AW;
 
     /**
      * 1=Bot (in particular, this means that the client does not support file transfers,
      * and thus should never be queried for direct connections)*/
-    //public String BO;
+    //private String BO;
 
     /**
      * 1=Hidden, should not be shown on the user list.
      */
-    public boolean HI;
+    private boolean HI;
 
     /**
      * 1=Hub, this INF is about the hub itself
      */
-    public boolean HU;
+    private boolean HU;
 
     /**
      * Comma-separated list of feature FOURCC's.
      * This notifies other clients of extended capabilities of the connecting client.
      * Use with discretion.
      */
-    public String SU;
+    private String SU;
 
     /**
      * URL of referer (hub in case of redirect, web page)
      */
-    public String RF;
+    private String RF;
 
     /**
      * Client search step
      */
-    public int searchStep = 0;
+    private int searchStep = 0;
 
     /**
      * Time when client runs last search
      */
-    public long lastSearch = 0L;
+    private long lastSearch = 0L;
 
     /**
      * Time when client do last automagic search
      */
-    public long lastAutomagicSearch = 0L;
+    private long lastAutomagicSearch = 0L;
 
 
-    public String inQueueSearch = null;
+    private String inQueueSearch = null;
 
     /**
      * Flag indicates about client was kicked
      */
-    public int kicked = 0;
+    private boolean kicked = false;
 
     /**
      * Client session id.
      */
-    public String SID;
+    private String SID;
 
     /**
      * indicates if client is a pinger a.k.a. PING extension
      */
-    public boolean isPing;
+    private boolean pingExtensionSupports;
 
     /**
      * indicates if client supports UCMD messages
      */
-    public int ucmd = 0;
+    private boolean ucmd = false;
 
     /**
      * indicates if client supports BASE messages
      */
-    public int base = 0;
+    private int base = 0;
 
     /**
      * indicates if client supports old BAS0 messages
      */
-    public boolean bas0;
+    private boolean bas0;
 
     /**
      * if client supports TIGER hashes or not
      */
-    public boolean tigr;
+    private boolean tigrSupports;
 
     /**
      * Client Connect time in millis as Syste.gettimemillis() ; ;)
      */
-    public long connectTime;
+    private long connectTime;
 
     /**
      * Client NIO session.
      */
-    public IoSession session;
+    private IoSession session;
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//
@@ -363,14 +363,14 @@ public class ClientHandler
     private Long    createdOn;
     private Long    lastLogin;
     private Long    timeOnline;
-    private String  lastIp;
+    private String lastIP;
 
     private boolean hideShare;
     private boolean hideMe;
 
     private boolean overrideShare;
     private boolean overrideSpam;
-    private boolean overrideSull;
+    private boolean overrideFull;
     private boolean kickable;
 	private boolean renameable;
     private boolean accountFlyable;
@@ -390,21 +390,1089 @@ public class ClientHandler
         connectTime = System.currentTimeMillis();
     }
 
-	public void initStoreParamsFromDb()
+
+    public void initStoreParamsFromDb()
 	{
 
 	}
 
-	public void storePramsInDb()
+
+    public void storePramsInDb()
 	{
 
 	}
 
-	public String getClientINF()
+
+    public String getClientINF()
 	{
 		return null;
 	}
 
+
+    public int getLoggedIn()
+    {
+        return loggedIn;
+    }
+
+
+    public void setLoggedIn(int loggedIn)
+    {
+        this.loggedIn = loggedIn;
+    }
+
+
+    /**
+     * Is user fully authorized and validated
+     */
+    public boolean isValidated()
+    {
+        return validated;
+    }
+
+
+    public void setValidated()
+    {
+        this.validated = true;
+    }
+
+    public void setValidated(boolean validated)
+    {
+        this.validated = validated;
+    }
+
+
+    /**
+     * Is client uses active (if true) or passive (if false) mode.
+     */
+    public int getActive()
+    {
+        return active;
+    }
+
+
+    public void setActive(int active)
+    {
+        this.active = active;
+    }
+
+
+    public boolean isCanReceiveCmds()
+    {
+        return canReceiveCmds;
+    }
+
+
+    public void setCanReceiveCmds(boolean canReceiveCmds)
+    {
+        this.canReceiveCmds = canReceiveCmds;
+    }
+
+
+    /**
+     * Time when client was logged in.
+     */
+    public long getLoggedAt()
+    {
+        return loggedAt;
+    }
+
+
+    public void setLoggedAt(long loggedAt)
+    {
+        this.loggedAt = loggedAt;
+    }
+
+
+    /**
+     * Solt for encryption algorithm.
+     * Needed while session is live.
+     */
+    public String getEncryptionSolt()
+    {
+        return encryptionSolt;
+    }
+
+
+    public void setEncryptionSolt(String encryptionSolt)
+    {
+        this.encryptionSolt = encryptionSolt;
+    }
+
+
+    /**
+     * Time when last MSG command was recieved.
+     */
+    public long getLastMSG()
+    {
+        return lastMSG;
+    }
+
+
+    public void setLastMSG(long lastMSG)
+    {
+        this.lastMSG = lastMSG;
+    }
+
+
+    /**
+     * Time when last CTM command was recieved.
+     */
+    public long getLastCTM()
+    {
+        return lastCTM;
+    }
+
+
+    public void setLastCTM(long lastCTM)
+    {
+        this.lastCTM = lastCTM;
+    }
+
+
+    /**
+     * Time when last INF command was recieved.
+     */
+    public long getLastINF()
+    {
+        return lastINF;
+    }
+
+
+    public void setLastINF(long lastINF)
+    {
+        this.lastINF = lastINF;
+    }
+
+
+    /**
+     * Time when last keep alive packed recieved
+     */
+    public long getLastKeepAlive()
+    {
+        return lastKeepAlive;
+    }
+
+
+    public void setLastKeepAlive(long lastKeepAlive)
+    {
+        this.lastKeepAlive = lastKeepAlive;
+    }
+
+
+    /**
+     * Client state
+     */
+    public int getState()
+    {
+        return state;
+    }
+
+
+    public void setState(int state)
+    {
+        this.state = state;
+    }
+
+
+    /**
+     * Real client ip
+     */
+    public String getRealIP()
+    {
+        return realIP;
+    }
+
+
+    public void setRealIP(String realIP)
+    {
+        this.realIP = realIP;
+    }
+
+
+    /**
+     * The CID of the client. Mandatory for C-C connections.
+     */
+    public String getID()
+    {
+        return ID;
+    }
+
+
+    public void setID(String ID)
+    {
+        this.ID = ID;
+    }
+
+
+    /**
+     * The PID of the client.
+     * Hubs must check that the Tiger(PID) == CID and then
+     * discard the field before broadcasting it to other clients.
+     * Must not be sent in C-C connections.
+     */
+    public String getPD()
+    {
+        return PD;
+    }
+
+
+    public void setPD(String PD)
+    {
+        this.PD = PD;
+    }
+
+
+    /**
+     * IPv4 address without port.
+     * A zero address (0.0.0.0) means that the server should replace
+     * it with the real IP of the client.
+     * Hubs must check that a specified address corresponds to what
+     * the client is connecting from to avoid DoS attacks,
+     * and only allow trusted clients to specify a different address.
+     * Clients should use the zero address when connecting,
+     * but may opt not to do so at the user's discretion.
+     * Any client that supports incoming TCPv4 connections must also
+     * add the feature TCP4 to their SU field.
+     */
+    public String getI4()
+    {
+        return I4;
+    }
+
+
+    public void setI4(String i4)
+    {
+        I4 = i4;
+    }
+
+
+    /**
+     * IPv6 address without port.
+     * A zero address (::) means that the server should replace
+     * it with the IP of the client.
+     * Any client that supports incoming TCPv6 connections must also
+     * add the feature TCP6 to their SU field.
+     */
+    public String getI6()
+    {
+        return I6;
+    }
+
+
+    public void setI6(String i6)
+    {
+        I6 = i6;
+    }
+
+
+    /**
+     * Client UDP port.
+     * Any client that supports incoming UDPv4 packets must also
+     * add the feature UDP4 to their SU field.
+     */
+    public String getU4()
+    {
+        return U4;
+    }
+
+
+    public void setU4(String u4)
+    {
+        U4 = u4;
+    }
+
+
+    /**
+     * Same as U4, but for IPv6.
+     * Any client that supports incoming UDPv6 packets must also
+     * add the feature UDP6 to their SU field.
+     */
+    public String getU6()
+    {
+        return U6;
+    }
+
+
+    public void setU6(String u6)
+    {
+        U6 = u6;
+    }
+
+
+    /**
+     * Share size in bytes, integer.
+     */
+    public Long getSS()
+    {
+        return SS;
+    }
+
+
+    public void setSS(Long SS)
+    {
+        this.SS = SS;
+    }
+
+
+    /**
+     * Number of shared files, integer
+     */
+    public Long getSF()
+    {
+        return SF;
+    }
+
+
+    public void setSF(Long SF)
+    {
+        this.SF = SF;
+    }
+
+
+    /**
+     * Client identification,
+     * version (client-specific, a short identifier
+     * then a floating-point version number is recommended).
+     * Hubs should not discriminate agains clients based on
+     * their VE tag but instead rely on SUP when it comes to
+     * which clients should be allowed (for example, we only want regex clients).
+     */
+    public String getVE()
+    {
+        return VE;
+    }
+
+
+    public void setVE(String VE)
+    {
+        this.VE = VE;
+    }
+
+
+    /**
+     * Maximum upload speed, bits/sec, integer
+     */
+    public Long getUS()
+    {
+        return US;
+    }
+
+
+    public void setUS(Long US)
+    {
+        this.US = US;
+    }
+
+
+    /**
+     * Maximum download speed, bits/sec, integer
+     */
+    public Long getDS()
+    {
+        return DS;
+    }
+
+
+    public void setDS(Long DS)
+    {
+        this.DS = DS;
+    }
+
+
+    /**
+     * Upload slots open, integer
+     */
+    public Integer getSL()
+    {
+        return SL;
+    }
+
+
+    public void setSL(Integer SL)
+    {
+        this.SL = SL;
+    }
+
+
+    /**
+     * Automatic slot allocator speed limit, bytes/sec, integer.
+     * This is the recommended method of slot allocation,
+     * the client keeps opening slots as long as its total upload speed
+     * doesn't exceed this value. SL then serves as a minimum number of slots open.
+     */
+    public Long getAS()
+    {
+        return AS;
+    }
+
+
+    public void setAS(Long AS)
+    {
+        this.AS = AS;
+    }
+
+
+    /**
+     * Maximum number of slots open in automatic slot manager mode, integer.
+     */
+    public Long getAM()
+    {
+        return AM;
+    }
+
+
+    public void setAM(Long AM)
+    {
+        this.AM = AM;
+    }
+
+
+    /**
+     * E-mail address, string.
+     */
+    public String getEM()
+    {
+        return EM;
+    }
+
+
+    public void setEM(String EM)
+    {
+        this.EM = EM;
+    }
+
+
+    /**
+     * Nickname, string.
+     * The hub must ensure that this is unique in the hub up to case-sensitivity.
+     * Valid are all characters in the Unicode character set with code point above 32,
+     * although hubs may limit this further as they like with an appropriate error message.
+     * When sent for hub, this is the nick that should be displayed before messages from the hub,
+     * and may also be used as short name for the hub.
+     */
+    public String getNI()
+    {
+        return NI;
+    }
+
+
+    public void setNI(String NI)
+    {
+        this.NI = NI;
+    }
+
+
+    /**
+     * Description, string.
+     * Valid are all characters in the Unicode character
+     * set with code point equal to or greater than 32.
+     * When sent by hub, this string should be displayed
+     * in the window title of the hub window (if one exists)
+     */
+    public String getDE()
+    {
+        return DE;
+    }
+
+
+    public void setDE(String DE)
+    {
+        this.DE = DE;
+    }
+
+
+    /**
+     * Hubs where user is a normal user and in NORMAL state, integer.
+     * While connecting, clients should not count the hub they're connecting to.
+     * Hubs should increase one of the three the hub counts by one
+     * before passing the client to NORMAL state.
+     */
+    public Integer getHN()
+    {
+        return HN;
+    }
+
+
+    public void setHN(Integer HN)
+    {
+        this.HN = HN;
+    }
+
+
+    /**
+     * Hubs where user is registered (had to supply password) and in NORMAL state, integer.
+     */
+    public Integer getHR()
+    {
+        return HR;
+    }
+
+
+    public void setHR(Integer HR)
+    {
+        this.HR = HR;
+    }
+
+
+    /**
+     * Hubs where user is op and in NORMAL state, integer.
+     */
+    public Integer getHO()
+    {
+        return HO;
+    }
+
+
+    public void setHO(Integer HO)
+    {
+        this.HO = HO;
+    }
+
+
+    /**
+     * Token, as received in RCM/CTM, when establishing a C-C connection.
+     */
+    public String getTO()
+    {
+        return TO;
+    }
+
+
+    public void setTO(String TO)
+    {
+        this.TO = TO;
+    }
+
+
+    /**
+     * Client (user) type, 1=bot, 2=registered user, 4=operator,
+     * 8=super user, 16=hub owner, 32=hub (used when the hub sends an INF about itself).
+     * Multiple types are specified by adding the numbers together.
+     */
+    public String getCT()
+    {
+        return CT;
+    }
+
+
+    public void setCT(String CT)
+    {
+        this.CT = CT;
+    }
+
+
+    /**
+     * 1=Away
+     * 2=Extended away, not interested in hub chat
+     * (hubs may skip sending broadcast type MSG commands to clients with this flag)
+     */
+    public Integer getAW()
+    {
+        return AW;
+    }
+
+
+    public void setAW(Integer AW)
+    {
+        this.AW = AW;
+    }
+
+
+    /**
+     * 1=Hidden, should not be shown on the user list.
+     */
+    public boolean isHI()
+    {
+        return HI;
+    }
+
+
+    public void setHI(boolean HI)
+    {
+        this.HI = HI;
+    }
+
+
+    /**
+     * 1=Hub, this INF is about the hub itself
+     */
+    public boolean isHU()
+    {
+        return HU;
+    }
+
+
+    public void setHU(boolean HU)
+    {
+        this.HU = HU;
+    }
+
+
+    /**
+     * Comma-separated list of feature FOURCC's.
+     * This notifies other clients of extended capabilities of the connecting client.
+     * Use with discretion.
+     */
+    public String getSU()
+    {
+        return SU;
+    }
+
+
+    public void setSU(String SU)
+    {
+        this.SU = SU;
+    }
+
+
+    /**
+     * URL of referer (hub in case of redirect, web page)
+     */
+    public String getRF()
+    {
+        return RF;
+    }
+
+
+    public void setRF(String RF)
+    {
+        this.RF = RF;
+    }
+
+
+    /**
+     * Client search step
+     */
+    public int getSearchStep()
+    {
+        return searchStep;
+    }
+
+
+    public void setSearchStep(int searchStep)
+    {
+        this.searchStep = searchStep;
+    }
+
+
+    /**
+     * Time when client runs last search
+     */
+    public long getLastSearch()
+    {
+        return lastSearch;
+    }
+
+
+    public void setLastSearch(long lastSearch)
+    {
+        this.lastSearch = lastSearch;
+    }
+
+
+    /**
+     * Time when client do last automagic search
+     */
+    public long getLastAutomagicSearch()
+    {
+        return lastAutomagicSearch;
+    }
+
+
+    public void setLastAutomagicSearch(long lastAutomagicSearch)
+    {
+        this.lastAutomagicSearch = lastAutomagicSearch;
+    }
+
+
+    public String getInQueueSearch()
+    {
+        return inQueueSearch;
+    }
+
+
+    public void setInQueueSearch(String inQueueSearch)
+    {
+        this.inQueueSearch = inQueueSearch;
+    }
+
+
+    /**
+     * Flag indicates about client was kicked
+     */
+    public boolean isKicked()
+    {
+        return kicked;
+    }
+
+
+    public void setKicked()
+    {
+        this.kicked = true;
+    }
+
+
+    public void setKicked(boolean kicked)
+    {
+        this.kicked = kicked;
+    }
+
+
+    /**
+     * Client session id.
+     */
+    public String getSID()
+    {
+        return SID;
+    }
+
+
+    public void setSID(String SID)
+    {
+        this.SID = SID;
+    }
+
+
+    /**
+     * indicates if client is a pinger a.k.a. PING extension
+     */
+    public boolean isPingExtensionSupports()
+    {
+        return pingExtensionSupports;
+    }
+
+
+    public void setPingExtensionSupports(boolean pingExtensionSupports)
+    {
+        this.pingExtensionSupports = pingExtensionSupports;
+    }
+
+
+    /**
+     * indicates if client supports UCMD messages
+     */
+    public boolean isUcmd()
+    {
+        return ucmd;
+    }
+
+
+    public void setUcmd(boolean ucmd)
+    {
+        this.ucmd = ucmd;
+    }
+
+
+    /**
+     * indicates if client supports BASE messages
+     */
+    public int getBase()
+    {
+        return base;
+    }
+
+
+    public void setBase(int base)
+    {
+        this.base = base;
+    }
+
+
+    /**
+     * indicates if client supports old BAS0 messages
+     */
+    public boolean isBas0()
+    {
+        return bas0;
+    }
+
+
+    public void setBas0(boolean bas0)
+    {
+        this.bas0 = bas0;
+    }
+
+
+    /**
+     * if client supports TIGER hashes or not
+     */
+    public boolean isTigrSupports()
+    {
+        return tigrSupports;
+    }
+
+
+    public void setTigrSupports(boolean tigrSupports)
+    {
+        this.tigrSupports = tigrSupports;
+    }
+
+
+    /**
+     * Client Connect time in millis as Syste.gettimemillis() ; ;)
+     */
+    public long getConnectTime()
+    {
+        return connectTime;
+    }
+
+
+    public void setConnectTime(long connectTime)
+    {
+        this.connectTime = connectTime;
+    }
+
+
+    /**
+     * Client NIO session.
+     */
+    public IoSession getSession()
+    {
+        return session;
+    }
+
+
+    public void setSession(IoSession session)
+    {
+        this.session = session;
+    }
+
+
+    public String getPassword()
+    {
+        return password;
+    }
+
+
+    public void setPassword(String password)
+    {
+        this.password = password;
+    }
+
+
+    public boolean isReg()
+    {
+        return isReg;
+    }
+
+
+    public void setReg(boolean reg)
+    {
+        isReg = reg;
+    }
+
+
+    public String getLastNick()
+    {
+        return lastNick;
+    }
+
+
+    public void setLastNick(String lastNick)
+    {
+        this.lastNick = lastNick;
+    }
+
+
+    public String getWhoRegged()
+    {
+        return whoRegged;
+    }
+
+
+    public void setWhoRegged(String whoRegged)
+    {
+        this.whoRegged = whoRegged;
+    }
+
+
+    public Long getCreatedOn()
+    {
+        return createdOn;
+    }
+
+
+    public void setCreatedOn(Long createdOn)
+    {
+        this.createdOn = createdOn;
+    }
+
+
+    public Long getLastLogin()
+    {
+        return lastLogin;
+    }
+
+
+    public void setLastLogin(Long lastLogin)
+    {
+        this.lastLogin = lastLogin;
+    }
+
+
+    public Long getTimeOnline()
+    {
+        return timeOnline;
+    }
+
+
+    public void setTimeOnline(Long timeOnline)
+    {
+        this.timeOnline = timeOnline;
+    }
+
+
+    /**
+     * Increases timeOnline by timeOnlineDelta value.
+     * @param timeOnlineDelta time online delta value
+     */
+    public void increaseTimeOnline(Long timeOnlineDelta)
+    {
+        this.timeOnline += timeOnlineDelta;
+    }
+
+    public String getLastIP()
+    {
+        return lastIP;
+    }
+
+
+    public void setLastIP(String lastIP)
+    {
+        this.lastIP = lastIP;
+    }
+
+
+    public boolean isHideShare()
+    {
+        return hideShare;
+    }
+
+
+    public void setHideShare(boolean hideShare)
+    {
+        this.hideShare = hideShare;
+    }
+
+
+    public boolean isHideMe()
+    {
+        return hideMe;
+    }
+
+
+    public void setHideMe(boolean hideMe)
+    {
+        this.hideMe = hideMe;
+    }
+
+
+    public boolean isOverrideShare()
+    {
+        return overrideShare;
+    }
+
+
+    public void setOverrideShare(boolean overrideShare)
+    {
+        this.overrideShare = overrideShare;
+    }
+
+
+    public boolean isOverrideSpam()
+    {
+        return overrideSpam;
+    }
+
+
+    public void setOverrideSpam(boolean overrideSpam)
+    {
+        this.overrideSpam = overrideSpam;
+    }
+
+
+    public boolean isOverrideFull()
+    {
+        return overrideFull;
+    }
+
+
+    public void setOverrideFull(boolean overrideFull)
+    {
+        this.overrideFull = overrideFull;
+    }
+
+
+    public boolean isKickable()
+    {
+        return kickable;
+    }
+
+
+    public void setKickable(boolean kickable)
+    {
+        this.kickable = kickable;
+    }
+
+
+    public boolean isRenameable()
+    {
+        return renameable;
+    }
+
+
+    public void setRenameable(boolean renameable)
+    {
+        this.renameable = renameable;
+    }
+
+
+    public boolean isAccountFlyable()
+    {
+        return accountFlyable;
+    }
+
+
+    public void setAccountFlyable(boolean accountFlyable)
+    {
+        this.accountFlyable = accountFlyable;
+    }
+
+
+    public boolean isOpchatAccess()
+    {
+        return opchatAccess;
+    }
+
+
+    public void setOpchatAccess(boolean opchatAccess)
+    {
+        this.opchatAccess = opchatAccess;
+    }
+
+
+    public boolean isNickProtected()
+    {
+        return nickProtected;
+    }
+
+
+    public void setNickProtected(boolean nickProtected)
+    {
+        this.nickProtected = nickProtected;
+    }
+
+
+    public int getWeight()
+    {
+        return weight;
+    }
+
+
+    public void setWeight(int weight)
+    {
+        this.weight = weight;
+    }
 
 
     /**
@@ -435,24 +1503,15 @@ public class ClientHandler
         }
         if (AM != null)
         {
-            if (!AM.equals(""))
-            {
                 auxstr = auxstr + " AM" + AM;
-            }
         }
         if (AS != null)
         {
-            if (!AS.equals(""))
-            {
                 auxstr = auxstr + " AS" + AS;
-            }
         }
         if (AW != null)
         {
-            if (!AW.equals(""))
-            {
                 auxstr = auxstr + " AW" + AW;
-            }
         }
         if (DE != null)
         {
@@ -463,10 +1522,7 @@ public class ClientHandler
         }
         if (DS != null)
         {
-            if (!DS.equals(""))
-            {
                 auxstr = auxstr + " DS" + DS;
-            }
         }
         if (EM != null)
         {
@@ -482,24 +1538,15 @@ public class ClientHandler
         }
         if (HN != null)
         {
-            if (!HN.equals(""))
-            {
                 auxstr = auxstr + " HN" + HN;
-            }
         }
         if (HO != null)
         {
-            if (!HO.equals(""))
-            {
                 auxstr = auxstr + " HO" + HO;
-            }
         }
         if (HR != null)
         {
-            if (!HR.equals(""))
-            {
                 auxstr = auxstr + " HR" + HR;
-            }
         }
         if (HU != false)
         {
@@ -517,24 +1564,15 @@ public class ClientHandler
         }
         if (SF != null)
         {
-            if (!SF.equals(""))
-            {
                 auxstr = auxstr + " SF" + SF;
-            }
         }
         if (SS != null)
         {
-            if (!SS.equals(""))
-            {
                 auxstr = auxstr + " SS" + SS;
-            }
         }
         if (SL != null)
         {
-            if (!SL.equals(""))
-            {
                 auxstr = auxstr + " SL" + SL;
-            }
         }
         if (SU != null)
         {
@@ -573,7 +1611,7 @@ public class ClientHandler
         }
         if (US != null)
         {
-            if (!US.equals(""))
+            if (US != 0)
             {
                 auxstr = auxstr + " US" + US;
             }
@@ -589,9 +1627,9 @@ public class ClientHandler
         {
             return;
         }
-        if (this.validated == 1)
+        if (isValidated())
         {
-            if (can_receive_cmds && ConfigLoader.COMMAND_PM_RETURN == true)
+            if (canReceiveCmds && ConfigLoader.COMMAND_PM_RETURN)
             {
                 sendFromBotPM(text);
             }
@@ -605,7 +1643,7 @@ public class ClientHandler
 
     public void sendFromBotPM(String text)
     {
-        if (this.validated == 1)
+        if (isValidated())
         {
             this.sendToClient("EMSG DCBA " +
                               this.SID +
