@@ -15,7 +15,7 @@ import java.util.List;
  * DAO Class for manipulation clients entity
  * @author Valor
  * @since  13.09.2011
- * @version 0.0.1
+ * @version 0.0.2
  */
 public class ClientListDAOImpl implements ClientListDAO
 {
@@ -36,13 +36,6 @@ public class ClientListDAOImpl implements ClientListDAO
 
 			if (!params.equals(null))
 			{
-
-				if (params.getAccountFlyable() == null)
-				{
-					params.setAccountFlyable(false);
-				}
-
-
 				session.save(params);
 				tx.commit();
 			}
@@ -59,6 +52,7 @@ public class ClientListDAOImpl implements ClientListDAO
 		}
 		return false;
 	}
+
 
 	@Override
 	public boolean delClient(String nickName)
@@ -92,6 +86,35 @@ public class ClientListDAOImpl implements ClientListDAO
 			log.error(marker, ex);
 		}
 		return false;
+	}
+
+	@Override
+	public ClientListPOJO getClientByNick(String nick)
+	{
+		Session session = HibernateUtils.getSessionFactory().openSession();
+		Transaction tx  = session.getTransaction();
+
+		String query = "from ClientListPOJO where nickName =:nick";
+
+		try{
+
+			tx.begin();
+
+			Query request = session.createQuery(query).setParameter("nick",nick);
+
+			ClientListPOJO client = (ClientListPOJO) request.uniqueResult();
+
+			tx.commit();
+
+			return client;
+
+		}catch (Exception ex)
+		{
+			log.error(marker,ex);
+			tx.rollback();
+		}
+
+		return null;
 	}
 
 	@Override
