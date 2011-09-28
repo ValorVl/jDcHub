@@ -1,5 +1,6 @@
 package ru.sincore.db.dao;
 
+import org.hibernate.Query;
 import org.hibernate.Transaction;
 import org.hibernate.classic.Session;
 import org.slf4j.Logger;
@@ -44,6 +45,30 @@ public class StopWordsDAOImpl implements StopWordsDAO
 	@Override
 	public List<StopWordsPOJO> getMatches()
 	{
+		Session session = HibernateUtils.getSessionFactory().openSession();
+		Transaction tx  = session.getTransaction();
+
+		String query = "from StopWordsPOJO order by id asc";
+
+		try
+		{
+			tx.begin();
+
+			Query request = session.createQuery(query);
+
+			List<StopWordsPOJO> result = (List<StopWordsPOJO>) request.list();
+
+			tx.commit();
+
+			return result;
+		}
+		catch (Exception ex)
+		{
+			log.error(marker,ex);
+			tx.rollback();
+		}
+
+
 		return null;
 	}
 

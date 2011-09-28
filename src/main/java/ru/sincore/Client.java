@@ -26,8 +26,14 @@ package ru.sincore;
 import org.apache.log4j.Logger;
 import org.apache.mina.core.future.IoFutureListener;
 import org.apache.mina.core.future.WriteFuture;
-import ru.sincore.banning.BanList;
+import ru.sincore.db.dao.BanListDAOImpl;
+import ru.sincore.db.dao.KickListDAOImpl;
+import ru.sincore.db.pojo.KickListPOJO;
 import ru.sincore.util.AdcUtils;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 
 /**
@@ -78,6 +84,7 @@ public class Client implements IoFutureListener<WriteFuture>
 
 
     // TODO [lh] Next two functions must be rewritten to remove code duplication
+	// TODO [Valor] Fuck.. this is ban or kick ?
     public void kickMeOut(ClientHandler whokicked,
                           String kickmsg,
                           int bantype,
@@ -95,11 +102,32 @@ public class Client implements IoFutureListener<WriteFuture>
             // convert it from sec to ms
             kicktime *= 1000;
 
+		KickListDAOImpl kickList = new KickListDAOImpl();
+
+		Calendar c = new GregorianCalendar();
+
+		c.add(Calendar.MINUTE,5); //add to the current date 5  minutes
+		c.add(Calendar.HOUR,6); // add to the current date 6 days
+		c.add(Calendar.DAY_OF_MONTH,2); //add to the current date 2 months
+
+		Date banExpired = c.getTime();
+
+		// Build kick list object
+		KickListPOJO kickClient = new KickListPOJO();
+
+		kickClient.setIp(handler.getU4());
+		kickClient.setKickDate(new Date());
+		kickClient.setKickExpiredDate(banExpired);
+		kickClient.setKickOwner(whokicked.getNI());
+		kickClient.setNickName(handler.getNI());
+		kickClient.setReason(kickmsg);
+
         switch (bantype)
         {
             // ban by nick
             case 1:
-                BanList.addban(bantype, handler.getNI(), kicktime, whokicked.getNI(), kickmsg);
+				kickList.addKickedClient(kickClient);
+
                 break;
 
             // ban by ip
@@ -238,10 +266,10 @@ public class Client implements IoFutureListener<WriteFuture>
         this.handler.getSession().close(true);
 
         whokicked.sendFromBot("Dropped user " +
-                              handler.getNI() +
-                              " with CID " +
-                              handler.getID() +
-                              " down from the sky.");
+									  handler.getNI() +
+									  " with CID " +
+									  handler.getID() +
+									  " down from the sky.");
     }
 
 
@@ -266,12 +294,12 @@ public class Client implements IoFutureListener<WriteFuture>
 
 
         whokicked.sendFromBot("Redirected user " +
-                              handler.getNI() +
-                              " with CID " +
-                              handler.getID() +
-                              " to " +
-                              URL +
-                              ".");
+									  handler.getNI() +
+									  " with CID " +
+									  handler.getID() +
+									  " to " +
+									  URL +
+									  ".");
     }
 
 }
