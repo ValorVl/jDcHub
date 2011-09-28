@@ -72,98 +72,77 @@ public class Client implements IoFutureListener<WriteFuture>
     {
         // if data was not written
         if (!future.isWritten())
-        {
             // close connection immediately
-            handler.session.close(true);
-        }
+            handler.getSession().close(true);
     }
 
 
-    public void kickMeOut(ClientHandler whokicked, String kickmsg, int bantype, Long kicktime)
-    {
-        kickMeOut(whokicked, kickmsg, bantype, kicktime, "");
-    }
-
-
+    // TODO [lh] Next two functions must be rewritten to remove code duplication
     public void kickMeOut(ClientHandler whokicked,
                           String kickmsg,
                           int bantype,
-                          Long kicktime,
-                          String extraStr)
+                          Long kicktime)
     {
         kickmsg = AdcUtils.retNormStr(kickmsg);
-        if (!handler.reg.kickable)
+
+        if (!handler.isKickable())
         {
-            whokicked.sendFromBot("" + handler.NI + " is unkickable.");
+            whokicked.sendFromBot("" + handler.getNI() + " is unkickable.");
             return;
         }
-        //ClientHandler tempy=FirstClient;
-        // while(tempy.NextClient!=this)
-        //   tempy=tempy.NextClient;
-        // ClientHandler temp=tempy.NextClient;
+
         if (kicktime != -1)
-        {
-            if (bantype == 3)
-            {
-                BanList.addban(bantype, handler.ID, 1000 * kicktime, whokicked.NI, kickmsg);
-            }
-            else if (bantype == 2)
-            {
-                BanList.addban(bantype, handler.realIP, 1000 * kicktime, whokicked.NI, kickmsg);
-            }
-            else if (bantype == 1)
-            {
-                BanList.addban(bantype, handler.NI, 1000 * kicktime, whokicked.NI, kickmsg);
-            }
-        }
-        else
-        {
+            // convert it from sec to ms
+            kicktime *= 1000;
 
-            if (bantype == 3)
-            {
-                BanList.addban(bantype, handler.ID, kicktime, whokicked.NI, kickmsg);
-            }
-            else if (bantype == 2)
-            {
-                BanList.addban(bantype, handler.realIP, kicktime, whokicked.NI, kickmsg);
-            }
-            else if (bantype == 1)
-            {
-                BanList.addban(bantype, handler.NI, kicktime, whokicked.NI, kickmsg);
-            }
+        switch (bantype)
+        {
+            // ban by nick
+            case 1:
+                BanList.addban(bantype, handler.getNI(), kicktime, whokicked.getNI(), kickmsg);
+                break;
 
+            // ban by ip
+            case 2:
+                BanList.addban(bantype, handler.getRealIP(), kicktime, whokicked.getNI(), kickmsg);
+                break;
+
+            // ban by cid
+            case 3:
+                BanList.addban(bantype, handler.getID(), kicktime, whokicked.getNI(), kickmsg);
+                break;
         }
+
         String brcast = "IQUI " +
-                        handler.SID +
+                        handler.getSID() +
                         " ID" +
-                        whokicked.SID +
+                        whokicked.getSID() +
                         " TL" +
                         Long.toString(kicktime);
-        handler.reg.TimeOnline += System.currentTimeMillis() - handler.loggedAt;
+
         if (!kickmsg.equals(""))
-        {
             brcast = brcast + " MS" + AdcUtils.retADCStr(kickmsg);
-        }
+
         if (!ConfigLoader.REDIRECT_URL.equals(""))
-        {
             brcast = brcast + " RD" + AdcUtils.retADCStr(ConfigLoader.REDIRECT_URL);
-        }
+
         Broadcast.getInstance().broadcast(brcast);
 
-        handler.kicked = 1;
-        this.handler.session.close(true);
+        handler.setKicked();
+        handler.getSession().close(true);
 
 
         whokicked.sendFromBot("Kicked user " +
-                              handler.NI +
+                              handler.getNI() +
                               " with CID " +
-                              handler.ID +
+                              handler.getID() +
                               " out in flames.");
-        log.info(whokicked.NI +
+
+        log.info(whokicked.getNI() +
                     " kicked user " +
-                    handler.NI +
+                    handler.getNI() +
                     " with CID " +
-                    handler.ID +
+                    handler.getID() +
                     " out in flames.");
     }
 
@@ -171,68 +150,55 @@ public class Client implements IoFutureListener<WriteFuture>
     public void kickMeByBot(String kickmsg, int bantype, Long kicktime)
     {
         kickmsg = AdcUtils.retNormStr(kickmsg);
-        if (!handler.reg.kickable)
-        {
 
+        if (!handler.isKickable())
+        {
             return;
         }
-        //ClientHandler tempy=FirstClient;
-        // while(tempy.NextClient!=this)
-        //   tempy=tempy.NextClient;
-        // ClientHandler temp=tempy.NextClient;
+
         if (kicktime != -1)
-        {
-            if (bantype == 3)
-            {
-                BanList.addban(bantype, handler.ID, 1000 * kicktime, ConfigLoader.BOT_CHAT_NAME, kickmsg);
-            }
-            else if (bantype == 2)
-            {
-                BanList.addban(bantype, handler.realIP, 1000 * kicktime, ConfigLoader.BOT_CHAT_NAME, kickmsg);
-            }
-            else if (bantype == 1)
-            {
-                BanList.addban(bantype, handler.NI, 1000 * kicktime, ConfigLoader.BOT_CHAT_NAME, kickmsg);
-            }
-        }
-        else
-        {
+            kicktime *= 1000;
 
-            if (bantype == 3)
-            {
-                BanList.addban(bantype, handler.ID, kicktime, ConfigLoader.BOT_CHAT_NAME, kickmsg);
-            }
-            else if (bantype == 2)
-            {
-                BanList.addban(bantype, handler.realIP, kicktime, ConfigLoader.BOT_CHAT_NAME, kickmsg);
-            }
-            else if (bantype == 1)
-            {
-                BanList.addban(bantype, handler.NI, kicktime, ConfigLoader.BOT_CHAT_NAME, kickmsg);
-            }
+        switch (bantype)
+        {
+            // ban by nick
+            case 1:
+                BanList.addban(bantype, handler.getNI(), kicktime, ConfigLoader.BOT_CHAT_NAME, kickmsg);
+                break;
 
+            // ban by ip
+            case 2:
+                BanList.addban(bantype, handler.getRealIP(), kicktime, ConfigLoader.BOT_CHAT_NAME, kickmsg);
+                break;
+
+            // ban by cid
+            case 3:
+                BanList.addban(bantype, handler.getID(), kicktime, ConfigLoader.BOT_CHAT_NAME, kickmsg);
+                break;
         }
-        String brcast = "IQUI " + handler.SID + " IDDCBA TL" + Long.toString(kicktime);
-        handler.reg.TimeOnline += System.currentTimeMillis() - handler.loggedAt;
+
+        String brcast = "IQUI " +
+                        handler.getSID() +
+                        " ID" +
+                        ConfigLoader.BOT_CHAT_SID +
+                        " TL" + Long.toString(kicktime);
+
         if (!kickmsg.equals(""))
-        {
             brcast = brcast + " MS" + AdcUtils.retADCStr(kickmsg);
-        }
+
         if (!ConfigLoader.REDIRECT_URL.equals(""))
-        {
             brcast = brcast + " RD" + AdcUtils.retADCStr(ConfigLoader.REDIRECT_URL);
-        }
+
         Broadcast.getInstance().broadcast(brcast);
 
-        handler.kicked = 1;
-        this.handler.session.close(true);
-
+        handler.setKicked();
+        this.handler.getSession().close(true);
 
         log.info(ConfigLoader.BOT_CHAT_NAME +
                  " kicked user " +
-                 handler.NI +
+                 handler.getNI() +
                  " with CID " +
-                 handler.ID +
+                 handler.getID() +
                  " out in flames.");
     }
 
@@ -251,77 +217,61 @@ public class Client implements IoFutureListener<WriteFuture>
 
     public void dropMeImGhost()
     {
-        if (handler.inside)
-        {
-            Broadcast.getInstance().broadcast("IQUI " + handler.SID, this);
-
-            //    handler.reg.TimeOnline+=System.currentTimeMillis()-handler.loggedAt;
-        }
-        handler.kicked = 1;
-        handler.inside = false;
-        this.handler.session.close(true);
+        Broadcast.getInstance().broadcast("IQUI " + handler.getSID(), this);
+        handler.setKicked();
+        handler.getSession().close(true);
     }
 
 
     public void dropMe(ClientHandler whokicked)
     {
-        if (!handler.reg.kickable)
+        if (!handler.isKickable())
         {
-            whokicked.sendFromBot("" + handler.NI + " is undroppable.");
+            whokicked.sendFromBot("" + handler.getNI() + " is undroppable.");
             return;
         }
 
-
         Broadcast.getInstance()
-                 .broadcast("IQUI " + handler.SID + " ID" + whokicked.SID);
+                 .broadcast("IQUI " + handler.getSID() + " ID" + whokicked.getSID());
 
-        //  handler.reg.TimeOnline+=System.currentTimeMillis()-handler.loggedAt;
-
-        handler.kicked = 1;
-        this.handler.session.close(true);
-
+        handler.setKicked();
+        this.handler.getSession().close(true);
 
         whokicked.sendFromBot("Dropped user " +
-                              handler.NI +
+                              handler.getNI() +
                               " with CID " +
-                              handler.ID +
+                              handler.getID() +
                               " down from the sky.");
-        //  Main.server.rewritebans ();
     }
 
 
     public void redirectMe(ClientHandler whokicked, String URL)
     {
-        if (!handler.reg.kickable)
+        if (!handler.isKickable())
         {
-            whokicked.sendFromBot("" + handler.NI + " is unredirectable.");
+            whokicked.sendFromBot("" + handler.getNI() + " is unredirectable.");
             return;
         }
 
-
         Broadcast.getInstance()
                  .broadcast("IQUI " +
-                            handler.SID +
+                            handler.getSID() +
                             " ID" +
-                            whokicked.SID +
+                            whokicked.getSID() +
                             " RD" +
                             URL);
 
-        //   handler.reg.TimeOnline+=System.currentTimeMillis()-handler.loggedAt;
-
-        handler.kicked = 1;
-        this.handler.session.close(true);
+        handler.setKicked();
+        this.handler.getSession().close(true);
 
 
         whokicked.sendFromBot("Redirected user " +
-                              handler.NI +
+                              handler.getNI() +
                               " with CID " +
-                              handler.ID +
+                              handler.getID() +
                               " to " +
                               URL +
                               ".");
-
     }
-
 
 }

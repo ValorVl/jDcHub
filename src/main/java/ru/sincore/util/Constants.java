@@ -29,6 +29,9 @@ package ru.sincore.util;
  */
 public final class Constants
 {
+    // Hub base functionality SUP string
+    public static final String HUB_BASE_SUP_STRING = "ADBASE ADTIGR ADUCM0 ADADC0";
+
     // STA Severity codes block
     public static final int STA_SEVERITY_SUCCESS                = 0;
     public static final int STA_SEVERITY_RECOVERABLE            = 100;

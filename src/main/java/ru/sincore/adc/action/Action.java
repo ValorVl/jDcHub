@@ -108,11 +108,11 @@ public abstract class Action
             return false;
 
         if ((fromClient != null) &&
-            (availableStates & fromClient.getClientHandler().state) == State.INVALID_STATE)
+            (availableStates & fromClient.getClientHandler().getState()) == State.INVALID_STATE)
             return false;
 
         if ((toClient != null) &&
-            (availableStates & toClient.getClientHandler().state) == State.INVALID_STATE)
+            (availableStates & toClient.getClientHandler().getState()) == State.INVALID_STATE)
             return false;
 
         if (!paramsAreValid)
@@ -124,10 +124,56 @@ public abstract class Action
         return true;
     }
 
+
     protected boolean isInternallyValid ()
     {
         return true;
     }
+
+
+    private void checkMinimalCommandLength()
+            throws STAException
+    {
+        int minimalCommandLength = 0;
+        // check to minimal command length
+        // ATTENTION! Magic numbers !!!
+        switch (messageType)
+        {
+            case INVALID_MESSAGE_TYPE:
+                break;
+
+            case C:
+            case I:
+            case H:
+                // message type (1 char) + command (3 chars) = 4
+                minimalCommandLength = 4;
+                break;
+
+            case B:
+            case F:
+                // message type (1 char) + command (3 chars) +
+                // separator (1 char) + sid (4 chars) = 9
+                minimalCommandLength = 9;
+                break;
+
+            case D:
+            case E:
+                // message type (1 char) + command (3 chars) +
+                // separator (1 char) + sid (4 chars) +
+                // separator (1 char) + sid (4 chars)
+                minimalCommandLength = 14;
+                break;
+
+            case U:
+                break;
+        }
+
+        if (rawCommand.length() < minimalCommandLength)
+            new STAError(fromClient,
+                         100 + Constants.STA_GENERIC_PROTOCOL_ERROR,
+                         "Incorrect protocol command");
+    }
+
 
     /**
      * Parse additional parameters.
@@ -139,9 +185,12 @@ public abstract class Action
      * @throws CommandException
      * @throws STAException
      */
-    public final void parse (String rawCommand) throws STAException, CommandException
+    public final void parse (String rawCommand)
+            throws STAException, CommandException
     {
         this.rawCommand = rawCommand;
+
+        checkMinimalCommandLength();
 
         try
         {

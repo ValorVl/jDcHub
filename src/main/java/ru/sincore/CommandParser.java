@@ -365,7 +365,7 @@ public class CommandParser
                                                      "Your account has been deleted. From now on you are a simple user.");
                                 temp.getClientHandler().putOpchat(false);
                                 temp.getClientHandler().CT = "0";
-                                temp.getClientHandler().can_receive_cmds = false;
+                                temp.getClientHandler().canReceiveCmds = false;
                                 Broadcast.getInstance().broadcast(
                                         "BINF " + temp.getClientHandler().SID
                                         + " CT");
@@ -423,7 +423,7 @@ public class CommandParser
                                                 "Your account has been deleted. From now on you are a simple user.");
                                 temp.getClientHandler().putOpchat(false);
                                 temp.getClientHandler().CT = "0";
-                                temp.getClientHandler().can_receive_cmds = false;
+                                temp.getClientHandler().canReceiveCmds = false;
 
                                 Broadcast.getInstance().broadcast(
                                         "BINF " + temp.getClientHandler().SID
@@ -502,7 +502,7 @@ public class CommandParser
                                                                   +
                                                                   temp.getClientHandler().SID +
                                                                   " CT2");
-                                temp.getClientHandler().can_receive_cmds = true;
+                                temp.getClientHandler().canReceiveCmds = true;
                                 temp.getClientHandler().reg.isreg = true;
                                 temp.getClientHandler().loggedAt = System
                                         .currentTimeMillis();
@@ -561,7 +561,7 @@ public class CommandParser
                                                      " . No password set, login does not require pass, however, its recomandable you to set one...");
                                 temp.getClientHandler().putOpchat(true);
                                 temp.getClientHandler().CT = "2";
-                                temp.getClientHandler().can_receive_cmds = true;
+                                temp.getClientHandler().canReceiveCmds = true;
                                 Broadcast.getInstance().broadcast("BINF "
                                                                   +
                                                                   temp.getClientHandler().SID +
@@ -632,7 +632,7 @@ public class CommandParser
 
                             Broadcast.getInstance().broadcast("BINF " + temp.getClientHandler().SID
                                                               + " CT2");
-                            temp.getClientHandler().can_receive_cmds = true;
+                            temp.getClientHandler().canReceiveCmds = true;
                             temp.getClientHandler().loggedAt = System
                                     .currentTimeMillis();
                             temp.getClientHandler().reg.LastIP = temp.getClientHandler().realIP;

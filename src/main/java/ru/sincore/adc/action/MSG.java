@@ -115,7 +115,7 @@ public class MSG extends Action
     {
         String normalMessage = AdcUtils.retNormStr(message);
         if (normalMessage.startsWith(ConfigLoader.OP_COMMAND_PREFIX) ||
-                normalMessage.startsWith(ConfigLoader.USER_COMMAND_PREFIX))
+            normalMessage.startsWith(ConfigLoader.USER_COMMAND_PREFIX))
         {
             StringTokenizer commandTokenizer = new StringTokenizer(normalMessage);
 
@@ -205,7 +205,7 @@ public class MSG extends Action
                          Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
                          "MSG contains wrong my_sid value!");
 
-        if (!mySID.equals(fromClient.getClientHandler().SID))
+        if (!mySID.equals(fromClient.getClientHandler().getSID()))
             new STAError(fromClient,
                          Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
                          "MSG my_sid not equal to sender\'s sid.");
@@ -222,7 +222,7 @@ public class MSG extends Action
                          Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
                          "MSG contains wrong target_sid value!");
 
-        if (targetSID.equals(fromClient.getClientHandler().SID))
+        if (targetSID.equals(fromClient.getClientHandler().getSID()))
             new STAError(fromClient,
                          Constants.STA_SEVERITY_RECOVERABLE,
                          "MSG PM not returning to self.");

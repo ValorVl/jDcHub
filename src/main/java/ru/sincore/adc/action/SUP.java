@@ -94,29 +94,29 @@ public class SUP extends Action
 			endToken = endToken.substring(2);
            	if (endToken.equals("BAS0"))
            	{
-            	fromClient.getClientHandler().bas0 = enable;
-            	fromClient.getClientHandler().base = 1;
+            	fromClient.getClientHandler().setBas0(enable);
+            	fromClient.getClientHandler().setBase(1);
 		   	}
 		   	else if (endToken.equals("BASE"))
 		   	{
-				fromClient.getClientHandler().base = (enable ? 2 : 0);
+				fromClient.getClientHandler().setBase(enable ? 2 : 0);
 		   	}
 		   	else if (endToken.startsWith("PIN") && endToken.length() == 4)
 		   	{
-				fromClient.getClientHandler().isPing = enable;
+				fromClient.getClientHandler().setPingExtensionSupports(enable);
 		   	}
 		   	else if (endToken.startsWith("UCM") && endToken.length() == 4)
 		   	{
-				fromClient.getClientHandler().ucmd = (enable ? 1 : 0);
+				fromClient.getClientHandler().setUcmd(enable);
 		   	}
 		   	else if (endToken.startsWith("TIGR") && endToken.length() == 4)
 		   	{
-				fromClient.getClientHandler().tigr = enable;
+				fromClient.getClientHandler().setTigrSupports(enable);
 		   	}
 		}
 
 		// Check support old protocol version
-		if (!fromClient.getClientHandler().bas0)
+		if (!fromClient.getClientHandler().isBas0())
 		{
 			new STAError(fromClient,
 						 Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
@@ -124,7 +124,7 @@ public class SUP extends Action
 		}
 
 		// Check support version new ADC protocol, if 0 - not support, 1 - first version, 2 - second version..
-		if (fromClient.getClientHandler().base == 0)
+		if (fromClient.getClientHandler().getBase() == 0)
 		{
 			new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL + Constants.STA_GENERIC_PROTOCOL_ERROR,
@@ -132,25 +132,28 @@ public class SUP extends Action
 		}
 
 		// Check support TIGER hash..
-		if (!fromClient.getClientHandler().tigr)
+		if (!fromClient.getClientHandler().isTigrSupports())
 		{
 			new STAError(fromClient,
                          Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_NO_HASH_OVERLAP,
                          "Cannot find any compatible hash function to use. Defaulting to TIGER.");
 		}
 
+        // if client in PROTOCOL state, send info about hub to him
+        if (fromClient.getClientHandler().getState() == State.PROTOCOL)
+            sendClientInitializationInfo();
 	}
 
-	/**
-	 * The method handles outgoing messages, to validate the client before sending messages
-	 *
-	 * @throws STAException STA action, error code and reason response to client
-	 * @throws CommandException command exception
-	 */
-	@Override
-    protected void parseOutgoing() throws STAException, CommandException
-	{
 
+    /**
+     * Handshake stage 1.
+     * Sends to client initialization info about hub and his sid.
+     *
+     * @throws STAException
+     * @throws CommandException
+     */
+    private void sendClientInitializationInfo() throws STAException, CommandException
+	{
 		// Check message type HUB if not throw exception
 		if (messageType != MessageType.H)
 		{
@@ -158,26 +161,21 @@ public class SUP extends Action
 		}
 
 		// Check client TIGER hash support if not, send error code 147 and reason
-		if (!toClient.getClientHandler().tigr)
+		if (!toClient.getClientHandler().isTigrSupports())
 		{
 			new STAError(fromClient,100 + Constants.STA_NO_HASH_OVERLAP,Messages.TIGER_ERROR);
 		}
 
-		String extensionList = ConfigLoader.ADC_EXTENSION_LIST;
-
 		// Check extension list, if list empty, send error message in log file and stop server
-		if (!extensionList.isEmpty())
-		{
-			toClient.getClientHandler().sendToClient("ISUP " + ConfigLoader.ADC_EXTENSION_LIST.trim());
-		}
-		else
-		{
-			log.error(marker,"Protocol error: ISUP EXTENSIONS list is empty, check config file end restart server.");
-			//TODO [Valor] Written correctly terminated server!
-			Main.server.shutdown();
-		}
+        toClient.getClientHandler().sendToClient("ISUP " +
+                                                 Constants.HUB_BASE_SUP_STRING +
+                                                 " " +
+                                                 ConfigLoader.ADC_EXTENSION_LIST);
 
-		toClient.getClientHandler().sendToClient("ISID " + toClient.getClientHandler().SID);
+        // move client to IDENTIFY state
+        toClient.getClientHandler().setState(State.IDENTIFY);
+
+        toClient.getClientHandler().sendToClient("ISID " + toClient.getClientHandler().getSID());
 
 		StringBuilder inf = new StringBuilder(8);
 
@@ -192,11 +190,10 @@ public class SUP extends Action
 			inf.append(ConfigLoader.HUB_DESCRIPTION);
 		}
 
-		// Check client flag isPing, if true, send PING string
-		inf.append(toClient.getClientHandler().isPing ? pingQuery() : Constants.EMPTY_STR);
+		// Check client flag isPingExtensionSupports, if true, send PING string
+		inf.append(toClient.getClientHandler().isPingExtensionSupports() ? pingQuery() : Constants.EMPTY_STR);
 
 		toClient.getClientHandler().sendToClient(inf.toString());
-
     }
 
 
