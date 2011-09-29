@@ -58,10 +58,10 @@ public class ClientHandler
     private long loggedAt = 0L;
 
     /**
-     * Solt for encryption algorithm.
+     * Salt for encryption algorithm.
      * Needed while session is live.
      */
-    private String encryptionSolt;
+    private String encryptionSalt;
 
     /**
      * Time when last MSG command was recieved.
@@ -484,18 +484,18 @@ public class ClientHandler
 
 
     /**
-     * Solt for encryption algorithm.
+     * Salt for encryption algorithm.
      * Needed while session is live.
      */
-    public String getEncryptionSolt()
+    public String getEncryptionSalt()
     {
-        return encryptionSolt;
+        return encryptionSalt;
     }
 
 
-    public void setEncryptionSolt(String encryptionSolt)
+    public void setEncryptionSalt(String encryptionSalt)
     {
-        this.encryptionSolt = encryptionSolt;
+        this.encryptionSalt = encryptionSalt;
     }
 
 

@@ -61,19 +61,6 @@ public class Command
 	private BigTextManager bigTextManager = new BigTextManager();
 
 
-    private void sendUsersInfs()
-    {
-        for (Client client : ClientManager.getInstance().getClients())
-        {
-            if (client.getClientHandler().validated == 1 && !client.equals(currentClient))
-            {
-                currentClient.getClientHandler()
-                             .sendToClient(client.getClientHandler().getINF());
-            }
-        }
-    }
-
-
     private boolean pushUser()
     {
         if (ClientManager.getInstance().containClientByCID(currentClient.getClientHandler().ID))
@@ -105,41 +92,29 @@ public class Command
         }
 
 
-        boolean ok = pushUser();
-
-        if (!ok)
-        {
-            new STAError(currentClient,
-                         200 + Constants.STA_CID_TAKEN,
-                         "CID taken. Please go to Settings and pick new PID.");
-            return;
-        }
-
+        ClientManager.getInstance().moveClientToRegularMap(fromClient);
 
         //ok now sending infs of all others to the handler
         sendUsersInfs();
 
-        currentClient.getClientHandler().sendToClient("BINF DCBA ID" +
-															  ConfigLoader.SECURITY_CID +
-															  " NI" +
-															  AdcUtils.retADCStr(ConfigLoader.BOT_CHAT_NAME)
-															  +
-															  " CT5 DE" +
-															  AdcUtils.retADCStr(ConfigLoader.BOT_CHAT_DESCRIPTION));
-		log.info(ConfigLoader.SECURITY_CID);
+        currentClient.getClientHandler().sendToClient("BINF " +
+                                                      ConfigLoader.BOT_CHAT_SID +
+                                                      " ID" +
+                                                      ConfigLoader.SECURITY_CID +
+                                                      " NI" +
+                                                      AdcUtils.retADCStr(ConfigLoader.BOT_CHAT_NAME) +
+                                                      " CT5 DE" +
+                                                      AdcUtils.retADCStr(ConfigLoader.BOT_CHAT_DESCRIPTION));
+
         currentClient.getClientHandler().putOpchat(true);
-        currentClient.getClientHandler().sendToClient(currentClient.getClientHandler().getINF());  //sending inf about itself too
+        //sending inf about itself too
+        currentClient.getClientHandler().sendToClient(currentClient.getClientHandler().getINF());
 
-
-
-        //ok now must send INF to all clientsByCID
+        //ok now must send INF to all clients
         Broadcast.getInstance().broadcast(currentClient.getClientHandler().getINF(), currentClient);
-        currentClient.getClientHandler().validated = 1; //user is OK, logged in and cool.
-        currentClient.getClientHandler().reg.LastLogin = System.currentTimeMillis();
-        currentClient.getClientHandler().sendFromBot(bigTextManager.getMOTD(currentClient));
-        currentClient.getClientHandler().sendFromBot(currentClient.getClientHandler().reg.HideMe ? "You are currently hidden." : "");
 
-        currentClient.getClientHandler().loggedAt = System.currentTimeMillis();
+
+        currentClient.getClientHandler().validated = 1; //user is OK, logged in and cool.
         currentClient.getClientHandler().state = State.NORMAL;
 
 
