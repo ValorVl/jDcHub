@@ -129,6 +129,11 @@ public class SessionManager extends IoHandlerAdapter
 
     }
 
+    public void messageSent(IoSession session, Object message)
+            throws Exception
+    {
+        log.debug("Outgoing message from hub : \'" + message.toString() + "\'");
+    }
 
     public void sessionIdle(IoSession session, IdleStatus status)
             throws Exception

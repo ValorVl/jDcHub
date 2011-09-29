@@ -37,8 +37,8 @@ public class INF extends Action
     {
         this(messageType,
              context,
-             (context == Context.F ? client : null),
-             (context == Context.T ? null : client));
+             (context == Context.T ? client : null),
+             (context == Context.F ? null : client));
 
     }
 
@@ -47,8 +47,7 @@ public class INF extends Action
     {
         this(messageType,
              context,
-             (context == Context.F ? client : null),
-             (context == Context.T ? null : client));
+             client);
 
         parse(rawCommand);
     }

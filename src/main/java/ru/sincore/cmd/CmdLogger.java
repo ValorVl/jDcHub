@@ -11,7 +11,7 @@ public class CmdLogger
 		if (cmd.enabled)
 		{
 			CmdLogDAOImpl cmdLog = new CmdLogDAOImpl();
-			cmdLog.putLog(client.getClientHandler().NI, cmd.getCmdNames(), cmdResult, cmd.getCmdArgs());
+			cmdLog.putLog(client.getClientHandler().getNI(), cmd.getCmdNames(), cmdResult, cmd.getCmdArgs());
 
 		} else
 		{

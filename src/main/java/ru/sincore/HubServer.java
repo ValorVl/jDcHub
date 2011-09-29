@@ -34,8 +34,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 import ru.sincore.Modules.Modulator;
-import ru.sincore.adcs.CertManager;
-import ru.sincore.adcs.SSLManager;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -56,12 +54,7 @@ import java.util.Date;
 public class HubServer extends Thread
 {
     private static final Logger log = LoggerFactory.getLogger(HubServer.class);
-
     private final String marker = Marker.ANY_MARKER;
-    /**
-     * server main socket
-     */
-    public SSLManager sslmanager;
 
     ClientAssasin myAssasin;
 
@@ -84,13 +77,6 @@ public class HubServer extends Thread
     @Override
     public void run()
     {
-        sslmanager = new SSLManager(new CertManager());
-        SslFilter sslfilter = sslmanager.getSSLFilter();
-        if (sslfilter != null)
-        {
-            adcs_ok = true;
-        }
-
 		// Get and send MOTD text
 		bigTextManager = new BigTextManager();
 
@@ -111,22 +97,6 @@ public class HubServer extends Thread
         nsa.setReuseAddress(true);
 
 
-        if (ConfigurationManager.instance().getBoolean(ConfigurationManager.ENABLE_ADCS))
-        {
-
-            if (adcs_ok)
-            {
-                acceptor.getFilterChain().addLast("sslFilter", sslfilter);
-            }
-            else
-            {
-                log.info("Couldn't find suitable keys and certificate.\nPlease load them or regenerate.\n" +
-                                "AdcUtils Secure mode has been disabled.");
-                ConfigurationManager.instance().getBoolean(ConfigurationManager.ENABLE_ADCS) = false;
-            }
-
-        }
-        done_adcs = true;
         acceptor.getFilterChain().addLast("logger", new LoggingFilter());
         TextLineCodecFactory myx = new TextLineCodecFactory(Charset.forName("UTF-8"), "\n", "\n");
         myx.setDecoderMaxLineLength(64 * 1024);
