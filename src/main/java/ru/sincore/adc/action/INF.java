@@ -1,8 +1,6 @@
 package ru.sincore.adc.action;
 
-import ru.sincore.Broadcast;
-import ru.sincore.Client;
-import ru.sincore.ClientManager;
+import ru.sincore.*;
 import ru.sincore.ConfigurationManager;
 import ru.sincore.Exceptions.STAException;
 import ru.sincore.Modules.Modulator;
@@ -24,6 +22,8 @@ import java.util.StringTokenizer;
  */
 public class INF extends Action
 {
+    ConfigurationManager configurationManager = ConfigurationManager.instance();
+
     public INF(MessageType messageType, int context, Client fromClient, Client toClient)
     {
         super(messageType, context, fromClient, toClient);
@@ -53,7 +53,7 @@ public class INF extends Action
     private boolean validateNick(Client client)
     {
         // Check nick on size
-        if (client.getClientHandler().getNI().length() > ConfigurationManager.instance().getInt(ConfigurationManager.MAX_NICK_SIZE))
+        if (client.getClientHandler().getNI().length() > configurationManager.getInt(ConfigurationManager.MAX_NICK_SIZE))
         {
             return false;
         }
@@ -94,7 +94,7 @@ public class INF extends Action
 
             if (fromClient.getClientHandler().getSL() != null)
             {
-                if (ConfigurationManager.instance().getInt(ConfigurationManager.MIN_SLOT_COUNT) != 0 && fromClient.getClientHandler().getSL() == 0)
+                if (configurationManager.getInt(ConfigurationManager.MIN_SLOT_COUNT) != 0 && fromClient.getClientHandler().getSL() == 0)
                 {
                     new STAError(fromClient,
                                  Constants.STA_SEVERITY_FATAL +
@@ -108,7 +108,7 @@ public class INF extends Action
             //checking all:
             if (fromClient.getClientHandler().getNI() != null)
             {
-                if (fromClient.getClientHandler().getNI().length() > ConfigurationManager.instance().getInt(ConfigurationManager.MAX_NICK_SIZE))
+                if (fromClient.getClientHandler().getNI().length() > configurationManager.getInt(ConfigurationManager.MAX_NICK_SIZE))
                 {
                     new STAError(fromClient,
                                  Constants.STA_SEVERITY_FATAL + Constants.STA_NICK_INVALID,
@@ -118,7 +118,7 @@ public class INF extends Action
                     return;
                 }
 
-                if (fromClient.getClientHandler().getNI().length() < ConfigurationManager.instance().getInt(ConfigurationManager.MIN_NICK_SIZE))
+                if (fromClient.getClientHandler().getNI().length() < configurationManager.getInt(ConfigurationManager.MIN_NICK_SIZE))
                 {
                     new STAError(fromClient,
                                  Constants.STA_SEVERITY_FATAL + Constants.STA_NICK_INVALID,
@@ -132,7 +132,7 @@ public class INF extends Action
             if (fromClient.getClientHandler().getDE() != null)
             {
                 if (fromClient.getClientHandler().getDE().length() >
-                    ConfigurationManager.instance().getInt(ConfigurationManager.MAX_DESCRIPTION_CHAR_COUNT))
+                    configurationManager.getInt(ConfigurationManager.MAX_DESCRIPTION_CHAR_COUNT))
                 {
                     new STAError(fromClient,
                                  Constants.STA_SEVERITY_FATAL +
@@ -147,7 +147,7 @@ public class INF extends Action
             if (fromClient.getClientHandler().getEM() != null)
             {
                 if (fromClient.getClientHandler().getEM().length() >
-                    ConfigurationManager.instance().getInt(ConfigurationManager.MAX_EMAIL_CHAR_COUNT))
+                    configurationManager.getInt(ConfigurationManager.MAX_EMAIL_CHAR_COUNT))
                 {
                     new STAError(fromClient,
                                  Constants.STA_SEVERITY_FATAL +
@@ -164,7 +164,7 @@ public class INF extends Action
             if (fromClient.getClientHandler().getSS() != null)
             {
                 if (fromClient.getClientHandler().getSS() >
-                    ConfigurationManager.instance().getLong(ConfigurationManager.MAX_SHARE_SIZE))
+                    configurationManager.getLong(ConfigurationManager.MAX_SHARE_SIZE))
                 {
                     new STAError(fromClient,
                                  Constants.STA_SEVERITY_FATAL +
@@ -176,13 +176,13 @@ public class INF extends Action
                 }
 
                 if (fromClient.getClientHandler().getSS() <
-                    ConfigurationManager.instance().getLong(ConfigurationManager.MIN_SHARE_SIZE))
+                    configurationManager.getLong(ConfigurationManager.MIN_SHARE_SIZE))
                 {
                     new STAError(fromClient,
                                  Constants.STA_SEVERITY_FATAL +
                                  Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
                                  "Share too small " +
-                                 ConfigurationManager.instance().getLong(ConfigurationManager.MIN_SHARE_SIZE) +
+                                 configurationManager.getLong(ConfigurationManager.MIN_SHARE_SIZE) +
                                  " MiB required.",
                                  "FB",
                                  "SS");
@@ -193,7 +193,7 @@ public class INF extends Action
             if (fromClient.getClientHandler().getSL() != null)
             {
                 if (fromClient.getClientHandler().getSL() <
-                    ConfigurationManager.instance().getInt(ConfigurationManager.MIN_SLOT_COUNT))
+                    configurationManager.getInt(ConfigurationManager.MIN_SLOT_COUNT))
                 {
                     new STAError(fromClient,
                                  Constants.STA_SEVERITY_FATAL +
@@ -205,7 +205,7 @@ public class INF extends Action
                 }
 
                 if (fromClient.getClientHandler().getSL() >
-                    ConfigurationManager.instance().getInt(ConfigurationManager.MAX_SLOT_COUNT))
+                    configurationManager.getInt(ConfigurationManager.MAX_SLOT_COUNT))
                 {
                     new STAError(fromClient,
                                  Constants.STA_SEVERITY_FATAL +
@@ -220,7 +220,7 @@ public class INF extends Action
             if (fromClient.getClientHandler().getHN() != null)
             {
                 if (fromClient.getClientHandler().getHN() >
-                    ConfigurationManager.instance().getInt(ConfigurationManager.MAX_HUBS_USERS))
+                    configurationManager.getInt(ConfigurationManager.MAX_HUBS_USERS))
                 {
                     new STAError(fromClient,
                                  Constants.STA_SEVERITY_FATAL +
@@ -235,7 +235,7 @@ public class INF extends Action
             if (fromClient.getClientHandler().getHO() != null)
             {
                 if (fromClient.getClientHandler().getHO() >
-                    ConfigurationManager.instance().getInt(ConfigurationManager.MAX_OP_IN_HUB))
+                    configurationManager.getInt(ConfigurationManager.MAX_OP_IN_HUB))
                 {
                     new STAError(fromClient,
                                  Constants.STA_SEVERITY_FATAL +
@@ -250,7 +250,7 @@ public class INF extends Action
             if (fromClient.getClientHandler().getHR() != null)
             {
                 if (fromClient.getClientHandler().getHR() >
-                    ConfigurationManager.instance().getInt(ConfigurationManager.MAX_HUBS_REGISTERED))
+                    configurationManager.getInt(ConfigurationManager.MAX_HUBS_REGISTERED))
                 {
                     new STAError(fromClient,
                                  Constants.STA_SEVERITY_FATAL +
@@ -620,13 +620,6 @@ public class INF extends Action
 
         validateMinimalINF();
 
-        if (fromClient.getClientHandler().getState() == State.PROTOCOL)
-        {
-            // TODO [lh] add new client registration code here
-
-        }
-
-
         // TODO [lh] check if user is banned first
         // TODO [lh] add ban check code here
 //        fromClient.getClientHandler().myban = BanList.getban(3, fromClient.getClientHandler().ID);
@@ -733,7 +726,7 @@ public class INF extends Action
                 fromClient.getClientHandler().setHI(true);
             }
 
-            if (ConfigurationManager.instance().getInt(ConfigurationManager.MAX_USERS) <= ClientManager.getInstance().getClientsCount() &&
+            if (configurationManager.getInt(ConfigurationManager.MAX_USERS) <= ClientManager.getInstance().getClientsCount() &&
                 !fromClient.getClientHandler().isOverrideFull())
             {
                 new STAError(fromClient,
@@ -748,77 +741,34 @@ public class INF extends Action
 
         checkClientInformation();
 
-        if (fromClient.getClientHandler().getID().equals(ConfigurationManager.instance().getString(ConfigurationManager.OP_CHAT_CID)))
+        if (fromClient.getClientHandler().getID().equals(configurationManager.getString(ConfigurationManager.OP_CHAT_CID)))
         {
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL + Constants.STA_CID_TAKEN,
                          "CID taken. Please go to Settings and pick new PID.");
             return;
         }
-        if (fromClient.getClientHandler().getID().equals(ConfigurationManager.instance().getString(ConfigurationManager.SECURITY_CID)))
+        if (fromClient.getClientHandler().getID().equals(configurationManager.getString(ConfigurationManager.SECURITY_CID)))
         {
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL + Constants.STA_CID_TAKEN,
                          "CID taken. Please go to Settings and pick new PID.");
             return;
         }
-        if (fromClient.getClientHandler().getNI().equalsIgnoreCase(ConfigurationManager.instance().getString(ConfigurationManager.OP_CHAT_NAME)))
+        if (fromClient.getClientHandler().getNI().equalsIgnoreCase(configurationManager.getString(ConfigurationManager.OP_CHAT_NAME)))
         {
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL + Constants.STA_NICK_TAKEN,
                          "Nick taken, please choose another");
             return;
         }
-        if (fromClient.getClientHandler().getNI().equalsIgnoreCase(ConfigurationManager.instance().getString(ConfigurationManager.BOT_CHAT_NAME)))
+        if (fromClient.getClientHandler().getNI().equalsIgnoreCase(configurationManager.getString(ConfigurationManager.BOT_CHAT_NAME)))
         {
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL + Constants.STA_NICK_TAKEN,
                          "Nick taken, please choose another");
             return;
         }
-
-        if (fromClient.getClientHandler().getState() == State.PROTOCOL)
-        {
-            try
-            {
-                Tiger myTiger = new Tiger();
-
-                myTiger.engineReset();
-                myTiger.init();
-                byte[] bytepid = Base32.decode(fromClient.getClientHandler().getPD());
-
-
-                myTiger.engineUpdate(bytepid, 0, bytepid.length);
-
-                byte[] finalTiger = myTiger.engineDigest();
-                if (!Base32.encode(finalTiger).equals(fromClient.getClientHandler().getID()))
-                {
-                    new STAError(fromClient,
-                                 Constants.STA_SEVERITY_FATAL + Constants.STA_GENERIC_LOGIN_ERROR,
-                                 "Invalid CID check.");
-                    return;
-                }
-                if (fromClient.getClientHandler().getPD().length() != 39)
-                {
-                    throw new IllegalArgumentException();
-                }
-            }
-
-
-            catch (IllegalArgumentException iae)
-            {
-                new STAError(fromClient,
-                             Constants.STA_SEVERITY_FATAL + Constants.STA_INVALID_PID,
-                             "Invalid PID supplied.");
-                return;
-            }
-            catch (Exception e)
-            {
-                System.out.println(e);
-                return;
-            }
-        }
-
 
         if (fromClient.getClientHandler().isBas0() && fromClient.getClientHandler().getBase() != 2)
         {
@@ -830,135 +780,173 @@ public class INF extends Action
                          "the developer's webpage from Help/About menu.");
         }
 
-
-        /*------------ok now must see if the pid is registered...---------------*/
-
         if (fromClient.getClientHandler().getState() == State.PROTOCOL)
+            makeProtocolStateChecks();
+
+        Broadcast.getInstance().broadcast(currentINF.toString());
+    }
+
+
+    private void makeProtocolStateChecks()
+            throws STAException
+    {
+        try
         {
-            if (fromClient.getClientHandler().isReg())
-            {
-                if (fromClient.getClientHandler().getPassword().equals(""))//no pass defined ( yet)
-                {
-                    fromClient.getClientHandler().sendToClient(
-                            "ISTA 000 Registered,\\sno\\spassword\\srequired.\\sThough,\\sits\\srecomandable\\sto\\sset\\sone.");
-                    fromClient.getClientHandler().sendToClient("ISTA 000 Authenticated.");
+            Tiger myTiger = new Tiger();
+
+            myTiger.engineReset();
+            myTiger.init();
+            byte[] bytepid = Base32.decode(fromClient.getClientHandler().getPD());
 
 
-                    fromClient.getClientHandler().setLastNick(fromClient.getClientHandler().getNI());
-                    fromClient.getClientHandler().setLastIP(fromClient.getClientHandler()
-                                                                      .getRealIP());
-                    completeLogIn();
-                    return;
-                }
-                fromClient.getClientHandler()
-                          .sendToClient("ISTA 000 Registered,\\stype\\syour\\spassword.");
-                /* creates some hash for the GPA random data*/
-                Tiger myTiger = new Tiger();
+            myTiger.engineUpdate(bytepid, 0, bytepid.length);
 
-                myTiger.engineReset();
-                myTiger.init();
-                byte[] T =
-                        Long.toString(System.currentTimeMillis()).getBytes(); //taken from cur time
-                myTiger.engineUpdate(T, 0, T.length);
-
-                byte[] finalTiger = myTiger.engineDigest();
-                fromClient.getClientHandler().setEncryptionSolt(Base32.encode(finalTiger));
-                fromClient.getClientHandler()
-                          .sendToClient("IGPA " + fromClient.getClientHandler().getEncryptionSolt());
-
-                // set client state VARIFY
-                fromClient.getClientHandler().setState(State.VERIFY);
-                return;
-            }
-            else
-            {
-                k = AccountsConfig.isNickRegFl(fromClient.getClientHandler().getNI());
-                if (k != null)
-                {
-                    fromClient.getClientHandler().sendToClient(
-                            "ISTA 000 Nick\\sRegistered\\s(flyable\\saccount).\\sPlease\\sprovide\\spassword.");
-
-                    /* creates some hash for the GPA random data*/
-                    Tiger myTiger = new Tiger();
-
-                    myTiger.engineReset();
-                    myTiger.init();
-                    byte[] T = Long.toString(System.currentTimeMillis())
-                                   .getBytes(); //taken from cur time
-                    myTiger.engineUpdate(T, 0, T.length);
-
-                    byte[] finalTiger = myTiger.engineDigest();
-                    fromClient.getClientHandler().setEncryptionSolt(Base32.encode(finalTiger));
-                    fromClient.getClientHandler()
-                              .sendToClient("IGPA " + fromClient.getClientHandler().getEncryptionSolt());
-
-                    // set client state VERIFY
-                    fromClient.getClientHandler().setState(State.VERIFY);
-                    return;
-                }
-                else if (ConfigurationManager.instance().getBoolean(ConfigurationManager.MARK_REGISTRATION_ONLY))
-                {
-                    new STAError(fromClient,
-                                 Constants.STA_SEVERITY_FATAL + Constants.STA_REG_ONLY,
-                                 "Registered only hub.");
-                    return;
-                }
-            }
-
-        }
-
-
-        //ok now must send to handler client the inf of all others
-        if (fromClient.getClientHandler().getState() == State.PROTOCOL)
-        {
-            boolean ok = pushUser();
-
-            if (!ok)
+            byte[] finalTiger = myTiger.engineDigest();
+            if (!Base32.encode(finalTiger).equals(fromClient.getClientHandler().getID()))
             {
                 new STAError(fromClient,
-                             Constants.STA_SEVERITY_FATAL + Constants.STA_CID_TAKEN,
-                             "CID taken. Please go to Settings and pick new PID.");
+                             Constants.STA_SEVERITY_FATAL + Constants.STA_GENERIC_LOGIN_ERROR,
+                             "Invalid CID check.");
                 return;
             }
-
-            sendUsersInfs();
-
-            fromClient.getClientHandler().sendToClient("BINF DCBA ID" +
-                                                       ConfigurationManager.instance().getString(ConfigurationManager.SECURITY_CID) +
-                                                       " NI" +
-                                                       AdcUtils.retADCStr(ConfigurationManager.instance().getString(ConfigurationManager.BOT_CHAT_NAME))
-                                                       +
-                                                       " CT5 DE" +
-                                                       AdcUtils.retADCStr(ConfigurationManager.instance().getString(ConfigurationManager.BOT_CHAT_DESCRIPTION)));
-
-            fromClient.getClientHandler().putOpchat(true);
-            fromClient.getClientHandler()
-                      .sendToClient(fromClient.getClientHandler()
-                                              .getINF());  //sending inf about itself too
-
-            //ok now must send INF to all clientsByCID
-            Broadcast.getInstance().broadcast(fromClient.getClientHandler().getINF(), fromClient);
-
-
-            if (fromClient.getClientHandler().isUcmd())
+            if (fromClient.getClientHandler().getPD().length() != 39)
             {
-                //ok, he is ucmd ok, so
-                fromClient.getClientHandler().sendToClient("ICMD Test CT1 TTTest");
+                throw new IllegalArgumentException();
             }
-            fromClient.getClientHandler().setState(State.NORMAL);
-            fromClient.getClientHandler().setValidated(); //user is OK, logged in and cool.
-            // TODO [lh] send MOTD to client
-            //fromClient.getClientHandler().sendFromBot(bigTextManager.getMOTD(fromClient));
-
-            /** calling plugins...*/
-            for (Module myMod : Modulator.myModules)
-            {
-                myMod.onConnect(fromClient.getClientHandler());
-            }
+        }
+        catch (IllegalArgumentException iae)
+        {
+            new STAError(fromClient,
+                         Constants.STA_SEVERITY_FATAL + Constants.STA_INVALID_PID,
+                         "Invalid PID supplied.");
+            return;
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
             return;
         }
 
-        Broadcast.getInstance().broadcast(currentINF.toString());
+
+    /*------------ok now must see if the client is registered...---------------*/
+
+        // TODO [lh] load information about client from db
+
+        if (fromClient.getClientHandler().isReg())
+        {
+            if (fromClient.getClientHandler().getPassword().equals(""))//no pass defined ( yet)
+            {
+                fromClient.getClientHandler().sendToClient(
+                        "ISTA 000 Registered,\\sno\\spassword\\srequired.\\sThough,\\sits\\srecomandable\\sto\\sset\\sone.");
+                fromClient.getClientHandler().sendToClient("ISTA 000 Authenticated.");
+
+
+                fromClient.getClientHandler().setLastNick(fromClient.getClientHandler().getNI());
+                fromClient.getClientHandler().setLastIP(fromClient.getClientHandler().getRealIP());
+
+                //user is OK, logged in and cool
+                fromClient.getClientHandler().setValidated();
+                fromClient.getClientHandler().setState(State.NORMAL);
+                fromClient.getClientHandler().setLastLogin(fromClient.getClientHandler().getLoggedAt());
+
+                if (fromClient.getClientHandler().isHideMe())
+                    fromClient.getClientHandler().sendFromBot("You are currently hidden.");
+
+                fromClient.getClientHandler().setLoggedAt(System.currentTimeMillis());
+            }
+            else
+            {
+                // check client for registration (Moscow city style : do you have the passport?)
+                fromClient.getClientHandler()
+                          .sendToClient("ISTA 000 Registered,\\stype\\syour\\spassword.");
+
+                /* creates some hash for the GPA random data*/
+                fromClient.getClientHandler().setEncryptionSalt(Base32.encode(generateSalt()));
+                fromClient.getClientHandler().sendToClient("IGPA " +
+                                                           fromClient.getClientHandler()
+                                                                     .getEncryptionSalt());
+
+                // set client state VARIFY
+                fromClient.getClientHandler().setState(State.VERIFY);
+            }
+        }
+        else
+        {
+            // TODO [lh] add new client registration code here
+            if (configurationManager.getBoolean(ConfigurationManager.MARK_REGISTRATION_ONLY))
+            {
+                new STAError(fromClient,
+                             Constants.STA_SEVERITY_FATAL + Constants.STA_REG_ONLY,
+                             "Registered only hub.");
+                return;
+            }
+        }
+
+        ClientManager.getInstance().moveClientToRegularMap(fromClient);
+
+        //ok now sending infs of all others to the handler
+        sendUsersInfs();
+
+        fromClient.getClientHandler().sendToClient("BINF " +
+                                                   configurationManager.getString(ConfigurationManager.BOT_CHAT_SID) +
+                                                   " ID" +
+                                                   configurationManager.getString(ConfigurationManager.SECURITY_CID) +
+                                                   " NI" +
+                                                   AdcUtils.retADCStr(
+                                                           configurationManager.getString(ConfigurationManager.BOT_CHAT_NAME)
+                                                                     ) +
+                                                   " CT5 DE" +
+                                                   AdcUtils.retADCStr(
+                                                           configurationManager.getString(ConfigurationManager.BOT_CHAT_DESCRIPTION)
+                                                                     ));
+
+        fromClient.getClientHandler().putOpchat(true);
+        //sending inf about itself too
+        fromClient.getClientHandler().sendToClient(fromClient.getClientHandler().getINF());
+
+        //ok now must send INF to all clients
+        Broadcast.getInstance().broadcast(fromClient.getClientHandler().getINF(), fromClient);
+
+
+        if (fromClient.getClientHandler().isUcmd())
+        {
+            //ok, he is ucmd ok, so
+            fromClient.getClientHandler().sendToClient("ICMD Test CT1 TTTest");
+        }
+        // TODO [lh] send MOTD to client
+        //fromClient.getClientHandler().sendFromBot(bigTextManager.getMOTD(fromClient));
+
+        /** calling plugins...*/
+        for (Module myMod : Modulator.myModules)
+        {
+            myMod.onConnect(fromClient.getClientHandler());
+        }
+    }
+
+
+    /**
+     * Creates some hash for the GPA random data
+     * @return salt
+     */
+    private byte[] generateSalt()
+    {
+        Tiger myTiger = new Tiger();
+
+        myTiger.engineReset();
+        byte[] T = Long.toString(System.currentTimeMillis()).getBytes(); //taken from cur time
+        myTiger.engineUpdate(T, 0, T.length);
+
+        return myTiger.engineDigest();
+    }
+
+
+    private void sendUsersInfs()
+    {
+        for (Client client : ClientManager.getInstance().getClients())
+        {
+            if (client.getClientHandler().isValidated() && !client.equals(fromClient))
+                fromClient.getClientHandler().sendToClient(client.getClientHandler().getINF());
+        }
     }
 
 
