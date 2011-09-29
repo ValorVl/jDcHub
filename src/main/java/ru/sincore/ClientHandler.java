@@ -48,7 +48,7 @@ public class ClientHandler
     /**
      * Is client uses active (if true) or passive (if false) mode.
      */
-    private int active = 0;
+    private boolean active = false;
 
     private boolean canReceiveCmds = false;
 
@@ -444,13 +444,13 @@ public class ClientHandler
     /**
      * Is client uses active (if true) or passive (if false) mode.
      */
-    public int getActive()
+    public boolean isActive()
     {
         return active;
     }
 
 
-    public void setActive(int active)
+    public void setActive(boolean active)
     {
         this.active = active;
     }

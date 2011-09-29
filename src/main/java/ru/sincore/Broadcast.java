@@ -132,8 +132,8 @@ public class Broadcast
         {
             ClientHandler toClientHandler = toClient.getClientHandler();
 
-            if ((toClientHandler.validated == 1 && toClient != fromClient
-                    && state == 1 && toClientHandler.active == 1))
+            if ((toClientHandler.isValidated() && toClient != fromClient
+                    && state == 1 && toClientHandler.isActive()))
             {
                 // TODO may be buggie
                 if (!STR.startsWith("E") && toClient.equals(fromClient))

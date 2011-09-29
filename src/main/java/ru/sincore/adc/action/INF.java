@@ -1,7 +1,7 @@
 package ru.sincore.adc.action;
 
 import ru.sincore.*;
-import ru.sincore.ConfigurationManager;
+import ru.sincore.Exceptions.CommandException;
 import ru.sincore.Exceptions.STAException;
 import ru.sincore.Modules.Modulator;
 import ru.sincore.Modules.Module;
@@ -42,6 +42,16 @@ public class INF extends Action
 
     }
 
+    public INF(MessageType messageType, int context, Client client, String rawCommand)
+            throws CommandException, STAException
+    {
+        this(messageType,
+             context,
+             (context == Context.F ? client : null),
+             (context == Context.T ? null : client));
+
+        parse(rawCommand);
+    }
 
     @Override
     public String toString()

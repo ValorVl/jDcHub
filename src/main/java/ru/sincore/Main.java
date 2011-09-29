@@ -24,7 +24,6 @@ package ru.sincore;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
-import ru.sincore.banning.BanList;
 import ru.sincore.cmd.CmdContainer;
 import ru.sincore.db.HibernateUtils;
 import ru.sincore.i18n.Messages;
@@ -84,7 +83,6 @@ public class Main extends Thread
     {
         log.warn(Messages.RESTART_HUB);
 
-        BanList.First = null;
         ClientManager.getInstance().removeAllClients();
 
         server.shutdown();

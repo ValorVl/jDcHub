@@ -1,8 +1,3 @@
-package ru.sincore.util;
-
-import ru.sincore.Client;
-import ru.sincore.Exceptions.STAException;
-
 /*
  * STAError.java
  *
@@ -26,6 +21,15 @@ import ru.sincore.Exceptions.STAException;
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+package ru.sincore.util;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ru.sincore.Client;
+import ru.sincore.ConfigurationManager;
+import ru.sincore.Exceptions.STAException;
+
+
 /**
  * Provides a simple way to throw STA exceptions to clients
  * ( when clients send abnormal or erroneous messages ).
@@ -35,10 +39,10 @@ import ru.sincore.Exceptions.STAException;
  * @author Alexey 'lh' Antonov
  * @since 2011-09-07
  */
-
-
 public class STAError
 {
+    private static final Logger log = LoggerFactory.getLogger(STAError.class);
+
     Client  client;
     int     errorCode;
     String  errorDescription;
@@ -52,9 +56,15 @@ public class STAError
      * @throws STAException
      */
     public STAError(Client client, int errorCode, String errorDescription)
-
             throws STAException
     {
+        log.error("Hub sent to client \"" +
+                  client.getClientHandler().getNI() +
+                  "\"(" +
+                  client.getClientHandler().getSID() +
+                  ") error message : " +
+                  errorDescription);
+
         this.client = client;
         this.errorCode = errorCode;
 
@@ -90,13 +100,25 @@ public class STAError
      * @param client Client wich message was
      * @param errorCode Error code
      * @param errorDescription Desctiption of the error
-     * @param Prefix
-     * @param Flag
+     * @param prefix
+     * @param flag
      * @throws STAException
      */
-    public STAError(Client client, int errorCode, String errorDescription, String Prefix, String Flag)
+    public STAError(Client client, int errorCode, String errorDescription, String prefix, String flag)
             throws STAException
     {
+        log.error("Hub sent to client \"" +
+                  client.getClientHandler().getNI() +
+                  "\"(" +
+                  client.getClientHandler().getSID() +
+                  ") error message : \'" +
+                  errorDescription +
+                  "\' and prefix = \'" +
+                  prefix +
+                  "\' and flag = \'" +
+                  flag +
+                  "\'");
+
         this.client = client;
         this.errorCode = errorCode;
 
@@ -106,7 +128,7 @@ public class STAError
 
         String errorString =
                 "ISTA " + Integer.toString(this.errorCode) + " " +
-                this.errorDescription + " " + Prefix + Flag;
+                this.errorDescription + " " + prefix + flag;
 
         client.getClientHandler().sendToClient(errorString);
         if (errorCode >= 200)
