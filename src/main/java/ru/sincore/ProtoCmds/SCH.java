@@ -190,12 +190,12 @@ public class SCH
                 TOken = aux.substring(2);
             }
         }
-        if (len > ConfigLoader.MAX_CHARS_SEARCH_REQUEST)
+        if (len > ConfigurationManager.instance().getInt(ConfigurationManager.MAX_CHARS_SEARCH_REQUEST))
         {
             new STAError(client, 100, "Search exceeds maximum length.");
             return;
         }
-        if (len < ConfigLoader.MIN_CHARS_SEARCH_REQUEST && len != 0)
+        if (len < ConfigurationManager.instance().getInt(ConfigurationManager.MIN_CHARS_SEARCH_REQUEST) && len != 0)
         {
             new STAError(client, 100, "Search too short.");
             return;
@@ -203,16 +203,16 @@ public class SCH
         long curtime = System.currentTimeMillis();
         if (!automagic)
         {
-            if (curtime - cur_client.lastSearch > ConfigLoader.SEARCH_SPAM_RESET * 1000)
+            if (curtime - cur_client.lastSearch > ConfigurationManager.instance().getInt(ConfigurationManager.SEARCH_SPAM_RESET) * 1000)
             {
                 cur_client.searchStep = 0;
             }
-            else if (cur_client.searchStep < ConfigLoader.SEARCH_STEPS)
+            else if (cur_client.searchStep < ConfigurationManager.instance().getInt(ConfigurationManager.SEARCH_STEPS))
             {
                 double x = 1;
                 for (int i = 0; i < cur_client.searchStep; i++)
                 {
-                    x *= ((double) ConfigLoader.SEARCH_BASE_INTERVAL) / 1000;
+                    x *= ((double) ConfigurationManager.instance().getInt(ConfigurationManager.SEARCH_BASE_INTERVAL)) / 1000;
                 }
                 x *= 1000;
                 long xx = (long) x;
@@ -247,7 +247,7 @@ public class SCH
             else
             {
 
-                long xx = ConfigLoader.SEARCH_SPAM_RESET * 1000;
+                long xx = ConfigurationManager.instance().getInt(ConfigurationManager.SEARCH_SPAM_RESET) * 1000;
 
                 //System.out.println(xx);
                 if (curtime - cur_client.lastSearch < xx)
@@ -282,7 +282,7 @@ public class SCH
         }
         else
         {
-            if (curtime - cur_client.lastAutomagicSearch < ConfigLoader.AUTOMATIC_SEARCH_INTERVAL * 1000)
+            if (curtime - cur_client.lastAutomagicSearch < ConfigurationManager.instance().getInt(ConfigurationManager.AUTOMATIC_SEARCH_INTERVAL) * 1000)
             {
 
                 return;

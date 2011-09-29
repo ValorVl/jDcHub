@@ -151,8 +151,8 @@ public class Client implements IoFutureListener<WriteFuture>
         if (!kickmsg.equals(""))
             brcast = brcast + " MS" + AdcUtils.retADCStr(kickmsg);
 
-        if (!ConfigLoader.REDIRECT_URL.equals(""))
-            brcast = brcast + " RD" + AdcUtils.retADCStr(ConfigLoader.REDIRECT_URL);
+        if (!ConfigurationManager.instance().getString(ConfigurationManager.REDIRECT_URL).equals(""))
+            brcast = brcast + " RD" + AdcUtils.retADCStr(ConfigurationManager.instance().getString(ConfigurationManager.REDIRECT_URL));
 
         Broadcast.getInstance().broadcast(brcast);
 
@@ -191,38 +191,38 @@ public class Client implements IoFutureListener<WriteFuture>
         {
             // ban by nick
             case 1:
-                BanList.addban(bantype, handler.getNI(), kicktime, ConfigLoader.BOT_CHAT_NAME, kickmsg);
+                BanList.addban(bantype, handler.getNI(), kicktime, ConfigurationManager.instance().getString(ConfigurationManager.BOT_CHAT_NAME), kickmsg);
                 break;
 
             // ban by ip
             case 2:
-                BanList.addban(bantype, handler.getRealIP(), kicktime, ConfigLoader.BOT_CHAT_NAME, kickmsg);
+                BanList.addban(bantype, handler.getRealIP(), kicktime, ConfigurationManager.instance().getString(ConfigurationManager.BOT_CHAT_NAME), kickmsg);
                 break;
 
             // ban by cid
             case 3:
-                BanList.addban(bantype, handler.getID(), kicktime, ConfigLoader.BOT_CHAT_NAME, kickmsg);
+                BanList.addban(bantype, handler.getID(), kicktime, ConfigurationManager.instance().getString(ConfigurationManager.BOT_CHAT_NAME), kickmsg);
                 break;
         }
 
         String brcast = "IQUI " +
                         handler.getSID() +
                         " ID" +
-                        ConfigLoader.BOT_CHAT_SID +
+                        ConfigurationManager.instance().getString(ConfigurationManager.BOT_CHAT_SID) +
                         " TL" + Long.toString(kicktime);
 
         if (!kickmsg.equals(""))
             brcast = brcast + " MS" + AdcUtils.retADCStr(kickmsg);
 
-        if (!ConfigLoader.REDIRECT_URL.equals(""))
-            brcast = brcast + " RD" + AdcUtils.retADCStr(ConfigLoader.REDIRECT_URL);
+        if (!ConfigurationManager.instance().getString(ConfigurationManager.REDIRECT_URL).equals(""))
+            brcast = brcast + " RD" + AdcUtils.retADCStr(ConfigurationManager.instance().getString(ConfigurationManager.REDIRECT_URL));
 
         Broadcast.getInstance().broadcast(brcast);
 
         handler.setKicked();
         this.handler.getSession().close(true);
 
-        log.info(ConfigLoader.BOT_CHAT_NAME +
+        log.info(ConfigurationManager.instance().getString(ConfigurationManager.BOT_CHAT_NAME) +
                  " kicked user " +
                  handler.getNI() +
                  " with CID " +
@@ -233,13 +233,13 @@ public class Client implements IoFutureListener<WriteFuture>
 
     public void kickMeByBot(String kickmsg, int bantype)
     {
-        kickMeByBot(kickmsg, bantype, Long.parseLong(Integer.toString(ConfigLoader.KICK_DURATION)));
+        kickMeByBot(kickmsg, bantype, Long.parseLong(Integer.toString(ConfigurationManager.instance().getInt(ConfigurationManager.KICK_DURATION))));
     }
 
 
     public void kickMeOut(ClientHandler whokicked, String kickmsg, int bantype)
     {
-        kickMeOut(whokicked, kickmsg, bantype, Long.parseLong(Integer.toString(ConfigLoader.KICK_DURATION)));
+        kickMeOut(whokicked, kickmsg, bantype, Long.parseLong(Integer.toString(ConfigurationManager.instance().getInt(ConfigurationManager.KICK_DURATION))));
     }
 
 

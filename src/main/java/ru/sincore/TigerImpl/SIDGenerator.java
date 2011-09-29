@@ -65,8 +65,8 @@ public class SIDGenerator
 
             // if sid not unique, regenerate sid
             if ((ClientManager.getInstance().getClientBySID(tempSID) != null) ||
-                tempSID.equals(ConfigLoader.HUB_SID) ||
-                tempSID.equals(ConfigLoader.BOT_CHAT_SID))
+                tempSID.equals(ConfigurationManager.instance().getString(ConfigurationManager.HUB_SID)) ||
+                tempSID.equals(ConfigurationManager.instance().getString(ConfigurationManager.BOT_CHAT_SID)))
                 newSIDGenerated = false;
         }
 

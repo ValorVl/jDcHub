@@ -73,12 +73,12 @@ public class STAError
         client.getClientHandler().sendToClient(errorString);
         if (errorCode >= 200)
         {
-            if (!ConfigLoader.REDIRECT_URL.isEmpty())
+            if (!ConfigurationManager.instance().getString(ConfigurationManager.REDIRECT_URL).isEmpty())
             {
                 client.getClientHandler().sendToClient("IQUI " +
                                                        client.getClientHandler().getSID() +
                                                        " RD" +
-                                                       ConfigLoader.REDIRECT_URL);
+                                                       ConfigurationManager.instance().getString(ConfigurationManager.REDIRECT_URL));
             }
             throw new STAException(errorString, errorCode);
         }
@@ -112,12 +112,12 @@ public class STAError
         client.getClientHandler().sendToClient(errorString);
         if (errorCode >= 200)
         {
-            if (!ConfigLoader.REDIRECT_URL.isEmpty())
+            if (!ConfigurationManager.instance().getString(ConfigurationManager.REDIRECT_URL).isEmpty())
             {
                 client.getClientHandler().sendToClient("IQUI " +
                                                        client.getClientHandler().getSID() +
                                                        " RD" +
-                                                       ConfigLoader.REDIRECT_URL);
+                                                       ConfigurationManager.instance().getString(ConfigurationManager.REDIRECT_URL));
             }
             throw new STAException(errorString, errorCode);
         }

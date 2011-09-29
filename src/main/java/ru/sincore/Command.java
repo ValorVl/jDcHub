@@ -120,13 +120,13 @@ public class Command
         sendUsersInfs();
 
         currentClient.getClientHandler().sendToClient("BINF DCBA ID" +
-															  ConfigLoader.SECURITY_CID +
+															  ConfigurationManager.instance().getString(ConfigurationManager.SECURITY_CID) +
 															  " NI" +
-															  AdcUtils.retADCStr(ConfigLoader.BOT_CHAT_NAME)
+															  AdcUtils.retADCStr(ConfigurationManager.instance().getString(ConfigurationManager.BOT_CHAT_NAME))
 															  +
 															  " CT5 DE" +
-															  AdcUtils.retADCStr(ConfigLoader.BOT_CHAT_DESCRIPTION));
-		log.info(ConfigLoader.SECURITY_CID);
+															  AdcUtils.retADCStr(ConfigurationManager.instance().getString(ConfigurationManager.BOT_CHAT_DESCRIPTION)));
+		log.info(ConfigurationManager.instance().getString(ConfigurationManager.SECURITY_CID));
         currentClient.getClientHandler().putOpchat(true);
         currentClient.getClientHandler().sendToClient(currentClient.getClientHandler().getINF());  //sending inf about itself too
 

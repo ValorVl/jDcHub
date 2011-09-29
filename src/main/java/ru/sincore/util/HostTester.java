@@ -68,21 +68,21 @@ public class HostTester
 //            in.readLine();
             String INF = in.readLine();
             String test = "";
-            if (ConfigLoader.HUB_DESCRIPTION.isEmpty())
+            if (ConfigurationManager.instance().getString(ConfigurationManager.HUB_DESCRIPTION).isEmpty())
             {
                 test = "IINF CT32 VE" +
-                       AdcUtils.retADCStr(ConfigLoader.HUB_VERSION) +
+                       AdcUtils.retADCStr(ConfigurationManager.instance().getString(ConfigurationManager.HUB_VERSION)) +
                        " NI" +
-                       AdcUtils.retADCStr(ConfigLoader.HUB_NAME);
+                       AdcUtils.retADCStr(ConfigurationManager.instance().getString(ConfigurationManager.HUB_NAME));
             }
             else
             {
                 test = "IINF CT32 VE" +
-                       AdcUtils.retADCStr(ConfigLoader.HUB_VERSION) +
+                       AdcUtils.retADCStr(ConfigurationManager.instance().getString(ConfigurationManager.HUB_VERSION)) +
                        " NI" +
-                       AdcUtils.retADCStr(ConfigLoader.HUB_NAME) +
+                       AdcUtils.retADCStr(ConfigurationManager.instance().getString(ConfigurationManager.HUB_NAME)) +
                        " DE" +
-                       AdcUtils.retADCStr(ConfigLoader.HUB_DESCRIPTION);
+                       AdcUtils.retADCStr(ConfigurationManager.instance().getString(ConfigurationManager.HUB_DESCRIPTION));
             }
             if (!INF.equals(test))
             {
@@ -90,12 +90,12 @@ public class HostTester
                                     INF +
                                     "\n" +
                                     "IINF CT32 VE" +
-                                    AdcUtils.retADCStr(ConfigLoader.HUB_VERSION)
+                                    AdcUtils.retADCStr(ConfigurationManager.instance().getString(ConfigurationManager.HUB_VERSION))
                                     +
                                     " NI" +
-                                    AdcUtils.retADCStr(ConfigLoader.HUB_NAME) +
-                                    ((ConfigLoader.HUB_DESCRIPTION.equals("")) ?
-                                     (" DE" + AdcUtils.retADCStr(ConfigLoader.HUB_DESCRIPTION)) :
+                                    AdcUtils.retADCStr(ConfigurationManager.instance().getString(ConfigurationManager.HUB_NAME)) +
+                                    ((ConfigurationManager.instance().getString(ConfigurationManager.HUB_DESCRIPTION).equals("")) ?
+                                     (" DE" + AdcUtils.retADCStr(ConfigurationManager.instance().getString(ConfigurationManager.HUB_DESCRIPTION))) :
                                      ""));
             }
 

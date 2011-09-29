@@ -722,7 +722,7 @@ public class CommandParser
                 aux = aux.substring(0, aux.length() - 1);
             }
             aux = AdcUtils.retADCStr(aux);
-            if (aux.length() < ConfigLoader.MIN_NICK_SIZE)
+            if (aux.length() < ConfigurationManager.instance().getInt(ConfigurationManager.MIN_NICK_SIZE))
             {
                 {
                     client.getClientHandler()
@@ -731,7 +731,7 @@ public class CommandParser
                     return;
                 }
             }
-            if (aux.length() > ConfigLoader.MAX_NICK_SIZE)
+            if (aux.length() > ConfigurationManager.instance().getInt(ConfigurationManager.MAX_NICK_SIZE))
             {
                 {
                     client.getClientHandler()
@@ -782,7 +782,7 @@ public class CommandParser
 
             }
 
-            if (aux.equalsIgnoreCase(ConfigLoader.OP_CHAT_NAME))
+            if (aux.equalsIgnoreCase(ConfigurationManager.instance().getString(ConfigurationManager.OP_CHAT_NAME)))
             {
                 client.getClientHandler().sendFromBot("Nick taken, please choose another.");
                 {
@@ -790,7 +790,7 @@ public class CommandParser
                     return;
                 }
             }
-            if (aux.equalsIgnoreCase(ConfigLoader.BOT_CHAT_NAME))
+            if (aux.equalsIgnoreCase(ConfigurationManager.instance().getString(ConfigurationManager.BOT_CHAT_NAME)))
             {
                 client.getClientHandler().sendFromBot("Nick taken, please choose another.");
                 {
@@ -836,7 +836,7 @@ public class CommandParser
                         {
                             //actual renaming.
                             String newnick = ST.nextToken();
-                            if (newnick.length() < ConfigLoader.MIN_NICK_SIZE)
+                            if (newnick.length() < ConfigurationManager.instance().getInt(ConfigurationManager.MIN_NICK_SIZE))
                             {
                                 {
                                     client.getClientHandler()
@@ -845,7 +845,7 @@ public class CommandParser
                                     return;
                                 }
                             }
-                            if (newnick.length() > ConfigLoader.MAX_NICK_SIZE)
+                            if (newnick.length() > ConfigurationManager.instance().getInt(ConfigurationManager.MAX_NICK_SIZE))
                             {
                                 {
                                     client.getClientHandler()
@@ -889,14 +889,14 @@ public class CommandParser
 
                             }
 
-                            if (newnick.equals(ConfigLoader.OP_CHAT_NAME))
+                            if (newnick.equals(ConfigurationManager.instance().getString(ConfigurationManager.OP_CHAT_NAME)))
                             {
                                 client.getClientHandler()
                                         .sendFromBot("Nick taken, please choose another.");
                                 done = true;
                                 return;
                             }
-                            if (newnick.equals(ConfigLoader.BOT_CHAT_NAME))
+                            if (newnick.equals(ConfigurationManager.instance().getString(ConfigurationManager.BOT_CHAT_NAME)))
                             {
                                 client.getClientHandler()
                                         .sendFromBot("Nick taken, please choose another.");
@@ -1402,10 +1402,10 @@ public class CommandParser
             }
             if (recvbuf.toLowerCase().equals("topic"))
             {
-                if (!ConfigLoader.HUB_DESCRIPTION.isEmpty())
+                if (!ConfigurationManager.instance().getString(ConfigurationManager.HUB_DESCRIPTION).isEmpty())
                 {
                     Broadcast.getInstance().broadcast("IINF DE");
-                    client.getClientHandler().sendFromBot("Topic \"" + ConfigLoader.HUB_DESCRIPTION
+                    client.getClientHandler().sendFromBot("Topic \"" + ConfigurationManager.instance().getString(ConfigurationManager.HUB_DESCRIPTION)
                                                           + "\" deleted.");
                     Broadcast.getInstance().broadcast("IMSG Topic was deleted by " + client.getClientHandler().NI, client);
                 }
@@ -1414,7 +1414,7 @@ public class CommandParser
                     client.getClientHandler().sendFromBot("There wasn't any topic anyway.");
                 }
 				//TODO OMFG O_O!
-                ConfigLoader.HUB_DESCRIPTION = "";
+                ConfigurationManager.instance().getString(ConfigurationManager.HUB_DESCRIPTION) = "";
 
             }
             else
@@ -1422,14 +1422,14 @@ public class CommandParser
                 String auxbuf = recvbuf.substring(6);
 
                 // Vars.HubDE=Vars.HubDE.replaceAll("\\ "," ");
-                client.getClientHandler().sendFromBot("Topic changed from \"" + ConfigLoader.HUB_DESCRIPTION
+                client.getClientHandler().sendFromBot("Topic changed from \"" + ConfigurationManager.instance().getString(ConfigurationManager.HUB_DESCRIPTION)
                                                       + "\" " + "to \"" + auxbuf + "\".");
                 auxbuf = auxbuf.replaceAll(" ", "\\ ");
-                ConfigLoader.HUB_DESCRIPTION = auxbuf;
+                ConfigurationManager.instance().getString(ConfigurationManager.HUB_DESCRIPTION) = auxbuf;
 
                 Broadcast.getInstance().broadcast("IINF DE" + AdcUtils.retADCStr(auxbuf));
                 Broadcast.getInstance().broadcast("IMSG Topic was changed by " + client.getClientHandler().NI
-                                                  + " to \"" + ConfigLoader.HUB_DESCRIPTION + "\"");
+                                                  + " to \"" + ConfigurationManager.instance().getString(ConfigurationManager.HUB_DESCRIPTION) + "\"");
 
             }
             // TODO remove save "topic" parameter in old config store.
@@ -1567,7 +1567,7 @@ public class CommandParser
 
             long up = System.currentTimeMillis() - Main.curtime; //uptime in millis
             String blah = "Death Squad Hub. Version "
-                          + ConfigLoader.HUB_VERSION
+                          + ConfigurationManager.instance().getString(ConfigurationManager.HUB_VERSION)
                           + ".\n"
                           + "  Running on "
                           + Main.proppies.getProperty("os.name")
