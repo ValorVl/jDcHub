@@ -1,7 +1,6 @@
 package ru.sincore.util;
 
 import ru.sincore.Client;
-import ru.sincore.ConfigLoader;
 import ru.sincore.Exceptions.STAException;
 
 /*

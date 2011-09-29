@@ -66,6 +66,7 @@ public class SCH
 
         if (!cur_client.reg.overridespam)
         {
+            /*
             switch (command.charAt(0))
             {
                 case 'B':
@@ -104,6 +105,7 @@ public class SCH
                     }
 
             }
+            */
         }
 
         /** This is my new idea, the logarythmic search spam abuse.

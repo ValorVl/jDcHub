@@ -35,7 +35,6 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.x509.X509V3CertificateGenerator;
 import org.bouncycastle.x509.extension.AuthorityKeyIdentifierStructure;
 import org.bouncycastle.x509.extension.SubjectKeyIdentifierStructure;
-import ru.sincore.ConfigLoader;
 import ru.sincore.Main;
 
 import java.io.FileNotFoundException;

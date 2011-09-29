@@ -3,7 +3,7 @@ package ru.sincore.adc.action;
 import ru.sincore.Broadcast;
 import ru.sincore.Client;
 import ru.sincore.ClientManager;
-import ru.sincore.ConfigLoader;
+import ru.sincore.ConfigurationManager;
 import ru.sincore.Exceptions.STAException;
 import ru.sincore.Modules.Modulator;
 import ru.sincore.Modules.Module;

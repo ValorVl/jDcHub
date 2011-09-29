@@ -57,21 +57,25 @@ public class STA
         {
             if (!cur_client.reg.overridespam)
             {
+                /*
                 if (ConfigLoader.ADC_BSTA == 0)
                 {
                     cur_client.sendFromBot("STA invalid context B");
                 }
+                */
             }
         }
         else if (command.charAt(0) == 'D')
         {
             if (!cur_client.reg.overridespam)
             {
+                /*
                 if (ConfigLoader.ADC_DSTA == 0)
                 {
                     cur_client.sendFromBot("STA invalid context D");
                     return;
                 }
+                */
             }
 			// get error code
             StringTokenizer TK = new StringTokenizer(command);
@@ -113,11 +117,13 @@ public class STA
         {
             if (!cur_client.reg.overridespam)
             {
+                /*
                 if (ConfigLoader.ADC_ESTA == 0)
                 {
                     cur_client.sendFromBot("STA invalid context E");
                     return;
                 }
+                */
             }
             StringTokenizer TK = new StringTokenizer(command);
             TK.nextToken();
@@ -157,10 +163,12 @@ public class STA
         {
             if (!cur_client.reg.overridespam)
             {
+                /*
                 if (ConfigLoader.ADC_FSTA == 0)
                 {
                     cur_client.sendFromBot("STA invalid context F");
                 }
+                */
             }
         }
         else if (command.charAt(0) == 'H')
@@ -168,10 +176,12 @@ public class STA
             if (!cur_client.reg.overridespam)
             // ok, client has an error. what can i do about it? :))
             {
+                /*
                 if (ConfigLoader.ADC_HSTA == 0)
                 {
                     cur_client.sendFromBot("STA invalid context H");
                 }
+                */
             }
         }
     }

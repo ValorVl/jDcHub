@@ -25,7 +25,6 @@ package ru.sincore.ProtoCmds;
 
 import ru.sincore.Client;
 import ru.sincore.ClientHandler;
-import ru.sincore.ConfigLoader;
 import ru.sincore.Exceptions.STAException;
 import ru.sincore.SessionManager;
 import ru.sincore.util.Constants;

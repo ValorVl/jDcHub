@@ -517,11 +517,4 @@ public class ConfigurationManager extends PropertiesConfiguration
             this.setProperty(CERT_LOGIN, false);
         }
     }
-
-
-    public synchronized void reload()
-    {
-        instance = null;
-        instance();
-    }
 }

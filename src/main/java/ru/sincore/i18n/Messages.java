@@ -1,7 +1,7 @@
 package ru.sincore.i18n;
 
 import org.apache.log4j.Logger;
-import ru.sincore.ConfigLoader;
+import ru.sincore.ConfigurationManager;
 
 import java.io.BufferedInputStream;
 import java.io.File;

@@ -25,7 +25,7 @@ package ru.sincore.cmd.ExtendedCmds;
 
 import ru.sincore.Client;
 import ru.sincore.ClientHandler;
-import ru.sincore.ConfigLoader;
+import ru.sincore.ConfigurationManager;
 import ru.sincore.SessionManager;
 import ru.sincore.util.AdcUtils;
 

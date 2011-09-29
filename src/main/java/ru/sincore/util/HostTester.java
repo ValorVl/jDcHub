@@ -23,8 +23,6 @@
  */
 package ru.sincore.util;
 
-import ru.sincore.ConfigLoader;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

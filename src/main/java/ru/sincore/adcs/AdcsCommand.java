@@ -25,7 +25,7 @@ package ru.sincore.adcs;
 
 import org.apache.log4j.Logger;
 import ru.sincore.ClientHandler;
-import ru.sincore.ConfigLoader;
+import ru.sincore.ConfigurationManager;
 import ru.sincore.HubServer;
 import ru.sincore.Main;
 
@@ -95,7 +95,7 @@ public class AdcsCommand
             {
                 return;//cannot start adcs mode.. bug ?
             }
-            ConfigurationManager.instance().getBoolean(ConfigurationManager.ENABLE_ADCS) = true;
+            //ConfigurationManager.instance().getBoolean(ConfigurationManager.ENABLE_ADCS) = true;
             Main.Restart();
             log.info("AdcUtils Secure mode has been enabled");
             return;
@@ -105,7 +105,7 @@ public class AdcsCommand
         {
             HubServer.done_adcs = false;
             cur_client.sendFromBot("Disabling ADCS.... ( Hub will restart )...");
-            ConfigurationManager.instance().getBoolean(ConfigurationManager.ENABLE_ADCS) = false;
+            //ConfigurationManager.instance().getBoolean(ConfigurationManager.ENABLE_ADCS) = false;
             Main.Restart();
             log.warn("AdcUtils Secure mode has been disabled");
         }

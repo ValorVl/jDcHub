@@ -54,7 +54,8 @@ public class Main extends Thread
     public static void init()
     {
 		PropertyConfigurator.configure("./etc/log4j.properties");
-		ConfigLoader.init();
+		//ConfigLoader.init();
+        ConfigurationManager.instance();
 		Messages.loadClientMessages();
 		Messages.loadServerMessages();
 		HibernateUtils.getSessionFactory();

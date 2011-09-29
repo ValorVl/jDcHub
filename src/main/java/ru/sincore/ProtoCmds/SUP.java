@@ -25,7 +25,6 @@ package ru.sincore.ProtoCmds;
 
 import ru.sincore.Client;
 import ru.sincore.ClientHandler;
-import ru.sincore.ConfigLoader;
 import ru.sincore.Exceptions.CommandException;
 import ru.sincore.Exceptions.STAException;
 import ru.sincore.util.Constants;
@@ -58,6 +57,7 @@ public class SUP
         ClientHandler cur_client = client.getClientHandler();
         if (!cur_client.reg.overridespam)
         {
+            /*
             switch (command.charAt(0))
             {
                 case 'B':
@@ -96,6 +96,7 @@ public class SUP
                     }
 
             }
+            */
         }
 
         if (command.charAt(0) != 'H')

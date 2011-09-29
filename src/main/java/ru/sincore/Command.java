@@ -205,6 +205,7 @@ public class Command
             }
             if (!currentClient.getClientHandler().reg.overridespam)
             {
+                /*
                 switch (command.charAt(0))
                 {
                     case 'B':
@@ -243,6 +244,7 @@ public class Command
                         }
 
                 }
+                */
             }
 
 
@@ -256,6 +258,7 @@ public class Command
 
             if (!currentClient.getClientHandler().reg.overridespam)
             {
+                /*
                 switch (command.charAt(0))
                 {
                     case 'B':
@@ -294,6 +297,7 @@ public class Command
                         }
 
                 }
+                */
             }
             Nod k;
 
