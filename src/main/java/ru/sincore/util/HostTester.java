@@ -23,6 +23,8 @@
  */
 package ru.sincore.util;
 
+import ru.sincore.ConfigurationManager;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -92,7 +94,8 @@ public class HostTester
                                     +
                                     " NI" +
                                     AdcUtils.retADCStr(ConfigurationManager.instance().getString(ConfigurationManager.HUB_NAME)) +
-                                    ((ConfigurationManager.instance().getString(ConfigurationManager.HUB_DESCRIPTION).equals("")) ?
+                                    ((ConfigurationManager.instance().getString(ConfigurationManager.HUB_DESCRIPTION).equals(
+                                            "")) ?
                                      (" DE" + AdcUtils.retADCStr(ConfigurationManager.instance().getString(ConfigurationManager.HUB_DESCRIPTION))) :
                                      ""));
             }

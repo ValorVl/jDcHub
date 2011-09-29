@@ -107,12 +107,12 @@ public class SessionManager extends IoHandlerAdapter
     public void messageReceived(IoSession session, Object msg)
             throws Exception
     {
-        String str = (String) msg;
-		log.debug("Incoming message : "+ str);
+        String rawMessage = (String) msg;
+		log.debug("Incoming message : "+ rawMessage);
 
         try
         {
-            new Command((Client) (session.getAttribute("client")), str);
+            Command.handle((Client) (session.getAttribute("client")), rawMessage);
         }
         catch (STAException stex)
         {
@@ -129,6 +129,11 @@ public class SessionManager extends IoHandlerAdapter
 
     }
 
+    public void messageSent(IoSession session, Object message)
+            throws Exception
+    {
+        log.debug("Outgoing message from hub : \'" + message.toString() + "\'");
+    }
 
     public void sessionIdle(IoSession session, IdleStatus status)
             throws Exception

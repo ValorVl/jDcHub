@@ -102,42 +102,45 @@ public class Client implements IoFutureListener<WriteFuture>
             // convert it from sec to ms
             kicktime *= 1000;
 
-		KickListDAOImpl kickList = new KickListDAOImpl();
 
-		Calendar c = new GregorianCalendar();
+//        KickListDAOImpl kickList = new KickListDAOImpl();
+//        Calendar c = new GregorianCalendar();
+//
+//		c.add(Calendar.MINUTE,5); //add to the current date 5  minutes
+//		c.add(Calendar.HOUR,6); // add to the current date 6 days
+//		c.add(Calendar.DAY_OF_MONTH,2); //add to the current date 2 months
+//
+//		Date banExpired = c.getTime();
+//
+//		// Build kick list object
+//		KickListPOJO kickClient = new KickListPOJO();
+//
+//		kickClient.setIp(handler.getU4());
+//		kickClient.setKickDate(new Date());
+//		kickClient.setKickExpiredDate(banExpired);
+//		kickClient.setKickOwner(whokicked.getNI());
+//		kickClient.setNickName(handler.getNI());
+//		kickClient.setReason(kickmsg);
+//
+//        kickList.addKickedClient(kickClient);
 
-		c.add(Calendar.MINUTE,5); //add to the current date 5  minutes
-		c.add(Calendar.HOUR,6); // add to the current date 6 days
-		c.add(Calendar.DAY_OF_MONTH,2); //add to the current date 2 months
-
-		Date banExpired = c.getTime();
-
-		// Build kick list object
-		KickListPOJO kickClient = new KickListPOJO();
-
-		kickClient.setIp(handler.getU4());
-		kickClient.setKickDate(new Date());
-		kickClient.setKickExpiredDate(banExpired);
-		kickClient.setKickOwner(whokicked.getNI());
-		kickClient.setNickName(handler.getNI());
-		kickClient.setReason(kickmsg);
 
         switch (bantype)
         {
             // ban by nick
             case 1:
-				kickList.addKickedClient(kickClient);
+//                BanList.addban(bantype, handler.getNI(), kicktime, whokicked.getNI(), kickmsg);
 
                 break;
 
             // ban by ip
             case 2:
-                BanList.addban(bantype, handler.getRealIP(), kicktime, whokicked.getNI(), kickmsg);
+//                BanList.addban(bantype, handler.getRealIP(), kicktime, whokicked.getNI(), kickmsg);
                 break;
 
             // ban by cid
             case 3:
-                BanList.addban(bantype, handler.getID(), kicktime, whokicked.getNI(), kickmsg);
+//                BanList.addban(bantype, handler.getID(), kicktime, whokicked.getNI(), kickmsg);
                 break;
         }
 
@@ -191,17 +194,17 @@ public class Client implements IoFutureListener<WriteFuture>
         {
             // ban by nick
             case 1:
-                BanList.addban(bantype, handler.getNI(), kicktime, ConfigurationManager.instance().getString(ConfigurationManager.BOT_CHAT_NAME), kickmsg);
+//                BanList.addban(bantype, handler.getNI(), kicktime, ConfigurationManager.instance().getString(ConfigurationManager.BOT_CHAT_NAME), kickmsg);
                 break;
 
             // ban by ip
             case 2:
-                BanList.addban(bantype, handler.getRealIP(), kicktime, ConfigurationManager.instance().getString(ConfigurationManager.BOT_CHAT_NAME), kickmsg);
+//                BanList.addban(bantype, handler.getRealIP(), kicktime, ConfigurationManager.instance().getString(ConfigurationManager.BOT_CHAT_NAME), kickmsg);
                 break;
 
             // ban by cid
             case 3:
-                BanList.addban(bantype, handler.getID(), kicktime, ConfigurationManager.instance().getString(ConfigurationManager.BOT_CHAT_NAME), kickmsg);
+//                BanList.addban(bantype, handler.getID(), kicktime, ConfigurationManager.instance().getString(ConfigurationManager.BOT_CHAT_NAME), kickmsg);
                 break;
         }
 

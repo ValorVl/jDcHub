@@ -25,6 +25,7 @@ package ru.sincore;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.sincore.adc.State;
 
 import java.util.Collection;
 import java.util.Vector;
@@ -115,13 +116,14 @@ public final class ClientManager
 
     public void addNewClient(Client client)
     {
+        client.getClientHandler().setState(State.PROTOCOL);
         uninitializedClients.add(client);
     }
 
     synchronized public void moveClientToRegularMap(Client client)
     {
         if (!uninitializedClients.remove(client))
-            log.error("Client was not in uninitialized clients vector!");
+            log.error("Client was not found in uninitialized clients vector!");
 
         addClient(client);
     }

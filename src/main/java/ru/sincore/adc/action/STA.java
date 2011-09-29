@@ -29,8 +29,8 @@ public class STA extends Action
 	{
 		this(messageType,
              context,
-             (context == Context.F ? client : null),
-             (context == Context.T ? null : client));
+             (context == Context.T ? client : null),
+             (context == Context.F ? null : client));
 	}
 
 	public STA(MessageType messageType, int context, Client client, String rawCommand) throws CommandException, STAException

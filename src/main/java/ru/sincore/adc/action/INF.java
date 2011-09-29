@@ -1,7 +1,9 @@
 package ru.sincore.adc.action;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.sincore.*;
-import ru.sincore.ConfigurationManager;
+import ru.sincore.Exceptions.CommandException;
 import ru.sincore.Exceptions.STAException;
 import ru.sincore.Modules.Modulator;
 import ru.sincore.Modules.Module;
@@ -19,9 +21,14 @@ import java.util.StringTokenizer;
 
 /**
  * @author Valor
+ * @author Alexey 'lh' Antonov
+ * @since 2011-09-27
  */
 public class INF extends Action
 {
+    private static final Logger log = LoggerFactory.getLogger(INF.class);
+
+
     ConfigurationManager configurationManager = ConfigurationManager.instance();
 
     public INF(MessageType messageType, int context, Client fromClient, Client toClient)
@@ -37,11 +44,20 @@ public class INF extends Action
     {
         this(messageType,
              context,
-             (context == Context.F ? client : null),
-             (context == Context.T ? null : client));
+             (context == Context.T ? client : null),
+             (context == Context.F ? null : client));
 
     }
 
+    public INF(MessageType messageType, int context, Client client, String rawCommand)
+            throws CommandException, STAException
+    {
+        this(messageType,
+             context,
+             client);
+
+        parse(rawCommand);
+    }
 
     @Override
     public String toString()
@@ -332,7 +348,7 @@ public class INF extends Action
             return;
         }
 
-        if (fromClient.getClientHandler().getHN() != null)
+        if (fromClient.getClientHandler().getHN() == null)
         {
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL +
@@ -340,17 +356,6 @@ public class INF extends Action
                          "Missing field",
                          "FM",
                          "HN");
-            return;
-        }
-        else if (fromClient.getClientHandler().getHN().equals(""))
-        {
-            new STAError(fromClient,
-                         Constants.STA_SEVERITY_FATAL +
-                         Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
-                         "Missing field",
-                         "FM",
-                         "HN");
-            return;
         }
     }
 
@@ -371,7 +376,6 @@ public class INF extends Action
             return;
         }
 
-        tokenizer.nextToken();
         try
         {
             while (tokenizer.hasMoreElements())
@@ -380,7 +384,6 @@ public class INF extends Action
 
                 if (token.startsWith("ID"))//meaning we have the ID thingy
                 {
-
                     if (fromClient.getClientHandler().getState() != State.PROTOCOL)
                     {
                         new STAError(fromClient,

@@ -3,12 +3,9 @@ package ru.sincore.adc.action;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
-import ru.sincore.Client;
-import ru.sincore.ClientManager;
-import ru.sincore.ConfigurationManager;
+import ru.sincore.*;
 import ru.sincore.Exceptions.CommandException;
 import ru.sincore.Exceptions.STAException;
-import ru.sincore.Main;
 import ru.sincore.adc.Context;
 import ru.sincore.adc.MessageType;
 import ru.sincore.adc.State;
@@ -40,15 +37,25 @@ public class SUP extends Action
 
 	public SUP(MessageType messageType, int context, Client client)
 	{
-		this(
-			messageType,
-			context,
-			context == Context.F? client : null,
-			context == Context.T? null : client
-		);
-	}
+        this(messageType,
+             context,
+             context == Context.T ? client : null,
+             context == Context.F ? null : client);
+    }
 
-	@Override
+
+    public SUP(MessageType messageType, int context, Client client, String rawCommand)
+            throws CommandException, STAException
+    {
+        this(messageType,
+             context,
+             client);
+
+        parse(rawCommand);
+    }
+
+
+    @Override
 	public String toString()
 	{
 		return null;
@@ -172,8 +179,6 @@ public class SUP extends Action
                                                  " " +
                                                  ConfigurationManager.instance().getString(ConfigurationManager.ADC_EXTENSION_LIST));
 
-        // move client to IDENTIFY state
-        toClient.getClientHandler().setState(State.IDENTIFY);
 
         toClient.getClientHandler().sendToClient("ISID " + toClient.getClientHandler().getSID());
 
@@ -191,7 +196,9 @@ public class SUP extends Action
 		}
 
 		// Check client flag isPingExtensionSupports, if true, send PING string
-		inf.append(toClient.getClientHandler().isPingExtensionSupports() ? pingQuery() : Constants.EMPTY_STR);
+		inf.append(toClient.getClientHandler().isPingExtensionSupports() ?
+                   pingQuery() :
+                   Constants.EMPTY_STR);
 
 		toClient.getClientHandler().sendToClient(inf.toString());
     }
