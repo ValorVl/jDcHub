@@ -179,8 +179,6 @@ public class SUP extends Action
                                                  " " +
                                                  ConfigurationManager.instance().getString(ConfigurationManager.ADC_EXTENSION_LIST));
 
-        // move client to IDENTIFY state
-        toClient.getClientHandler().setState(State.IDENTIFY);
 
         toClient.getClientHandler().sendToClient("ISID " + toClient.getClientHandler().getSID());
 
