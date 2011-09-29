@@ -90,9 +90,10 @@ public class ConfigurationManager extends PropertiesConfiguration
     public static final String HUB_LOGIN_TIMEOUT      = "core.hub.login.timeout";
     // Time in millisecond to kick duration
     public static final String KICK_DURATION          = "core.hub.kick_duration";
+
     // Localisations
     public static final String HUB_MESSAGES_FILE_DIR  = "core.client.messages.dir";
-    public static final String HUB_MESSAGES_LOCALE = "core.client.messages.lang";
+
     // Chat settings
     public static final String CHAT_REFRESH           = "core.hub.chat_refresh";
     // History messages line count
@@ -415,11 +416,6 @@ public class ConfigurationManager extends PropertiesConfiguration
         if (!this.containsKey(HUB_MESSAGES_FILE_DIR))
         {
             this.setProperty(HUB_MESSAGES_FILE_DIR, "./etc/clientmessages");
-        }
-
-        if (!this.containsKey(HUB_MESSAGES_LOCALE))
-        {
-            this.setProperty(HUB_MESSAGES_LOCALE, "EN");
         }
 
         if (!this.containsKey(CHAT_REFRESH))

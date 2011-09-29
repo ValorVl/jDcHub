@@ -17,7 +17,7 @@ public class Messages
 {
     private static final Logger log = Logger.getLogger(Messages.class);
     private static final ConfigurationManager configurationManager = ConfigurationManager.instance();
-    private static final String defaultLocale = configurationManager.getString(ConfigurationManager.HUB_MESSAGES_LOCALE);
+    private static final String defaultLocale = configurationManager.getString(ConfigurationManager.HUB_DEFAULT_LOCALE);
 
     // define server message var
     private static final String SERVER_MESSAGE_FILE = "./etc/messages/servermessages.properties";
