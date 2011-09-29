@@ -92,7 +92,7 @@ public class ConfigurationManager extends PropertiesConfiguration
     public static final String KICK_DURATION          = "core.hub.kick_duration";
     // Localisations
     public static final String HUB_MESSAGES_FILE_DIR  = "core.client.messages.dir";
-    public static final String HUB_MESSAGES_LANG      = "core.client.messages.lang";
+    public static final String HUB_MESSAGES_LOCALE = "core.client.messages.lang";
     // Chat settings
     public static final String CHAT_REFRESH           = "core.hub.chat_refresh";
     // History messages line count
@@ -417,9 +417,9 @@ public class ConfigurationManager extends PropertiesConfiguration
             this.setProperty(HUB_MESSAGES_FILE_DIR, "./etc/clientmessages");
         }
 
-        if (!this.containsKey(HUB_MESSAGES_LANG))
+        if (!this.containsKey(HUB_MESSAGES_LOCALE))
         {
-            this.setProperty(HUB_MESSAGES_LANG, "EN");
+            this.setProperty(HUB_MESSAGES_LOCALE, "EN");
         }
 
         if (!this.containsKey(CHAT_REFRESH))

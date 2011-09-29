@@ -223,7 +223,7 @@ public class SCH
                 if (curtime - cur_client.lastSearch < xx)
                 {
                     //handler.sendToClient (Issued_Command);
-                    String[] messages = Messages.SEARCH_SPAM_MESSAGE.split("\\\n");
+                    String[] messages = Messages.get(Messages.SEARCH_SPAM_MESSAGE).split("\\\n");
                     for (int j = 0; j < messages.length; j++)
                     {
                         cur_client.sendToClient("DRES DCBA " +
@@ -255,7 +255,7 @@ public class SCH
                 if (curtime - cur_client.lastSearch < xx)
                 {
                     //handler.sendToClient (Issued_Command);
-                    String[] messages = Messages.SEARCH_SPAM_MESSAGE.split("\\\n");
+                    String[] messages = Messages.get(Messages.SEARCH_SPAM_MESSAGE).split("\\\n");
 
                     for (String mess : messages)
                     {

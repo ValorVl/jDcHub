@@ -163,7 +163,7 @@ public class SUP extends Action
 		// Check client TIGER hash support if not, send error code 147 and reason
 		if (!toClient.getClientHandler().isTigrSupports())
 		{
-			new STAError(fromClient,100 + Constants.STA_NO_HASH_OVERLAP,Messages.TIGER_ERROR);
+			new STAError(fromClient,100 + Constants.STA_NO_HASH_OVERLAP, Messages.get(Messages.TIGER_ERROR));
 		}
 
 		// Check extension list, if list empty, send error message in log file and stop server

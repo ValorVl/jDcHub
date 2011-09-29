@@ -734,7 +734,7 @@ public class INF extends Action
                              "Hello there. Hub is full, there are " +
                              String.valueOf(ClientManager.getInstance().getClientsCount()) +
                              " users online.\n" +
-                             Messages.HUB_FULL_MESSAGE);
+                             Messages.get(Messages.HUB_FULL_MESSAGE));
                 return;
             }
         }

@@ -22,9 +22,9 @@ package ru.sincore;
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import com.sun.corba.se.impl.protocol.giopmsgheaders.Message;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
-import ru.sincore.banning.BanList;
 import ru.sincore.cmd.CmdContainer;
 import ru.sincore.db.HibernateUtils;
 import ru.sincore.i18n.Messages;
@@ -56,8 +56,6 @@ public class Main extends Thread
 		PropertyConfigurator.configure("./etc/log4j.properties");
 		//ConfigLoader.init();
         ConfigurationManager.instance();
-		Messages.loadClientMessages();
-		Messages.loadServerMessages();
 		HibernateUtils.getSessionFactory();
 		CmdContainer container = CmdContainer.getInstance();
 		container.buildList();
@@ -66,8 +64,7 @@ public class Main extends Thread
 
     public static void Exit()
     {
-
-        log.warn(Messages.CLOSE_HUB);
+        log.warn(Messages.get(Messages.CLOSE_HUB));
 
         try
         {
@@ -82,9 +79,8 @@ public class Main extends Thread
 
     public void run()
     {
-        log.warn(Messages.RESTART_HUB);
+        log.warn(Messages.get(Messages.RESTART_HUB));
 
-        BanList.First = null;
         ClientManager.getInstance().removeAllClients();
 
         server.shutdown();
@@ -106,16 +102,16 @@ public class Main extends Thread
 
     public static void main(String[] args)
     {
-		init();
+        init();
         curtime = System.currentTimeMillis();
 
-		log.info(Messages.SERVER_STARTUP);
+        log.info(Messages.get(Messages.SERVER_STARTUP));
 
         server = new HubServer();
 
         proppies = System.getProperties();
 
-        log.info(Messages.SERVER_STARTUP_DONE);
+        log.info(Messages.get(Messages.SERVER_STARTUP));
     }
 
 

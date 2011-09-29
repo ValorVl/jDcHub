@@ -1,165 +1,201 @@
 package ru.sincore.i18n;
 
+import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
 import ru.sincore.ConfigurationManager;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Locale;
-import java.util.Properties;
+import java.io.*;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
- *  Class load all localized string messages
+ * Class load all localized string messages
  *
- *  @author Valor
+ * @author Valor
  */
 public class Messages
 {
-	private static final Logger log = Logger.getLogger(Messages.class);
+    private static final Logger log = Logger.getLogger(Messages.class);
+    private static final ConfigurationManager configurationManager = ConfigurationManager.instance();
+    private static final String defaultLocale = configurationManager.getString(ConfigurationManager.HUB_MESSAGES_LOCALE);
 
-	private static final String SERVER_MESSAGE_FILE = "./etc/messages/servermessages.properties";
-	// define server message var
+    // define server message var
+    private static final String SERVER_MESSAGE_FILE = "./etc/messages/servermessages.properties";
 
-	public static String SERVER_MESSAGE_STUB;
-	public static String RESTART_HUB;
-	public static String CLOSE_HUB;
-	public static String ACCOUNT_REGISTER;
-	public static String REGISTER_CID;
-	public static String NOT_CID;
-	public static String NO_USER;
-	public static String SERVER_STARTUP;
-	public static String SERVER_STARTUP_DONE;
-	public static String SEARCHING_IN_PROGRESS;
-	public static String CID_UNBANNED;
-	public static String CID_NOT_BANNED;
-	public static String USER_REGISTER;
-	public static String DONE;
-
-
-	//define client message var
-
-	public static String REG_MESSAGE;
-	public static String BAN_MESSAGE;
-	public static String HUB_FULL_MESSAGE;
-	public static String SEARCH_SPAM_MESSAGE;
-	public static String TIGER_ERROR;
-
-	//Empty constructor
-	Messages(){}
-
-	/**
-	 * Get preconfigured messages file
-	 *
-	 * @return return localization filename
-	 */
-	private static String localePref()
-	{
-
-		String configLang = ConfigurationManager.instance().getString(ConfigurationManager.HUB_MESSAGES_LANG).toLowerCase(new Locale("en_US")); // protect config param
-		String selectedLang = "en"; // by default
-
-		File dir  = new File(ConfigurationManager.instance().getString(ConfigurationManager.HUB_MESSAGES_FILE_DIR));
+    // Server messages
+    public static String SERVER_MESSAGE_STUB    = "core.server.message.stub";
+    public static String RESTART_HUB            = "core.server.message.restart_hub";
+    public static String CLOSE_HUB              = "core.server.message.close_hub";
+    public static String ACCOUNT_REGISTER       = "core.server.message.account_register";
+    public static String REGISTER_CID           = "core.server.message.register_cid";
+    public static String SERVER_STARTUP         = "core.server.message.startup";
+    public static String SERVER_STARTUP_DONE    = "core.server.message.startup_done";
+    public static String SEARCH_IN_PROGRESS     = "core.server.message.search_in_progress";
+    public static String CID_UNBANNED           = "core.server.message.cid_unbanned";
+    public static String CID_NOT_BANNED         = "core.server.message.cid_not_banned";
+    public static String USER_REGISTERED        = "core.server.message.user_registered";
+    public static String DONE                   = "core.server.message.done";
 
 
-		if (dir.isDirectory() && dir.exists())
-		{
-			for (File file : dir.listFiles())
-			{
-				String fileName = file.getName();
-				String langToken = fileName.substring(fileName.indexOf("."));
+    // Client messages
+    public static String REG_MESSAGE            = "core.reg_message";
+    public static String BAN_MESSAGE            = "core.ban_message";
+    public static String HUB_FULL_MESSAGE       = "core.hub_is_full";
+    public static String SEARCH_SPAM_MESSAGE    = "core.search_spam_detected";
+    public static String TIGER_ERROR            = "tiger.error";
 
-				if (langToken.equals(configLang))
-				{
-					selectedLang = langToken;
-				}
 
-			}
-		}else
+    private static Map<String, PropertiesConfiguration> messagesMap =
+                                                    new ConcurrentHashMap<String, PropertiesConfiguration>();
+
+    // Empty constructor
+    private Messages()
+    {
+    }
+
+
+    /**
+     * Return string message by key in default server locale
+     * @param key       string key
+     * @return          string message by key or key value if message does not found
+     */
+    public static String get(String key)
+    {
+        return get(key, defaultLocale);
+    }
+
+
+    /**
+     * Return string message by key in given locale
+     * @param key       string key
+     * @param locale    locate in forms like ru_RU, en_US or so on
+     * @return          string message by key or key value if message does not found
+     */
+    public static String get(String key, String locale)
+    {
+        String result = key;
+
+        // TODO: optimize
+        if (!messagesMap.containsKey(defaultLocale))
         {
-            log.error("Localized file directory is not found, create this and try again.");
+            loadServerMessages();
+            loadClientMessages(locale);
         }
-		return dir+"/messages."+selectedLang;
-	}
 
-	public static void loadClientMessages()
-	{
-		Properties messages = new Properties();
-		File messagesFile;
-		FileInputStream fileInputStream = null;
-		BufferedInputStream bufferedInputStream = null;
+        if (!messagesMap.containsKey(locale))
+        {
+            loadClientMessages(locale);
+        }
 
-		try
-		{
-			messagesFile = new File(localePref());
-			fileInputStream = new FileInputStream(messagesFile);
-			bufferedInputStream = new BufferedInputStream(fileInputStream);
-			messages.load(bufferedInputStream);
+        if (messagesMap.containsKey(locale) && messagesMap.get(locale).containsKey(key))
+        {
+            result = messagesMap.get(locale).getString(key);
+        }
+        else if (messagesMap.containsKey(defaultLocale) && messagesMap.get(defaultLocale).containsKey(key))
+        {
+            result = messagesMap.get(defaultLocale).getString(key);
+        }
+        else
+        {
+            log.error("Can't found message for string '" + key + "' in user locale '" + locale + "' and default locale '" + defaultLocale + "'");
+        }
 
-			// start init messages var
-			messages.clear();
 
-			REG_MESSAGE 			= messages.getProperty("core.reg_message");
-			SEARCH_SPAM_MESSAGE		= messages.getProperty("core.search_spam_detected");
-			TIGER_ERROR				= messages.getProperty("tiger.error");
+        return result;
+    }
 
-		} catch (Exception ex)
-		{
-			log.error("Can not load messages file", ex);
-		} finally
-		{
-			try
-			{
-				fileInputStream.close();
-				bufferedInputStream.close();
 
-			} catch (Exception ex)
-			{
-				log.error(ex);
-			}
-		}
-	}
+    /**
+     * Get localized client messages file
+     *
+     * @return return localization filename
+     */
+    private static String localizedClienMessageFile(String locale)
+            throws FileNotFoundException
+    {
+        File dir = new File(ConfigurationManager.instance()
+                                                .getString(ConfigurationManager.HUB_MESSAGES_FILE_DIR));
+        File messageFile;
 
-	public static void loadServerMessages()
-	{
-		File hubPropertiesFile;
-		FileInputStream fileInput = null;
-		BufferedInputStream buffInput = null;
-		Properties prop;
+        if (dir.isDirectory() && dir.exists())
+        {
+            messageFile = new File(dir + "/messages." + locale);
+            if (!messageFile.exists() || !messageFile.isFile())
+            {
+                FileNotFoundException exception =
+                        new FileNotFoundException("Client messages file does not found for locale: " + locale);
+                log.error(exception.getMessage());
+                throw exception;
+            }
+        }
+        else
+        {
+            FileNotFoundException exception =
+                    new FileNotFoundException("Localized file directory is not found, create this and try again");
+            log.error(exception.getMessage());
+            throw exception;
+        }
 
+        log.info("Client message file: " + messageFile);
+
+        return messageFile.toString();
+    }
+
+
+    /**
+     * Common method for loading client and server messages
+     * @param fileName      properties file with messages
+     * @param locale        locale
+     */
+    private static void loadMessages(String fileName, String locale)
+    {
+        File messagesFile;
         try
         {
-            hubPropertiesFile 		= new File(SERVER_MESSAGE_FILE);
-            fileInput 				= new FileInputStream(hubPropertiesFile);
-            buffInput 				= new BufferedInputStream(fileInput);
-            prop 					= new Properties();
+            messagesFile = new File(fileName);
 
-			prop.clear();
-            prop.load(buffInput);
+            PropertiesConfiguration propertiesConfiguration = new PropertiesConfiguration(messagesFile);
+            propertiesConfiguration.load();
 
-			SERVER_STARTUP			= prop.getProperty("core.server.message.startup");
-			SERVER_STARTUP_DONE		= prop.getProperty("core.server.message.startup_done");
-			SERVER_MESSAGE_STUB		= prop.getProperty("core.server.message.stub");
-			RESTART_HUB 			= prop.getProperty("core.server.message.restart_hub");
-			CLOSE_HUB				= prop.getProperty("core.server.message.close_hub");
-			ACCOUNT_REGISTER		= prop.getProperty("core.server.message.account_register");
-			REGISTER_CID			= prop.getProperty("core.server.message.register_cid");
+            if (!messagesMap.containsKey(locale))
+            {
+                messagesMap.put(locale, new PropertiesConfiguration());
+            }
 
+            synchronized (messagesMap.get(locale))
+            {
+                messagesMap.get(locale).append(propertiesConfiguration);
+            }
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            log.fatal(e);
-        }finally {
-			try
-			{
-				fileInput.close();
-				buffInput.close();
+            log.error("Can not load messages file", ex);
+        }
+    }
 
-			}catch (IOException ex)
-			{
-				log.error(ex);
-			}
-		}
-	}
+
+    /**
+     * Load client messages in given locale
+     * @param locale locate in forms like ru_RU, en_US or so on
+     */
+    private static void loadClientMessages(String locale)
+    {
+        try
+        {
+            loadMessages(localizedClienMessageFile(locale), locale);
+        }
+        catch (FileNotFoundException e)
+        {
+            log.error("Can not load localized client messages file", e);
+        }
+    }
+
+
+    /**
+     * Load server messages
+     */
+    private static void loadServerMessages()
+    {
+        loadMessages(SERVER_MESSAGE_FILE, defaultLocale);
+    }
 }
