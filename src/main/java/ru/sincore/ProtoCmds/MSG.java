@@ -85,7 +85,7 @@ public class MSG
         }
         String message = tok.nextToken();
 
-        if (message.length() > ConfigLoader.MAX_CHAT_MESSAGE_SIZE)
+        if (message.length() > ConfigurationManager.instance().getInt(ConfigurationManager.MAX_CHAT_MESSAGE_SIZE))
         {
             if (
                     !(cur_client.reg.overridespam))
@@ -124,7 +124,7 @@ public class MSG
         long now = System.currentTimeMillis();
         if (cur_client.lastMSG != 0)
         {
-            if (now - cur_client.lastMSG < ConfigLoader.CHAT_REFRESH)
+            if (now - cur_client.lastMSG < ConfigurationManager.instance().getInt(ConfigurationManager.CHAT_REFRESH))
             {
                 if (!cur_client.reg.overridespam)
 
@@ -132,7 +132,7 @@ public class MSG
                     new STAError(client,
                                  Constants.STA_SEVERITY_RECOVERABLE,
                                  "Chatting Too Fast. Minimum chat interval " +
-                                 String.valueOf(ConfigLoader.CHAT_REFRESH) +
+                                 String.valueOf(ConfigurationManager.instance().getInt(ConfigurationManager.CHAT_REFRESH)) +
                                  " .You made " +
                                  String.valueOf(now - cur_client.lastMSG) +
                                  ".");

@@ -111,7 +111,7 @@ public class HubServer extends Thread
         nsa.setReuseAddress(true);
 
 
-        if (ConfigLoader.ENABLE_ADCS)
+        if (ConfigurationManager.instance().getBoolean(ConfigurationManager.ENABLE_ADCS))
         {
 
             if (adcs_ok)
@@ -122,7 +122,7 @@ public class HubServer extends Thread
             {
                 log.info("Couldn't find suitable keys and certificate.\nPlease load them or regenerate.\n" +
                                 "AdcUtils Secure mode has been disabled.");
-                ConfigLoader.ENABLE_ADCS = false;
+                ConfigurationManager.instance().getBoolean(ConfigurationManager.ENABLE_ADCS) = false;
             }
 
         }
@@ -145,7 +145,7 @@ public class HubServer extends Thread
 		try
 		{
 
-			acceptor.bind(new InetSocketAddress(ConfigLoader.HUB_PORT));
+			acceptor.bind(new InetSocketAddress(ConfigurationManager.instance().getInt(ConfigurationManager.HUB_PORT)));
 
 		} catch (IOException e)
 		{

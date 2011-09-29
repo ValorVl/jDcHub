@@ -57,10 +57,10 @@ public class Messages
 	private static String localePref()
 	{
 
-		String configLang = ConfigLoader.HUB_MESSAGES_LANG.toLowerCase(new Locale("en_US")); // protect config param
+		String configLang = ConfigurationManager.instance().getString(ConfigurationManager.HUB_MESSAGES_LANG).toLowerCase(new Locale("en_US")); // protect config param
 		String selectedLang = "en"; // by default
 
-		File dir  = new File(ConfigLoader.HUB_MESSAGES_FILE_DIR);
+		File dir  = new File(ConfigurationManager.instance().getString(ConfigurationManager.HUB_MESSAGES_FILE_DIR));
 
 
 		if (dir.isDirectory() && dir.exists())

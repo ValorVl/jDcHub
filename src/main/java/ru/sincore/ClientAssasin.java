@@ -78,13 +78,13 @@ public class ClientAssasin extends Thread
                     double xy = 1;
                     for (int i = 0; i < clientHandler.searchStep; i++)
                     {
-                        xy *= ((double) ConfigLoader.SEARCH_BASE_INTERVAL) / 1000;
+                        xy *= ((double) ConfigurationManager.instance().getInt(ConfigurationManager.SEARCH_BASE_INTERVAL)) / 1000;
                     }
                     xy *= 1000;
                     long xx = (long) xy;
-                    if (clientHandler.searchStep >= ConfigLoader.SEARCH_STEPS)
+                    if (clientHandler.searchStep >= ConfigurationManager.instance().getInt(ConfigurationManager.SEARCH_STEPS))
                     {
-                        xx = ConfigLoader.SEARCH_SPAM_RESET * 1000;
+                        xx = ConfigurationManager.instance().getInt(ConfigurationManager.SEARCH_SPAM_RESET) * 1000;
                     }
                     if ((currentTime - clientHandler.lastSearch) > xx)
                     {

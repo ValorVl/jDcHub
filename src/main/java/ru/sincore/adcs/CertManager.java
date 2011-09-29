@@ -79,13 +79,13 @@ public class CertManager
         //
         // signers name 
         //
-        String issuer = "C=AU, O=" + ConfigLoader.HUB_NAME + ", OU=" + "DSHub primary certificate";
+        String issuer = "C=AU, O=" + ConfigurationManager.instance().getString(ConfigurationManager.HUB_NAME) + ", OU=" + "DSHub primary certificate";
 
 
         //
         // subjects name - the same as we are self signed.
         //
-        String subject = "C=AU, O=" + ConfigLoader.HUB_NAME + ", OU=" + "DSHub primary certificate";
+        String subject = "C=AU, O=" + ConfigurationManager.instance().getString(ConfigurationManager.HUB_NAME) + ", OU=" + "DSHub primary certificate";
 
         //
         // create the certificate - version 1
@@ -135,7 +135,7 @@ public class CertManager
         Vector order = new Vector();
 
         attrs.put(X509Principal.C, "AU");
-        attrs.put(X509Principal.O, ConfigLoader.HUB_NAME);
+        attrs.put(X509Principal.O, ConfigurationManager.instance().getString(ConfigurationManager.HUB_NAME));
         attrs.put(X509Principal.OU, "DSHub intermediate certificate");
         attrs.put(X509Principal.EmailAddress, "pietry@death-squad.ro");
 
@@ -211,7 +211,7 @@ public class CertManager
         Vector sOrder = new Vector();
 
         sAttrs.put(X509Principal.C, "AU");
-        sAttrs.put(X509Principal.O, ConfigLoader.HUB_NAME);
+        sAttrs.put(X509Principal.O, ConfigurationManager.instance().getString(ConfigurationManager.HUB_NAME));
         sAttrs.put(X509Principal.OU, "DSHub User Certificate");
         sAttrs.put(X509Principal.EmailAddress, "pietry@death-squad.ro"); //TK owner's email
 
@@ -227,7 +227,7 @@ public class CertManager
         Vector order = new Vector();
 
         attrs.put(X509Principal.C, "AU");
-        attrs.put(X509Principal.O, ConfigLoader.HUB_NAME);
+        attrs.put(X509Principal.O, ConfigurationManager.instance().getString(ConfigurationManager.HUB_NAME));
         attrs.put(X509Principal.L, "Direct Connect");
         attrs.put(X509Principal.CN, "mynick"); //TK user's nick
         attrs.put(X509Principal.EmailAddress, "pietry@death-squad.ro");

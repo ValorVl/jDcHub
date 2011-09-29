@@ -17,9 +17,9 @@ public class BigTextManager
 	private static final Logger log = LoggerFactory.getLogger(BigTextManager.class);
 	private String 	marker 			= Marker.ANY_MARKER;
 
-	private int 	storageType 		= ConfigLoader.BIG_FILE_STORAGE;
-	private String 	defaultLocale 		= ConfigLoader.HUB_DEFAULT_LOCALE;
-	private String	fileStorageLocation = ConfigLoader.FILE_STORAGE_LOCATION;
+	private int 	storageType 		= ConfigurationManager.instance().getInt(ConfigurationManager.BIG_FILE_STORAGE);
+	private String 	defaultLocale 		= ConfigurationManager.instance().getString(ConfigurationManager.HUB_DEFAULT_LOCALE);
+	private String	fileStorageLocation = ConfigurationManager.instance().getString(ConfigurationManager.FILE_STORAGE_LOCATION);
 
 	/**
 	 * A method prepare MOTD text block

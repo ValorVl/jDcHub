@@ -58,9 +58,9 @@ public class AdcsCommand
                     "\n      disable -- this command disables ADCS and restarts your hub in normal AdcUtils mode." +
                     "\n      certlogin [on|off] -- the on/off switch enables/disables the certificate based login ( no passwords )." +
                     "\nCurrently, ADCS mode is" +
-                    (ConfigLoader.ENABLE_ADCS ? " running ok " : " disabled ") +
+                    (ConfigurationManager.instance().getBoolean(ConfigurationManager.ENABLE_ADCS) ? " running ok " : " disabled ") +
                     "and certificate based login is " +
-                    (ConfigLoader.CERT_LOGIN ? "on." : "off.");
+                    (ConfigurationManager.instance().getBoolean(ConfigurationManager.CERT_LOGIN) ? "on." : "off.");
             cur_client.sendFromBot(Help);
             return;
         }
@@ -95,7 +95,7 @@ public class AdcsCommand
             {
                 return;//cannot start adcs mode.. bug ?
             }
-            ConfigLoader.ENABLE_ADCS = true;
+            ConfigurationManager.instance().getBoolean(ConfigurationManager.ENABLE_ADCS) = true;
             Main.Restart();
             log.info("AdcUtils Secure mode has been enabled");
             return;
@@ -105,7 +105,7 @@ public class AdcsCommand
         {
             HubServer.done_adcs = false;
             cur_client.sendFromBot("Disabling ADCS.... ( Hub will restart )...");
-            ConfigLoader.ENABLE_ADCS = false;
+            ConfigurationManager.instance().getBoolean(ConfigurationManager.ENABLE_ADCS) = false;
             Main.Restart();
             log.warn("AdcUtils Secure mode has been disabled");
         }

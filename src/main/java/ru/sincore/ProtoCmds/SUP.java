@@ -200,9 +200,9 @@ public class SUP
 //
 //            cur_client.sendToClient(AdcUtils.ISID + " " + cur_client.SID);
 //            cur_client.sendToClient("IINF CT32 VE" +
-//                                    AdcUtils.retADCStr(ConfigLoader.HUB_VERSION) +
+//                                    AdcUtils.retADCStr(ConfigurationManager.instance().getString(ConfigurationManager.HUB_VERSION)) +
 //                                    " NI" +
-//                                    AdcUtils.retADCStr(ConfigLoader.HUB_NAME) +
+//                                    AdcUtils.retADCStr(ConfigurationManager.instance().getString(ConfigurationManager.HUB_NAME)) +
 //                                    // if HUB_DE is not empty, return it
 //                                    (!ConfigLoader.HUB_DE.isEmpty() ?
 //                                     " DE" + AdcUtils.retADCStr(ConfigLoader.HUB_DE) :
@@ -212,8 +212,8 @@ public class SUP
 //
 //            cur_client.sendToClient("ISTA 000 " +
 //                                    // TODO replace String#replace() usage by normal external function
-//                                    ConfigLoader.HUB_GREETING.replace(" ", "\\s") +
-//                                    (ConfigLoader.ENABLE_ADCS ? "\\sin\\sAdcUtils\\sSecure\\smode" :
+//                                    ConfigurationManager.instance().getString(ConfigurationManager.HUB_GREETING).replace(" ", "\\s") +
+//                                    (ConfigurationManager.instance().getBoolean(ConfigurationManager.ENABLE_ADCS) ? "\\sin\\sAdcUtils\\sSecure\\smode" :
 //                                     "") +
 //                                    ".\nISTA 000 Hub\\sis\\sup\\ssince\\s" +
 //                                    Main.server

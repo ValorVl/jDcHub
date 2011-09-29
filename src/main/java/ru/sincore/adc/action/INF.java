@@ -1,9 +1,6 @@
 package ru.sincore.adc.action;
 
-import ru.sincore.Broadcast;
-import ru.sincore.Client;
-import ru.sincore.ClientManager;
-import ru.sincore.ConfigLoader;
+import ru.sincore.*;
 import ru.sincore.Exceptions.STAException;
 import ru.sincore.Modules.Modulator;
 import ru.sincore.Modules.Module;
@@ -53,7 +50,7 @@ public class INF extends Action
     private boolean validateNick(Client client)
     {
         // Check nick on size
-        if (client.getClientHandler().getNI().length() > ConfigLoader.MAX_NICK_SIZE)
+        if (client.getClientHandler().getNI().length() > ConfigurationManager.instance().getInt(ConfigurationManager.MAX_NICK_SIZE))
         {
             return false;
         }
@@ -94,7 +91,7 @@ public class INF extends Action
 
             if (fromClient.getClientHandler().getSL() != null)
             {
-                if (ConfigLoader.MIN_SLOT_COUNT != 0 && fromClient.getClientHandler().getSL() == 0)
+                if (ConfigurationManager.instance().getInt(ConfigurationManager.MIN_SLOT_COUNT) != 0 && fromClient.getClientHandler().getSL() == 0)
                 {
                     new STAError(fromClient,
                                  Constants.STA_SEVERITY_FATAL +
@@ -108,7 +105,7 @@ public class INF extends Action
             //checking all:
             if (fromClient.getClientHandler().getNI() != null)
             {
-                if (fromClient.getClientHandler().getNI().length() > ConfigLoader.MAX_NICK_SIZE)
+                if (fromClient.getClientHandler().getNI().length() > ConfigurationManager.instance().getInt(ConfigurationManager.MAX_NICK_SIZE))
                 {
                     new STAError(fromClient,
                                  Constants.STA_SEVERITY_FATAL + Constants.STA_NICK_INVALID,
@@ -118,7 +115,7 @@ public class INF extends Action
                     return;
                 }
 
-                if (fromClient.getClientHandler().getNI().length() < ConfigLoader.MIN_NICK_SIZE)
+                if (fromClient.getClientHandler().getNI().length() < ConfigurationManager.instance().getInt(ConfigurationManager.MIN_NICK_SIZE))
                 {
                     new STAError(fromClient,
                                  Constants.STA_SEVERITY_FATAL + Constants.STA_NICK_INVALID,
@@ -132,7 +129,7 @@ public class INF extends Action
             if (fromClient.getClientHandler().getDE() != null)
             {
                 if (fromClient.getClientHandler().getDE().length() >
-                    ConfigLoader.MAX_DESCRIPTION_CHAR_COUNT)
+                    ConfigurationManager.instance().getInt(ConfigurationManager.MAX_DESCRIPTION_CHAR_COUNT))
                 {
                     new STAError(fromClient,
                                  Constants.STA_SEVERITY_FATAL +
@@ -147,7 +144,7 @@ public class INF extends Action
             if (fromClient.getClientHandler().getEM() != null)
             {
                 if (fromClient.getClientHandler().getEM().length() >
-                    ConfigLoader.MAX_EMAIL_CHAR_COUNT)
+                    ConfigurationManager.instance().getInt(ConfigurationManager.MAX_EMAIL_CHAR_COUNT))
                 {
                     new STAError(fromClient,
                                  Constants.STA_SEVERITY_FATAL +
@@ -164,7 +161,7 @@ public class INF extends Action
             if (fromClient.getClientHandler().getSS() != null)
             {
                 if (fromClient.getClientHandler().getSS() >
-                    ConfigLoader.MAX_SHARE_SIZE)
+                    ConfigurationManager.instance().getLong(ConfigurationManager.MAX_SHARE_SIZE))
                 {
                     new STAError(fromClient,
                                  Constants.STA_SEVERITY_FATAL +
@@ -176,13 +173,13 @@ public class INF extends Action
                 }
 
                 if (fromClient.getClientHandler().getSS() <
-                    ConfigLoader.MIN_SHARE_SIZE)
+                    ConfigurationManager.instance().getLong(ConfigurationManager.MIN_SHARE_SIZE))
                 {
                     new STAError(fromClient,
                                  Constants.STA_SEVERITY_FATAL +
                                  Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
                                  "Share too small " +
-                                 ConfigLoader.MIN_SHARE_SIZE +
+                                 ConfigurationManager.instance().getLong(ConfigurationManager.MIN_SHARE_SIZE) +
                                  " MiB required.",
                                  "FB",
                                  "SS");
@@ -193,7 +190,7 @@ public class INF extends Action
             if (fromClient.getClientHandler().getSL() != null)
             {
                 if (fromClient.getClientHandler().getSL() <
-                    ConfigLoader.MIN_SLOT_COUNT)
+                    ConfigurationManager.instance().getInt(ConfigurationManager.MIN_SLOT_COUNT))
                 {
                     new STAError(fromClient,
                                  Constants.STA_SEVERITY_FATAL +
@@ -205,7 +202,7 @@ public class INF extends Action
                 }
 
                 if (fromClient.getClientHandler().getSL() >
-                    ConfigLoader.MAX_SLOT_COUNT)
+                    ConfigurationManager.instance().getInt(ConfigurationManager.MAX_SLOT_COUNT))
                 {
                     new STAError(fromClient,
                                  Constants.STA_SEVERITY_FATAL +
@@ -220,7 +217,7 @@ public class INF extends Action
             if (fromClient.getClientHandler().getHN() != null)
             {
                 if (fromClient.getClientHandler().getHN() >
-                    ConfigLoader.MAX_HUBS_USERS)
+                    ConfigurationManager.instance().getInt(ConfigurationManager.MAX_HUBS_USERS))
                 {
                     new STAError(fromClient,
                                  Constants.STA_SEVERITY_FATAL +
@@ -235,7 +232,7 @@ public class INF extends Action
             if (fromClient.getClientHandler().getHO() != null)
             {
                 if (fromClient.getClientHandler().getHO() >
-                    ConfigLoader.MAX_OP_IN_HUB)
+                    ConfigurationManager.instance().getInt(ConfigurationManager.MAX_OP_IN_HUB))
                 {
                     new STAError(fromClient,
                                  Constants.STA_SEVERITY_FATAL +
@@ -250,7 +247,7 @@ public class INF extends Action
             if (fromClient.getClientHandler().getHR() != null)
             {
                 if (fromClient.getClientHandler().getHR() >
-                    ConfigLoader.MAX_HUBS_REGISTERED)
+                    ConfigurationManager.instance().getInt(ConfigurationManager.MAX_HUBS_REGISTERED))
                 {
                     new STAError(fromClient,
                                  Constants.STA_SEVERITY_FATAL +
@@ -287,13 +284,6 @@ public class INF extends Action
                          "Missing field",
                          "FM",
                          "ID");
-            return;
-        }
-        else if (ClientManager.getInstance().getClientByCID(fromClient.getClientHandler().getID()) != null)
-        {
-            new STAError(fromClient,
-                         Constants.STA_SEVERITY_FATAL + Constants.STA_CID_TAKEN,
-                         "CID taken. Please go to Settings and pick new PID.");
             return;
         }
 
@@ -733,7 +723,7 @@ public class INF extends Action
                 fromClient.getClientHandler().setHI(true);
             }
 
-            if (ConfigLoader.MAX_USERS <= ClientManager.getInstance().getClientsCount() &&
+            if (ConfigurationManager.instance().getInt(ConfigurationManager.MAX_USERS) <= ClientManager.getInstance().getClientsCount() &&
                 !fromClient.getClientHandler().isOverrideFull())
             {
                 new STAError(fromClient,
@@ -748,28 +738,28 @@ public class INF extends Action
 
         checkClientInformation();
 
-        if (fromClient.getClientHandler().getID().equals(ConfigLoader.OP_CHAT_CID))
+        if (fromClient.getClientHandler().getID().equals(ConfigurationManager.instance().getString(ConfigurationManager.OP_CHAT_CID)))
         {
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL + Constants.STA_CID_TAKEN,
                          "CID taken. Please go to Settings and pick new PID.");
             return;
         }
-        if (fromClient.getClientHandler().getID().equals(ConfigLoader.SECURITY_CID))
+        if (fromClient.getClientHandler().getID().equals(ConfigurationManager.instance().getString(ConfigurationManager.SECURITY_CID)))
         {
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL + Constants.STA_CID_TAKEN,
                          "CID taken. Please go to Settings and pick new PID.");
             return;
         }
-        if (fromClient.getClientHandler().getNI().equalsIgnoreCase(ConfigLoader.OP_CHAT_NAME))
+        if (fromClient.getClientHandler().getNI().equalsIgnoreCase(ConfigurationManager.instance().getString(ConfigurationManager.OP_CHAT_NAME)))
         {
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL + Constants.STA_NICK_TAKEN,
                          "Nick taken, please choose another");
             return;
         }
-        if (fromClient.getClientHandler().getNI().equalsIgnoreCase(ConfigLoader.BOT_CHAT_NAME))
+        if (fromClient.getClientHandler().getNI().equalsIgnoreCase(ConfigurationManager.instance().getString(ConfigurationManager.BOT_CHAT_NAME)))
         {
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL + Constants.STA_NICK_TAKEN,

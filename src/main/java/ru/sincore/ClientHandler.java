@@ -1629,7 +1629,7 @@ public class ClientHandler
         }
         if (isValidated())
         {
-            if (canReceiveCmds && ConfigLoader.COMMAND_PM_RETURN)
+            if (canReceiveCmds && ConfigurationManager.instance().getBoolean(ConfigurationManager.COMMAND_PM_RETURN))
             {
                 sendFromBotPM(text);
             }
@@ -1661,11 +1661,11 @@ public class ClientHandler
             if (this.isReg && this.opchatAccess)
             {
                 this.sendToClient("BINF ABCD ID" +
-                                  ConfigLoader.OP_CHAT_CID +
+                                  ConfigurationManager.instance().getString(ConfigurationManager.OP_CHAT_CID) +
                                   " NI" +
-                                  AdcUtils.retADCStr(ConfigLoader.OP_CHAT_NAME) +
+                                  AdcUtils.retADCStr(ConfigurationManager.instance().getString(ConfigurationManager.OP_CHAT_NAME)) +
                                   " CT5 DE" +
-                                  AdcUtils.retADCStr(ConfigLoader.OP_CHAT_DESCRIPTION));
+                                  AdcUtils.retADCStr(ConfigurationManager.instance().getString(ConfigurationManager.OP_CHAT_DESCRIPTION)));
             }
         }
         else

@@ -114,8 +114,8 @@ public class MSG extends Action
     private boolean parseAndExecuteCommandInMessage()
     {
         String normalMessage = AdcUtils.retNormStr(message);
-        if (normalMessage.startsWith(ConfigLoader.OP_COMMAND_PREFIX) ||
-            normalMessage.startsWith(ConfigLoader.USER_COMMAND_PREFIX))
+        if (normalMessage.startsWith(ConfigurationManager.instance().getString(ConfigurationManager.OP_COMMAND_PREFIX)) ||
+            normalMessage.startsWith(ConfigurationManager.instance().getString(ConfigurationManager.USER_COMMAND_PREFIX)))
         {
             StringTokenizer commandTokenizer = new StringTokenizer(normalMessage);
 
@@ -186,7 +186,7 @@ public class MSG extends Action
     {
         String messageText = tokenizer.nextToken();
 
-        if (messageText.length() > ConfigLoader.MAX_CHAT_MESSAGE_SIZE)
+        if (messageText.length() > ConfigurationManager.instance().getInt(ConfigurationManager.MAX_CHAT_MESSAGE_SIZE))
             new STAError(fromClient,
                          Constants.STA_SEVERITY_RECOVERABLE,
                          "MSG Message exceeds maximum length.");

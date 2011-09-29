@@ -170,7 +170,7 @@ public class SUP extends Action
         toClient.getClientHandler().sendToClient("ISUP " +
                                                  Constants.HUB_BASE_SUP_STRING +
                                                  " " +
-                                                 ConfigLoader.ADC_EXTENSION_LIST);
+                                                 ConfigurationManager.instance().getString(ConfigurationManager.ADC_EXTENSION_LIST));
 
         // move client to IDENTIFY state
         toClient.getClientHandler().setState(State.IDENTIFY);
@@ -180,14 +180,14 @@ public class SUP extends Action
 		StringBuilder inf = new StringBuilder(8);
 
 		inf.append("IINF CT32 VE ");
-		inf.append(AdcUtils.retADCStr(ConfigLoader.HUB_VERSION));
+		inf.append(AdcUtils.retADCStr(ConfigurationManager.instance().getString(ConfigurationManager.HUB_VERSION)));
 		inf.append("IN ");
-		inf.append(AdcUtils.retADCStr(ConfigLoader.HUB_NAME));
+		inf.append(AdcUtils.retADCStr(ConfigurationManager.instance().getString(ConfigurationManager.HUB_NAME)));
 		//Check hub description, if empty, send  IINF without DE option
-		if (!ConfigLoader.HUB_DESCRIPTION.isEmpty())
+		if (!ConfigurationManager.instance().getString(ConfigurationManager.HUB_DESCRIPTION).isEmpty())
 		{
 			inf.append("DE ");
-			inf.append(ConfigLoader.HUB_DESCRIPTION);
+			inf.append(ConfigurationManager.instance().getString(ConfigurationManager.HUB_DESCRIPTION));
 		}
 
 		// Check client flag isPingExtensionSupports, if true, send PING string
@@ -206,7 +206,7 @@ public class SUP extends Action
 		StringBuilder pingRequest = new StringBuilder(27);
 
 		pingRequest.append(" HH");
-		pingRequest.append(ConfigLoader.HUB_LISTEN);
+		pingRequest.append(ConfigurationManager.instance().getString(ConfigurationManager.HUB_LISTEN));
 		pingRequest.append(" UC");
 		pingRequest.append(ClientManager.getInstance().getClientsCount());
 		pingRequest.append(" SS");
@@ -214,21 +214,21 @@ public class SUP extends Action
 		pingRequest.append(" SF");
 		pingRequest.append(ClientManager.getInstance().getTotalFileCount());
 		pingRequest.append(" MS");
-		pingRequest.append(2048 * ConfigLoader.MIN_SHARE_SIZE);
+		pingRequest.append(2048 * ConfigurationManager.instance().getLong(ConfigurationManager.MIN_SHARE_SIZE));
 		pingRequest.append(" XS");
-		pingRequest.append(2048 * ConfigLoader.MAX_SHARE_SIZE);
+		pingRequest.append(2048 * ConfigurationManager.instance().getLong(ConfigurationManager.MAX_SHARE_SIZE));
 		pingRequest.append(" ML");
-		pingRequest.append(ConfigLoader.MIN_SLOT_COUNT);
+		pingRequest.append(ConfigurationManager.instance().getInt(ConfigurationManager.MIN_SLOT_COUNT));
 		pingRequest.append(" XL");
-		pingRequest.append(ConfigLoader.MIN_SLOT_COUNT);
+		pingRequest.append(ConfigurationManager.instance().getInt(ConfigurationManager.MIN_SLOT_COUNT));
 		pingRequest.append(" XU");
-		pingRequest.append(ConfigLoader.MAX_HUBS_USERS);
+		pingRequest.append(ConfigurationManager.instance().getInt(ConfigurationManager.MAX_HUBS_USERS));
 		pingRequest.append(" XR");
-		pingRequest.append(ConfigLoader.MAX_HUBS_REGISTERED);
+		pingRequest.append(ConfigurationManager.instance().getInt(ConfigurationManager.MAX_HUBS_REGISTERED));
 		pingRequest.append(" XO");
-		pingRequest.append(ConfigLoader.MAX_OP_IN_HUB);
+		pingRequest.append(ConfigurationManager.instance().getInt(ConfigurationManager.MAX_OP_IN_HUB));
 		pingRequest.append(" MC");
-		pingRequest.append(ConfigLoader.MAX_USERS);
+		pingRequest.append(ConfigurationManager.instance().getInt(ConfigurationManager.MAX_USERS));
 		pingRequest.append(" UP");
 		pingRequest.append((System.currentTimeMillis() - Main.curtime));
 

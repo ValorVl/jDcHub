@@ -67,7 +67,7 @@ public class ExtRedirect
         StringTokenizer ST = new StringTokenizer(recvbuf);
         ST.nextToken();
         String what = ST.nextToken();
-        String URL = ConfigLoader.REDIRECT_URL;
+        String URL = ConfigurationManager.instance().getString(ConfigurationManager.REDIRECT_URL);
         if (ST.hasMoreTokens())
         {
             URL = ST.nextToken();
