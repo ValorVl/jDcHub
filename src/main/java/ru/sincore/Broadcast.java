@@ -130,7 +130,7 @@ public class Broadcast
                 }
                 else if (message.startsWith("I"))
                 {
-                    toClientHandler.sendFromBot(message.substring(5));
+                    toClient.getClientHandler().getSession().write(message);
                 }
                 else
                 {
