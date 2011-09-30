@@ -139,6 +139,7 @@ public class SessionManager extends IoHandlerAdapter
     {
         log.debug("Session closed.");
         Client currentClient = (Client)(session.getAttribute("client"));
+        ClientManager.getInstance().removeClient(currentClient);
 
         if (currentClient.getClientHandler().isValidated() && !currentClient.getClientHandler().isKicked())
         {
@@ -151,6 +152,7 @@ public class SessionManager extends IoHandlerAdapter
         {
             myMod.onClientQuit(currentClient.getClientHandler());
         }
+
         currentClient.getClientHandler().increaseTimeOnline(System.currentTimeMillis() -
                                                 currentClient.getClientHandler().getLoggedAt());
 
@@ -158,9 +160,6 @@ public class SessionManager extends IoHandlerAdapter
                  " with SID " +
                  currentClient.getClientHandler().getSID() +
                  " just quited.");
-
-        //ClientManager.getInstance().removeClientByCID(currentClient.getClientHandler().getID());
-        ClientManager.getInstance().removeClient(currentClient);
     }
 
 

@@ -883,6 +883,8 @@ public class INF extends Action
                              "Registered only hub.");
                 return;
             }
+
+            fromClient.getClientHandler().setValidated();
         }
         // make client active
         fromClient.getClientHandler().setActive(true);
