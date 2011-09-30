@@ -120,8 +120,8 @@ public class MSG extends Action
             StringTokenizer commandTokenizer = new StringTokenizer(normalMessage, " ");
 
             CmdEngine cmd = new CmdEngine();
-            String command = commandTokenizer.nextToken();
-            if (!cmd.commandExist(command.substring(1)))
+            String command = commandTokenizer.nextToken().substring(1);
+            if (!cmd.commandExist(command))
             {
                  // TODO say to client that command doesn't exist
 
