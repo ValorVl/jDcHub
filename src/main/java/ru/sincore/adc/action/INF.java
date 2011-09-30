@@ -46,7 +46,6 @@ public class INF extends Action
              context,
              (context == Context.T ? client : null),
              (context == Context.F ? null : client));
-
     }
 
     public INF(MessageType messageType, int context, Client client, String rawCommand)
