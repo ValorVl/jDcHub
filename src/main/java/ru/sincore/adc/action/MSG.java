@@ -163,7 +163,8 @@ public class MSG extends Action
                                  Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
                                  "MSG Invalid flag value.");
 
-                if (pmSID.equals(mySID))
+                // TODO [lh] check what will be, if message will be sent to group
+                if (pmSID.equals(mySID) && messageType != MessageType.E)
                     new STAError(fromClient,
                                  Constants.STA_SEVERITY_RECOVERABLE,
                                  "MSG Can\'t send private message to yourself.");

@@ -123,7 +123,6 @@ public class Broadcast
 
             if (toClientHandler.isActive())
             {
-                log.debug("Broadcasting message : " + message);
                 // TODO may be buggie
                 if (!message.startsWith("E") && toClient.equals(fromClient))
                 {
