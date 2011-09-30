@@ -117,7 +117,7 @@ public class MSG extends Action
         if (normalMessage.startsWith(ConfigurationManager.instance().getString(ConfigurationManager.OP_COMMAND_PREFIX)) ||
             normalMessage.startsWith(ConfigurationManager.instance().getString(ConfigurationManager.USER_COMMAND_PREFIX)))
         {
-            StringTokenizer commandTokenizer = new StringTokenizer(normalMessage);
+            StringTokenizer commandTokenizer = new StringTokenizer(normalMessage, " ");
 
             CmdEngine cmd = new CmdEngine();
             String command = commandTokenizer.nextToken();
@@ -131,7 +131,7 @@ public class MSG extends Action
             }
 
             // command params is a message string without leading command name and whitespace
-            String commandParams = message.substring(command.length() + 1);
+            String commandParams = message.substring(command.length());
 
             cmd.executeCmd(command, commandParams, fromClient);
 

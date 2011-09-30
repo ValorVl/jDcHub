@@ -22,6 +22,9 @@ public class CmdEngine
 		CmdContainer container = CmdContainer.getInstance();
 		AbstractCmd cmdExec = container.getCommandExecutor(cmd);
 
+        if (cmdExec == null)
+            return;
+
 		int clientRightWeight = 100; //This stub
 
 		if(cmdExec.validateRights(clientRightWeight))

@@ -884,6 +884,8 @@ public class INF extends Action
                 return;
             }
         }
+        // make client active
+        fromClient.getClientHandler().setActive(true);
 
         ClientManager.getInstance().moveClientToRegularMap(fromClient);
 

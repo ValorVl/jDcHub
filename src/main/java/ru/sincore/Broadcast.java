@@ -23,6 +23,9 @@
 
 package ru.sincore;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Provides broadcasts and feature broadcasts constructors to all connected
  * clients.
@@ -34,11 +37,7 @@ package ru.sincore;
  */
 public class Broadcast
 {
-
-    public static final int STATE_ALL    = 0;
-    public static final int STATE_ACTIVE = 1;
-
-    public static final int STATE_ALL_KEY = 10;
+    private static final Logger log = LoggerFactory.getLogger(Broadcast.class);
 
     /**
      * Contains message history without duplicates
@@ -78,51 +77,41 @@ public class Broadcast
      * Creates a new instance of Broadcast , sends to all except the ClientNod
      * received as param.
      */
-    public void broadcast(String STR, Client client)
+    public void broadcast(String message, Client client)
     {
-        run(0, STR, client);
+        run(message, client);
     }
 
 
-    /**
-     * state =STATE_ALL normal, to all state=STATE_ACTIVE only to active state=
-     * STATE_ALL_KEY to all ops;
-     */
-    public void broadcast(String STR, int state)
+    public void broadcast(String message, int state)
     {
-        // STATE_ALL_KEY - ops only
-        run(state, STR, null);
+        run(message, null);
     }
 
 
-    public void broadcast(String STR)
+    public void broadcast(String message)
     {
-        run(0, STR, null);
+        run(message, null);
     }
 
 
-    public void execute(int state, String STR, Client fromClient,
-                        Client toClient)
+    public void execute(String message, Client fromClient, Client toClient)
     {
-        ClientThread ct = new ClientThread(state, STR, fromClient, toClient);
+        ClientThread ct = new ClientThread(message, fromClient, toClient);
         ct.run();
     }
 
 
     private class ClientThread
     {
-
-        private final int       state;
-        private final String    STR;
+        private final String    message;
         private final Client    fromClient;
         private final Client    toClient;
 
 
-        public ClientThread(int state, String STR, Client fromClient,
-                            Client toClient)
+        public ClientThread(String message, Client fromClient, Client toClient)
         {
-            this.state = state;
-            this.STR = STR;
+            this.message = message;
             this.fromClient = fromClient;
             this.toClient = toClient;
         }
@@ -132,52 +121,38 @@ public class Broadcast
         {
             ClientHandler toClientHandler = toClient.getClientHandler();
 
-            if ((toClientHandler.isValidated() && toClient != fromClient
-                    && state == 1 && toClientHandler.isActive()))
+            if (toClientHandler.isActive())
             {
+                log.debug("Broadcasting message : " + message);
                 // TODO may be buggie
-                if (!STR.startsWith("E") && toClient.equals(fromClient))
+                if (!message.startsWith("E") && toClient.equals(fromClient))
                 {
-                    return;
                 }
-                if (STR.startsWith("IMSG "))
+                else if (message.startsWith("I"))
                 {
-                    toClientHandler.sendFromBot(STR.substring(5));
+                    toClientHandler.sendFromBot(message.substring(5));
                 }
                 else
                 {
-                    toClientHandler.sendToClient(STR);
+                    toClientHandler.sendToClient(message);
                 }
             }
         }
     }
 
 
-    public void sendToAll(int state, String STR, Client fromClient)
+    public void sendToAll(String message, Client fromClient)
     {
-        for (Client toClient : SessionManager.getUsers())
+        for (Client toClient : ClientManager.getInstance().getClients())
         {
-            execute(state, STR, fromClient, toClient);
+            execute(message, fromClient, toClient);
         }
     }
 
 
-    public void run(int state, String STR, Client client)
+    public void run(String message, Client client)
     {
-        sendToAll(state, STR, client);
+        sendToAll(message, client);
     }
 
-    /**
-     * Custom thread factory used in connection pool
-     */
-    /*private final class DaemonThreadFactory implements ThreadFactory
-        {
-            public Thread newThread(Runnable r)
-            {
-                Thread thread = new Thread(r);
-                thread.setDaemon(true);
-                return thread;
-            }
-        }
-    */
 }

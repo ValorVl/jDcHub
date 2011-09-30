@@ -64,13 +64,6 @@ public class SessionManager extends IoHandlerAdapter
     }
 
 
-    public static synchronized Collection<Client> getUsers()
-    {
-        // TODO This method must be removed
-        return ClientManager.getInstance().getClients();
-    }
-
-
     public void exceptionCaught(IoSession session, Throwable t)
             throws Exception
     {
@@ -82,9 +75,8 @@ public class SessionManager extends IoHandlerAdapter
             }
             if (t.getMessage().contains("java.nio.charset.MalformedInputException"))
             {
-                ((ClientHandler) (session.getAttribute("client")))
-                        .sendFromBot(
-                                "Unicode Exception. Your client sent non-Unicode chars. Ignored.");
+//                ((ClientHandler) (session.getAttribute("client")))
+//                        .sendFromBot("Unicode Exception. Your client sent non-Unicode chars. Ignored.");
                 return;
             }
             if ((t.getMessage().contains("BufferDataException: Line is too long")))
@@ -145,29 +137,30 @@ public class SessionManager extends IoHandlerAdapter
     public void sessionClosed(IoSession session)
             throws Exception
     {
-        Client currentClient = (Client) (session.getAttribute("client"));
-        ClientHandler currentClientHandler = currentClient.getClientHandler();
+        log.debug("Session closed.");
+        Client currentClient = (Client)(session.getAttribute("client"));
 
-        if (currentClientHandler.isValidated() && !currentClientHandler.isKicked())
+        if (currentClient.getClientHandler().isValidated() && !currentClient.getClientHandler().isKicked())
         {
             // broadcast client quited message
-            Broadcast.getInstance().broadcast("IQUI " + currentClientHandler.getSID(), currentClient);
+            Broadcast.getInstance().broadcast("IQUI " + currentClient.getClientHandler().getSID());
         }
         /** calling plugins...*/
 
         for (Module myMod : Modulator.myModules)
         {
-            myMod.onClientQuit(currentClientHandler);
+            myMod.onClientQuit(currentClient.getClientHandler());
         }
-        currentClientHandler.increaseTimeOnline(System.currentTimeMillis() -
-                                                currentClientHandler.getLoggedAt());
+        currentClient.getClientHandler().increaseTimeOnline(System.currentTimeMillis() -
+                                                currentClient.getClientHandler().getLoggedAt());
 
-        log.info(currentClientHandler.getNI() +
+        log.info(currentClient.getClientHandler().getNI() +
                  " with SID " +
-                 currentClientHandler.getSID() +
+                 currentClient.getClientHandler().getSID() +
                  " just quited.");
 
-        ClientManager.getInstance().removeClientByCID(currentClientHandler.getID());
+        //ClientManager.getInstance().removeClientByCID(currentClient.getClientHandler().getID());
+        ClientManager.getInstance().removeClient(currentClient);
     }
 
 

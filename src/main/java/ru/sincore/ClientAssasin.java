@@ -95,8 +95,7 @@ public class ClientAssasin extends Thread
                         }
                         else
                         {
-                            Broadcast.getInstance()
-                                     .broadcast(clientHandler.getInQueueSearch(), Broadcast.STATE_ACTIVE);
+                            Broadcast.getInstance().broadcast(clientHandler.getInQueueSearch());
                         }
                         clientHandler.setInQueueSearch(null);
                         clientHandler.setLastSearch(currentTime);
