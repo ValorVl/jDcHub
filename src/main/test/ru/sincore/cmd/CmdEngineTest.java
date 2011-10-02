@@ -36,6 +36,6 @@ public class CmdEngineTest
 	{
 		// Command syntax: cmd add {command_name} {class executor [script_name]} weight
 		CmdEngine cmdEngine = new CmdEngine();
-		cmdEngine.registryCmd("Test2","ru.sincore.cmd.handlers.StubHandler", 0,true,true);
+		//cmdEngine.registryCmd("Test2","ru.sincore.cmd.handlers.StubHandler", 0,true,true);
 	}
 }

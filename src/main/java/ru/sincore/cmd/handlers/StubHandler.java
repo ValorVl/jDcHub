@@ -20,6 +20,9 @@ public class StubHandler extends AbstractCmd
 	public void execute(String cmd, String args, Client client)
 	{
 		log.info("Cmd : "+cmd+" args : "+args);
+
+		client.getClientHandler().sendFromBotPM("Debug : cmd"+cmd+" | args : "+
+														args+" | client : "+client.getClientHandler().getNI());
 	}
 }
 

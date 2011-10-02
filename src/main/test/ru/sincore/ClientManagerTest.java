@@ -15,9 +15,9 @@ public class ClientManagerTest
             throws Exception
     {
         Client client = new Client();
-        client.getClientHandler().SID = SIDGenerator.generate();
-        client.getClientHandler().NI = "TestNick";
-        client.getClientHandler().ID = CIDGenerator.generate();
+        client.getClientHandler().setID(SIDGenerator.generate());
+        client.getClientHandler().setNI("TestNick");
+        client.getClientHandler().setID(CIDGenerator.generate());
 
         ClientManager.getInstance().addClient(client);
 

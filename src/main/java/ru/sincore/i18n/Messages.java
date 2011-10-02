@@ -39,6 +39,7 @@ public class Messages
 
     // Client messages
     public static final String REG_MESSAGE            = "core.reg_message";
+	public static final String REG_FAIL_MESSAGE       = "core.reg_fail_message";
     public static final String BAN_MESSAGE            = "core.ban_message";
     public static final String HUB_FULL_MESSAGE       = "core.hub_is_full";
     public static final String SEARCH_SPAM_MESSAGE    = "core.search_spam_detected";
