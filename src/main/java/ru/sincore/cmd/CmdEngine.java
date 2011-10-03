@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 import ru.sincore.Client;
-import ru.sincore.db.dao.CmdListDAOImpl;
 
 public class CmdEngine
 {
@@ -19,8 +18,14 @@ public class CmdEngine
 	 */
 	public void executeCmd(String cmd, String args, Client client)
 	{
+
+		log.debug("Cmd : "+cmd+" | args : "+args+" | client : "+ client);
+
 		CmdContainer container = CmdContainer.getInstance();
 		AbstractCmd cmdExec = container.getCommandExecutor(cmd);
+
+        if (cmdExec == null)
+            return;
 
 		int clientRightWeight = 100; //This stub
 
@@ -59,34 +64,34 @@ public class CmdEngine
 	 * @param executor full FQDN class name
 	 * @param weight rights weight
 	 */
-	public void registryCmd(String cmdName, String executor, Integer weight,Boolean enabled, Boolean logged)
-	{
-		// first, register command in command container
-		CmdContainer container = CmdContainer.getInstance();
-
-		try
-		{
-			AbstractCmd executorObject = (AbstractCmd) Class.forName(executor).newInstance();
-			container.registryCommand(cmdName,executorObject);
-
-			CmdListDAOImpl cmdListDAO = new CmdListDAOImpl();
-
-			String args = executorObject.getCmdArgs();
-			String desc = executorObject.getCmdDescription();
-			String syntax = executorObject.getCmdSyntax();
-
-			cmdListDAO.addCommand(cmdName,weight,executor,args,desc,syntax,enabled,logged);
-
-
-		} catch (InstantiationException e)
-		{
-			log.error(marker,e);
-		} catch (IllegalAccessException e)
-		{
-			log.error(marker,e);
-		} catch (ClassNotFoundException e)
-		{
-			log.error(marker,e);
-		}
-	}
+//	public void registryCmd(String cmdName, String executor, Integer weight,Boolean enabled, Boolean logged)
+//	{
+//		// first, register command in command container
+//		CmdContainer container = CmdContainer.getInstance();
+//
+//		try
+//		{
+//			AbstractCmd executorObject = (AbstractCmd) Class.forName(executor).newInstance();
+//			container.registryCommand(cmdName,executorObject);
+//
+//			CmdListDAOImpl cmdListDAO = new CmdListDAOImpl();
+//
+//			String args = executorObject.getCmdArgs();
+//			String desc = executorObject.getCmdDescription();
+//			String syntax = executorObject.getCmdSyntax();
+//
+//			cmdListDAO.addCommand(cmdName,weight,executor,args,desc,syntax,enabled,logged);
+//
+//
+//		} catch (InstantiationException e)
+//		{
+//			log.error(marker,e);
+//		} catch (IllegalAccessException e)
+//		{
+//			log.error(marker,e);
+//		} catch (ClassNotFoundException e)
+//		{
+//			log.error(marker,e);
+//		}
+//	}
 }

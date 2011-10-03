@@ -117,11 +117,11 @@ public class MSG extends Action
         if (normalMessage.startsWith(ConfigurationManager.instance().getString(ConfigurationManager.OP_COMMAND_PREFIX)) ||
             normalMessage.startsWith(ConfigurationManager.instance().getString(ConfigurationManager.USER_COMMAND_PREFIX)))
         {
-            StringTokenizer commandTokenizer = new StringTokenizer(normalMessage);
+            StringTokenizer commandTokenizer = new StringTokenizer(normalMessage, " ");
 
             CmdEngine cmd = new CmdEngine();
-            String command = commandTokenizer.nextToken();
-            if (!cmd.commandExist(command.substring(1)))
+            String command = commandTokenizer.nextToken().substring(1);
+            if (!cmd.commandExist(command))
             {
                  // TODO say to client that command doesn't exist
 
@@ -131,9 +131,11 @@ public class MSG extends Action
             }
 
             // command params is a message string without leading command name and whitespace
-            String commandParams = message.substring(command.length() + 1);
+            String commandParams = "";
+            if (command.length() != normalMessage.length())
+                commandParams = normalMessage.substring(command.length() + 1);
 
-            cmd.executeCmd(command, commandParams, fromClient);
+            cmd.executeCmd(command, commandParams.trim(), fromClient);
 
             return true;
         }
@@ -163,7 +165,8 @@ public class MSG extends Action
                                  Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
                                  "MSG Invalid flag value.");
 
-                if (pmSID.equals(mySID))
+                // TODO [lh] check what will be, if message will be sent to group
+                if (pmSID.equals(mySID) && messageType != MessageType.E)
                     new STAError(fromClient,
                                  Constants.STA_SEVERITY_RECOVERABLE,
                                  "MSG Can\'t send private message to yourself.");

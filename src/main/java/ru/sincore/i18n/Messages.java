@@ -17,33 +17,34 @@ public class Messages
 {
     private static final Logger log = Logger.getLogger(Messages.class);
     private static final ConfigurationManager configurationManager = ConfigurationManager.instance();
-    private static final String defaultLocale = configurationManager.getString(ConfigurationManager.HUB_MESSAGES_LOCALE);
+    private static final String defaultLocale = configurationManager.getString(ConfigurationManager.HUB_DEFAULT_LOCALE);
 
     // define server message var
     private static final String SERVER_MESSAGE_FILE = "./etc/messages/servermessages.properties";
 
     // Server messages
-    public static String SERVER_MESSAGE_STUB    = "core.server.message.stub";
-    public static String RESTART_HUB            = "core.server.message.restart_hub";
-    public static String CLOSE_HUB              = "core.server.message.close_hub";
-    public static String ACCOUNT_REGISTER       = "core.server.message.account_register";
-    public static String REGISTER_CID           = "core.server.message.register_cid";
-    public static String SERVER_STARTUP         = "core.server.message.startup";
-    public static String SERVER_STARTUP_DONE    = "core.server.message.startup_done";
-    public static String SEARCH_IN_PROGRESS     = "core.server.message.search_in_progress";
-    public static String CID_UNBANNED           = "core.server.message.cid_unbanned";
-    public static String CID_NOT_BANNED         = "core.server.message.cid_not_banned";
-    public static String USER_REGISTERED        = "core.server.message.user_registered";
-    public static String DONE                   = "core.server.message.done";
+    public static final String SERVER_MESSAGE_STUB    = "core.server.message.stub";
+    public static final String RESTART_HUB            = "core.server.message.restart_hub";
+    public static final String CLOSE_HUB              = "core.server.message.close_hub";
+    public static final String ACCOUNT_REGISTER       = "core.server.message.account_register";
+    public static final String REGISTER_CID           = "core.server.message.register_cid";
+    public static final String SERVER_STARTUP         = "core.server.message.startup";
+    public static final String SERVER_STARTUP_DONE    = "core.server.message.startup_done";
+    public static final String SEARCH_IN_PROGRESS     = "core.server.message.search_in_progress";
+    public static final String CID_UNBANNED           = "core.server.message.cid_unbanned";
+    public static final String CID_NOT_BANNED         = "core.server.message.cid_not_banned";
+    public static final String USER_REGISTERED        = "core.server.message.user_registered";
+    public static final String DONE                   = "core.server.message.done";
 
 
     // Client messages
-    public static String REG_MESSAGE            = "core.reg_message";
-    public static String BAN_MESSAGE            = "core.ban_message";
-    public static String HUB_FULL_MESSAGE       = "core.hub_is_full";
-    public static String SEARCH_SPAM_MESSAGE    = "core.search_spam_detected";
-    public static String TIGER_ERROR            = "tiger.error";
-    public static String LOGIN_ERROR_MESSAGE    = "core.login_error_message";
+    public static final String REG_MESSAGE            = "core.reg_message";
+	public static final String REG_FAIL_MESSAGE       = "core.reg_fail_message";
+    public static final String BAN_MESSAGE            = "core.ban_message";
+    public static final String HUB_FULL_MESSAGE       = "core.hub_is_full";
+    public static final String SEARCH_SPAM_MESSAGE    = "core.search_spam_detected";
+    public static final String LOGIN_ERROR_MESSAGE    = "core.login_error_message";
+    public static final String TIGER_ERROR            = "tiger.error";
 
 
     private static Map<String, PropertiesConfiguration> messagesMap =

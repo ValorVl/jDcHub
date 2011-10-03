@@ -96,13 +96,15 @@ public final class ClientManager
 
     private ClientManager()
     {
-        // TODO move initial capacity and load factor to config
-        clientsByCID    = new ConcurrentHashMap<String, Client>(3000, (float) 0.75);
-        clientsByNick   = new ConcurrentHashMap<String, Client>(3000, (float) 0.75);
-        clientsBySID    = new ConcurrentHashMap<String, Client>(3000, (float) 0.75);
+        int initialCapacity = ConfigurationManager.instance().getInt(ConfigurationManager.USER_INITIAL_CAPACITY);
+        float loadFactor = ConfigurationManager.instance().getFloat(ConfigurationManager.USER_LOAD_FACTOR);
 
-        // TODO move connection initial capacity to config
-        uninitializedClients = new Vector<Client>(1000);
+        clientsByCID    = new ConcurrentHashMap<String, Client>(initialCapacity, loadFactor);
+        clientsByNick   = new ConcurrentHashMap<String, Client>(initialCapacity, loadFactor);
+        clientsBySID    = new ConcurrentHashMap<String, Client>(initialCapacity, loadFactor);
+
+        uninitializedClients = new Vector<Client>(ConfigurationManager.instance().getInt(
+                ConfigurationManager.USER_CONNECTION_BUFFER_INITIAL_SIZE));
     }
 
 

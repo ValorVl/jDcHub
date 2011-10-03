@@ -111,7 +111,7 @@ public class Main extends Thread
 
         proppies = System.getProperties();
 
-        log.info(Messages.get(Messages.SERVER_STARTUP));
+        log.info(Messages.get(Messages.SERVER_STARTUP_DONE));
     }
 
 

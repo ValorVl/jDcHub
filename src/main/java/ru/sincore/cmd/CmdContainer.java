@@ -47,7 +47,7 @@ public class CmdContainer
 				commands.put(cmd.getCommandName(),cmdInstance);
 			} catch (ClassNotFoundException e)
 			{
-				log.error(marker,e);
+				log.error(marker,e, "Class : "+cmd.getCommandExecutorClass());
 			} catch (InstantiationException e)
 			{
 				log.error(marker,e);
@@ -93,9 +93,34 @@ public class CmdContainer
 		return commands;
 	}
 
-	public synchronized void registryCommand(String name, AbstractCmd executor)
+	/**
+	 * Method register new command handler
+	 *
+	 * @param name command name
+	 * @param executor class executor
+	 * @return true if register, otherwise false
+	 */
+	public synchronized boolean registryCommand(String name, String executor)
 	{
-		commands.put(name,executor);
+		try
+		{
+			AbstractCmd cmdExecutorObject = (AbstractCmd) Class.forName(executor).newInstance();
+			commands.put(name,cmdExecutorObject);
+
+			return true;
+
+		} catch (ClassNotFoundException e)
+		{
+			log.error(marker,e);
+		} catch (InstantiationException e)
+		{
+			log.error(marker,e);
+		} catch (IllegalAccessException e)
+		{
+			log.error(marker,e);
+		}
+
+		return false;
 	}
 
 }

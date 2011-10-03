@@ -138,6 +138,7 @@ public class Command
         /*******************************CTM COMMAND*******************************/
         if (rawCommand.substring(1).startsWith("CTM ")) //direct connect to me
         {
+            new CTM(messageType, Context.T, client, rawCommand);
         }
         else
         /*******************************RCM COMMAND*******************************/

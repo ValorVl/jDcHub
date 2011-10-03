@@ -155,4 +155,32 @@ public class CmdListDAOImpl implements CmdListDAO
 
 		return null;
 	}
+
+	public CmdListPOJO getCommandInfo(String command)
+	{
+		Session session = HibernateUtils.getSessionFactory().openSession();
+		Transaction tx = session.getTransaction();
+
+		try{
+
+			tx.begin();
+
+			Query query = session.createQuery("from CmdListPOJO where commandName =:cmd");
+
+			query.setParameter("cmd",command);
+
+			CmdListPOJO result = (CmdListPOJO) query.uniqueResult();
+
+			tx.commit();
+
+			return result;
+
+		}catch (HibernateException ex)
+		{
+			tx.rollback();
+			log.error(marker, ex);
+		}
+
+		return null;
+	}
 }

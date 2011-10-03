@@ -371,7 +371,7 @@ public class ClientHandler
     private boolean overrideShare;
     private boolean overrideSpam;
     private boolean overrideFull;
-    private boolean kickable;
+    private boolean kickable = true;
 	private boolean renameable;
     private boolean accountFlyable;
     private boolean opchatAccess;
