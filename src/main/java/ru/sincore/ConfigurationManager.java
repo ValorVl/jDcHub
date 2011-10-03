@@ -43,6 +43,9 @@ public class ConfigurationManager extends PropertiesConfiguration
     public static final String HUB_DEFAULT_LOCALE = "core.hub.default_locale";
 
     public static final String MAX_USERS                  = "core.hub.max_users";
+    public static final String USER_INITIAL_CAPACITY      = "core.hub.user_initial_capacity";
+    public static final String USER_LOAD_FACTOR           = "core.hub.user_load_factor";
+    public static final String USER_CONNECTION_BUFFER_INITIAL_SIZE = "core.hub.user_connection_buffer_initial_size";
     public static final String MAX_HUBS_USERS             = "core.hub.max_hubs_users";
     public static final String MAX_HUBS_REGISTERED        = "core.hub.max_hubs_registered";
     public static final String MAX_SHARE_SIZE             = "core.hub.max_share_size";
@@ -261,6 +264,21 @@ public class ConfigurationManager extends PropertiesConfiguration
         if (!this.containsKey(MAX_USERS))
         {
             this.setProperty(MAX_USERS, 1000);
+        }
+
+        if (!this.containsKey(USER_INITIAL_CAPACITY))
+        {
+            this.setProperty(USER_INITIAL_CAPACITY, 3000);
+        }
+
+        if (!this.containsKey(USER_LOAD_FACTOR))
+        {
+            this.setProperty(USER_LOAD_FACTOR, 0.75);
+        }
+
+        if (!this.containsKey(USER_CONNECTION_BUFFER_INITIAL_SIZE))
+        {
+            this.setProperty(USER_CONNECTION_BUFFER_INITIAL_SIZE, 1000);
         }
 
         if (!this.containsKey(MAX_HUBS_USERS))

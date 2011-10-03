@@ -133,9 +133,9 @@ public class MSG extends Action
             // command params is a message string without leading command name and whitespace
             String commandParams = "";
             if (command.length() != normalMessage.length())
-                commandParams = message.substring(command.length() + 1);
+                commandParams = normalMessage.substring(command.length() + 1);
 
-            cmd.executeCmd(command, AdcUtils.retNormStr(commandParams).trim(), fromClient);
+            cmd.executeCmd(command, commandParams.trim(), fromClient);
 
             return true;
         }
