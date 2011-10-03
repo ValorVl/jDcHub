@@ -834,27 +834,15 @@ public class INF extends Action
 
         // TODO [lh] load information about client from db
 
+//        fromClient.getClientHandler().setPassword("qwerty123");
+//        fromClient.getClientHandler().setReg(true);
         if (fromClient.getClientHandler().isReg())
         {
             if (fromClient.getClientHandler().getPassword().equals(""))//no pass defined ( yet)
             {
                 fromClient.getClientHandler().sendToClient(
                         "ISTA 000 Registered,\\sno\\spassword\\srequired.\\sThough,\\sits\\srecomandable\\sto\\sset\\sone.");
-                fromClient.getClientHandler().sendToClient("ISTA 000 Authenticated.");
-
-
-                fromClient.getClientHandler().setLastNick(fromClient.getClientHandler().getNI());
-                fromClient.getClientHandler().setLastIP(fromClient.getClientHandler().getRealIP());
-
-                //user is OK, logged in and cool
-                fromClient.getClientHandler().setValidated();
-                fromClient.getClientHandler().setState(State.NORMAL);
-                fromClient.getClientHandler().setLastLogin(fromClient.getClientHandler().getLoggedAt());
-
-                if (fromClient.getClientHandler().isHideMe())
-                    fromClient.getClientHandler().sendFromBot("You are currently hidden.");
-
-                fromClient.getClientHandler().setLoggedAt(System.currentTimeMillis());
+                fromClient.onLoggedIn();
             }
             else
             {
@@ -870,6 +858,7 @@ public class INF extends Action
 
                 // set client state VARIFY
                 fromClient.getClientHandler().setState(State.VERIFY);
+                return;
             }
         }
         else
@@ -885,48 +874,8 @@ public class INF extends Action
 
             fromClient.getClientHandler().setValidated();
         }
-        // make client active
-        fromClient.getClientHandler().setActive(true);
 
-        ClientManager.getInstance().moveClientToRegularMap(fromClient);
-
-        //ok now sending infs of all others to the handler
-        sendUsersInfs();
-
-        fromClient.getClientHandler().sendToClient("BINF " +
-                                                   configurationManager.getString(ConfigurationManager.BOT_CHAT_SID) +
-                                                   " ID" +
-                                                   configurationManager.getString(ConfigurationManager.SECURITY_CID) +
-                                                   " NI" +
-                                                   AdcUtils.retADCStr(
-                                                           configurationManager.getString(ConfigurationManager.BOT_CHAT_NAME)
-                                                                     ) +
-                                                   " CT5 DE" +
-                                                   AdcUtils.retADCStr(
-                                                           configurationManager.getString(ConfigurationManager.BOT_CHAT_DESCRIPTION)
-                                                                     ));
-
-        fromClient.getClientHandler().putOpchat(true);
-        //sending inf about itself too
-        fromClient.getClientHandler().sendToClient(fromClient.getClientHandler().getINF());
-
-        //ok now must send INF to all clients
-        Broadcast.getInstance().broadcast(fromClient.getClientHandler().getINF(), fromClient);
-
-
-        if (fromClient.getClientHandler().isUcmd())
-        {
-            //ok, he is ucmd ok, so
-            fromClient.getClientHandler().sendToClient("ICMD Test CT1 TTTest");
-        }
-        // TODO [lh] send MOTD to client
-        //fromClient.getClientHandler().sendFromBot(bigTextManager.getMOTD(fromClient));
-
-        /** calling plugins...*/
-        for (Module myMod : Modulator.myModules)
-        {
-            myMod.onConnect(fromClient.getClientHandler());
-        }
+        fromClient.onConnected();
     }
 
 
@@ -944,17 +893,6 @@ public class INF extends Action
 
         return myTiger.engineDigest();
     }
-
-
-    private void sendUsersInfs()
-    {
-        for (Client client : ClientManager.getInstance().getClients())
-        {
-            if (client.getClientHandler().isValidated() && !client.equals(fromClient))
-                fromClient.getClientHandler().sendToClient(client.getClientHandler().getINF());
-        }
-    }
-
 
     @Override
     protected void parseIncoming()
