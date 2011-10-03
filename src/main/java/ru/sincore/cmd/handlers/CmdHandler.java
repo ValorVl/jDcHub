@@ -19,7 +19,6 @@ package ru.sincore.cmd.handlers;
  */
 
 import gnu.getopt.Getopt;
-import gnu.getopt.LongOpt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.sincore.Client;
@@ -27,6 +26,8 @@ import ru.sincore.cmd.AbstractCmd;
 import ru.sincore.cmd.CmdContainer;
 import ru.sincore.cmd.CmdUtils;
 import ru.sincore.db.dao.CmdListDAOImpl;
+
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *  A class managed command engine.
@@ -55,16 +56,10 @@ public class CmdHandler extends AbstractCmd
 
 		argTransformer = new CmdUtils();
 
-		LongOpt[] longOpts = new LongOpt[1];
-
-		longOpts[0] = new LongOpt("help",LongOpt.OPTIONAL_ARGUMENT,null,'h');
-
-		Getopt getopt = new Getopt("cmd",argTransformer.strArgToArray(args),"-:c",longOpts);
+		Getopt getopt = new Getopt("",argTransformer.strArgToArray(args),":hr");
 		getopt.setOpterr(false);
 
 		int c;
-
-		log.info(String.valueOf(getopt.getopt()));
 
 		String optionArg = "";
 
@@ -72,13 +67,17 @@ public class CmdHandler extends AbstractCmd
 		{
 			switch (c)
 			{
-				case 0:
-					log.info("option called -> "+getopt.getOptarg());
+		 		case 'h':
+					log.info("called {c}");
 					showHelp();
 					break;
 
-		 		case 'c':
-					log.info("called {c}");
+				case 'r':
+					reloadCmd();
+					break;
+
+				case '?':
+					error();
 					break;
 
 				default:
@@ -87,14 +86,22 @@ public class CmdHandler extends AbstractCmd
 			}
 		}
 
-		log.info("Cmd : " +cmd+" args : "+argTransformer.strArgToArray(args));
+		log.info(String.valueOf(c));
+
+		for (int i = getopt.getOptind(); i < argTransformer.strArgToArray(args).length;i++)
+		{
+			log.debug("non args : " +argTransformer.strArgToArray(args)[i]);
+		}
+
+		log.info("Cmd : " +cmd+" args : "+args);
 	}
 
 	private void showHelp()
 	{
 
-		String description 	= this.getCmdDescription();
-		String syntax  		= this.getCmdSyntax();
+
+		String description 	= getCmdDescription();
+		String syntax  		= getCmdSyntax();
 
 		StringBuilder complete = new StringBuilder();
 
@@ -139,6 +146,31 @@ public class CmdHandler extends AbstractCmd
 
 	}
 
+	private void reloadCmd()
+	{
+		CmdContainer container = CmdContainer.getInstance();
+		container.clearCommandList();
+		container.buildList();
+
+		ConcurrentHashMap<String, AbstractCmd> cmdList = container.getConteiner();
+
+		StringBuilder cmds = new StringBuilder(cmdList.size());
+
+		cmds.append('\n');
+
+		for (AbstractCmd clazz : cmdList.values())
+		{
+			cmds.append(" [ ");
+			cmds.append(clazz.getCmdNames());
+			cmds.append(" ] - ");
+			cmds.append(clazz.getClass().getName());
+			cmds.append('\n');
+		}
+
+		client.getClientHandler().sendFromBotPM(cmds.toString());
+		client.getClientHandler().sendFromBotPM("All classes successful reloaded !");
+	}
+
 	private void delCmd(String cmd)
 	{
 
@@ -152,5 +184,10 @@ public class CmdHandler extends AbstractCmd
 	private void setActiveState(String cmd, boolean state)
 	{
 
+	}
+
+	private void error()
+	{
+		client.getClientHandler().sendFromBotPM("Error parse command arguments or unknown argument.");
 	}
 }
