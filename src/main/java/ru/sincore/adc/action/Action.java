@@ -226,24 +226,45 @@ public abstract class Action
     }
 
 
+    /**
+     * Parse method for context 'T'. Reimplement this function if action work in given context
+     * @throws STAException
+     * @throws CommandException
+     */
     protected void parseIncoming()
             throws STAException, CommandException
 	{
         new STAError(fromClient, Constants.STA_SEVERITY_RECOVERABLE, "Invalid context : " + context);
     }
 
+
+    /**
+     * Parse method for context 'F'. Reimplement this function if action work in given context
+     * @throws STAException
+     * @throws CommandException
+     */
     protected void parseOutgoing()
             throws STAException, CommandException
     {
         new STAError(fromClient, Constants.STA_SEVERITY_RECOVERABLE, "Invalid context : " + context);
     }
 
+
+    /**
+     * Parse method for context 'C'. Reimplement this function if action work in given context
+     * @throws STAException
+     */
     protected void parsePassiveTransition()
             throws STAException
     {
         new STAError(fromClient, Constants.STA_SEVERITY_RECOVERABLE, "Invalid context : " + context);
     }
 
+
+    /**
+     * Parse method for context 'U'. Reimplement this function if action work in given context
+     * @throws STAException
+     */
     protected void parseUDP()
             throws STAException
     {

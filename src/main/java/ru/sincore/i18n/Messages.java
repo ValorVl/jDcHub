@@ -43,6 +43,7 @@ public class Messages
     public static String HUB_FULL_MESSAGE       = "core.hub_is_full";
     public static String SEARCH_SPAM_MESSAGE    = "core.search_spam_detected";
     public static String TIGER_ERROR            = "tiger.error";
+    public static String LOGIN_ERROR_MESSAGE    = "core.login_error_message";
 
 
     private static Map<String, PropertiesConfiguration> messagesMap =

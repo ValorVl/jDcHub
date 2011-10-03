@@ -31,10 +31,7 @@ import ru.sincore.Modules.Modulator;
 import ru.sincore.Modules.Module;
 import ru.sincore.adc.Context;
 import ru.sincore.adc.MessageType;
-import ru.sincore.adc.action.INF;
-import ru.sincore.adc.action.MSG;
-import ru.sincore.adc.action.STA;
-import ru.sincore.adc.action.SUP;
+import ru.sincore.adc.action.*;
 import ru.sincore.util.Constants;
 import ru.sincore.util.STAError;
 
@@ -119,6 +116,7 @@ public class Command
         /*******************************PAS COMMAND*******************************/
         if (rawCommand.substring(1).startsWith("PAS"))
         {
+            new PAS(messageType, Context.T, client, rawCommand);
         }
         else
         /*******************************SCH COMMAND*******************************/
