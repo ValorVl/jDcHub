@@ -30,4 +30,9 @@ public class PluginHandler extends AbstractCmd
 	{
 
 	}
+
+	abstract public static class AbstractAction
+	{
+
+	}
 }

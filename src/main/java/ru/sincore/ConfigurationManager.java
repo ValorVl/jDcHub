@@ -1,12 +1,15 @@
 package ru.sincore;
 
-import java.io.*;
-import java.util.regex.Pattern;
-
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.sincore.TigerImpl.CIDGenerator;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.regex.Pattern;
 
 /**
  * Configuration Manager
@@ -56,6 +59,7 @@ public class ConfigurationManager extends PropertiesConfiguration
     public static final String MAX_SLOT_COUNT             = "core.hub.max_slot_count";
     public static final String MAX_EMAIL_CHAR_COUNT       = "core.hub.max_email_char_count";
     public static final String MAX_DESCRIPTION_CHAR_COUNT = "core.hub.max_description_char_count";
+	public static final String MIN_PASSWORD_LEN           = "core.hub.min_password_len";
             // Maximum description char count
     public static final String MAX_OP_IN_HUB              = "core.hub.max_op_in_chat";
             // Maximum OP in chat (needed ?)
@@ -215,6 +219,11 @@ public class ConfigurationManager extends PropertiesConfiguration
          * Stubs generated:
          *   cat ./src/main/java/ru/sincore/ConfigurationManager.java | grep 'public static final String' | grep -v 'HUB_CONFIG\|OP_CHAT_CID\|SECURITY_CID\|HUB_SID\|BOT_CHAT_SID' | awk '{printf("if (!this.containsKey(%s))\n{\n    this.setProperty(%s, \"\");\n}\n\n", $5, $5)}'
          */
+
+		if (!this.containsKey(MIN_PASSWORD_LEN))
+		{
+			this.setProperty(MIN_PASSWORD_LEN,0);
+		}
 
         if (!this.containsKey(HUB_LISTEN))
         {

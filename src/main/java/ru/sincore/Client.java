@@ -24,22 +24,14 @@
 package ru.sincore;
 
 import org.apache.log4j.Logger;
-import org.apache.mina.core.future.IoFutureListener;
 import org.apache.mina.core.future.WriteFuture;
 import ru.sincore.Modules.Modulator;
 import ru.sincore.Modules.Module;
 import ru.sincore.adc.State;
-import ru.sincore.db.dao.BanListDAOImpl;
 import ru.sincore.db.dao.ClientListDAO;
 import ru.sincore.db.dao.ClientListDAOImpl;
-import ru.sincore.db.dao.KickListDAOImpl;
 import ru.sincore.db.pojo.ClientListPOJO;
-import ru.sincore.db.pojo.KickListPOJO;
 import ru.sincore.util.AdcUtils;
-
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 
 
 /**
@@ -79,6 +71,11 @@ public class Client
         return handler;
     }
 
+	public void storeInfo()
+	{
+
+	}
+
 
     public void loadInfo()
     {
@@ -95,9 +92,9 @@ public class Client
         // TODO [lh] rename
         handler.setWhoRegged(clientInfo.getRegOwner());
         // TODO [lh] rename, change type
-        handler.setCreatedOn(clientInfo.getRegDate().getTime());
+        //handler.setCreatedOn(clientInfo.getRegDate().getTime());
         // TODO [lh] change type
-        handler.setLastLogin(clientInfo.getLastLogIn().getTime());
+        //handler.setLastLogin(clientInfo.getLastLogIn().getTime());
         handler.setLastIP(clientInfo.getLastIp());
         handler.setHideMe(clientInfo.getHideMe());
         handler.setOverrideShare(clientInfo.getOverrideShare());
