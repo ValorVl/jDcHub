@@ -39,9 +39,10 @@ public final class Constants
 
 
 	// STA Error codes block
+    public static final int STA_GENERIC_ERROR                   = 0;
     public static final int STA_GENERIC_HUB_ERROR              	= 10;
-    public static final int STA_HUB_FULL                       	= 10;
-    public static final int STA_HUB_DISABLED                   	= 11;
+    public static final int STA_HUB_FULL                       	= 11;
+    public static final int STA_HUB_DISABLED                   	= 12;
     public static final int STA_GENERIC_LOGIN_ERROR            	= 20;
     public static final int STA_NICK_INVALID                   	= 21;
     public static final int STA_NICK_TAKEN                     	= 22;
