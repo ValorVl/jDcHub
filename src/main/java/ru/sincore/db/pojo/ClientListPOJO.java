@@ -29,7 +29,7 @@ public class ClientListPOJO implements Serializable
 	private String 		cid;
 
 	/**
-	 *  Column "class_mask" right granted mask
+	 *  Column "weight" right granted mask
 	 */
 	@Column(name = "weight", columnDefinition = "TINYINT(3) DEFAULT 0",nullable = false)
 	private Integer		weight = 0;
@@ -37,8 +37,8 @@ public class ClientListPOJO implements Serializable
 	/**
 	 *  Column "password" encrypted password string
 	 */
-	@Column(name = "password",columnDefinition = "VARCHAR(250)",nullable = true)
-	private String 		password;
+	@Column(name = "password",columnDefinition = "VARCHAR(250)",nullable = false)
+	private String 		password = "";
 
 	/**
 	 *  Column "key" boolean flag. Indicates that the user can authenticate using SSL key
@@ -256,12 +256,12 @@ public class ClientListPOJO implements Serializable
 		this.cid = cid;
 	}
 
-	public Integer getClassMask()
+	public Integer getWeight()
 	{
 		return weight;
 	}
 
-	public void setClassMask(Integer weight)
+	public void setWeight(Integer weight)
 	{
 		this.weight = weight;
 	}

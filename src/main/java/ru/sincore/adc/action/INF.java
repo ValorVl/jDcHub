@@ -832,10 +832,8 @@ public class INF extends Action
 
     /*------------ok now must see if the client is registered...---------------*/
 
-        // TODO [lh] load information about client from db
+        fromClient.loadInfo();
 
-//        fromClient.getClientHandler().setPassword("qwerty123");
-//        fromClient.getClientHandler().setReg(true);
         if (fromClient.getClientHandler().isReg())
         {
             if (fromClient.getClientHandler().getPassword().equals(""))//no pass defined ( yet)

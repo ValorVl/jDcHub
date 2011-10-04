@@ -30,7 +30,10 @@ import ru.sincore.Modules.Modulator;
 import ru.sincore.Modules.Module;
 import ru.sincore.adc.State;
 import ru.sincore.db.dao.BanListDAOImpl;
+import ru.sincore.db.dao.ClientListDAO;
+import ru.sincore.db.dao.ClientListDAOImpl;
 import ru.sincore.db.dao.KickListDAOImpl;
+import ru.sincore.db.pojo.ClientListPOJO;
 import ru.sincore.db.pojo.KickListPOJO;
 import ru.sincore.util.AdcUtils;
 
@@ -49,7 +52,7 @@ import java.util.GregorianCalendar;
  * @author Alexey 'lh' Antonov
  * @since 2011-09-06
  */
-public class Client implements IoFutureListener<WriteFuture>
+public class Client
 {
     public static final Logger log = Logger.getLogger(Client.class);
 
@@ -74,6 +77,37 @@ public class Client implements IoFutureListener<WriteFuture>
     public ClientHandler getClientHandler()
     {
         return handler;
+    }
+
+
+    public void loadInfo()
+    {
+        ClientListPOJO clientInfo = null;
+        ClientListDAO clientListDAO = new ClientListDAOImpl();
+        clientInfo = clientListDAO.getClientByNick(handler.getNI());
+        if (clientInfo == null)
+            return;
+
+        handler.setWeight(clientInfo.getWeight());
+        handler.setPassword(clientInfo.getPassword());
+        handler.setReg(clientInfo.getReg());
+        handler.setLastNick(clientInfo.getLastNick());
+        // TODO [lh] rename
+        handler.setWhoRegged(clientInfo.getRegOwner());
+        // TODO [lh] rename, change type
+        handler.setCreatedOn(clientInfo.getRegDate().getTime());
+        // TODO [lh] change type
+        handler.setLastLogin(clientInfo.getLastLogIn().getTime());
+        handler.setLastIP(clientInfo.getLastIp());
+        handler.setHideMe(clientInfo.getHideMe());
+        handler.setOverrideShare(clientInfo.getOverrideShare());
+        handler.setOverrideSpam(clientInfo.getOverrideSpam());
+        handler.setOverrideFull(clientInfo.getOverrideFull());
+        handler.setKickable(clientInfo.getKickable());
+        handler.setRenameable(clientInfo.getRenameable());
+        handler.setAccountFlyable(clientInfo.getAccountFlyable());
+        handler.setOpchatAccess(clientInfo.getOpChatAccess());
+        handler.setLastMessageText(clientInfo.getLastMessage());
     }
 
 
@@ -314,20 +348,20 @@ public class Client implements IoFutureListener<WriteFuture>
      */
     public void onLoggedIn()
     {
-        this.getClientHandler().sendToClient("ISTA 000 Authenticated.");
+        handler.sendToClient("ISTA 000 Authenticated.");
 
-        this.getClientHandler().setLastNick(this.getClientHandler().getNI());
-        this.getClientHandler().setLastIP(this.getClientHandler().getRealIP());
+        handler.setLastNick(handler.getNI());
+        handler.setLastIP(handler.getRealIP());
 
         //user is OK, logged in and cool
-        this.getClientHandler().setValidated();
-        this.getClientHandler().setState(State.NORMAL);
-        this.getClientHandler().setLastLogin(this.getClientHandler().getLoggedAt());
+        handler.setValidated();
+        handler.setState(State.NORMAL);
+        handler.setLastLogin(handler.getLoggedAt());
 
-        if (this.getClientHandler().isHideMe())
-            this.getClientHandler().sendFromBot("You are currently hidden.");
+        if (handler.isHideMe())
+            handler.sendFromBot("You are currently hidden.");
 
-        this.getClientHandler().setLoggedAt(System.currentTimeMillis());
+        handler.setLoggedAt(System.currentTimeMillis());
     }
 
 
@@ -336,7 +370,7 @@ public class Client implements IoFutureListener<WriteFuture>
         for (Client client : ClientManager.getInstance().getClients())
         {
             if (client.getClientHandler().isValidated() && !client.equals(this))
-                this.getClientHandler().sendToClient(client.getClientHandler().getINF());
+                handler.sendToClient(client.getClientHandler().getINF());
         }
     }
 
@@ -349,46 +383,46 @@ public class Client implements IoFutureListener<WriteFuture>
         ConfigurationManager configurationManager = ConfigurationManager.instance();
 
         // make client active
-        this.getClientHandler().setActive(true);
+        handler.setActive(true);
 
         ClientManager.getInstance().moveClientToRegularMap(this);
 
         //ok now sending infs of all others to the handler
         sendUsersInfs();
 
-        this.getClientHandler().sendToClient("BINF " +
-                                                   configurationManager.getString(ConfigurationManager.BOT_CHAT_SID) +
-                                                   " ID" +
-                                                   configurationManager.getString(ConfigurationManager.SECURITY_CID) +
-                                                   " NI" +
-                                                   AdcUtils.retADCStr(
-                                                           configurationManager.getString(ConfigurationManager.BOT_CHAT_NAME)
-                                                                     ) +
-                                                   " CT5 DE" +
-                                                   AdcUtils.retADCStr(
-                                                           configurationManager.getString(ConfigurationManager.BOT_CHAT_DESCRIPTION)
-                                                                     ));
+        handler.sendToClient("BINF " +
+                             configurationManager.getString(ConfigurationManager.BOT_CHAT_SID) +
+                             " ID" +
+                             configurationManager.getString(ConfigurationManager.SECURITY_CID) +
+                             " NI" +
+                             AdcUtils.retADCStr(
+                                     configurationManager.getString(ConfigurationManager.BOT_CHAT_NAME)
+                                               ) +
+                             " CT5 DE" +
+                             AdcUtils.retADCStr(
+                                     configurationManager.getString(ConfigurationManager.BOT_CHAT_DESCRIPTION)
+                                               ));
 
-        this.getClientHandler().putOpchat(true);
+        handler.putOpchat(true);
         //sending inf about itself too
-        this.getClientHandler().sendToClient(this.getClientHandler().getINF());
+        handler.sendToClient(handler.getINF());
 
         //ok now must send INF to all clients
-        Broadcast.getInstance().broadcast(this.getClientHandler().getINF(), this);
+        Broadcast.getInstance().broadcast(handler.getINF(), this);
 
 
-        if (this.getClientHandler().isUcmd())
+        if (handler.isUcmd())
         {
             //ok, he is ucmd ok, so
-            this.getClientHandler().sendToClient("ICMD Test CT1 TTTest");
+            handler.sendToClient("ICMD Test CT1 TTTest");
         }
         // TODO [lh] send MOTD to client
-        //this.getClientHandler().sendFromBot(bigTextManager.getMOTD(fromClient));
+        //handler.sendFromBot(bigTextManager.getMOTD(fromClient));
 
         /** calling plugins...*/
         for (Module myMod : Modulator.myModules)
         {
-            myMod.onConnect(this.getClientHandler());
+            myMod.onConnect(handler);
         }
 
     }
