@@ -336,7 +336,7 @@ public class MSG extends Action
     {
         Collection<Client> clients = ClientManager.getInstance().getClients();
 
-        for (Client client : clients)
+        for (final Client client : clients)
         {
             // Skip me
             if (client == fromClient)
@@ -366,7 +366,17 @@ public class MSG extends Action
             if (doSend)
             {
                 log.debug("Send to client: " + client.getClientHandler().getNI() + "/" + client.getClientHandler().getSID());
-                client.getClientHandler().sendToClient(rawCommand);
+                Runnable sending = new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        client.getClientHandler().sendToClient(rawCommand);
+                    }
+                };
+
+                Thread sendingThread = new Thread(sending);
+                sendingThread.start();
             }
         }
     }
