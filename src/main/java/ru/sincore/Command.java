@@ -1,4 +1,3 @@
-package ru.sincore;
 /*
  * Command.java
  *
@@ -22,6 +21,7 @@ package ru.sincore;
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+package ru.sincore;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -121,6 +121,7 @@ public class Command
         /*******************************SCH COMMAND*******************************/
         if (rawCommand.substring(1).startsWith("SCH"))
         {
+            new SCH(messageType, Context.T, client, rawCommand);
         }
         else
         /*******************************STA COMMAND*******************************/
