@@ -365,6 +365,21 @@ public class ClientHandler
     private Long    timeOnline;
     private String lastIP;
 
+
+    public String getLastMessageText()
+    {
+        return lastMessageText;
+    }
+
+
+    public void setLastMessageText(String lastMessageText)
+    {
+        this.lastMessageText = lastMessageText;
+    }
+
+
+    private String lastMessageText;
+
     private boolean hideShare;
     private boolean hideMe;
 

@@ -18,8 +18,14 @@ package ru.sincore.cmd.handlers;
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.sincore.Client;
+import ru.sincore.ConfigurationManager;
 import ru.sincore.cmd.AbstractCmd;
+import ru.sincore.cmd.CmdLogger;
+import ru.sincore.db.dao.ClientListDAOImpl;
+import ru.sincore.db.pojo.ClientListPOJO;
 import ru.sincore.i18n.Messages;
 
 
@@ -31,9 +37,13 @@ import ru.sincore.i18n.Messages;
 public class ClientRegDefaultHandler extends AbstractCmd
 {
 
+	private static final Logger log = LoggerFactory.getLogger(ClientRegDefaultHandler.class);
+
 	private Client client;
 	private String cmd;
 	private String args;
+
+	private ConfigurationManager confgInstance = ConfigurationManager.instance();
 
 	public ClientRegDefaultHandler()
 	{
@@ -56,12 +66,40 @@ public class ClientRegDefaultHandler extends AbstractCmd
 			return;
 		}
 		else {
+
+			if(getLogged())
+			{
+				CmdLogger.log(this, client,"Successful registered",args);
+			}
+
 			regClient();
 		}
 	}
 
 	private void regClient()
 	{
+
+		int 	passMinLen 	= confgInstance.getInt(ConfigurationManager.MIN_PASSWORD_LEN);
+		String  hubName		= confgInstance.getString(ConfigurationManager.HUB_NAME);
+
+		ClientListDAOImpl clientDao = new ClientListDAOImpl();
+
+		ClientListPOJO clientEntity = clientDao.getClientByNick(client.getClientHandler().getNI());
+
+		log.debug(cmd+" >>>> "+ clientEntity.getNickName());
+
+		if (clientEntity.getId() != null)
+		{
+			 if (cmd.length() >= passMinLen)
+			 {
+				 client.getClientHandler().setPassword(args);
+				 client.getClientHandler().setReg(true);
+				 client.getClientHandler().setWeight(10);
+				 client.getClientHandler().setWhoRegged(hubName);
+
+				 client.storeInfo();
+			 }
+		}
 
 	}
 }
