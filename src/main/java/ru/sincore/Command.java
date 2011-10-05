@@ -143,6 +143,7 @@ public class Command
         /*******************************RCM COMMAND*******************************/
         if (rawCommand.substring(1).startsWith("RCM ")) //reverse connect to me
         {
+            new RCM(messageType, Context.T, client, rawCommand);
         }
 
 
