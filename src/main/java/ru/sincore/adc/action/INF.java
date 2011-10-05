@@ -832,7 +832,12 @@ public class INF extends Action
 
     /*------------ok now must see if the client is registered...---------------*/
 
-        fromClient.loadInfo();
+        if (!fromClient.loadInfo())
+        {
+            // info about  client not found
+            // store info to db about new client
+            fromClient.storeInfo();
+        }
 
         if (fromClient.getClientHandler().isReg())
         {

@@ -37,7 +37,7 @@ public class ClientListPOJO implements Serializable
 	/**
 	 *  Column "password" encrypted password string
 	 */
-	@Column(name = "password",columnDefinition = "VARCHAR(250)",nullable = false)
+	@Column(name = "password",columnDefinition = "VARCHAR(250)",nullable = true)
 	private String 		password = "";
 
 	/**

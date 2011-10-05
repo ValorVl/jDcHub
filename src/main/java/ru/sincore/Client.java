@@ -33,6 +33,8 @@ import ru.sincore.db.dao.ClientListDAOImpl;
 import ru.sincore.db.pojo.ClientListPOJO;
 import ru.sincore.util.AdcUtils;
 
+import java.util.Date;
+
 
 /**
  * A class that contains client information and provides
@@ -71,19 +73,50 @@ public class Client
         return handler;
     }
 
-	public void storeInfo()
-	{
 
+    public void storeInfo()
+	{
+        ClientListPOJO clientInfo = null;
+        ClientListDAO clientListDAO = new ClientListDAOImpl();
+        clientInfo = clientListDAO.getClientByNick(handler.getNI());
+        if (clientInfo != null)
+            return;
+
+        clientInfo = new ClientListPOJO();
+
+        clientInfo.setCid(handler.getID());
+        clientInfo.setCurrentIp(handler.getI4());
+        clientInfo.setNickName(handler.getNI());
+        clientInfo.setPassword(new String(""));
+
+        clientInfo.setWeight(handler.getWeight());
+        clientInfo.setPassword(handler.getPassword());
+        clientInfo.setHideMe(handler.isHideMe());
+        clientInfo.setOverrideShare(handler.isOverrideShare());
+        clientInfo.setOverrideSpam(handler.isOverrideSpam());
+        clientInfo.setOverrideFull(handler.isOverrideFull());
+        clientInfo.setKickable(handler.isKickable());
+        clientInfo.setRenameable(handler.isRenameable());
+        clientInfo.setAccountFlyable(handler.isAccountFlyable());
+        clientInfo.setOpChatAccess(handler.isOpchatAccess());
+        clientInfo.setLastMessage(handler.getLastMessageText());
+
+        // TODO [lh] remove next 2 lines
+        clientInfo.setCommandMask("".getBytes());
+        clientInfo.setHelpMask("".getBytes());
+
+
+        clientListDAO.addClient(clientInfo);
 	}
 
 
-    public void loadInfo()
+    public boolean loadInfo()
     {
         ClientListPOJO clientInfo = null;
         ClientListDAO clientListDAO = new ClientListDAOImpl();
         clientInfo = clientListDAO.getClientByNick(handler.getNI());
         if (clientInfo == null)
-            return;
+            return false;
 
         handler.setWeight(clientInfo.getWeight());
         handler.setPassword(clientInfo.getPassword());
@@ -105,6 +138,8 @@ public class Client
         handler.setAccountFlyable(clientInfo.getAccountFlyable());
         handler.setOpchatAccess(clientInfo.getOpChatAccess());
         handler.setLastMessageText(clientInfo.getLastMessage());
+
+        return true;
     }
 
 

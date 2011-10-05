@@ -69,8 +69,7 @@ public class Command
 
         if (rawCommand.equals(""))
         {
-            log.debug("Empty command from client with nick = \'" + client.getClientHandler().getNI() +
-                      "\' and SID = \'" + client.getClientHandler().getSID() + "\'");
+            client.getClientHandler().setLastKeepAlive(System.currentTimeMillis());
             return;
         }
 
