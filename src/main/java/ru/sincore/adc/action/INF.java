@@ -10,6 +10,7 @@ import ru.sincore.Modules.Module;
 import ru.sincore.TigerImpl.Base32;
 import ru.sincore.TigerImpl.Tiger;
 import ru.sincore.adc.Context;
+import ru.sincore.adc.Features;
 import ru.sincore.adc.MessageType;
 import ru.sincore.adc.State;
 import ru.sincore.i18n.Messages;
@@ -772,7 +773,8 @@ public class INF extends Action
             return;
         }
 
-        if (fromClient.getClientHandler().isBas0() && fromClient.getClientHandler().getBase() != 2)
+        //if (fromClient.getClientHandler().isBas0() && fromClient.getClientHandler().getBase() != 2)
+        if (fromClient.isFeature(Features.BASE) == false)
         {
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL + Constants.STA_GENERIC_PROTOCOL_ERROR,

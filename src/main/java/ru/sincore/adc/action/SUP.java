@@ -7,6 +7,7 @@ import ru.sincore.*;
 import ru.sincore.Exceptions.CommandException;
 import ru.sincore.Exceptions.STAException;
 import ru.sincore.adc.Context;
+import ru.sincore.adc.Features;
 import ru.sincore.adc.MessageType;
 import ru.sincore.adc.State;
 import ru.sincore.i18n.Messages;
@@ -99,39 +100,14 @@ public class SUP extends Action
 
 			//TODO [Valor] maybe rewrite this ?
 			endToken = endToken.substring(2);
-           	if (endToken.equals("BAS0"))
-           	{
-            	fromClient.getClientHandler().setBas0(enable);
-            	fromClient.getClientHandler().setBase(1);
-		   	}
-		   	else if (endToken.equals("BASE"))
-		   	{
-				fromClient.getClientHandler().setBase(enable ? 2 : 0);
-		   	}
-		   	else if (endToken.startsWith("PIN") && endToken.length() == 4)
-		   	{
-				fromClient.getClientHandler().setPingExtensionSupports(enable);
-		   	}
-		   	else if (endToken.startsWith("UCM") && endToken.length() == 4)
-		   	{
-				fromClient.getClientHandler().setUcmd(enable);
-		   	}
-		   	else if (endToken.startsWith("TIGR") && endToken.length() == 4)
-		   	{
-				fromClient.getClientHandler().setTigrSupports(enable);
-		   	}
+
+            if (endToken.length() == 4)
+            {
+                fromClient.setFeature(endToken, enable);
+            }
 		}
 
-		// Check support old protocol version
-		if (!fromClient.getClientHandler().isBas0())
-		{
-			new STAError(fromClient,
-						 Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
-						 "Your client uses a very old AdcUtils version. Please update in order to connect to this hub.");
-		}
-
-		// Check support version new ADC protocol, if 0 - not support, 1 - first version, 2 - second version..
-		if (fromClient.getClientHandler().getBase() == 0)
+        if (!fromClient.isFeature(Features.BAS0) && !fromClient.isFeature(Features.BASE))
 		{
 			new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL + Constants.STA_GENERIC_PROTOCOL_ERROR,
@@ -139,7 +115,7 @@ public class SUP extends Action
 		}
 
 		// Check support TIGER hash..
-		if (!fromClient.getClientHandler().isTigrSupports())
+        if (!fromClient.isFeature(Features.TIGER))
 		{
 			new STAError(fromClient,
                          Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_NO_HASH_OVERLAP,
@@ -168,7 +144,7 @@ public class SUP extends Action
 		}
 
 		// Check client TIGER hash support if not, send error code 147 and reason
-		if (!toClient.getClientHandler().isTigrSupports())
+        if (!toClient.isFeature(Features.TIGER))
 		{
 			new STAError(fromClient,100 + Constants.STA_NO_HASH_OVERLAP, Messages.get(Messages.TIGER_ERROR));
 		}
@@ -196,7 +172,7 @@ public class SUP extends Action
 		}
 
 		// Check client flag isPingExtensionSupports, if true, send PING string
-		inf.append(toClient.getClientHandler().isPingExtensionSupports() ?
+        inf.append(toClient.isFeature(Features.PING) ?
                    pingQuery() :
                    Constants.EMPTY_STR);
 

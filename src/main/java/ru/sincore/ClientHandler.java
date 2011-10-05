@@ -309,31 +309,6 @@ public class ClientHandler
     private String SID;
 
     /**
-     * indicates if client is a pinger a.k.a. PING extension
-     */
-    private boolean pingExtensionSupports;
-
-    /**
-     * indicates if client supports UCMD messages
-     */
-    private boolean ucmd = false;
-
-    /**
-     * indicates if client supports BASE messages
-     */
-    private int base = 0;
-
-    /**
-     * indicates if client supports old BAS0 messages
-     */
-    private boolean bas0;
-
-    /**
-     * if client supports TIGER hashes or not
-     */
-    private boolean tigrSupports;
-
-    /**
      * Client Connect time in millis as Syste.gettimemillis() ; ;)
      */
     private long connectTime;
@@ -1147,80 +1122,6 @@ public class ClientHandler
         this.SID = SID;
     }
 
-
-    /**
-     * indicates if client is a pinger a.k.a. PING extension
-     */
-    public boolean isPingExtensionSupports()
-    {
-        return pingExtensionSupports;
-    }
-
-
-    public void setPingExtensionSupports(boolean pingExtensionSupports)
-    {
-        this.pingExtensionSupports = pingExtensionSupports;
-    }
-
-
-    /**
-     * indicates if client supports UCMD messages
-     */
-    public boolean isUcmd()
-    {
-        return ucmd;
-    }
-
-
-    public void setUcmd(boolean ucmd)
-    {
-        this.ucmd = ucmd;
-    }
-
-
-    /**
-     * indicates if client supports BASE messages
-     */
-    public int getBase()
-    {
-        return base;
-    }
-
-
-    public void setBase(int base)
-    {
-        this.base = base;
-    }
-
-
-    /**
-     * indicates if client supports old BAS0 messages
-     */
-    public boolean isBas0()
-    {
-        return bas0;
-    }
-
-
-    public void setBas0(boolean bas0)
-    {
-        this.bas0 = bas0;
-    }
-
-
-    /**
-     * if client supports TIGER hashes or not
-     */
-    public boolean isTigrSupports()
-    {
-        return tigrSupports;
-    }
-
-
-    public void setTigrSupports(boolean tigrSupports)
-    {
-        this.tigrSupports = tigrSupports;
-    }
 
 
     /**

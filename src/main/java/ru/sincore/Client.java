@@ -27,6 +27,7 @@ import org.apache.log4j.Logger;
 import org.apache.mina.core.future.WriteFuture;
 import ru.sincore.Modules.Modulator;
 import ru.sincore.Modules.Module;
+import ru.sincore.adc.Features;
 import ru.sincore.adc.State;
 import ru.sincore.db.dao.ClientListDAO;
 import ru.sincore.db.dao.ClientListDAOImpl;
@@ -34,6 +35,8 @@ import ru.sincore.db.pojo.ClientListPOJO;
 import ru.sincore.util.AdcUtils;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Vector;
 
 
 /**
@@ -55,12 +58,19 @@ public class Client
      */
     private ClientHandler handler;
 
+
+    /**
+     * Client Feature list
+     */
+    private List<String> features;
+
     /**
      * Creates a new instance of Client
      */
     public Client()
     {
         handler = new ClientHandler();
+        features = new Vector<String>();
     }
 
 
@@ -443,7 +453,7 @@ public class Client
         Broadcast.getInstance().broadcast(handler.getINF(), this);
 
 
-        if (handler.isUcmd())
+        if (isFeature(Features.UCMD))
         {
             //ok, he is ucmd ok, so
             handler.sendToClient("ICMD Test CT1 TTTest");
@@ -457,5 +467,42 @@ public class Client
             myMod.onConnect(handler);
         }
 
+    }
+
+
+    public void addFeature(String feature)
+    {
+        if (!features.contains(feature))
+        {
+            features.add(feature);
+        }
+    }
+
+
+    public void removeFeature(String feature)
+    {
+        if (features.contains(feature))
+        {
+            features.remove(feature);
+        }
+    }
+
+
+    public boolean isFeature(String feature)
+    {
+        return features.contains(feature);
+    }
+
+
+    public void setFeature(String feature, boolean isEnabled)
+    {
+        if (isEnabled)
+        {
+            addFeature(feature);
+        }
+        else
+        {
+            removeFeature(feature);
+        }
     }
 }

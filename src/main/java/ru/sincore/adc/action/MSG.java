@@ -38,6 +38,7 @@ import ru.sincore.util.AdcUtils;
 import ru.sincore.util.Constants;
 import ru.sincore.util.STAError;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -147,7 +148,31 @@ public class MSG extends Action
     private void parseFeatures(StringTokenizer tokenizer)
     {
         String features = tokenizer.nextToken();
-        // TODO feature parser
+        int    pos      = 0;
+
+        log.debug("Unparsed feature list: " + features);
+
+        while (pos < features.length() && (features.charAt(pos) == '+' || features.charAt(pos) == '-'))
+        {
+            List<String> featureList;
+            if (features.charAt(pos++) == '+')
+            {
+                featureList = requiredFeatureList;
+            }
+            else
+            {
+                featureList = excludedFeatureList;
+            }
+
+            String feature = features.substring(pos, pos + 4);
+            pos += 4;
+
+            featureList.add(feature);
+        }
+
+        log.debug("Required feature list: " + requiredFeatureList);
+        log.debug("Excluded feature list: " + excludedFeatureList);
+
     }
 
 
@@ -267,11 +292,9 @@ public class MSG extends Action
                     Broadcast.getInstance().broadcast(rawCommand);
                 break;
 
-            case C:
             case I:
             case H:
-                // get message
-                parseMySID(tokenizer);
+                // In this case SID does not present
                 // get flags and parse it
                 parseFlags(tokenizer);
                 break;
@@ -293,7 +316,7 @@ public class MSG extends Action
             case F:
                 // get sender SID
                 parseMySID(tokenizer);
-                // get message
+                // get features include/exclude lists
                 parseFeatures(tokenizer);
                 // get flags and parse it
                 parseFlags(tokenizer);
@@ -301,7 +324,9 @@ public class MSG extends Action
                 sendMessageDependentFromFeatures();
                 break;
 
+            case C:
             case U:
+                // these should never be seen on a hub
                 break;
         }
     }
@@ -309,6 +334,41 @@ public class MSG extends Action
 
     private void sendMessageDependentFromFeatures()
     {
+        Collection<Client> clients = ClientManager.getInstance().getClients();
+
+        for (Client client : clients)
+        {
+            // Skip me
+            if (client == fromClient)
+            {
+                continue;
+            }
+
+            boolean doSend = true;
+            for (String feature : requiredFeatureList)
+            {
+                if (!client.isFeature(feature))
+                {
+                    doSend = false;
+                    break;
+                }
+            }
+
+            for (String feature : excludedFeatureList)
+            {
+                if (client.isFeature(feature))
+                {
+                    doSend = false;
+                    break;
+                }
+            }
+
+            if (doSend)
+            {
+                log.debug("Send to client: " + client.getClientHandler().getNI() + "/" + client.getClientHandler().getSID());
+                client.getClientHandler().sendToClient(rawCommand);
+            }
+        }
     }
 
 
