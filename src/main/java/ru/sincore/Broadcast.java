@@ -77,39 +77,36 @@ public class Broadcast
      * Creates a new instance of Broadcast , sends to all except the ClientNod
      * received as param.
      */
-    public void broadcast(String message, Client client)
+    public void broadcast(String message, Client fromClient)
     {
-        run(message, client);
+        for (Client toClient : ClientManager.getInstance().getClients())
+        {
+            Thread sendThread = new Thread(new ClientSender(message, fromClient, toClient));
+            sendThread.start();
+        }
     }
 
 
     public void broadcast(String message, int state)
     {
-        run(message, null);
+        broadcast(message, null);
     }
 
 
     public void broadcast(String message)
     {
-        run(message, null);
+        broadcast(message, null);
     }
 
 
-    public void execute(String message, Client fromClient, Client toClient)
-    {
-        ClientThread ct = new ClientThread(message, fromClient, toClient);
-        ct.run();
-    }
-
-
-    private class ClientThread
+    private class ClientSender implements Runnable
     {
         private final String    message;
         private final Client    fromClient;
         private final Client    toClient;
 
 
-        public ClientThread(String message, Client fromClient, Client toClient)
+        public ClientSender(String message, Client fromClient, Client toClient)
         {
             this.message = message;
             this.fromClient = fromClient;
@@ -138,20 +135,4 @@ public class Broadcast
             }
         }
     }
-
-
-    public void sendToAll(String message, Client fromClient)
-    {
-        for (Client toClient : ClientManager.getInstance().getClients())
-        {
-            execute(message, fromClient, toClient);
-        }
-    }
-
-
-    public void run(String message, Client client)
-    {
-        sendToAll(message, client);
-    }
-
 }
