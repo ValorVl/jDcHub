@@ -9,5 +9,5 @@ public interface KickListDAO
 	void addKickedClient(KickListPOJO kick);
 	List<KickListPOJO> getKicked();
 	KickListPOJO getKickedByNick(String nick);
-	void updateKickStatus(String nick);
+	void updateKickStatus(KickListPOJO kick);
 }
