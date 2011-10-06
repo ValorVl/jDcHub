@@ -102,7 +102,7 @@ public class KickListDAOImpl implements KickListDAO
 	}
 
 	@Override
-	public void updateKickStatus(String nick)
+	public void updateKickStatus(KickListPOJO kick)
 	{
 		Session session = HibernateUtils.getSessionFactory().openSession();
 		Transaction tx  = session.getTransaction();
@@ -111,7 +111,7 @@ public class KickListDAOImpl implements KickListDAO
 
 			tx.begin();
 
-			//TODO [Valor] ... mmm that realize?
+			session.update(kick);
 
 			tx.commit();
 
