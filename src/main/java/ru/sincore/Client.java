@@ -259,7 +259,6 @@ public class Client
             // ban by nick
             case 1:
 //                BanList.addban(bantype, handler.getNI(), kicktime, whokicked.getNI(), kickmsg);
-
                 break;
 
             // ban by ip

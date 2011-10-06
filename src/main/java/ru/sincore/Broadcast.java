@@ -120,18 +120,10 @@ public class Broadcast
 
             if (toClientHandler.isActive())
             {
-                // TODO may be buggie
                 if (!message.startsWith("E") && toClient.equals(fromClient))
-                {
-                }
-                else if (message.startsWith("I"))
-                {
-                    toClient.getClientHandler().getSession().write(message);
-                }
-                else
-                {
-                    toClientHandler.sendToClient(message);
-                }
+                    return;
+
+                toClientHandler.sendToClient(message);
             }
         }
     }
