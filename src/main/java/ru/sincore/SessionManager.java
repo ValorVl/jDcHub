@@ -48,7 +48,7 @@ import java.util.StringTokenizer;
  */
 public class SessionManager extends IoHandlerAdapter
 {
-    public static final Logger log = LoggerFactory.getLogger(SessionManager.class);
+    private static final Logger log = LoggerFactory.getLogger(SessionManager.class);
 
     /**
      * Creates a new instance of SessionManager
@@ -73,25 +73,29 @@ public class SessionManager extends IoHandlerAdapter
             {
                 return;
             }
-            if (t.getMessage().contains("java.nio.charset.MalformedInputException"))
+            String throwableMessage = t.getMessage();
+            if (throwableMessage != null)
             {
+                if (throwableMessage.contains("java.nio.charset.MalformedInputException"))
+                {
 //                ((ClientHandler) (session.getAttribute("client")))
 //                        .sendFromBot("Unicode Exception. Your client sent non-Unicode chars. Ignored.");
-                return;
-            }
-            if ((t.getMessage().contains("BufferDataException: Line is too long")))
-            {
-                new STAError((Client) (session.getAttribute("client")), 100,
-                             "Message exceeds buffer." + t.getMessage());
-            }
-            else
-            {
-                log.debug(t.toString());
+                    return;
+                }
+                if ((throwableMessage.contains("BufferDataException: Line is too long")))
+                {
+                    new STAError((Client) (session.getAttribute("client")), 100,
+                                 "Message exceeds buffer." + throwableMessage);
+                }
+                else
+                {
+                    log.debug(throwableMessage.toString());
+                }
             }
         }
         catch (Exception e)
         {
-            log.debug("Funny exception in exceptionCaught(), here is the stack trace:" + e);
+            log.debug("Funny exception in exceptionCaught(), here is the stack trace:", e);
         }
     }
 

@@ -22,7 +22,6 @@ package ru.sincore;
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import com.sun.corba.se.impl.protocol.giopmsgheaders.Message;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import ru.sincore.cmd.CmdContainer;

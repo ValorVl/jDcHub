@@ -67,10 +67,26 @@ public class INF extends Action
 
 
     private boolean validateNick(Client client)
+            throws STAException
     {
-        // Check nick on size
-        if (client.getClientHandler().getNI().length() > configurationManager.getInt(ConfigurationManager.MAX_NICK_SIZE))
+        // TODO [lh] Replace by normal nick validation
+        if (fromClient.getClientHandler().getNI().length() > configurationManager.getInt(ConfigurationManager.MAX_NICK_SIZE))
         {
+            new STAError(client,
+                         Constants.STA_SEVERITY_FATAL + Constants.STA_NICK_INVALID,
+                         "Nick too large",
+                         "FB",
+                         "NI");
+            return false;
+        }
+
+        if (fromClient.getClientHandler().getNI().length() < configurationManager.getInt(ConfigurationManager.MIN_NICK_SIZE))
+        {
+            new STAError(client,
+                         Constants.STA_SEVERITY_FATAL + Constants.STA_NICK_INVALID,
+                         "Nick too small",
+                         "FB",
+                         "NI");
             return false;
         }
 
@@ -124,25 +140,7 @@ public class INF extends Action
             //checking all:
             if (fromClient.getClientHandler().getNI() != null)
             {
-                if (fromClient.getClientHandler().getNI().length() > configurationManager.getInt(ConfigurationManager.MAX_NICK_SIZE))
-                {
-                    new STAError(fromClient,
-                                 Constants.STA_SEVERITY_FATAL + Constants.STA_NICK_INVALID,
-                                 "Nick too large",
-                                 "FB",
-                                 "NI");
-                    return;
-                }
-
-                if (fromClient.getClientHandler().getNI().length() < configurationManager.getInt(ConfigurationManager.MIN_NICK_SIZE))
-                {
-                    new STAError(fromClient,
-                                 Constants.STA_SEVERITY_FATAL + Constants.STA_NICK_INVALID,
-                                 "Nick too small",
-                                 "FB",
-                                 "NI");
-                    return;
-                }
+                validateNick(fromClient);
             }
 
             if (fromClient.getClientHandler().getDE() != null)

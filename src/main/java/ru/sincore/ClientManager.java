@@ -44,8 +44,6 @@ public final class ClientManager
 {
     private static final Logger log = LoggerFactory.getLogger(ClientManager.class);
 
-    public static ConcurrentHashMap<String, Client> clientsByCID;
-    private static ConcurrentHashMap<String, Client> clientsByNick;
     private static ConcurrentHashMap<String, Client> clientsBySID;
 
     private static Vector<Client> uninitializedClients;
@@ -99,8 +97,6 @@ public final class ClientManager
         int initialCapacity = ConfigurationManager.instance().getInt(ConfigurationManager.USER_INITIAL_CAPACITY);
         float loadFactor = ConfigurationManager.instance().getFloat(ConfigurationManager.USER_LOAD_FACTOR);
 
-        clientsByCID    = new ConcurrentHashMap<String, Client>(initialCapacity, loadFactor);
-        clientsByNick   = new ConcurrentHashMap<String, Client>(initialCapacity, loadFactor);
         clientsBySID    = new ConcurrentHashMap<String, Client>(initialCapacity, loadFactor);
 
         uninitializedClients = new Vector<Client>(ConfigurationManager.instance().getInt(
@@ -108,10 +104,8 @@ public final class ClientManager
     }
 
 
-    synchronized public void addClient (Client client)
+    public void addClient (Client client)
     {
-        clientsByCID.put(client.getClientHandler().getID(), client);
-        clientsByNick.put(client.getClientHandler().getNI(), client);
         clientsBySID.put(client.getClientHandler().getSID(), client);
     }
 
@@ -133,7 +127,7 @@ public final class ClientManager
     synchronized public void removeAllClients()
     {
         // For all clients
-        for (Client client : clientsByCID.values())
+        for (Client client : clientsBySID.values())
         {
             // Remove client attribute from all sessions
             client.getClientHandler().getSession().removeAttribute("client", client);
@@ -142,8 +136,6 @@ public final class ClientManager
         }
 
         // Remove all clients from client lists
-        clientsByCID.clear();
-        clientsByNick.clear();
         clientsBySID.clear();
     }
 
@@ -154,30 +146,7 @@ public final class ClientManager
      */
     public Collection<Client> getClients()
     {
-        return clientsByCID.values();
-    }
-
-
-    /**
-     * Return client with {@link ClientHandler#ID} equals to cid
-     * @param cid Client ID {@link ClientHandler#ID}
-     * @return Client
-     */
-    public Client getClientByCID (String cid)
-    {
-        return clientsByCID.get(cid);
-    }
-
-
-    /**
-     * Return client with {@link ClientHandler#NI} equals to nick
-     *
-     * @param nick Client NI {@link ClientHandler#NI}
-     * @return Client
-     */
-    public Client getClientByNick(String nick)
-    {
-        return clientsByNick.get(nick);
+        return clientsBySID.values();
     }
 
 
@@ -194,11 +163,7 @@ public final class ClientManager
 
     public int getClientsCount()
     {
-        if (clientsByCID.size() != clientsByNick.size() ||
-            clientsByNick.size() != clientsBySID.size())
-            log.error("Sizes of hashmaps with links to clients not equal!");
-
-        return clientsByCID.size();
+        return clientsBySID.size();
     }
 
 
@@ -206,7 +171,7 @@ public final class ClientManager
     {
         int count = 0;
 
-        for (Client client : clientsByCID.values())
+        for (Client client : clientsBySID.values())
         {
             if (client.getClientHandler().isValidated())
                 count++;
@@ -219,7 +184,7 @@ public final class ClientManager
     public long getTotalShare()
     {
         long ret = 0;
-        for (Client client : clientsByCID.values())
+        for (Client client : clientsBySID.values())
         {
             try
             {
@@ -237,7 +202,7 @@ public final class ClientManager
     public long getTotalFileCount()
     {
         long ret = 0;
-        for (Client client : clientsByCID.values())
+        for (Client client : clientsBySID.values())
         {
             try
             {
@@ -252,41 +217,18 @@ public final class ClientManager
     }
 
 
-    public boolean removeClient (Client client)
+    synchronized public boolean removeClient (Client client)
     {
-        Client removedClient = clientsByCID.remove(client.getClientHandler().getID());
-        clientsByNick.remove(client.getClientHandler().getNI());
-        clientsBySID.remove(client.getClientHandler().getSID());
+        Client removedClient = clientsBySID.remove(client.getClientHandler().getSID());
 
         if (removedClient == null)
-            log.debug("User with cid = \'" + client.getClientHandler().getID() + "\' not in clientsByCID.");
+            log.debug("User with sid = \'" + client.getClientHandler().getSID() + "\' not in clientsBySID.");
         else
-            log.debug("User with cid = \'" + removedClient.getClientHandler().getID() +
-                      "\' and nick = \'" + removedClient.getClientHandler().getNI() +
+            log.debug("User with nick = \'" + removedClient.getClientHandler().getNI() +
+                      "\' and sid = \'" + removedClient.getClientHandler().getSID() +
                       "\' was removed.");
 
         return removedClient != null;
     }
 
-
-    public void removeClientByCID (String cid)
-    {
-        Client client = clientsByCID.remove(cid);
-        if (client == null)
-            log.debug("User with cid = \'" + cid + "\' not in clientsByCID.");
-
-        if (client != null)
-        {
-            clientsBySID.remove(client.getClientHandler().getID());
-            clientsByNick.remove(client.getClientHandler().getNI());
-
-            log.debug("User with cid = \'" + cid + "\' and nick = \'" + client.getClientHandler().getNI() + "\' was removed.");
-        }
-    }
-
-
-    public boolean containClientByCID(String cid)
-    {
-        return clientsByCID.containsKey(cid);
-    }
 }
