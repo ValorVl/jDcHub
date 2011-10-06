@@ -5,5 +5,3 @@ Original project placed at http://www.death-squad.ro/dshub
 Original source code placed at http://sourceforge.net/projects/dshub/
 
 ADC protocol specification http://adc.sourceforge.net/
-
-WM arg  -server -Xms50m -Xmx256m -Dlog4j.configuration=file:./etc/log4j.properties

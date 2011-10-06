@@ -1,30 +1,27 @@
+package ru.sincore;
+
 /*
- * ClientNod.java
- *
- * Created on 29 octombrie 2007, 11:35
- *
- * DSHub ADC HubSoft
- * Copyright (C) 2007,2008  Eugen Hristev
+ * jDcHub ADC HubSoft
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or any later version.
- 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package ru.sincore;
-
-import org.apache.log4j.Logger;
 import org.apache.mina.core.future.WriteFuture;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ru.sincore.Exceptions.STAException;
 import ru.sincore.Modules.Modulator;
 import ru.sincore.Modules.Module;
 import ru.sincore.adc.Features;
@@ -34,7 +31,6 @@ import ru.sincore.db.dao.ClientListDAOImpl;
 import ru.sincore.db.pojo.ClientListPOJO;
 import ru.sincore.util.AdcUtils;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 
@@ -47,11 +43,15 @@ import java.util.Vector;
  * @author Pietricica
  *
  * @author Alexey 'lh' Antonov
+ * @author Valoer
+ *
  * @since 2011-09-06
  */
 public class Client
 {
-    public static final Logger log = Logger.getLogger(Client.class);
+    public static final Logger log = LoggerFactory.getLogger(Client.class);
+
+	private ConfigurationManager configInstance = ConfigurationManager.instance();
 
     /**
      * Handler to client info
@@ -83,25 +83,63 @@ public class Client
         return handler;
     }
 
-
-    public void storeInfo()
+	/**
+	 *  Store data about client if client begin registration procedure, or update statistic data.
+	 *
+	 *
+	 *  @see ClientListDAOImpl
+	 *  @see ClientListPOJO
+	 *  @see ClientHandler
+	 */
+    public void storeInfo() throws STAException
 	{
-        ClientListPOJO clientInfo = null;
-        ClientListDAO clientListDAO = new ClientListDAOImpl();
-        clientInfo = clientListDAO.getClientByNick(handler.getNI());
-        if (clientInfo != null)
-            return;
 
-        clientInfo = new ClientListPOJO();
 
-        clientInfo.setCid(handler.getID());
-        clientInfo.setCurrentIp(handler.getI4());
+
+		ClientListDAO clientListDAO = new ClientListDAOImpl();
+
+		ClientListPOJO clientInfo = clientListDAO.getClientByNick(handler.getNI());
+
+		if (clientInfo == null)
+		{
+			clientInfo = new ClientListPOJO();
+		}
+
+		// set CID
+		clientInfo.setCid(handler.getID());
+		// set IP
+		clientInfo.setCurrentIp(handler.getI4());
+		// set Nickname
         clientInfo.setNickName(handler.getNI());
-        clientInfo.setPassword(new String(""));
+		// set password
+		clientInfo.setPassword(handler.getPassword());
 
-        clientInfo.setWeight(handler.getWeight());
-        clientInfo.setPassword(handler.getPassword());
-        clientInfo.setHideMe(handler.isHideMe());
+		clientInfo.setClientType(Integer.valueOf(handler.getCT()));
+
+		if (!handler.isReg())
+		{
+			clientInfo.setSharedFilesCount(0L);
+			clientInfo.setShareSize(0L);
+			clientInfo.setRegDate(handler.getCreatedOn());
+			clientInfo.setWeight(10);
+			clientInfo.setRegOwner(handler.getWhoRegged());
+			clientInfo.setReg(true);
+		}
+		else
+		{
+			clientInfo.setSharedFilesCount(handler.getSF());
+			clientInfo.setShareSize(handler.getSS());
+			clientInfo.setWeight(handler.getWeight());
+		}
+
+
+
+		if (handler.isReg())
+		{
+			clientInfo.setLastNick(handler.getLastNick());
+		}
+
+		clientInfo.setHideMe(handler.isHideMe());
         clientInfo.setOverrideShare(handler.isOverrideShare());
         clientInfo.setOverrideSpam(handler.isOverrideSpam());
         clientInfo.setOverrideFull(handler.isOverrideFull());
@@ -110,6 +148,18 @@ public class Client
         clientInfo.setAccountFlyable(handler.isAccountFlyable());
         clientInfo.setOpChatAccess(handler.isOpchatAccess());
         clientInfo.setLastMessage(handler.getLastMessageText());
+
+		if (handler.isReg())
+			clientInfo.setLastIp(handler.getI4());
+
+		if (handler.getTimeOnline() == null || !handler.isReg())
+		{
+			clientInfo.setMaximumTimeOnline(0L);
+		}
+		else
+		{
+			clientInfo.setMaximumTimeOnline(handler.getTimeOnline());
+		}
 
         // TODO [lh] remove next 2 lines
         clientInfo.setCommandMask("".getBytes());

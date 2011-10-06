@@ -27,6 +27,8 @@ import org.apache.mina.core.session.IoSession;
 import ru.sincore.adc.State;
 import ru.sincore.util.AdcUtils;
 
+import java.util.Date;
+
 /**
  * Main client class, keeps all info regarding a client.
  * Also implements disconnecting methods.
@@ -335,9 +337,10 @@ public class ClientHandler
     private boolean isReg;
     private String  lastNick;
     private String  whoRegged;
-    private Long    createdOn;
+    //private Long    createdOn;
+	private Date	createdOn;
     private Long    lastLogin;
-    private Long    timeOnline;
+    private long    timeOnline;
     private String lastIP;
 
 
@@ -1202,13 +1205,13 @@ public class ClientHandler
     }
 
 
-    public Long getCreatedOn()
+    public Date getCreatedOn()
     {
         return createdOn;
     }
 
 
-    public void setCreatedOn(Long createdOn)
+    public void setCreatedOn(Date createdOn)
     {
         this.createdOn = createdOn;
     }

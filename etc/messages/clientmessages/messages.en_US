@@ -1,5 +1,5 @@
 core.reg_message            = You have been registered by Server. No password set, login does not require pass, however, its recomandable for you to set one...
 core.search_spam_detected   = Search ticket Reserved. Please be patient while search is being processed. Do NOT close this window or start other search or you will.
 tiger.error                 = Cannot find any compatible hash function to use. Defaulting to TIGER.
-core.reg_fail_message       = {0} - you already registered! Registration procedure is not allowed.
+core.reg_fail_message       = %s - you already registered! Registration procedure is not allowed.
 core.login_error_message    = Login fail

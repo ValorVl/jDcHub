@@ -2,11 +2,12 @@ package ru.sincore.adc.action;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.sincore.*;
+import ru.sincore.Broadcast;
+import ru.sincore.Client;
+import ru.sincore.ClientManager;
+import ru.sincore.ConfigurationManager;
 import ru.sincore.Exceptions.CommandException;
 import ru.sincore.Exceptions.STAException;
-import ru.sincore.Modules.Modulator;
-import ru.sincore.Modules.Module;
 import ru.sincore.TigerImpl.Base32;
 import ru.sincore.TigerImpl.Tiger;
 import ru.sincore.adc.Context;
@@ -14,7 +15,6 @@ import ru.sincore.adc.Features;
 import ru.sincore.adc.MessageType;
 import ru.sincore.adc.State;
 import ru.sincore.i18n.Messages;
-import ru.sincore.util.AdcUtils;
 import ru.sincore.util.Constants;
 import ru.sincore.util.STAError;
 
@@ -838,7 +838,7 @@ public class INF extends Action
         {
             // info about  client not found
             // store info to db about new client
-            fromClient.storeInfo();
+            //fromClient.storeInfo();
         }
 
         if (fromClient.getClientHandler().isReg())

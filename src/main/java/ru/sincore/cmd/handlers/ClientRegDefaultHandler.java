@@ -22,11 +22,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.sincore.Client;
 import ru.sincore.ConfigurationManager;
+import ru.sincore.Exceptions.STAException;
 import ru.sincore.cmd.AbstractCmd;
 import ru.sincore.cmd.CmdLogger;
-import ru.sincore.db.dao.ClientListDAOImpl;
-import ru.sincore.db.pojo.ClientListPOJO;
 import ru.sincore.i18n.Messages;
+import ru.sincore.util.Constants;
+import ru.sincore.util.STAError;
+
+import java.util.Date;
 
 
 /**
@@ -43,11 +46,11 @@ public class ClientRegDefaultHandler extends AbstractCmd
 	private String cmd;
 	private String args;
 
-	private ConfigurationManager confgInstance = ConfigurationManager.instance();
+	private ConfigurationManager configInstance = ConfigurationManager.instance();
 
 	public ClientRegDefaultHandler()
 	{
-
+		//
 	}
 
 	@Override
@@ -61,45 +64,44 @@ public class ClientRegDefaultHandler extends AbstractCmd
 		// Check client weight and flag "isReg", if weight > 0 and flag true, registration procedure not allowed.
 		if (client.getClientHandler().isReg() && client.getClientHandler().getWeight() > 0)
 		{
-			client.getClientHandler().sendFromBotPM(String.format(Messages.REG_FAIL_MESSAGE,
+			client.getClientHandler().sendFromBotPM(String.format(Messages.get(Messages.REG_FAIL_MESSAGE),
 																  client.getClientHandler().getNI()));
 			return;
 		}
-		else {
-
-			if(getLogged())
-			{
-				CmdLogger.log(this, client,"Successful registered",args);
-			}
-
+		else
+		{
 			regClient();
 		}
 	}
 
 	private void regClient()
 	{
+		String  hubName		= configInstance.getString(ConfigurationManager.HUB_NAME);
+		int passwordMinLen  = configInstance.getInt(ConfigurationManager.MIN_PASSWORD_LEN);
 
-		int 	passMinLen 	= confgInstance.getInt(ConfigurationManager.MIN_PASSWORD_LEN);
-		String  hubName		= confgInstance.getString(ConfigurationManager.HUB_NAME);
+		STAException ex = null;
 
-		ClientListDAOImpl clientDao = new ClientListDAOImpl();
-
-		ClientListPOJO clientEntity = clientDao.getClientByNick(client.getClientHandler().getNI());
-
-		log.debug(cmd+" >>>> "+ clientEntity.getNickName());
-
-		if (clientEntity.getId() != null)
+		try
 		{
-			 if (cmd.length() >= passMinLen)
-			 {
-				 client.getClientHandler().setPassword(args);
-				 client.getClientHandler().setReg(true);
-				 client.getClientHandler().setWeight(10);
-				 client.getClientHandler().setWhoRegged(hubName);
+			if (args == null || args.length() <= passwordMinLen)
+			{
+				new STAError(client, Constants.STA_SEVERITY_FATAL + Constants.STA_INVALID_PASSWORD,
+							 Messages.get(Messages.REG_FAIL_MESSAGE));
+			}
+			else
+			{
+				client.getClientHandler().setPassword(args.trim());
+			}
 
-				 client.storeInfo();
-			 }
+			client.getClientHandler().setCT("2");
+			client.getClientHandler().setWhoRegged(client.getClientHandler().getNI());
+			client.getClientHandler().setCreatedOn(new Date());
+			client.storeInfo();
+		} catch (STAException e)
+		{
+			ex = e;
 		}
 
+		CmdLogger.log(this, client, "Registered by "+hubName, args, ex);
 	}
 }

@@ -29,6 +29,25 @@ public class ClientListPOJO implements Serializable
 	private String 		cid;
 
 	/**
+     * Client (user) type, 1=bot, 2=registered user, 4=operator,
+     * 8=super user, 16=hub owner, 32=hub (used when the hub sends an INF about itself).
+     * Multiple types are specified by adding the numbers together.
+     */
+	@Column(name = "client_type", length = 2,nullable = false)
+	private Integer 	clientType = 0;
+
+	/**
+	 *  Count bytes of share size
+	 */
+	@Column(name = "share_size",nullable = false)
+	private Long 		shareSize = 0L;
+	/**
+	 *   Count shared files
+	 */
+	@Column(name = "share_file_count",nullable = false)
+	private Long 		sharedFilesCount = 0L;
+
+	/**
 	 *  Column "weight" right granted mask
 	 */
 	@Column(name = "weight", columnDefinition = "TINYINT(3) DEFAULT 0",nullable = false)
@@ -594,5 +613,35 @@ public class ClientListPOJO implements Serializable
 	public void setLocale(String locale)
 	{
 		this.locale = locale;
+	}
+
+	public Integer getClientType()
+	{
+		return clientType;
+	}
+
+	public void setClientType(Integer clientType)
+	{
+		this.clientType = clientType;
+	}
+
+	public Long getShareSize()
+	{
+		return shareSize;
+	}
+
+	public void setShareSize(Long shareSize)
+	{
+		this.shareSize = shareSize;
+	}
+
+	public Long getSharedFilesCount()
+	{
+		return sharedFilesCount;
+	}
+
+	public void setSharedFilesCount(Long sharedFilesCount)
+	{
+		this.sharedFilesCount = sharedFilesCount;
 	}
 }
