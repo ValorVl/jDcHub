@@ -1,4 +1,3 @@
-package ru.sincore;
 /*
  * ClientHandler.java
  *
@@ -21,6 +20,9 @@ package ru.sincore;
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
+
+package ru.sincore;
+
 
 import org.apache.mina.core.future.WriteFuture;
 import org.apache.mina.core.session.IoSession;
@@ -80,7 +82,6 @@ public class ClientHandler
      */
     private long lastINF = 0L;
 
-    // TODO use it in SessionManager#sessionIdle function
     /**
      * Time when last keep alive packed recieved
      */
@@ -1542,7 +1543,7 @@ public class ClientHandler
 
     public void sendFromBot(String text)
     {
-        if (text.isEmpty())
+        if (text == null || text.isEmpty())
         {
             return;
         }
