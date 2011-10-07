@@ -35,10 +35,15 @@ import ru.sincore.adc.State;
 import java.util.StringTokenizer;
 
 /**
+ * Class for SCH action.
+ * Description look at <a href="http://adc.sourceforge.net/ADC.html#_actions">ADC Actions</a>
+ * section 5.3.6
+
  * @author Alexey 'lh' Antonov
+ * @author Alexander 'hatred' Drozdov
  * @since 2011-10-05
  */
-public class SCH extends Action
+public class SCH extends MSG
 {
     private static final Logger log = LoggerFactory.getLogger(SCH.class);
 
@@ -87,6 +92,7 @@ public class SCH extends Action
                 break;
 
             case F:
+                super.parseIncoming();
                 break;
 
             case U:

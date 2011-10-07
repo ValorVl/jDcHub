@@ -23,6 +23,9 @@
 
 package ru.sincore;
 
+import java.util.Collection;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +36,7 @@ import org.slf4j.LoggerFactory;
  * @author Pietricica
  *
  * @author Alexey 'lh' Antonov
+ * @author Alexander 'hatred' Drozdov
  * @since 2011-09-06
  */
 public class Broadcast
@@ -81,8 +85,7 @@ public class Broadcast
     {
         for (Client toClient : ClientManager.getInstance().getClients())
         {
-            Thread sendThread = new Thread(new ClientSender(message, fromClient, toClient));
-            sendThread.start();
+            (new Thread(new ClientSender(message, fromClient, toClient))).start();
         }
     }
 
@@ -96,6 +99,52 @@ public class Broadcast
     public void broadcast(String message)
     {
         broadcast(message, null);
+    }
+
+
+    /**
+     * Send droadcast message depend on given features list
+     *
+     * @param message               message for broadcast
+     * @param fromClient            client who send message
+     * @param requiredFeatures      required features list
+     * @param excludedFeatures      excluded features list
+     */
+    public void featuredBroadcast(String message,
+                                  Client fromClient,
+                                  List<String> requiredFeatures,
+                                  List<String> excludedFeatures)
+    {
+        Collection<Client> clients = ClientManager.getInstance().getClients();
+
+        for (final Client client : clients)
+        {
+            boolean doSend = true;
+            for (String feature : requiredFeatures)
+            {
+                if (!client.isFeature(feature))
+                {
+                    doSend = false;
+                    break;
+                }
+            }
+
+            for (String feature : excludedFeatures)
+            {
+                if (client.isFeature(feature))
+                {
+                    doSend = false;
+                    break;
+                }
+            }
+
+            if (doSend)
+            {
+                log.debug("Send to client: " + client.getClientHandler().getNI() + "/" + client.getClientHandler().getSID());
+                (new Thread(new ClientSender(message, fromClient, client))).start();
+            }
+        }
+
     }
 
 

@@ -49,6 +49,7 @@ import java.util.Vector;
  * section 5.3.5
  *
  * @author Alexey 'lh' Antonov
+ * @author Alexander 'hatred' Drozdov
  * @since 2011-09-20
  */
 public class MSG extends Action
@@ -65,7 +66,7 @@ public class MSG extends Action
     List<String> excludedFeatureList = new Vector<String>();
 
 
-    private MSG(MessageType messageType, int context, Client fromClient, Client toClient)
+    protected MSG(MessageType messageType, int context, Client fromClient, Client toClient)
     {
         super(messageType, context, fromClient, toClient);
 
@@ -320,64 +321,19 @@ public class MSG extends Action
                 parseFeatures(tokenizer);
                 // get flags and parse it
                 parseFlags(tokenizer);
+
                 // send message dependent from features
-                sendMessageDependentFromFeatures();
+                Broadcast.getInstance().featuredBroadcast(rawCommand,
+                                                          fromClient,
+                                                          requiredFeatureList,
+                                                          excludedFeatureList);
+
                 break;
 
             case C:
             case U:
                 // these should never be seen on a hub
                 break;
-        }
-    }
-
-
-    private void sendMessageDependentFromFeatures()
-    {
-        Collection<Client> clients = ClientManager.getInstance().getClients();
-
-        for (final Client client : clients)
-        {
-            // Skip me
-            if (client == fromClient)
-            {
-                continue;
-            }
-
-            boolean doSend = true;
-            for (String feature : requiredFeatureList)
-            {
-                if (!client.isFeature(feature))
-                {
-                    doSend = false;
-                    break;
-                }
-            }
-
-            for (String feature : excludedFeatureList)
-            {
-                if (client.isFeature(feature))
-                {
-                    doSend = false;
-                    break;
-                }
-            }
-
-            if (doSend)
-            {
-                log.debug("Send to client: " + client.getClientHandler().getNI() + "/" + client.getClientHandler().getSID());
-                Runnable sending = new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        client.getClientHandler().sendToClient(rawCommand);
-                    }
-                };
-
-                Thread sendingThread = new Thread(sending);
-                sendingThread.start();
-            }
         }
     }
 
