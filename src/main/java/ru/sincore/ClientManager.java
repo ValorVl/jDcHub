@@ -268,6 +268,14 @@ public final class ClientManager
 
     synchronized public boolean removeClient (AbstractClient client)
     {
+        if (uninitializedClients.remove(client))
+        {
+            log.debug("Uninitialized client with sid = \'" +
+                      client.getSid() +
+                      "\' was removed.");
+            return true;
+        }
+
         AbstractClient removedClient = clientsBySID.remove(client.getSid());
 
         if (removedClient == null)
