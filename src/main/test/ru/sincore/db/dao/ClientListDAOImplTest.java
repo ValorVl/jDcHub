@@ -28,8 +28,6 @@ public class ClientListDAOImplTest
 		client.setLastNick("Valor");
 		client.setNickName("Valor");
 		client.setPassword("123456");
-		client.setCommandMask("wewewe".getBytes());
-		client.setHelpMask("wewerwer".getBytes());
 
 
 		clientList.addClient(client);

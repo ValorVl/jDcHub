@@ -126,21 +126,15 @@ public class Client extends AbstractClient
         clientInfo.setKickable(this.isKickable());
         clientInfo.setRenameable(this.isRenameable());
         clientInfo.setLastMessage(this.getLastMessageText());
+        clientInfo.setLoginCount(this.getLoginCount());
+        clientInfo.setTimeOnline(this.getTimeOnline());
 
-        if (this.isRegistred())
 
-//        if (this.getTimeOnline() == null || !this.isRegistred())
-//        {
-//            clientInfo.setMaximumTimeOnline(0L);
-//        }
-//        else
-//        {
-//            clientInfo.setMaximumTimeOnline(this.getTimeOnline());
-//        }
-
-        // TODO [lh] remove next 2 lines
-        clientInfo.setCommandMask("".getBytes());
-        clientInfo.setHelpMask("".getBytes());
+        long timeOnline = System.currentTimeMillis() - this.getLoggedIn().getTime();
+        if (clientInfo.getMaximumTimeOnline() < timeOnline)
+        {
+            clientInfo.setMaximumTimeOnline(timeOnline);
+        }
 
 
         clientListDAO.addClient(clientInfo);
@@ -172,6 +166,8 @@ public class Client extends AbstractClient
         this.setKickable(clientInfo.getKickable());
         this.setRenameable(clientInfo.getRenameable());
         this.setLastMessageText(clientInfo.getLastMessage());
+        this.setLoginCount(clientInfo.getLoginCount() + 1);
+        this.setTimeOnline(clientInfo.getTimeOnline());
 
         return true;
     }

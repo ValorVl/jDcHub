@@ -40,6 +40,7 @@ import ru.sincore.client.Client;
 import ru.sincore.util.STAError;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.StringTokenizer;
 
 /**
@@ -169,6 +170,8 @@ public class SessionManager extends IoHandlerAdapter
                  " with SID " +
                  currentClient.getSid() +
                  " just quited.");
+
+        currentClient.storeInfo();
     }
 
 
@@ -184,6 +187,7 @@ public class SessionManager extends IoHandlerAdapter
 
 		newClient.setRealIP(ST.nextToken());
         newClient.setSid(SIDGenerator.generate());
+        newClient.setLoggedIn(new Date());
 
         /**
          * Client will be moved from uninitialized to regular map after

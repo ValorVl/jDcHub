@@ -104,6 +104,12 @@ public class ClientListPOJO implements Serializable
 	@Column(name = "last_login",columnDefinition = "DATETIME",nullable = true)
 	private Date 		lastLogIn;
 
+    /**
+     *  Column "maximumTimeOnline" Contains the sum of all user's sessions in seconds (millisecond * 1000)
+     */
+    @Column(name = "time_online",columnDefinition = " BIGINT DEFAULT 0",nullable = false)
+    private Long	timeOnline = 0L;
+
 	/**
 	 *  Column "maximumTimeOnline" Contains the maximum length of user session in seconds (millisecond * 1000)
 	 */
@@ -177,20 +183,6 @@ public class ClientListPOJO implements Serializable
 	 */
 	@Column(name = "rx_bytes",columnDefinition = "BIGINT DEFAULT 0")
 	private Long		rxBytes = 0L;
-
-	/**
-	 * 	Column "commandMask" contains allowed commands usage - byte mask
-	 */
-	@Lob
-	@Column(name = "command_mask",columnDefinition = "BLOB", nullable = false)
-	private byte[]		commandMask;
-
-	/**
-	 *  Column "helpMask" allowed help commands usage for user - byte mask
-	 */
-	@Lob
-	@Column(name = "help_mask",columnDefinition = "BLOB", nullable = false)
-	private byte[]		helpMask;
 
 	/**
 	 *  Column "isPing" indicates if client is a pinger a.k.a. PING extension
@@ -457,26 +449,6 @@ public class ClientListPOJO implements Serializable
 		this.rxBytes = rxBytes;
 	}
 
-	public byte[] getCommandMask()
-	{
-		return commandMask;
-	}
-
-	public void setCommandMask(byte[] commandMask)
-	{
-		this.commandMask = commandMask;
-	}
-
-	public byte[] getHelpMask()
-	{
-		return helpMask;
-	}
-
-	public void setHelpMask(byte[] helpMask)
-	{
-		this.helpMask = helpMask;
-	}
-
 	public Boolean getPing()
 	{
 		return ping;
@@ -547,7 +519,17 @@ public class ClientListPOJO implements Serializable
 		this.loginCount = loginCount;
 	}
 
-	public Long getMaximumTimeOnline()
+    public Long getTimeOnline()
+    {
+        return timeOnline;
+    }
+
+    public void setTimeOnline(Long timeOnline)
+    {
+        this.timeOnline = timeOnline;
+    }
+
+    public Long getMaximumTimeOnline()
 	{
 		return maximumTimeOnline;
 	}

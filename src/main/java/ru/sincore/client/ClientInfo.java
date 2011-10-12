@@ -144,6 +144,12 @@ public class ClientInfo
      */
     private Date    lastLogin;
 
+
+    /**
+     * Number of hub visits
+     */
+    private long    loginCount = 0L;
+
     /**
      * How much client was online.
      */
@@ -622,6 +628,18 @@ public class ClientInfo
     public void setLastLogin(Date lastLogin)
     {
         this.lastLogin = lastLogin;
+    }
+
+
+    public long getLoginCount()
+    {
+        return loginCount;
+    }
+
+
+    public void setLoginCount(long loginCount)
+    {
+        this.loginCount = loginCount;
     }
 
 
