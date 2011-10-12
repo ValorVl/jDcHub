@@ -1,6 +1,6 @@
 package ru.sincore.cmd.handlers;
 
-import ru.sincore.Client;
+import ru.sincore.client.AbstractClient;
 import ru.sincore.cmd.AbstractCmd;
 
 /**
@@ -11,7 +11,7 @@ import ru.sincore.cmd.AbstractCmd;
 public class GrantHandler extends AbstractCmd
 {
 	@Override
-	public void execute(String cmd, String args, Client client)
+	public void execute(String cmd, String args, AbstractClient client)
 	{
 
 	}

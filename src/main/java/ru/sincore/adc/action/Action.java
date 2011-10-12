@@ -25,12 +25,12 @@ package ru.sincore.adc.action;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
-import ru.sincore.Client;
 import ru.sincore.Exceptions.CommandException;
 import ru.sincore.Exceptions.STAException;
 import ru.sincore.adc.Context;
 import ru.sincore.adc.MessageType;
 import ru.sincore.adc.State;
+import ru.sincore.client.AbstractClient;
 import ru.sincore.util.Constants;
 import ru.sincore.util.STAError;
 
@@ -52,8 +52,8 @@ public abstract class Action
     protected int         context     = Context.INVALID_CONTEXT;
     protected MessageType messageType = MessageType.INVALID_MESSAGE_TYPE;
 
-    protected Client fromClient;
-    protected Client toClient;
+    protected AbstractClient fromClient;
+    protected AbstractClient toClient;
 
     protected String rawCommand;
     protected boolean paramsAreValid = false;
@@ -61,8 +61,8 @@ public abstract class Action
 
     protected Action(MessageType messageType,
            int context,
-           Client fromClient,
-           Client toClient)
+           AbstractClient fromClient,
+           AbstractClient toClient)
     {
         this.messageType = messageType;
         this.context = context;
@@ -75,25 +75,25 @@ public abstract class Action
 	}
 
 
-	public Client getFromClient ()
+	public AbstractClient getFromClient ()
     {
         return fromClient;
     }
 
 
-    public Client getToClient ()
+    public AbstractClient getToClient ()
     {
         return toClient;
     }
 
 
-    public void setFromClient (Client fromClient)
+    public void setFromClient (AbstractClient fromClient)
     {
         this.fromClient = fromClient;
     }
 
 
-    public void setToClient (Client toClient)
+    public void setToClient (AbstractClient toClient)
     {
         this.toClient = toClient;
     }
@@ -108,11 +108,11 @@ public abstract class Action
             return false;
 
         if ((fromClient != null) &&
-            (availableStates & fromClient.getClientHandler().getState()) == State.INVALID_STATE)
+            (availableStates & fromClient.getState()) == State.INVALID_STATE)
             return false;
 
         if ((toClient != null) &&
-            (availableStates & toClient.getClientHandler().getState()) == State.INVALID_STATE)
+            (availableStates & toClient.getState()) == State.INVALID_STATE)
             return false;
 
         if (!paramsAreValid)

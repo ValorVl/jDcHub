@@ -3,6 +3,8 @@ package ru.sincore;
 import org.testng.annotations.Test;
 import ru.sincore.TigerImpl.CIDGenerator;
 import ru.sincore.TigerImpl.SIDGenerator;
+import ru.sincore.client.AbstractClient;
+import ru.sincore.client.Client;
 
 /**
  * Create user: lh
@@ -14,10 +16,10 @@ public class ClientManagerTest
     public void testClientManager()
             throws Exception
     {
-        Client client = new Client();
-        client.getClientHandler().setID(SIDGenerator.generate());
-        client.getClientHandler().setNI("TestNick");
-        client.getClientHandler().setID(CIDGenerator.generate());
+        AbstractClient client = new Client();
+        client.setSid(SIDGenerator.generate());
+        client.setNick("TestNick");
+        client.setCid(CIDGenerator.generate());
 
         ClientManager.getInstance().addClient(client);
 

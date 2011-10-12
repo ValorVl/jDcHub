@@ -25,12 +25,12 @@ package ru.sincore.adc.action;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.sincore.Broadcast;
-import ru.sincore.Client;
 import ru.sincore.Exceptions.CommandException;
 import ru.sincore.Exceptions.STAException;
 import ru.sincore.adc.Context;
 import ru.sincore.adc.MessageType;
 import ru.sincore.adc.State;
+import ru.sincore.client.AbstractClient;
 
 import java.util.StringTokenizer;
 
@@ -48,7 +48,7 @@ public class SCH extends MSG
     private static final Logger log = LoggerFactory.getLogger(SCH.class);
 
 
-    public SCH(MessageType messageType, int context, Client client, String rawCommand)
+    public SCH(MessageType messageType, int context, AbstractClient client, String rawCommand)
             throws CommandException, STAException
     {
         super(messageType,

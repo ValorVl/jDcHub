@@ -21,7 +21,7 @@ package ru.sincore.cmd;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
-import ru.sincore.Client;
+import ru.sincore.client.AbstractClient;
 import ru.sincore.db.dao.CmdLogDAOImpl;
 
 /**
@@ -37,7 +37,7 @@ public class CmdLogger
 
 	private String marker = Marker.ANY_NON_NULL_MARKER;
 
-	public static void log(AbstractCmd cmd, Client client, String cmdResult, String realArgs, Exception e)
+	public static void log(AbstractCmd cmd, AbstractClient client, String cmdResult, String realArgs, Exception e)
 	{
 		if (cmd.enabled)
 		{
@@ -54,7 +54,7 @@ public class CmdLogger
 				cmdExecutionResult = cmdResult;
 			}
 
-			cmdLog.putLog(client.getClientHandler().getNI(), cmd.getCmdNames(), cmdExecutionResult, realArgs);
+			cmdLog.putLog(client.getNick(), cmd.getCmdNames(), cmdExecutionResult, realArgs);
 
 		}
 		else

@@ -24,13 +24,13 @@ package ru.sincore.adc.action;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.sincore.Client;
 import ru.sincore.ClientManager;
 import ru.sincore.Exceptions.CommandException;
 import ru.sincore.Exceptions.STAException;
 import ru.sincore.adc.Context;
 import ru.sincore.adc.MessageType;
 import ru.sincore.adc.State;
+import ru.sincore.client.AbstractClient;
 import ru.sincore.util.Constants;
 import ru.sincore.util.STAError;
 
@@ -49,7 +49,7 @@ public class CTM extends Action
     private String  clientToken;
 
 
-    CTM(MessageType messageType, int context, Client fromClient, Client toClient)
+    CTM(MessageType messageType, int context, AbstractClient fromClient, AbstractClient toClient)
     {
         super(messageType, context, fromClient, toClient);
 
@@ -57,7 +57,7 @@ public class CTM extends Action
         this.availableStates = State.NORMAL;
     }
 
-    public CTM(MessageType messageType, int context, Client client, String rawCommand)
+    public CTM(MessageType messageType, int context, AbstractClient client, String rawCommand)
             throws CommandException, STAException
     {
         this(messageType,
@@ -72,7 +72,7 @@ public class CTM extends Action
     private void parseCTM(StringTokenizer tokenizer)
             throws STAException
     {
-        if (!fromClient.getClientHandler().isActive())
+        if (!fromClient.isActive())
         {
             new STAError(fromClient, 100, "Error: Must be TCP active to use CTM.");
             return;
@@ -80,7 +80,7 @@ public class CTM extends Action
 
         // getting mySID
         String mySID = tokenizer.nextToken();
-        if (!mySID.equals(fromClient.getClientHandler().getSID()))
+        if (!mySID.equals(fromClient.getSid()))
         {
             new STAError(fromClient,
                          200 + Constants.STA_GENERIC_PROTOCOL_ERROR,
@@ -91,7 +91,7 @@ public class CTM extends Action
         String targetSID = tokenizer.nextToken();
 
         // looking for client by target sid
-        Client targetClient = ClientManager.getInstance().getClientBySID(targetSID);
+        AbstractClient targetClient = ClientManager.getInstance().getClientBySID(targetSID);
         if (targetClient == null)
             //talking to inexisting client
             //not kick, maybe the other client just left after he sent the msg;
@@ -104,10 +104,10 @@ public class CTM extends Action
         // get client token
         clientToken = tokenizer.nextToken();
 
-        targetClient.getClientHandler().sendToClient(rawCommand);
+        targetClient.sendRawCommand(rawCommand);
         if (messageType == MessageType.E)
         {
-            fromClient.getClientHandler().sendToClient(rawCommand);
+            fromClient.sendRawCommand(rawCommand);
         }
     }
 

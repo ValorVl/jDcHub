@@ -104,6 +104,12 @@ public class ClientListPOJO implements Serializable
 	@Column(name = "last_login",columnDefinition = "DATETIME",nullable = true)
 	private Date 		lastLogIn;
 
+    /**
+     *  Column "maximumTimeOnline" Contains the sum of all user's sessions in seconds (millisecond * 1000)
+     */
+    @Column(name = "time_online",columnDefinition = " BIGINT DEFAULT 0",nullable = false)
+    private Long	timeOnline = 0L;
+
 	/**
 	 *  Column "maximumTimeOnline" Contains the maximum length of user session in seconds (millisecond * 1000)
 	 */
@@ -116,12 +122,6 @@ public class ClientListPOJO implements Serializable
 	@Index(name = "index_by_current_ip")
 	@Column(name = "current_ip",columnDefinition = "VARCHAR(250)",nullable = false)
 	private String 		currentIp;
-
-	/**
-	 *  Colimn "lastIp" Contains the last IP address before changing. Passable NULL.
-	 */
-	@Column(name = "last_ip",columnDefinition = "VARCHAR(250)",nullable = true)
-	private String 		lastIp;
 
 	/**
 	 *  Column "realIp" Contains a "white" IP gateway, if there is. Defined by the client through NPnP
@@ -173,18 +173,6 @@ public class ClientListPOJO implements Serializable
 	private Boolean		renameable = false;
 
 	/**
-	 *  TODO define or function this column i`m not understand
-	 */
-	@Column(name = "account_flyable",columnDefinition = "TINYINT(1) DEFAULT 0",nullable = false)
-	private Boolean		accountFlyable = false;
-
-	/**
-	 *  Column "opChatAccess" boolean flag given right to access in OpChat
-	 */
-	@Column(name = "op_chat_access",columnDefinition = "TINYINT(1) DEFAULT 0",nullable = false)
-	private Boolean		opChatAccess = false;
-
-	/**
 	 *  Column "txBytes" Contains transitional byte count
 	 */
 	@Column(name = "tx_bytes",columnDefinition = "BIGINT DEFAULT 0")
@@ -195,20 +183,6 @@ public class ClientListPOJO implements Serializable
 	 */
 	@Column(name = "rx_bytes",columnDefinition = "BIGINT DEFAULT 0")
 	private Long		rxBytes = 0L;
-
-	/**
-	 * 	Column "commandMask" contains allowed commands usage - byte mask
-	 */
-	@Lob
-	@Column(name = "command_mask",columnDefinition = "BLOB", nullable = false)
-	private byte[]		commandMask;
-
-	/**
-	 *  Column "helpMask" allowed help commands usage for user - byte mask
-	 */
-	@Lob
-	@Column(name = "help_mask",columnDefinition = "BLOB", nullable = false)
-	private byte[]		helpMask;
 
 	/**
 	 *  Column "isPing" indicates if client is a pinger a.k.a. PING extension
@@ -241,7 +215,7 @@ public class ClientListPOJO implements Serializable
 	private Boolean		bas0Allowed = false;
 
 	/**
-	 *  Column "lastMessage" last message say user.
+	 *  Column "lastMessage" last message said by user.
 	 */
 	@Column(name = "last_message",columnDefinition = "TEXT",nullable = true)
 	private String 		lastMessage;
@@ -375,16 +349,6 @@ public class ClientListPOJO implements Serializable
 		this.currentIp = currentIp;
 	}
 
-	public String getLastIp()
-	{
-		return lastIp;
-	}
-
-	public void setLastIp(String lastIp)
-	{
-		this.lastIp = lastIp;
-	}
-
 	public String getRealIp()
 	{
 		return realIp;
@@ -455,37 +419,17 @@ public class ClientListPOJO implements Serializable
 		this.isKickable = isKickable;
 	}
 
-	public Boolean getRenameable()
-	{
-		return renameable;
-	}
+    public Boolean getRenameable()
+    {
+        return renameable;
+    }
 
-	public void setRenameable(Boolean renameable)
-	{
-		this.renameable = renameable;
-	}
+    public void setRenameable(Boolean renameable)
+    {
+        this.renameable = renameable;
+    }
 
-	public Boolean getAccountFlyable()
-	{
-		return accountFlyable;
-	}
-
-	public void setAccountFlyable(Boolean accountFlyable)
-	{
-		this.accountFlyable = accountFlyable;
-	}
-
-	public Boolean getOpChatAccess()
-	{
-		return opChatAccess;
-	}
-
-	public void setOpChatAccess(Boolean opChatAccess)
-	{
-		this.opChatAccess = opChatAccess;
-	}
-
-	public Long getTxBytes()
+    public Long getTxBytes()
 	{
 		return txBytes;
 	}
@@ -503,26 +447,6 @@ public class ClientListPOJO implements Serializable
 	public void setRxBytes(Long rxBytes)
 	{
 		this.rxBytes = rxBytes;
-	}
-
-	public byte[] getCommandMask()
-	{
-		return commandMask;
-	}
-
-	public void setCommandMask(byte[] commandMask)
-	{
-		this.commandMask = commandMask;
-	}
-
-	public byte[] getHelpMask()
-	{
-		return helpMask;
-	}
-
-	public void setHelpMask(byte[] helpMask)
-	{
-		this.helpMask = helpMask;
 	}
 
 	public Boolean getPing()
@@ -595,7 +519,17 @@ public class ClientListPOJO implements Serializable
 		this.loginCount = loginCount;
 	}
 
-	public Long getMaximumTimeOnline()
+    public Long getTimeOnline()
+    {
+        return timeOnline;
+    }
+
+    public void setTimeOnline(Long timeOnline)
+    {
+        this.timeOnline = timeOnline;
+    }
+
+    public Long getMaximumTimeOnline()
 	{
 		return maximumTimeOnline;
 	}
