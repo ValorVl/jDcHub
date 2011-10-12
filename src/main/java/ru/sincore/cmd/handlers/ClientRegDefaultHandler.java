@@ -20,9 +20,9 @@ package ru.sincore.cmd.handlers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.sincore.Client;
 import ru.sincore.ConfigurationManager;
 import ru.sincore.Exceptions.STAException;
+import ru.sincore.client.AbstractClient;
 import ru.sincore.cmd.AbstractCmd;
 import ru.sincore.cmd.CmdLogger;
 import ru.sincore.i18n.Messages;
@@ -42,7 +42,7 @@ public class ClientRegDefaultHandler extends AbstractCmd
 
 	private static final Logger log = LoggerFactory.getLogger(ClientRegDefaultHandler.class);
 
-	private Client client;
+	private AbstractClient client;
 	private String cmd;
 	private String args;
 
@@ -54,7 +54,7 @@ public class ClientRegDefaultHandler extends AbstractCmd
 	}
 
 	@Override
-	public void execute(String cmd, String args, Client client)
+	public void execute(String cmd, String args, AbstractClient client)
 	{
 
 		this.client = client;
@@ -62,11 +62,10 @@ public class ClientRegDefaultHandler extends AbstractCmd
 		this.args	= args;
 
 		// Check client weight and flag "isReg", if weight > 0 and flag true, registration procedure not allowed.
-		if (client.getClientHandler().isReg() && client.getClientHandler().getWeight() > 0)
+		if (client.isRegistred() && client.getWeight() > 0)
 		{
-			client.getClientHandler().sendFromBotPM(String.format(Messages.get(Messages.REG_FAIL_MESSAGE),
-																  client.getClientHandler().getNI()));
-			return;
+            client.sendPrivateMessageFromChatBot(String.format(Messages.get(Messages.REG_FAIL_MESSAGE),
+                                                               client.getNick()));
 		}
 		else
 		{
@@ -90,12 +89,12 @@ public class ClientRegDefaultHandler extends AbstractCmd
 			}
 			else
 			{
-				client.getClientHandler().setPassword(args.trim());
+				client.setPassword(args.trim());
 			}
 
-			client.getClientHandler().setCT("2");
-			client.getClientHandler().setWhoRegged(client.getClientHandler().getNI());
-			client.getClientHandler().setCreatedOn(new Date());
+			client.setClientType("2");
+			client.setRegistratorNick(client.getNick());
+			client.setCreatedOn(new Date());
 			client.storeInfo();
 		} catch (STAException e)
 		{

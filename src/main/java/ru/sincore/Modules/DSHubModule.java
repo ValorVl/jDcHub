@@ -23,7 +23,7 @@
 
 package ru.sincore.Modules;
 
-import ru.sincore.ClientHandler;
+import ru.sincore.client.AbstractClient;
 
 /**
  * Interface designed for plugins to implement
@@ -61,37 +61,37 @@ public interface DSHubModule
     /**
      * Called by hub main threads when registered users give a command (starting with + or ! )
      *
-     * @arguments cur_client, the ClientHandler for the client who issued the Issued_Command, given in string
+     * @arguments cur_client, the AbstractClient for the client who issued the Issued_Command, given in string
      * and with no protocol thingies
      * Must return ACK_COMMAND if it handled the command normally and command should be shown on
      * cmdhistory, or DO_NOTHING if it did nothing
      * Should return HIDE_COMMAND if the command contained some password or something and cmdhistory should not show it.
      * Other return values are reserved for future use.
      */
-    public int onCommand(ClientHandler cur_client, String Issued_Command);
+    public int onCommand(AbstractClient cur_client, String Issued_Command);
 
     /**
      * Called by hub main threads when a new client connects and its logged in ok
      *
-     * @arguments cur_client, the ClientHandler for the client who connected
+     * @arguments cur_client, the AbstractClient for the client who connected
      */
-    public void onConnect(ClientHandler cur_client);
+    public void onConnect(AbstractClient cur_client);
 
     /**
      * Called by hub main threads when a client sends any raw command;
      *
-     * @arguments cur_client, the ClientHandler for the client who sent the raw, given in string
+     * @arguments cur_client, the AbstractClient for the client who sent the raw, given in string
      * with all the protocol thingies. This method is always called after the DSHub internal
      * methods are called to work at the raw command.
      */
-    public void onRawCommand(ClientHandler cur_client, String Raw_Command);
+    public void onRawCommand(AbstractClient cur_client, String Raw_Command);
 
     /**
      * Called by hub main threads when a client quits the hub;
      *
-     * @arguments cur_client, the ClientHandler for the client who quitted;
+     * @arguments cur_client, the AbstractClient for the client who quitted;
      */
-    public void onClientQuit(ClientHandler cur_client);
+    public void onClientQuit(AbstractClient cur_client);
 
     /**
      * Called by hub main threads when registering plugin at startup or restarts

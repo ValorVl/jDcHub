@@ -26,11 +26,13 @@ package ru.sincore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.sincore.adc.State;
+import ru.sincore.client.AbstractClient;
+import ru.sincore.client.Bot;
+import ru.sincore.client.Client;
 
 import java.util.Collection;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Provides user management control functionality
@@ -44,10 +46,10 @@ public final class ClientManager
 {
     private static final Logger log = LoggerFactory.getLogger(ClientManager.class);
 
-    private static ConcurrentHashMap<String, Client> clientsBySID;
+    private static ConcurrentHashMap<String,AbstractClient> clientsBySID;
     private static ConcurrentHashMap<String, String> sidByNick;
 
-    private static Vector<Client> uninitializedClients;
+    private static Vector<AbstractClient> uninitializedClients;
 
 // *********************** Singleton implementation start ********************************
     private static volatile Strategy strategy = new CreateAndReturnStrategy();
@@ -98,28 +100,57 @@ public final class ClientManager
         int initialCapacity = ConfigurationManager.instance().getInt(ConfigurationManager.USER_INITIAL_CAPACITY);
         float loadFactor = ConfigurationManager.instance().getFloat(ConfigurationManager.USER_LOAD_FACTOR);
 
-        clientsBySID    = new ConcurrentHashMap<String, Client>(initialCapacity, loadFactor);
+        clientsBySID    = new ConcurrentHashMap<String, AbstractClient>(initialCapacity, loadFactor);
         sidByNick       = new ConcurrentHashMap<String, String>(initialCapacity, loadFactor);
 
-        uninitializedClients = new Vector<Client>(ConfigurationManager.instance().getInt(
+        uninitializedClients = new Vector<AbstractClient>(ConfigurationManager.instance().getInt(
                 ConfigurationManager.USER_CONNECTION_BUFFER_INITIAL_SIZE));
+
+        addBots();
+        addChatRooms();
     }
 
 
-    public void addClient (Client client)
+    private void addBots()
     {
-        clientsBySID.put(client.getClientHandler().getSID(), client);
-        sidByNick.put(client.getClientHandler().getNI(), client.getClientHandler().getSID());
+        ConfigurationManager configurationManager = ConfigurationManager.instance();
+
+        // Create new bot
+        Bot bot = new Bot();
+        bot.setSid(configurationManager.getString(ConfigurationManager.BOT_CHAT_SID));
+        bot.setCid(configurationManager.getString(ConfigurationManager.SECURITY_CID));
+        bot.setNick(configurationManager.getString(ConfigurationManager.BOT_CHAT_NAME));
+        bot.setDescription(configurationManager.getString(ConfigurationManager.BOT_CHAT_DESCRIPTION));
+        bot.setClientType("5");
+        bot.setValidated();
+
+        // load info about bot from db
+        bot.loadInfo();
+
+        // add bot to client list
+        addClient(bot);
     }
 
 
-    public void addNewClient(Client client)
+    private void addChatRooms()
     {
-        client.getClientHandler().setState(State.PROTOCOL);
+
+    }
+
+    public void addClient (AbstractClient client)
+    {
+        clientsBySID.put(client.getSid(), client);
+        sidByNick.put(client.getNick(), client.getSid());
+    }
+
+
+    public void addNewClient(AbstractClient client)
+    {
+        client.setState(State.PROTOCOL);
         uninitializedClients.add(client);
     }
 
-    synchronized public void moveClientToRegularMap(Client client)
+    synchronized public void moveClientToRegularMap(AbstractClient client)
     {
         if (!uninitializedClients.remove(client))
             log.error("Client was not found in uninitialized clients vector!");
@@ -130,12 +161,14 @@ public final class ClientManager
     public void removeAllClients()
     {
         // For all clients
-        for (Client client : clientsBySID.values())
+        for (AbstractClient client : clientsBySID.values())
         {
-            // Remove client attribute from all sessions
-            client.getClientHandler().getSession().removeAttribute("client", client);
-            // Close connection
-            client.getClientHandler().getSession().close(true);
+            if (client instanceof Client)
+            {
+                Client tempClient = (Client) client;
+                // Close connection
+                tempClient.removeSession(true);
+            }
         }
 
         // Remove all clients from client lists
@@ -148,29 +181,30 @@ public final class ClientManager
      * Return collection of clients
      * @return collection of clients
      */
-    public Collection<Client> getClients()
+    public Collection<AbstractClient> getClients()
     {
         return clientsBySID.values();
     }
 
 
     /**
-     * Return client with {@link ClientHandler#NI} equals to nick
+     * Return client with {@link Client#nick} equals to nick
      * @param nick Client nick (NI)
      * @return Client
      */
-    public Client getClientByNick(String nick)
+    public AbstractClient getClientByNick(String nick)
     {
         return clientsBySID.get(sidByNick.get(nick));
     }
 
 
     /**
-     * Return client with {@link ClientHandler#SID} equals to sid
-     * @param sid Client SID {@link ClientHandler#SID}
+     * Return client with {@link Client#sid} equals to sid
+     *
+     * @param sid Client SID {@link ru.sincore.client.Client#sid}
      * @return Client
      */
-    public Client getClientBySID (String sid)
+    public AbstractClient getClientBySID(String sid)
     {
         return clientsBySID.get(sid);
     }
@@ -186,9 +220,9 @@ public final class ClientManager
     {
         int count = 0;
 
-        for (Client client : clientsBySID.values())
+        for (AbstractClient client : clientsBySID.values())
         {
-            if (client.getClientHandler().isValidated())
+            if (client.isValidated())
                 count++;
         }
 
@@ -199,11 +233,11 @@ public final class ClientManager
     public long getTotalShare()
     {
         long ret = 0;
-        for (Client client : clientsBySID.values())
+        for (AbstractClient client : clientsBySID.values())
         {
             try
             {
-                ret += client.getClientHandler().getSS();
+                ret += client.getShareSise();
             }
             catch (ArithmeticException ae)
             {
@@ -217,11 +251,11 @@ public final class ClientManager
     public long getTotalFileCount()
     {
         long ret = 0;
-        for (Client client : clientsBySID.values())
+        for (AbstractClient client : clientsBySID.values())
         {
             try
             {
-                ret += client.getClientHandler().getSF();
+                ret += client.getSharedFiles();
             }
             catch (ArithmeticException ae)
             {
@@ -232,22 +266,39 @@ public final class ClientManager
     }
 
 
-    synchronized public boolean removeClient (Client client)
+    synchronized public boolean removeClient (AbstractClient client)
     {
-        Client removedClient = clientsBySID.remove(client.getClientHandler().getSID());
+        if (uninitializedClients.remove(client))
+        {
+            log.debug("Uninitialized client with sid = \'" +
+                      client.getSid() +
+                      "\' was removed.");
+            return true;
+        }
+
+        AbstractClient removedClient = clientsBySID.remove(client.getSid());
 
         if (removedClient == null)
-            log.debug("User with sid = \'" + client.getClientHandler().getSID() + "\' not in clientsBySID.");
+            log.debug("User with sid = \'" + client.getSid() + "\' not in clientsBySID.");
         else
         {
-            sidByNick.remove(removedClient.getClientHandler().getNI());
+            sidByNick.remove(removedClient.getNick());
 
-            log.debug("User with nick = \'" + removedClient.getClientHandler().getNI() +
-                      "\' and sid = \'" + removedClient.getClientHandler().getSID() +
+            log.debug("User with nick = \'" + removedClient.getNick() +
+                      "\' and sid = \'" + removedClient.getSid() +
                       "\' was removed.");
         }
 
         return removedClient != null;
     }
 
+
+    public void sendClientsInfsToClient(AbstractClient client)
+    {
+        for (AbstractClient oldClient : clientsBySID.values())
+        {
+            if (oldClient.isValidated() && !oldClient.equals(client))
+                client.sendRawCommand(oldClient.getINF());
+        }
+    }
 }

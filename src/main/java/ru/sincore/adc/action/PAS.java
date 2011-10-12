@@ -1,13 +1,9 @@
 package ru.sincore.adc.action;
 
-import java.util.Arrays;
 import java.util.StringTokenizer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.sincore.Broadcast;
-import ru.sincore.Client;
-import ru.sincore.ClientManager;
 import ru.sincore.ConfigurationManager;
 import ru.sincore.Exceptions.CommandException;
 import ru.sincore.Exceptions.STAException;
@@ -16,8 +12,9 @@ import ru.sincore.TigerImpl.Tiger;
 import ru.sincore.adc.Context;
 import ru.sincore.adc.MessageType;
 import ru.sincore.adc.State;
+import ru.sincore.client.AbstractClient;
+import ru.sincore.client.Client;
 import ru.sincore.i18n.Messages;
-import ru.sincore.util.AdcUtils;
 import ru.sincore.util.Constants;
 import ru.sincore.util.STAError;
 
@@ -35,7 +32,7 @@ public class PAS extends Action
 
     ConfigurationManager configurationManager = ConfigurationManager.instance();
 
-    public PAS(MessageType messageType, int context, Client fromClient, Client toClient)
+    public PAS(MessageType messageType, int context, AbstractClient fromClient, AbstractClient toClient)
     {
         super(messageType, context, fromClient, toClient);
         availableContexts = Context.T;
@@ -43,13 +40,13 @@ public class PAS extends Action
     }
 
 
-    public PAS(MessageType messageType, int context, Client client)
+    public PAS(MessageType messageType, int context, AbstractClient client)
     {
-        this(messageType, context, client, (Client) null);
+        this(messageType, context, client, (AbstractClient) null);
     }
 
 
-    public PAS(MessageType messageType, int context, Client client, String rawCommand)
+    public PAS(MessageType messageType, int context, AbstractClient client, String rawCommand)
         throws CommandException, STAException
     {
         this(messageType, context, client);
@@ -87,9 +84,9 @@ public class PAS extends Action
         tokenizer.nextToken(); // Skip command prefix (HPAS)
 
         String receivedPassword = tokenizer.nextToken();
-        String clientPassword   = fromClient.getClientHandler().getPassword();
+        String clientPassword   = fromClient.getPassword();
         String calculatedPassword;
-        byte[] salt             = Base32.decode(fromClient.getClientHandler().getEncryptionSalt());
+        byte[] salt             = Base32.decode(fromClient.getEncryptionSalt());
 
 
         if (clientPassword == null || clientPassword.equals(""))
@@ -148,7 +145,8 @@ public class PAS extends Action
         }
         finally
         {
-            fromClient.getClientHandler().getSession().close(true);
+            if (fromClient instanceof Client)
+                ((Client) fromClient).removeSession(true);
         }
     }
 }

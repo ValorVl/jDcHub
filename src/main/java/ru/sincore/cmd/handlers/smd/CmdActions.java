@@ -18,7 +18,7 @@ package ru.sincore.cmd.handlers.smd;
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import ru.sincore.Client;
+import ru.sincore.client.AbstractClient;
 import ru.sincore.cmd.AbstractCmd;
 import ru.sincore.cmd.CmdContainer;
 import ru.sincore.db.dao.CmdListDAOImpl;
@@ -28,12 +28,12 @@ import java.util.concurrent.ConcurrentHashMap;
 public class CmdActions extends AbstractCmd
 {
 
-	private Client client;
+	private AbstractClient client;
 	private String cmd;
 	private String args;
 
 	@Override
-	public void execute(String cmd, String args, Client client)
+	public void execute(String cmd, String args, AbstractClient client)
 	{
 
 	}
@@ -53,7 +53,7 @@ public class CmdActions extends AbstractCmd
 		complete.append(syntax);
 		complete.append('\n');
 
-		//client.getClientHandler().sendFromBotPM(complete.toString());
+		//client.getClientHandler().sendPrivateMessageFromChatBot(complete.toString());
 	}
 
 	private void addCmd(String 	name,
@@ -77,7 +77,7 @@ public class CmdActions extends AbstractCmd
 
 			if (response)
 			{
-				client.getClientHandler().sendFromBotPM("Command : "+cmd+" registered.");
+                client.sendPrivateMessageFromChatBot("Command : "+cmd+" registered.");
 			}
 		}
 
@@ -104,8 +104,8 @@ public class CmdActions extends AbstractCmd
 			cmds.append('\n');
 		}
 
-		client.getClientHandler().sendFromBotPM(cmds.toString());
-		client.getClientHandler().sendFromBotPM("All classes successful reloaded !");
+		client.sendPrivateMessageFromChatBot(cmds.toString());
+		client.sendPrivateMessageFromChatBot("All classes successful reloaded !");
 	}
 
 	private void delCmd(String cmd)
@@ -125,6 +125,6 @@ public class CmdActions extends AbstractCmd
 
 	private void error()
 	{
-		client.getClientHandler().sendFromBotPM("Error parse command arguments or unknown argument.");
+		client.sendPrivateMessageFromChatBot("Error parse command arguments or unknown argument.");
 	}
 }

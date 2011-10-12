@@ -2,7 +2,7 @@ package ru.sincore.cmd;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.sincore.Client;
+import ru.sincore.client.AbstractClient;
 
 public abstract class AbstractCmd
 {
@@ -18,7 +18,7 @@ public abstract class AbstractCmd
 	Boolean logged;
 
 
-	public abstract void execute(String cmd,String args, Client client);
+	public abstract void execute(String cmd,String args, AbstractClient client);
 
 	Boolean validateRights(Integer clientRightWeight)
 	{

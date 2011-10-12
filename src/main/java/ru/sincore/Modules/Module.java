@@ -24,7 +24,7 @@
 package ru.sincore.Modules;
 
 
-import ru.sincore.ClientHandler;
+import ru.sincore.client.AbstractClient;
 
 /**
  * @author Pietricica
@@ -82,7 +82,7 @@ public class Module
     }
 
 
-    public int onCommand(ClientHandler cur_client, String Issued_Command)
+    public int onCommand(AbstractClient cur_client, String Issued_Command)
     {
         if (isOK() && isEnabled())
         {
@@ -100,7 +100,7 @@ public class Module
     }
 
 
-    public void onRawCommand(ClientHandler cur_client, String Raw_Command)
+    public void onRawCommand(AbstractClient cur_client, String Raw_Command)
     {
         if (isOK() && isEnabled())
         {
@@ -116,7 +116,7 @@ public class Module
     }
 
 
-    public void onClientQuit(ClientHandler cur_client)
+    public void onClientQuit(AbstractClient cur_client)
     {
         if (isOK() && isEnabled())
         {
@@ -132,7 +132,7 @@ public class Module
     }
 
 
-    public void onConnect(ClientHandler cur_client)
+    public void onConnect(AbstractClient cur_client)
     {
         if (isOK() && isEnabled())
         {
