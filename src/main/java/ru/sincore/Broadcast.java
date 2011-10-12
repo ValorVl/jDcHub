@@ -28,6 +28,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.sincore.client.AbstractClient;
 
 /**
  * Provides broadcasts and feature broadcasts constructors to all connected
@@ -81,9 +82,9 @@ public class Broadcast
      * Creates a new instance of Broadcast , sends to all except the ClientNod
      * received as param.
      */
-    public void broadcast(String message, Client fromClient)
+    public void broadcast(String message, AbstractClient fromClient)
     {
-        for (Client toClient : ClientManager.getInstance().getClients())
+        for (AbstractClient toClient : ClientManager.getInstance().getClients())
         {
             (new Thread(new ClientSender(message, fromClient, toClient))).start();
         }
@@ -111,13 +112,13 @@ public class Broadcast
      * @param excludedFeatures      excluded features list
      */
     public void featuredBroadcast(String message,
-                                  Client fromClient,
+                                  AbstractClient fromClient,
                                   List<String> requiredFeatures,
                                   List<String> excludedFeatures)
     {
-        Collection<Client> clients = ClientManager.getInstance().getClients();
+        Collection<AbstractClient> clients = ClientManager.getInstance().getClients();
 
-        for (final Client client : clients)
+        for (final AbstractClient client : clients)
         {
             boolean doSend = true;
             for (String feature : requiredFeatures)
@@ -140,7 +141,7 @@ public class Broadcast
 
             if (doSend)
             {
-                log.debug("Send to client: " + client.getClientHandler().getNI() + "/" + client.getClientHandler().getSID());
+                log.debug("Send to client: " + client.getNick() + "/" + client.getSid());
                 (new Thread(new ClientSender(message, fromClient, client))).start();
             }
         }
@@ -151,11 +152,11 @@ public class Broadcast
     private class ClientSender implements Runnable
     {
         private final String    message;
-        private final Client    fromClient;
-        private final Client    toClient;
+        private final AbstractClient    fromClient;
+        private final AbstractClient    toClient;
 
 
-        public ClientSender(String message, Client fromClient, Client toClient)
+        public ClientSender(String message, AbstractClient fromClient, AbstractClient toClient)
         {
             this.message = message;
             this.fromClient = fromClient;
@@ -165,14 +166,12 @@ public class Broadcast
 
         public void run()
         {
-            ClientHandler toClientHandler = toClient.getClientHandler();
-
-            if (toClientHandler.isActive())
+            if (toClient.isActive())
             {
                 if (!message.startsWith("E") && toClient.equals(fromClient))
                     return;
 
-                toClientHandler.sendToClient(message);
+                toClient.sendRawCommand(message);
             }
         }
     }

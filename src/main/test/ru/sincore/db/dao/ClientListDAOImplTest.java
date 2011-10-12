@@ -24,14 +24,12 @@ public class ClientListDAOImplTest
 
 		ClientListPOJO client = new ClientListPOJO();
 		client.setCid("UTFFD#@");
-		client.setLastIp("10.10.10.125");
 		client.setCurrentIp("10.10.10.125");
 		client.setLastNick("Valor");
 		client.setNickName("Valor");
 		client.setPassword("123456");
 		client.setCommandMask("wewewe".getBytes());
 		client.setHelpMask("wewerwer".getBytes());
-		client.setAccountFlyable(true);
 
 
 		clientList.addClient(client);

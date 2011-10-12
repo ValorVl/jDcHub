@@ -32,6 +32,7 @@ import ru.sincore.Modules.Module;
 import ru.sincore.adc.Context;
 import ru.sincore.adc.MessageType;
 import ru.sincore.adc.action.*;
+import ru.sincore.client.AbstractClient;
 import ru.sincore.util.Constants;
 import ru.sincore.util.STAError;
 
@@ -63,13 +64,13 @@ public class Command
      * @throws CommandException Something wrong happend
      * @throws STAException
      */
-    public static void handle(Client client, String rawCommand)
+    public static void handle(AbstractClient client, String rawCommand)
             throws CommandException, STAException
     {
 
         if (rawCommand.equals(""))
         {
-            client.getClientHandler().setLastKeepAlive(System.currentTimeMillis());
+            client.setLastKeepAlive(System.currentTimeMillis());
             return;
         }
 
@@ -152,7 +153,7 @@ public class Command
 
         for (Module myMod : Modulator.myModules)
         {
-            myMod.onRawCommand(client.getClientHandler(), rawCommand);
+            myMod.onRawCommand(client, rawCommand);
         }
     }
 

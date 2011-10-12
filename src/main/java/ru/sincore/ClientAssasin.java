@@ -23,6 +23,8 @@
 
 package ru.sincore;
 
+import ru.sincore.client.AbstractClient;
+
 /**
  * Permanent thread that keeps clients connected ( meaning killing the ones who
  * are disconnected). Also sends delayed searches and will be used for cron-like jobs.
@@ -64,41 +66,38 @@ public class ClientAssasin extends Thread
                 continue;
             }
 
-            for (Client client : ClientManager.getInstance().getClients())
+            for (AbstractClient client : ClientManager.getInstance().getClients())
             {
-                ClientHandler clientHandler = client.getClientHandler();
-
                 long currentTime = System.currentTimeMillis();
 
-                if (((!clientHandler.isKicked())
-                     && (clientHandler.getInQueueSearch() != null))
-                    && (clientHandler.isValidated()))
+                if (((client.getInQueueSearch() != null))
+                    && (client.isValidated()))
                 {
 
                     double xy = 1;
-                    for (int i = 0; i < clientHandler.getSearchStep(); i++)
+                    for (int i = 0; i < client.getSearchStep(); i++)
                     {
                         xy *= ((double) ConfigurationManager.instance().getInt(ConfigurationManager.SEARCH_BASE_INTERVAL)) / 1000;
                     }
                     xy *= 1000;
                     long xx = (long) xy;
-                    if (clientHandler.getSearchStep() >= ConfigurationManager.instance().getInt(ConfigurationManager.SEARCH_STEPS))
+                    if (client.getSearchStep() >= ConfigurationManager.instance().getInt(ConfigurationManager.SEARCH_STEPS))
                     {
                         xx = ConfigurationManager.instance().getInt(ConfigurationManager.SEARCH_SPAM_RESET) * 1000;
                     }
-                    if ((currentTime - clientHandler.getLastSearch()) > xx)
+                    if ((currentTime - client.getLastSearch()) > xx)
                     {
 
-                        if (clientHandler.getInQueueSearch().startsWith("B"))
+                        if (client.getInQueueSearch().startsWith("B"))
                         {
-                            Broadcast.getInstance().broadcast(clientHandler.getInQueueSearch());
+                            Broadcast.getInstance().broadcast(client.getInQueueSearch());
                         }
                         else
                         {
-                            Broadcast.getInstance().broadcast(clientHandler.getInQueueSearch());
+                            Broadcast.getInstance().broadcast(client.getInQueueSearch());
                         }
-                        clientHandler.setInQueueSearch(null);
-                        clientHandler.setLastSearch(currentTime);
+                        client.setInQueueSearch(null);
+                        client.setLastSearch(currentTime);
                     }
 
                 }

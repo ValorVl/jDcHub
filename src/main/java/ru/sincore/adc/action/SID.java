@@ -24,12 +24,12 @@ package ru.sincore.adc.action;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.sincore.Client;
 import ru.sincore.Exceptions.CommandException;
 import ru.sincore.Exceptions.STAException;
 import ru.sincore.adc.Context;
 import ru.sincore.adc.MessageType;
 import ru.sincore.adc.State;
+import ru.sincore.client.AbstractClient;
 
 /**
  * Class for SID action.
@@ -46,7 +46,7 @@ public class SID extends Action
 
     private SID(MessageType messageType,
            int context,
-           Client toClient)
+           AbstractClient toClient)
     {
         super(messageType, context, null, toClient);
 
@@ -66,7 +66,7 @@ public class SID extends Action
      */
     public SID(MessageType messageType,
            int context,
-           Client client,
+           AbstractClient client,
            String params)
             throws CommandException, STAException
     {

@@ -25,7 +25,6 @@ package ru.sincore.adc.action;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.sincore.Broadcast;
-import ru.sincore.Client;
 import ru.sincore.ClientManager;
 import ru.sincore.ConfigurationManager;
 import ru.sincore.Exceptions.CommandException;
@@ -33,6 +32,7 @@ import ru.sincore.Exceptions.STAException;
 import ru.sincore.adc.Context;
 import ru.sincore.adc.MessageType;
 import ru.sincore.adc.State;
+import ru.sincore.client.AbstractClient;
 import ru.sincore.cmd.CmdEngine;
 import ru.sincore.util.AdcUtils;
 import ru.sincore.util.Constants;
@@ -66,7 +66,7 @@ public class MSG extends Action
     List<String> excludedFeatureList = new Vector<String>();
 
 
-    protected MSG(MessageType messageType, int context, Client fromClient, Client toClient)
+    protected MSG(MessageType messageType, int context, AbstractClient fromClient, AbstractClient toClient)
     {
         super(messageType, context, fromClient, toClient);
 
@@ -75,7 +75,7 @@ public class MSG extends Action
     }
 
 
-    public MSG(MessageType messageType, int context, Client client)
+    public MSG(MessageType messageType, int context, AbstractClient client)
     {
         this(messageType,
              context,
@@ -92,7 +92,7 @@ public class MSG extends Action
      * @param client client to send message or from message was recieved
      * @param rawCommand message text, additional flags
      */
-    public MSG(MessageType messageType, int context, Client client, String rawCommand)
+    public MSG(MessageType messageType, int context, AbstractClient client, String rawCommand)
             throws CommandException, STAException
     {
         this(messageType, context, client);
@@ -234,7 +234,7 @@ public class MSG extends Action
                          Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
                          "MSG contains wrong my_sid value!");
 
-        if (!mySID.equals(fromClient.getClientHandler().getSID()))
+        if (!mySID.equals(fromClient.getSid()))
             new STAError(fromClient,
                          Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
                          "MSG my_sid not equal to sender\'s sid.");
@@ -251,12 +251,12 @@ public class MSG extends Action
                          Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
                          "MSG contains wrong target_sid value!");
 
-        if (targetSID.equals(fromClient.getClientHandler().getSID()))
+        if (targetSID.equals(fromClient.getSid()))
             new STAError(fromClient,
                          Constants.STA_SEVERITY_RECOVERABLE,
                          "MSG PM not returning to self.");
 
-        Client tempClient = ClientManager.getInstance().getClientBySID(targetSID);
+        AbstractClient tempClient = ClientManager.getInstance().getClientBySID(targetSID);
         if (tempClient == null)
             new STAError(fromClient,
                          Constants.STA_SEVERITY_RECOVERABLE,
@@ -341,8 +341,8 @@ public class MSG extends Action
     private void sendMessageToClient()
             throws STAException
     {
-        toClient.getClientHandler().sendToClient(rawCommand);
+        toClient.sendRawCommand(rawCommand);
         if (messageType == MessageType.E)
-            fromClient.getClientHandler().sendToClient(rawCommand);
+            fromClient.sendRawCommand(rawCommand);
     }
 }

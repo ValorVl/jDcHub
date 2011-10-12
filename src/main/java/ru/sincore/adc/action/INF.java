@@ -3,7 +3,6 @@ package ru.sincore.adc.action;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.sincore.Broadcast;
-import ru.sincore.Client;
 import ru.sincore.ClientManager;
 import ru.sincore.ConfigurationManager;
 import ru.sincore.Exceptions.CommandException;
@@ -14,6 +13,7 @@ import ru.sincore.adc.Context;
 import ru.sincore.adc.Features;
 import ru.sincore.adc.MessageType;
 import ru.sincore.adc.State;
+import ru.sincore.client.AbstractClient;
 import ru.sincore.i18n.Messages;
 import ru.sincore.util.Constants;
 import ru.sincore.util.STAError;
@@ -32,7 +32,7 @@ public class INF extends Action
 
     ConfigurationManager configurationManager = ConfigurationManager.instance();
 
-    public INF(MessageType messageType, int context, Client fromClient, Client toClient)
+    public INF(MessageType messageType, int context, AbstractClient fromClient, AbstractClient toClient)
     {
         super(messageType, context, fromClient, toClient);
 
@@ -41,7 +41,7 @@ public class INF extends Action
     }
 
 
-    public INF(MessageType messageType, int context, Client client)
+    public INF(MessageType messageType, int context, AbstractClient client)
     {
         this(messageType,
              context,
@@ -49,7 +49,7 @@ public class INF extends Action
              (context == Context.F ? null : client));
     }
 
-    public INF(MessageType messageType, int context, Client client, String rawCommand)
+    public INF(MessageType messageType, int context, AbstractClient client, String rawCommand)
             throws CommandException, STAException
     {
         this(messageType,
@@ -66,11 +66,11 @@ public class INF extends Action
     }
 
 
-    private boolean validateNick(Client client)
+    private boolean validateNick(AbstractClient client)
             throws STAException
     {
         // TODO [lh] Replace by normal nick validation
-        if (fromClient.getClientHandler().getNI().length() > configurationManager.getInt(ConfigurationManager.MAX_NICK_SIZE))
+        if (fromClient.getNick().length() > configurationManager.getInt(ConfigurationManager.MAX_NICK_SIZE))
         {
             new STAError(client,
                          Constants.STA_SEVERITY_FATAL + Constants.STA_NICK_INVALID,
@@ -80,7 +80,7 @@ public class INF extends Action
             return false;
         }
 
-        if (fromClient.getClientHandler().getNI().length() < configurationManager.getInt(ConfigurationManager.MIN_NICK_SIZE))
+        if (fromClient.getNick().length() < configurationManager.getInt(ConfigurationManager.MIN_NICK_SIZE))
         {
             new STAError(client,
                          Constants.STA_SEVERITY_FATAL + Constants.STA_NICK_INVALID,
@@ -97,25 +97,25 @@ public class INF extends Action
     private void checkClientInformation()
             throws STAException
     {
-        if (!fromClient.getClientHandler().isOverrideSpam())
+        if (!fromClient.isOverrideSpam())
         {
-            if (fromClient.getClientHandler().getEM() != null)
+            if (fromClient.getEmail() != null)
             {
                 // TODO [lh] validate email
-//                if (!ValidateField(fromClient.getClientHandler().getEM()))
+//                if (!ValidateField(fromClient.getEM()))
 //                {
 //                    new STAError(fromClient,
-//                                 (fromClient.getClientHandler().getState() == State.PROTOCOL ?
+//                                 (fromClient.getState() == State.PROTOCOL ?
 //                                 Constants.STA_SEVERITY_FATAL : Constants.STA_SEVERITY_RECOVERABLE),
 //                                 "E-mail contains forbidden words.");
 //                    return;
 //                }
             }
 
-            if (fromClient.getClientHandler().getDE() != null)
+            if (fromClient.getDescription() != null)
             {
                 // TODO [lh] validate description
-//                if (!ValidateField(fromClient.getClientHandler().getDE()))
+//                if (!ValidateField(fromClient.getDE()))
 //                {
 //                    new STAError(fromClient,
 //                                 state == State.PROTOCOL ? Constants.STA_SEVERITY_FATAL : Constants.STA_SEVERITY_RECOVERABLE,
@@ -124,9 +124,9 @@ public class INF extends Action
 //                }
             }
 
-            if (fromClient.getClientHandler().getSL() != null)
+            if (fromClient.getUploadSlotsOpened() != null)
             {
-                if (configurationManager.getInt(ConfigurationManager.MIN_SLOT_COUNT) != 0 && fromClient.getClientHandler().getSL() == 0)
+                if (configurationManager.getInt(ConfigurationManager.MIN_SLOT_COUNT) != 0 && fromClient.getUploadSlotsOpened() == 0)
                 {
                     new STAError(fromClient,
                                  Constants.STA_SEVERITY_FATAL +
@@ -138,14 +138,14 @@ public class INF extends Action
             }
             //TODO : add without tag allow ?
             //checking all:
-            if (fromClient.getClientHandler().getNI() != null)
+            if (fromClient.getNick() != null)
             {
                 validateNick(fromClient);
             }
 
-            if (fromClient.getClientHandler().getDE() != null)
+            if (fromClient.getDescription() != null)
             {
-                if (fromClient.getClientHandler().getDE().length() >
+                if (fromClient.getDescription().length() >
                     configurationManager.getInt(ConfigurationManager.MAX_DESCRIPTION_CHAR_COUNT))
                 {
                     new STAError(fromClient,
@@ -158,9 +158,9 @@ public class INF extends Action
                 }
             }
 
-            if (fromClient.getClientHandler().getEM() != null)
+            if (fromClient.getEmail() != null)
             {
-                if (fromClient.getClientHandler().getEM().length() >
+                if (fromClient.getEmail().length() >
                     configurationManager.getInt(ConfigurationManager.MAX_EMAIL_CHAR_COUNT))
                 {
                     new STAError(fromClient,
@@ -175,9 +175,9 @@ public class INF extends Action
 
             // TODO [lh] is MAX_SHARE_SIZE needed?
             // TODO [lh] how to set an unlimited share size?
-            if (fromClient.getClientHandler().getSS() != null)
+            if (fromClient.getShareSise() != null)
             {
-                if (fromClient.getClientHandler().getSS() >
+                if (fromClient.getShareSise() >
                     configurationManager.getLong(ConfigurationManager.MAX_SHARE_SIZE))
                 {
                     new STAError(fromClient,
@@ -189,7 +189,7 @@ public class INF extends Action
                     return;
                 }
 
-                if (fromClient.getClientHandler().getSS() <
+                if (fromClient.getShareSise() <
                     configurationManager.getLong(ConfigurationManager.MIN_SHARE_SIZE))
                 {
                     new STAError(fromClient,
@@ -204,9 +204,9 @@ public class INF extends Action
                 }
             }
 
-            if (fromClient.getClientHandler().getSL() != null)
+            if (fromClient.getUploadSlotsOpened() != null)
             {
-                if (fromClient.getClientHandler().getSL() <
+                if (fromClient.getUploadSlotsOpened() <
                     configurationManager.getInt(ConfigurationManager.MIN_SLOT_COUNT))
                 {
                     new STAError(fromClient,
@@ -218,7 +218,7 @@ public class INF extends Action
                     return;
                 }
 
-                if (fromClient.getClientHandler().getSL() >
+                if (fromClient.getUploadSlotsOpened() >
                     configurationManager.getInt(ConfigurationManager.MAX_SLOT_COUNT))
                 {
                     new STAError(fromClient,
@@ -231,9 +231,9 @@ public class INF extends Action
                 }
             }
 
-            if (fromClient.getClientHandler().getHN() != null)
+            if (fromClient.getNumberOfNormalStateHubs() != null)
             {
-                if (fromClient.getClientHandler().getHN() >
+                if (fromClient.getNumberOfNormalStateHubs() >
                     configurationManager.getInt(ConfigurationManager.MAX_HUBS_USERS))
                 {
                     new STAError(fromClient,
@@ -246,9 +246,9 @@ public class INF extends Action
                 }
             }
 
-            if (fromClient.getClientHandler().getHO() != null)
+            if (fromClient.getNumberOfHubsWhereOp() != null)
             {
-                if (fromClient.getClientHandler().getHO() >
+                if (fromClient.getNumberOfHubsWhereOp() >
                     configurationManager.getInt(ConfigurationManager.MAX_OP_IN_HUB))
                 {
                     new STAError(fromClient,
@@ -261,9 +261,9 @@ public class INF extends Action
                 }
             }
 
-            if (fromClient.getClientHandler().getHR() != null)
+            if (fromClient.getNumberOfHubsWhereRegistred() != null)
             {
-                if (fromClient.getClientHandler().getHR() >
+                if (fromClient.getNumberOfHubsWhereRegistred() >
                     configurationManager.getInt(ConfigurationManager.MAX_HUBS_REGISTERED))
                 {
                     new STAError(fromClient,
@@ -283,7 +283,7 @@ public class INF extends Action
     private void validateMinimalINF()
             throws STAException
     {
-        if (fromClient.getClientHandler().getID() == null)
+        if (fromClient.getCid() == null)
         {
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL +
@@ -293,7 +293,7 @@ public class INF extends Action
                          "ID");
             return;
         }
-        else if (fromClient.getClientHandler().getID().equals(""))
+        else if (fromClient.getCid().equals(""))
         {
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL +
@@ -304,7 +304,7 @@ public class INF extends Action
             return;
         }
 
-        if (fromClient.getClientHandler().getPD() == null)
+        if (fromClient.getPid() == null)
         {
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL +
@@ -314,7 +314,7 @@ public class INF extends Action
                          "PD");
             return;
         }
-        else if (fromClient.getClientHandler().getPD().equals(""))
+        else if (fromClient.getPid().equals(""))
         {
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL +
@@ -325,7 +325,7 @@ public class INF extends Action
             return;
         }
 
-        if (fromClient.getClientHandler().getNI() == null)
+        if (fromClient.getNick() == null)
         {
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL +
@@ -335,7 +335,7 @@ public class INF extends Action
                          "NI");
             return;
         }
-        else if (fromClient.getClientHandler().getNI().equals(""))
+        else if (fromClient.getNick().equals(""))
         {
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL +
@@ -346,7 +346,7 @@ public class INF extends Action
             return;
         }
 
-        if (fromClient.getClientHandler().getHN() == null)
+        if (fromClient.getNumberOfNormalStateHubs() == null)
         {
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL +
@@ -363,10 +363,10 @@ public class INF extends Action
     {
         StringBuilder currentINF = new StringBuilder();
         currentINF.append("BINF ");
-        currentINF.append(fromClient.getClientHandler().getSID());
+        currentINF.append(fromClient.getSid());
 
         String thesid = tokenizer.nextToken();
-        if (!thesid.equals(fromClient.getClientHandler().getSID()))
+        if (!thesid.equals(fromClient.getSid()))
         {
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL + Constants.STA_GENERIC_PROTOCOL_ERROR,
@@ -382,7 +382,7 @@ public class INF extends Action
 
                 if (token.startsWith("ID"))//meaning we have the ID thingy
                 {
-                    if (fromClient.getClientHandler().getState() != State.PROTOCOL)
+                    if (fromClient.getState() != State.PROTOCOL)
                     {
                         new STAError(fromClient,
                                      Constants.STA_SEVERITY_RECOVERABLE,
@@ -390,9 +390,9 @@ public class INF extends Action
                         return;
                     }
 
-                    fromClient.getClientHandler().setID(token.substring(2));
+                    fromClient.setCid(token.substring(2));
                     currentINF.append(" ID");
-                    currentINF.append(fromClient.getClientHandler().getID());
+                    currentINF.append(fromClient.getCid());
                 }
                 else if (token.startsWith("NI"))
                 {
@@ -408,20 +408,20 @@ public class INF extends Action
                 }
 */
 
-                    fromClient.getClientHandler().setNI(token.substring(2));
+                    fromClient.setNick(token.substring(2));
 
-                    if (fromClient.getClientHandler().getState() != State.PROTOCOL)
+                    if (fromClient.getState() != State.PROTOCOL)
                     {
                         // TODO change nick to new nick
                         // save information about it into db
                     }
 
                     currentINF.append(" NI");
-                    currentINF.append(fromClient.getClientHandler().getNI());
+                    currentINF.append(fromClient.getNick());
                 }
                 else if (token.startsWith("PD"))//the PiD
                 {
-                    if (fromClient.getClientHandler().getState() != State.PROTOCOL)
+                    if (fromClient.getState() != State.PROTOCOL)
                     {
                         new STAError(fromClient,
                                      Constants.STA_SEVERITY_RECOVERABLE,
@@ -429,154 +429,153 @@ public class INF extends Action
                         return;
                     }
 
-                    fromClient.getClientHandler().setPD(token.substring(2));
+                    fromClient.setPid(token.substring(2));
                 }
                 else if (token.startsWith("I4"))
                 {
                     String ipv4 = token.substring(2);
 
-                    fromClient.getClientHandler().setI4(ipv4);
+                    fromClient.setIpAddressV4(ipv4);
 
                     if (ipv4.equals("0.0.0.0") ||
                         ipv4.equals("localhost"))//only if active client
                     {
-                        fromClient.getClientHandler()
-                                  .setI4(fromClient.getClientHandler().getRealIP());
+                        fromClient.setIpAddressV4(fromClient.getRealIP());
                     }
-                    else if (!ipv4.equals(fromClient.getClientHandler().getRealIP()) &&
+                    else if (!ipv4.equals(fromClient.getRealIP()) &&
                              !ipv4.equals("") &&
-                             !fromClient.getClientHandler().getRealIP().equals("127.0.0.1"))
+                             !fromClient.getRealIP().equals("127.0.0.1"))
                     {
                         new STAError(fromClient,
                                      Constants.STA_SEVERITY_FATAL + Constants.STA_INVALID_IP,
                                      "Wrong IP address supplied.",
                                      "I4",
-                                     fromClient.getClientHandler().getRealIP());
+                                     fromClient.getRealIP());
                         return;
                     }
 
                     currentINF.append(" I4");
-                    currentINF.append(fromClient.getClientHandler().getI4());
+                    currentINF.append(fromClient.getIpAddressV4());
                 }
                 else if (token.startsWith("I6"))
                 {
-                    fromClient.getClientHandler().setI6(token.substring(2));
+                    fromClient.setIpAddressV6(token.substring(2));
                     currentINF.append(" I6");
-                    currentINF.append(fromClient.getClientHandler().getI6());
+                    currentINF.append(fromClient.getIpAddressV6());
                 }
                 else if (token.startsWith("U4"))
                 {
-                    fromClient.getClientHandler().setU4(token.substring(2));
+                    fromClient.setUdpPortV4(token.substring(2));
                     currentINF.append(" U4");
-                    currentINF.append(fromClient.getClientHandler().getU4());
+                    currentINF.append(fromClient.getUdpPortV4());
                 }
                 else if (token.startsWith("U6"))
                 {
-                    fromClient.getClientHandler().setU6(token.substring(2));
+                    fromClient.setUdpPortV6(token.substring(2));
                     currentINF.append(" U6");
-                    currentINF.append(fromClient.getClientHandler().getU6());
+                    currentINF.append(fromClient.getUdpPortV6());
                 }
                 else if (token.startsWith("SS"))
                 {
-                    fromClient.getClientHandler().setSS(Long.parseLong(token.substring(2)));
+                    fromClient.setShareSise(Long.parseLong(token.substring(2)));
                     currentINF.append(" SS");
-                    currentINF.append(fromClient.getClientHandler().getSS());
+                    currentINF.append(fromClient.getShareSise());
                 }
                 else if (token.startsWith("SF"))
                 {
-                    fromClient.getClientHandler().setSF(Long.parseLong(token.substring(2)));
+                    fromClient.setSharedFiles(Long.parseLong(token.substring(2)));
                     currentINF.append(" SF");
-                    currentINF.append(fromClient.getClientHandler().getSF());
+                    currentINF.append(fromClient.getSharedFiles());
                 }
                 else if (token.startsWith("VE"))
                 {
-                    fromClient.getClientHandler().setVE(token.substring(2));
+                    fromClient.setClientIdentificationVersion(token.substring(2));
                     currentINF.append(" VE");
-                    currentINF.append(fromClient.getClientHandler().getVE());
+                    currentINF.append(fromClient.getClientIdentificationVersion());
                 }
                 else if (token.startsWith("US"))
                 {
-                    fromClient.getClientHandler().setUS(Long.parseLong(token.substring(2)));
+                    fromClient.setMaxUploadSpeed(Long.parseLong(token.substring(2)));
                     currentINF.append(" US");
-                    currentINF.append(fromClient.getClientHandler().getUS());
+                    currentINF.append(fromClient.getMaxUploadSpeed());
                 }
                 else if (token.startsWith("DS"))
                 {
-                    fromClient.getClientHandler().setDS(Long.parseLong(token.substring(2)));
+                    fromClient.setMaxDownloadSpeed(Long.parseLong(token.substring(2)));
                     currentINF.append(" DS");
-                    currentINF.append(fromClient.getClientHandler().getDS());
+                    currentINF.append(fromClient.getMaxDownloadSpeed());
                 }
                 else if (token.startsWith("SL"))
                 {
-                    fromClient.getClientHandler().setSL(Integer.parseInt(token.substring(2)));
+                    fromClient.setUploadSlotsOpened(Integer.parseInt(token.substring(2)));
                     currentINF.append(" SL");
-                    currentINF.append(fromClient.getClientHandler().getSL());
+                    currentINF.append(fromClient.getUploadSlotsOpened());
                 }
                 else if (token.startsWith("AS"))
                 {
-                    fromClient.getClientHandler().setAS(Long.parseLong(token.substring(2)));
+                    fromClient.setAutomaticSlotAllocator(Long.parseLong(token.substring(2)));
                     currentINF.append(" AS");
-                    currentINF.append(fromClient.getClientHandler().getAS());
+                    currentINF.append(fromClient.getAutomaticSlotAllocator());
                 }
                 else if (token.startsWith("AM"))
                 {
-                    fromClient.getClientHandler().setAM(Long.parseLong(token.substring(2)));
+                    fromClient.setMinAutomaticSlots(Long.parseLong(token.substring(2)));
                     currentINF.append(" AM");
-                    currentINF.append(fromClient.getClientHandler().getAM());
+                    currentINF.append(fromClient.getMinAutomaticSlots());
                 }
                 else if (token.startsWith("EM"))
                 {
-                    fromClient.getClientHandler().setEM(token.substring(2));
+                    fromClient.setEmail(token.substring(2));
                     currentINF.append(" EM");
-                    currentINF.append(fromClient.getClientHandler().getEM());
+                    currentINF.append(fromClient.getEmail());
                 }
                 else if (token.startsWith("DE"))
                 {
-                    fromClient.getClientHandler().setDE(token.substring(2));
+                    fromClient.setDescription(token.substring(2));
                     currentINF.append(" DE");
-                    currentINF.append(fromClient.getClientHandler().getDE());
+                    currentINF.append(fromClient.getDescription());
                 }
                 else if (token.startsWith("HN"))
                 {
-                    fromClient.getClientHandler().setHN(Integer.parseInt(token.substring(2)));
+                    fromClient.setNumberOfNormalStateHubs(Integer.parseInt(token.substring(2)));
 
-                    if (fromClient.getClientHandler().getState() == State.NORMAL)
+                    if (fromClient.getState() == State.NORMAL)
                     {
                         currentINF.append(" HN");
-                        currentINF.append(fromClient.getClientHandler().getHN());
+                        currentINF.append(fromClient.getNumberOfNormalStateHubs());
                     }
                 }
                 else if (token.startsWith("HR"))
                 {
-                    fromClient.getClientHandler().setHR(Integer.parseInt(token.substring(2)));
+                    fromClient.setNumberOfHubsWhereRegistred(Integer.parseInt(token.substring(2)));
                     currentINF.append(" HR");
-                    currentINF.append(fromClient.getClientHandler().getHR());
+                    currentINF.append(fromClient.getNumberOfHubsWhereRegistred());
                 }
                 else if (token.startsWith("HO"))
                 {
-                    fromClient.getClientHandler().setHO(Integer.parseInt(token.substring(2)));
+                    fromClient.setNumberOfHubsWhereOp(Integer.parseInt(token.substring(2)));
                     currentINF.append(" HO");
-                    currentINF.append(fromClient.getClientHandler().getHO());
+                    currentINF.append(fromClient.getNumberOfHubsWhereOp());
                 }
                 else if (token.startsWith("TO"))
                 {
-                    fromClient.getClientHandler().setTO(token.substring(2));
+                    fromClient.setToken(token.substring(2));
                     currentINF.append(" TO");
-                    currentINF.append(fromClient.getClientHandler().getTO());
+                    currentINF.append(fromClient.getToken());
                 }
                 else if (token.startsWith("AW"))
                 {
-                    fromClient.getClientHandler().setAW(Integer.parseInt(token.substring(2)));
+                    fromClient.setAwayStatus(Integer.parseInt(token.substring(2)));
                     currentINF.append(" AW");
-                    currentINF.append(fromClient.getClientHandler().getAW());
+                    currentINF.append(fromClient.getAwayStatus());
                 }
                 else if (token.startsWith("CT"))
                 {
-                    if (fromClient.getClientHandler().isOverrideSpam())
+                    if (fromClient.isOverrideSpam())
                     {
-                        fromClient.getClientHandler().setCT(token.substring(2));
+                        fromClient.setClientType(token.substring(2));
                         currentINF.append(" CT");
-                        currentINF.append(fromClient.getClientHandler().getCT());
+                        currentINF.append(fromClient.getClientType());
                     }
                     else
                     {
@@ -589,16 +588,16 @@ public class INF extends Action
                 }
                 else if (token.startsWith("HI"))
                 {
-                    fromClient.getClientHandler().setHI(Integer.parseInt(token.substring(2)) != 0);
+                    fromClient.setHidden(Integer.parseInt(token.substring(2)) != 0);
                     currentINF.append(" HI");
-                    currentINF.append(fromClient.getClientHandler().isHI());
+                    currentINF.append(fromClient.isHidden());
                 }
-
+                // TODO [lh] Replace by SUP class usage
                 else if (token.startsWith("SU"))
                 {
-                    fromClient.getClientHandler().setSU(token.substring(2));
+                    fromClient.setSupportedFeatures(token.substring(2));
                     currentINF.append(" SU");
-                    currentINF.append(fromClient.getClientHandler().getSU());
+                    currentINF.append(fromClient.getSupportedFeatures());
                 }
                 else
                 {
@@ -623,25 +622,25 @@ public class INF extends Action
 
         // TODO [lh] check if user is banned first
         // TODO [lh] add ban check code here
-//        fromClient.getClientHandler().myban = BanList.getban(3, fromClient.getClientHandler().ID);
-//        if (fromClient.getClientHandler().myban == null)
+//        fromClient.myban = BanList.getban(3, fromClient.ID);
+//        if (fromClient.myban == null)
 //        {
-//            fromClient.getClientHandler().myban =
-//                    BanList.getban(2, (fromClient.getClientHandler().realIP));
+//            fromClient.myban =
+//                    BanList.getban(2, (fromClient.realIP));
 //        }
-//        if (fromClient.getClientHandler().myban == null)
+//        if (fromClient.myban == null)
 //        {
-//            fromClient.getClientHandler().myban =
-//                    BanList.getban(1, fromClient.getClientHandler().NI);
+//            fromClient.myban =
+//                    BanList.getban(1, fromClient.NI);
 //        }
-//        if (fromClient.getClientHandler().myban != null) //banned
+//        if (fromClient.myban != null) //banned
 //        {
-//            if (fromClient.getClientHandler().myban.time == -1)
+//            if (fromClient.myban.time == -1)
 //            {
 //                String msg = "Hello there. You are permanently banned.\nOp who banned you: " +
-//                             fromClient.getClientHandler().myban.banop +
+//                             fromClient.myban.banop +
 //                             "\nReason: " +
-//                             fromClient.getClientHandler().myban.banreason +
+//                             fromClient.myban.banreason +
 //                             "\n" +
 //                             Messages.BAN_MESSAGE;
 //
@@ -652,15 +651,15 @@ public class INF extends Action
 //            }
 //
 //            long TL = System.currentTimeMillis() -
-//                      fromClient.getClientHandler().myban.timeofban -
-//                      fromClient.getClientHandler().myban.time;
+//                      fromClient.myban.timeofban -
+//                      fromClient.myban.time;
 //            TL = -TL;
 //            if (TL > 0)
 //            {
 //                String msg = "Hello there. You are temporary banned.\nOp who banned you: " +
-//                             fromClient.getClientHandler().myban.banop +
+//                             fromClient.myban.banop +
 //                             "\nReason: " +
-//                             fromClient.getClientHandler().myban.banreason +
+//                             fromClient.myban.banreason +
 //                             "\nThere are still " +
 //                             Long.toString(TL / 1000) +
 //                             " seconds remaining.\n" +
@@ -677,17 +676,14 @@ public class INF extends Action
 
         // Check nick availability
         // I think, that algo maybe must be rewritten
-        for (Client client : ClientManager.getInstance().getClients())
+        for (AbstractClient client : ClientManager.getInstance().getClients())
         {
             if (!client.equals(fromClient))
             {
-                if (client.getClientHandler().isValidated())
+                if (client.isValidated())
                 {
-                    if (client.getClientHandler()
-                                .getNI()
-                                .toLowerCase()
-                                .equals(fromClient.getClientHandler().getNI().toLowerCase()) &&
-                        !client.getClientHandler().getID().equals(fromClient.getClientHandler().getID()))
+                    if (client.getNick().toLowerCase().equals(fromClient.getNick().toLowerCase()) &&
+                        !client.getCid().equals(fromClient.getCid()))
                     {
                         new STAError(fromClient,
                                      Constants.STA_SEVERITY_FATAL + Constants.STA_NICK_TAKEN,
@@ -706,10 +702,10 @@ public class INF extends Action
 
 
         // TODO [lh] add nick reservation check
-//        if (AccountsConfig.nickReserved(fromClient.getClientHandler().NI,
-//                                        fromClient.getClientHandler().ID))
+//        if (AccountsConfig.nickReserved(fromClient.NI,
+//                                        fromClient.ID))
 //        {
-//            int x = (fromClient.getClientHandler().getState() == State.PROTOCOL) ?
+//            int x = (fromClient.getState() == State.PROTOCOL) ?
 //                    Constants.STA_SEVERITY_FATAL : Constants.STA_SEVERITY_RECOVERABLE;
 //            new STAError(fromClient,
 //                         x + Constants.STA_NICK_TAKEN,
@@ -718,17 +714,10 @@ public class INF extends Action
 //        }
 
         // now must check if hub is full...
-        if (fromClient.getClientHandler().getState() == State.PROTOCOL) //otherwise is already connected, no point in checking this
+        if (fromClient.getState() == State.PROTOCOL) //otherwise is already connected, no point in checking this
         {
-            /** must check the hideme var*/
-            if (fromClient.getClientHandler().isHideMe())
-            {
-                currentINF.append(" HI1");
-                fromClient.getClientHandler().setHI(true);
-            }
-
             if (configurationManager.getInt(ConfigurationManager.MAX_USERS) <= ClientManager.getInstance().getClientsCount() &&
-                !fromClient.getClientHandler().isOverrideFull())
+                !fromClient.isOverrideFull())
             {
                 new STAError(fromClient,
                              Constants.STA_SEVERITY_FATAL + Constants.STA_HUB_FULL,
@@ -742,28 +731,28 @@ public class INF extends Action
 
         checkClientInformation();
 
-        if (fromClient.getClientHandler().getID().equals(configurationManager.getString(ConfigurationManager.OP_CHAT_CID)))
+        if (fromClient.getCid().equals(configurationManager.getString(ConfigurationManager.OP_CHAT_CID)))
         {
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL + Constants.STA_CID_TAKEN,
                          "CID taken. Please go to Settings and pick new PID.");
             return;
         }
-        if (fromClient.getClientHandler().getID().equals(configurationManager.getString(ConfigurationManager.SECURITY_CID)))
+        if (fromClient.getCid().equals(configurationManager.getString(ConfigurationManager.SECURITY_CID)))
         {
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL + Constants.STA_CID_TAKEN,
                          "CID taken. Please go to Settings and pick new PID.");
             return;
         }
-        if (fromClient.getClientHandler().getNI().equalsIgnoreCase(configurationManager.getString(ConfigurationManager.OP_CHAT_NAME)))
+        if (fromClient.getNick().equalsIgnoreCase(configurationManager.getString(ConfigurationManager.OP_CHAT_NAME)))
         {
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL + Constants.STA_NICK_TAKEN,
                          "Nick taken, please choose another");
             return;
         }
-        if (fromClient.getClientHandler().getNI().equalsIgnoreCase(configurationManager.getString(ConfigurationManager.BOT_CHAT_NAME)))
+        if (fromClient.getNick().equalsIgnoreCase(configurationManager.getString(ConfigurationManager.BOT_CHAT_NAME)))
         {
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL + Constants.STA_NICK_TAKEN,
@@ -771,8 +760,8 @@ public class INF extends Action
             return;
         }
 
-        //if (fromClient.getClientHandler().isBas0() && fromClient.getClientHandler().getBase() != 2)
-        if (fromClient.isFeature(Features.BASE) == false)
+        //if (fromClient.isBas0() && fromClient.getBase() != 2)
+        if (!fromClient.isFeature(Features.BASE))
         {
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL + Constants.STA_GENERIC_PROTOCOL_ERROR,
@@ -782,7 +771,7 @@ public class INF extends Action
                          "the developer's webpage from Help/About menu.");
         }
 
-        if (fromClient.getClientHandler().getState() == State.PROTOCOL)
+        if (fromClient.getState() == State.PROTOCOL)
             makeProtocolStateChecks();
 
         Broadcast.getInstance().broadcast(currentINF.toString());
@@ -798,20 +787,20 @@ public class INF extends Action
 
             myTiger.engineReset();
             myTiger.init();
-            byte[] bytepid = Base32.decode(fromClient.getClientHandler().getPD());
+            byte[] bytepid = Base32.decode(fromClient.getPid());
 
 
             myTiger.engineUpdate(bytepid, 0, bytepid.length);
 
             byte[] finalTiger = myTiger.engineDigest();
-            if (!Base32.encode(finalTiger).equals(fromClient.getClientHandler().getID()))
+            if (!Base32.encode(finalTiger).equals(fromClient.getCid()))
             {
                 new STAError(fromClient,
                              Constants.STA_SEVERITY_FATAL + Constants.STA_GENERIC_LOGIN_ERROR,
                              "Invalid CID check.");
                 return;
             }
-            if (fromClient.getClientHandler().getPD().length() != 39)
+            if (fromClient.getPid().length() != 39)
             {
                 throw new IllegalArgumentException();
             }
@@ -839,28 +828,25 @@ public class INF extends Action
             //fromClient.storeInfo();
         }
 
-        if (fromClient.getClientHandler().isReg())
+        if (fromClient.isRegistred())
         {
-            if (fromClient.getClientHandler().getPassword().equals(""))//no pass defined ( yet)
+            if (fromClient.getPassword().equals(""))//no pass defined ( yet)
             {
-                fromClient.getClientHandler().sendToClient(
+                fromClient.sendRawCommand(
                         "ISTA 000 Registered,\\sno\\spassword\\srequired.\\sThough,\\sits\\srecomandable\\sto\\sset\\sone.");
                 fromClient.onLoggedIn();
             }
             else
             {
                 // check client for registration (Moscow city style : do you have the passport?)
-                fromClient.getClientHandler()
-                          .sendToClient("ISTA 000 Registered,\\stype\\syour\\spassword.");
+                fromClient.sendRawCommand("ISTA 000 Registered,\\stype\\syour\\spassword.");
 
                 /* creates some hash for the GPA random data*/
-                fromClient.getClientHandler().setEncryptionSalt(Base32.encode(generateSalt()));
-                fromClient.getClientHandler().sendToClient("IGPA " +
-                                                           fromClient.getClientHandler()
-                                                                     .getEncryptionSalt());
+                fromClient.setEncryptionSalt(Base32.encode(generateSalt()));
+                fromClient.sendRawCommand("IGPA " + fromClient.getEncryptionSalt());
 
                 // set client state VARIFY
-                fromClient.getClientHandler().setState(State.VERIFY);
+                fromClient.setState(State.VERIFY);
                 return;
             }
         }
@@ -875,7 +861,7 @@ public class INF extends Action
                 return;
             }
 
-            fromClient.getClientHandler().setValidated();
+            fromClient.setValidated();
         }
 
         fromClient.onConnected();

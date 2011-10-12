@@ -3,10 +3,10 @@ package ru.sincore.adc.action;
 import org.apache.log4j.PropertyConfigurator;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import ru.sincore.Client;
 import ru.sincore.adc.Context;
 import ru.sincore.adc.MessageType;
 import ru.sincore.adc.State;
+import ru.sincore.client.AbstractClient;
 
 /**
  * Create user: lh
@@ -19,8 +19,8 @@ public class ActionTest
 
         protected ActionImpl(MessageType messageType,
                              int context,
-                             Client fromClient,
-                             Client toClient)
+                             AbstractClient fromClient,
+                             AbstractClient toClient)
         {
             super(messageType, context, fromClient, toClient);
 

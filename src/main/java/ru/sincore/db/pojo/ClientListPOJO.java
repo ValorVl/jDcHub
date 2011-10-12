@@ -118,12 +118,6 @@ public class ClientListPOJO implements Serializable
 	private String 		currentIp;
 
 	/**
-	 *  Colimn "lastIp" Contains the last IP address before changing. Passable NULL.
-	 */
-	@Column(name = "last_ip",columnDefinition = "VARCHAR(250)",nullable = true)
-	private String 		lastIp;
-
-	/**
 	 *  Column "realIp" Contains a "white" IP gateway, if there is. Defined by the client through NPnP
 	 *  or another similar service. Passable NULL.
 	 */
@@ -171,18 +165,6 @@ public class ClientListPOJO implements Serializable
 	 */
 	@Column(name = "renameable",columnDefinition = "TINYINT(1) DEFAULT 0",nullable = false)
 	private Boolean		renameable = false;
-
-	/**
-	 *  TODO define or function this column i`m not understand
-	 */
-	@Column(name = "account_flyable",columnDefinition = "TINYINT(1) DEFAULT 0",nullable = false)
-	private Boolean		accountFlyable = false;
-
-	/**
-	 *  Column "opChatAccess" boolean flag given right to access in OpChat
-	 */
-	@Column(name = "op_chat_access",columnDefinition = "TINYINT(1) DEFAULT 0",nullable = false)
-	private Boolean		opChatAccess = false;
 
 	/**
 	 *  Column "txBytes" Contains transitional byte count
@@ -241,7 +223,7 @@ public class ClientListPOJO implements Serializable
 	private Boolean		bas0Allowed = false;
 
 	/**
-	 *  Column "lastMessage" last message say user.
+	 *  Column "lastMessage" last message said by user.
 	 */
 	@Column(name = "last_message",columnDefinition = "TEXT",nullable = true)
 	private String 		lastMessage;
@@ -375,16 +357,6 @@ public class ClientListPOJO implements Serializable
 		this.currentIp = currentIp;
 	}
 
-	public String getLastIp()
-	{
-		return lastIp;
-	}
-
-	public void setLastIp(String lastIp)
-	{
-		this.lastIp = lastIp;
-	}
-
 	public String getRealIp()
 	{
 		return realIp;
@@ -455,37 +427,17 @@ public class ClientListPOJO implements Serializable
 		this.isKickable = isKickable;
 	}
 
-	public Boolean getRenameable()
-	{
-		return renameable;
-	}
+    public Boolean getRenameable()
+    {
+        return renameable;
+    }
 
-	public void setRenameable(Boolean renameable)
-	{
-		this.renameable = renameable;
-	}
+    public void setRenameable(Boolean renameable)
+    {
+        this.renameable = renameable;
+    }
 
-	public Boolean getAccountFlyable()
-	{
-		return accountFlyable;
-	}
-
-	public void setAccountFlyable(Boolean accountFlyable)
-	{
-		this.accountFlyable = accountFlyable;
-	}
-
-	public Boolean getOpChatAccess()
-	{
-		return opChatAccess;
-	}
-
-	public void setOpChatAccess(Boolean opChatAccess)
-	{
-		this.opChatAccess = opChatAccess;
-	}
-
-	public Long getTxBytes()
+    public Long getTxBytes()
 	{
 		return txBytes;
 	}

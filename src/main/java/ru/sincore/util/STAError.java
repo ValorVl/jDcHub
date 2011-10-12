@@ -25,9 +25,9 @@ package ru.sincore.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.sincore.Client;
 import ru.sincore.ConfigurationManager;
 import ru.sincore.Exceptions.STAException;
+import ru.sincore.client.AbstractClient;
 
 
 /**
@@ -43,7 +43,7 @@ public class STAError
 {
     private static final Logger log = LoggerFactory.getLogger(STAError.class);
 
-    Client  client;
+    AbstractClient client;
     int     errorCode;
     String  errorDescription;
 
@@ -55,13 +55,13 @@ public class STAError
      * @param errorDescription Desctiption of the error
      * @throws STAException
      */
-    public STAError(Client client, int errorCode, String errorDescription)
+    public STAError(AbstractClient client, int errorCode, String errorDescription)
             throws STAException
     {
         log.error("Hub sent to client \"" +
-                  client.getClientHandler().getNI() +
+                  client.getNick() +
                   "\"(" +
-                  client.getClientHandler().getSID() +
+                  client.getSid() +
                   ") error message : " +
                   errorDescription);
 
@@ -79,15 +79,16 @@ public class STAError
             errorString = "ISTA " + Integer.toString(this.errorCode) + " " + this.errorDescription;
         }
 
-        client.getClientHandler().sendToClient(errorString);
+        client.sendRawCommand(errorString);
         if (errorCode >= 200)
         {
             if (!ConfigurationManager.instance().getString(ConfigurationManager.REDIRECT_URL).isEmpty())
             {
-                client.getClientHandler().sendToClient("IQUI " +
-                                                       client.getClientHandler().getSID() +
-                                                       " RD" +
-                                                       ConfigurationManager.instance().getString(ConfigurationManager.REDIRECT_URL));
+                client.sendRawCommand("IQUI " +
+                                      client.getSid() +
+                                      " RD" +
+                                      ConfigurationManager.instance()
+                                                          .getString(ConfigurationManager.REDIRECT_URL));
             }
             throw new STAException(errorString, errorCode);
         }
@@ -104,13 +105,13 @@ public class STAError
      * @param flag
      * @throws STAException
      */
-    public STAError(Client client, int errorCode, String errorDescription, String prefix, String flag)
+    public STAError(AbstractClient client, int errorCode, String errorDescription, String prefix, String flag)
             throws STAException
     {
         log.error("Hub sent to client \"" +
-                  client.getClientHandler().getNI() +
+                  client.getNick() +
                   "\"(" +
-                  client.getClientHandler().getSID() +
+                  client.getSid() +
                   ") error message : \'" +
                   errorDescription +
                   "\' and prefix = \'" +
@@ -130,15 +131,16 @@ public class STAError
                 "ISTA " + Integer.toString(this.errorCode) + " " +
                 this.errorDescription + " " + prefix + flag;
 
-        client.getClientHandler().sendToClient(errorString);
+        client.sendRawCommand(errorString);
         if (errorCode >= 200)
         {
             if (!ConfigurationManager.instance().getString(ConfigurationManager.REDIRECT_URL).isEmpty())
             {
-                client.getClientHandler().sendToClient("IQUI " +
-                                                       client.getClientHandler().getSID() +
-                                                       " RD" +
-                                                       ConfigurationManager.instance().getString(ConfigurationManager.REDIRECT_URL));
+                client.sendRawCommand("IQUI " +
+                                      client.getSid() +
+                                      " RD" +
+                                      ConfigurationManager.instance()
+                                                          .getString(ConfigurationManager.REDIRECT_URL));
             }
             throw new STAException(errorString, errorCode);
         }

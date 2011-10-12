@@ -3,13 +3,16 @@ package ru.sincore.adc.action;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
-import ru.sincore.*;
+import ru.sincore.ClientManager;
+import ru.sincore.ConfigurationManager;
 import ru.sincore.Exceptions.CommandException;
 import ru.sincore.Exceptions.STAException;
+import ru.sincore.Main;
 import ru.sincore.adc.Context;
 import ru.sincore.adc.Features;
 import ru.sincore.adc.MessageType;
 import ru.sincore.adc.State;
+import ru.sincore.client.AbstractClient;
 import ru.sincore.i18n.Messages;
 import ru.sincore.util.AdcUtils;
 import ru.sincore.util.Constants;
@@ -28,7 +31,7 @@ public class SUP extends Action
 	private static final Logger log = LoggerFactory.getLogger(SUP.class);
 	private String marker = Marker.ANY_MARKER;
 
-	public SUP(MessageType messageType, int context, Client fromClient, Client toClient)
+	public SUP(MessageType messageType, int context, AbstractClient fromClient, AbstractClient toClient)
 	{
 		super(messageType, context, fromClient, toClient);
 
@@ -36,7 +39,7 @@ public class SUP extends Action
 		super.availableStates = State.PROTOCOL | State.NORMAL;
 	}
 
-	public SUP(MessageType messageType, int context, Client client)
+	public SUP(MessageType messageType, int context, AbstractClient client)
 	{
         this(messageType,
              context,
@@ -45,7 +48,7 @@ public class SUP extends Action
     }
 
 
-    public SUP(MessageType messageType, int context, Client client, String rawCommand)
+    public SUP(MessageType messageType, int context, AbstractClient client, String rawCommand)
             throws CommandException, STAException
     {
         this(messageType,
@@ -123,7 +126,7 @@ public class SUP extends Action
 		}
 
         // if client in PROTOCOL state, send info about hub to him
-        if (fromClient.getClientHandler().getState() == State.PROTOCOL)
+        if (fromClient.getState() == State.PROTOCOL)
             sendClientInitializationInfo();
 	}
 
@@ -150,13 +153,14 @@ public class SUP extends Action
 		}
 
 		// Check extension list, if list empty, send error message in log file and stop server
-        toClient.getClientHandler().sendToClient("ISUP " +
-                                                 Constants.HUB_BASE_SUP_STRING +
-                                                 " " +
-                                                 ConfigurationManager.instance().getString(ConfigurationManager.ADC_EXTENSION_LIST));
+        toClient.sendRawCommand("ISUP " +
+                                Constants.HUB_BASE_SUP_STRING +
+                                " " +
+                                ConfigurationManager.instance()
+                                                    .getString(ConfigurationManager.ADC_EXTENSION_LIST));
 
 
-        toClient.getClientHandler().sendToClient("ISID " + toClient.getClientHandler().getSID());
+        toClient.sendRawCommand("ISID " + toClient.getSid());
 
 		StringBuilder inf = new StringBuilder(8);
 
@@ -176,7 +180,7 @@ public class SUP extends Action
                    pingQuery() :
                    Constants.EMPTY_STR);
 
-		toClient.getClientHandler().sendToClient(inf.toString());
+		toClient.sendRawCommand(inf.toString());
     }
 
 
@@ -213,6 +217,7 @@ public class SUP extends Action
 		pingRequest.append(" MC");
 		pingRequest.append(ConfigurationManager.instance().getInt(ConfigurationManager.MAX_USERS));
 		pingRequest.append(" UP");
+        // TODO [lh] Remove Main class usage
 		pingRequest.append((System.currentTimeMillis() - Main.curtime));
 
         return pingRequest.toString();

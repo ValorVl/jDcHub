@@ -35,6 +35,8 @@ import ru.sincore.Exceptions.STAException;
 import ru.sincore.Modules.Modulator;
 import ru.sincore.Modules.Module;
 import ru.sincore.TigerImpl.SIDGenerator;
+import ru.sincore.client.AbstractClient;
+import ru.sincore.client.Client;
 import ru.sincore.util.STAError;
 
 import java.util.Collection;
@@ -67,6 +69,7 @@ public class SessionManager extends IoHandlerAdapter
     public void exceptionCaught(IoSession session, Throwable t)
             throws Exception
     {
+        AbstractClient client = (AbstractClient) session.getAttribute("client");
         try
         {
             if (t instanceof java.io.IOException)
@@ -84,12 +87,13 @@ public class SessionManager extends IoHandlerAdapter
                 }
                 if ((throwableMessage.contains("BufferDataException: Line is too long")))
                 {
-                    new STAError((Client) (session.getAttribute("client")), 100,
+                    new STAError(client,
+                                 100,
                                  "Message exceeds buffer." + throwableMessage);
                 }
                 else
                 {
-                    log.debug(throwableMessage.toString());
+                    log.debug(throwableMessage);
                 }
             }
         }
@@ -143,26 +147,27 @@ public class SessionManager extends IoHandlerAdapter
     {
         log.debug("Session closed.");
         Client currentClient = (Client)(session.getAttribute("client"));
+        session.removeAttribute("client");
         ClientManager.getInstance().removeClient(currentClient);
 
-        if (currentClient.getClientHandler().isValidated() && !currentClient.getClientHandler().isKicked())
+        if (currentClient.isValidated())
         {
             // broadcast client quited message
-            Broadcast.getInstance().broadcast("IQUI " + currentClient.getClientHandler().getSID());
+            Broadcast.getInstance().broadcast("IQUI " + currentClient.getSid());
         }
         /** calling plugins...*/
 
         for (Module myMod : Modulator.myModules)
         {
-            myMod.onClientQuit(currentClient.getClientHandler());
+            myMod.onClientQuit(currentClient);
         }
 
-        currentClient.getClientHandler().increaseTimeOnline(System.currentTimeMillis() -
-                                                currentClient.getClientHandler().getLoggedAt());
+        currentClient.increaseTimeOnline(System.currentTimeMillis() -
+                                         currentClient.getLoggedIn().getTime());
 
-        log.info(currentClient.getClientHandler().getNI() +
+        log.info(currentClient.getNick() +
                  " with SID " +
-                 currentClient.getClientHandler().getSID() +
+                 currentClient.getSid() +
                  " just quited.");
     }
 
@@ -174,11 +179,11 @@ public class SessionManager extends IoHandlerAdapter
 
         session.setAttribute("client", newClient);
 
-        newClient.getClientHandler().setSession(session);
-        StringTokenizer ST = new StringTokenizer(newClient.getClientHandler().getSession().getRemoteAddress().toString(), "/:");
+        newClient.setSession(session);
+        StringTokenizer ST = new StringTokenizer(session.getRemoteAddress().toString(), "/:");
 
-		newClient.getClientHandler().setRealIP(ST.nextToken());
-        newClient.getClientHandler().setSID(SIDGenerator.generate());
+		newClient.setRealIP(ST.nextToken());
+        newClient.setSid(SIDGenerator.generate());
 
         /**
          * Client will be moved from uninitialized to regular map after

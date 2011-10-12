@@ -3,6 +3,7 @@ package ru.sincore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
+import ru.sincore.client.AbstractClient;
 
 import java.io.File;
 
@@ -26,7 +27,7 @@ public class BigTextManager
 	 * @param client client handler, if null will send MOTD in default locale
 	 * @return MOTD localized text
 	 */
-	public String getMOTD(Client client)
+	public String getMOTD(AbstractClient client)
 	{
 		String motd = "Hell is here";
 

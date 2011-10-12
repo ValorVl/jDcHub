@@ -1,12 +1,12 @@
 package ru.sincore.adc.action;
 
-import ru.sincore.Client;
 import ru.sincore.ClientManager;
 import ru.sincore.Exceptions.CommandException;
 import ru.sincore.Exceptions.STAException;
 import ru.sincore.adc.Context;
 import ru.sincore.adc.MessageType;
 import ru.sincore.adc.State;
+import ru.sincore.client.AbstractClient;
 import ru.sincore.util.Constants;
 import ru.sincore.util.STAError;
 
@@ -17,7 +17,7 @@ import java.util.StringTokenizer;
  */
 public class STA extends Action
 {
-	public STA(MessageType messageType, int context, Client fromClient, Client toClient)
+	public STA(MessageType messageType, int context, AbstractClient fromClient, AbstractClient toClient)
 	{
 		super(messageType, context, fromClient, toClient);
 
@@ -25,7 +25,7 @@ public class STA extends Action
 		availableStates   = State.ALL;
 	}
 
-	public STA(MessageType messageType, int context, Client client)
+	public STA(MessageType messageType, int context, AbstractClient client)
 	{
 		this(messageType,
              context,
@@ -33,7 +33,7 @@ public class STA extends Action
              (context == Context.F ? null : client));
 	}
 
-	public STA(MessageType messageType, int context, Client client, String rawCommand) throws CommandException, STAException
+	public STA(MessageType messageType, int context, AbstractClient client, String rawCommand) throws CommandException, STAException
 	{
 		this(messageType, context, client);
         this.rawCommand = rawCommand;
@@ -48,8 +48,8 @@ public class STA extends Action
 
 	private void validate()
     {
-		if (!fromClient.getClientHandler().isOverrideSpam())
-			fromClient.getClientHandler().sendFromBot("STA invalid context " + context);
+		if (!fromClient.isOverrideSpam())
+			fromClient.sendMessageFromChatBot("STA invalid context " + context);
 	}
 
 	private void prepareDirect() throws STAException
@@ -66,7 +66,7 @@ public class STA extends Action
 			return;
 		}
 		String curSid = tk.nextToken();
-		if (!curSid.equals(fromClient.getClientHandler().getSID()))
+		if (!curSid.equals(fromClient.getSid()))
 		{
 			new STAError(fromClient,
 						 Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
@@ -81,10 +81,10 @@ public class STA extends Action
 			return;
 		}
 		String dSid = tk.nextToken();
-		Client targetClient = ClientManager.getInstance().getClientBySID(dSid);
-		if ((targetClient != null) && targetClient.getClientHandler().isValidated())
+		AbstractClient targetClient = ClientManager.getInstance().getClientBySID(dSid);
+		if ((targetClient != null) && targetClient.isValidated())
 		{
-			targetClient.getClientHandler().sendToClient(rawCommand);
+			targetClient.sendRawCommand(rawCommand);
 		}
 		else
 		{
@@ -104,7 +104,7 @@ public class STA extends Action
 			return;
 		}
 		String curSid = tk.nextToken();
-		if (!curSid.equals(fromClient.getClientHandler().getSID()))
+		if (!curSid.equals(fromClient.getSid()))
 		{
 			new STAError(fromClient,
 						 Constants.STA_SEVERITY_FATAL + Constants.STA_GENERIC_PROTOCOL_ERROR,
@@ -120,10 +120,10 @@ public class STA extends Action
 		}
 		String eSid = tk.nextToken();
 
-		Client targetClient = ClientManager.getInstance().getClientBySID(eSid);
-		if ((targetClient != null) && targetClient.getClientHandler().isValidated())
+		AbstractClient targetClient = ClientManager.getInstance().getClientBySID(eSid);
+		if ((targetClient != null) && targetClient.isValidated())
 		{
-			targetClient.getClientHandler().sendToClient(rawCommand);
+			targetClient.sendRawCommand(rawCommand);
 		}
 		else
 		{

@@ -3,7 +3,7 @@ package ru.sincore.cmd;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
-import ru.sincore.Client;
+import ru.sincore.client.AbstractClient;
 
 public class CmdEngine
 {
@@ -16,7 +16,7 @@ public class CmdEngine
 	 * @param cmd command name
 	 * @param client client entity
 	 */
-	public void executeCmd(String cmd, String args, Client client)
+	public void executeCmd(String cmd, String args, AbstractClient client)
 	{
 
 		log.debug("Cmd : "+cmd+" | args : "+args+" | client : "+ client);
