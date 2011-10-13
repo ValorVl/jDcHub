@@ -573,7 +573,7 @@ public class INF extends Action
                 {
                     if (fromClient.isOverrideSpam())
                     {
-                        fromClient.setClientType(token.substring(2));
+                        fromClient.setClientType(Integer.parseInt(token.substring(2)));
                         currentINF.append(" CT");
                         currentINF.append(fromClient.getClientType());
                     }

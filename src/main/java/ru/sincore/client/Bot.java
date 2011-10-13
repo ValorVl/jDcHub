@@ -35,21 +35,16 @@ public class Bot extends AbstractClient
     private static final Logger log = LoggerFactory.getLogger(Bot.class);
 
 
+    @Override
     public String getINF()
     {
         StringBuilder auxstr = new StringBuilder();
 
         auxstr.append("BINF " + getSid() + " ID" + getCid() + " NI" + getNick());
-        if (getClientType() != null)
+        if (getClientType() != 0) // TODO should change.. more working here
         {
-            if (!getClientType().equals(""))
-            {
-                if (!getClientType().equals("0")) // TODO should change.. more working here
-                {
-                    auxstr.append(" CT");
-                    auxstr.append(getClientType());
-                }
-            }
+            auxstr.append(" CT");
+            auxstr.append(getClientType());
         }
         if (getDescription() != null)
         {

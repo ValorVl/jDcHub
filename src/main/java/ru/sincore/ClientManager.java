@@ -121,7 +121,7 @@ public final class ClientManager
         bot.setCid(configurationManager.getString(ConfigurationManager.SECURITY_CID));
         bot.setNick(configurationManager.getString(ConfigurationManager.BOT_CHAT_NAME));
         bot.setDescription(configurationManager.getString(ConfigurationManager.BOT_CHAT_DESCRIPTION));
-        bot.setClientType("5");
+        bot.setClientType(5);
         bot.setValidated();
 
         // load info about bot from db
