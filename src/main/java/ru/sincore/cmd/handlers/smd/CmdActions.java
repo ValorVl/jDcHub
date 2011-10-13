@@ -53,7 +53,7 @@ public class CmdActions extends AbstractCmd
 		complete.append(syntax);
 		complete.append('\n');
 
-		//client.getClientHandler().sendPrivateMessageFromChatBot(complete.toString());
+		//client.getClientHandler().sendPrivateMessageFromHub(complete.toString());
 	}
 
 	private void addCmd(String 	name,
@@ -77,7 +77,7 @@ public class CmdActions extends AbstractCmd
 
 			if (response)
 			{
-                client.sendPrivateMessageFromChatBot("Command : "+cmd+" registered.");
+                client.sendPrivateMessageFromHub("Command : " + cmd + " registered.");
 			}
 		}
 
@@ -104,8 +104,8 @@ public class CmdActions extends AbstractCmd
 			cmds.append('\n');
 		}
 
-		client.sendPrivateMessageFromChatBot(cmds.toString());
-		client.sendPrivateMessageFromChatBot("All classes successful reloaded !");
+		client.sendPrivateMessageFromHub(cmds.toString());
+		client.sendPrivateMessageFromHub("All classes successful reloaded !");
 	}
 
 	private void delCmd(String cmd)
@@ -125,6 +125,6 @@ public class CmdActions extends AbstractCmd
 
 	private void error()
 	{
-		client.sendPrivateMessageFromChatBot("Error parse command arguments or unknown argument.");
+		client.sendPrivateMessageFromHub("Error parse command arguments or unknown argument.");
 	}
 }

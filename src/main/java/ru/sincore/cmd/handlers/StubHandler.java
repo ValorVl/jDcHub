@@ -2,8 +2,6 @@ package ru.sincore.cmd.handlers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.sincore.ClientManager;
-import ru.sincore.ConfigurationManager;
 import ru.sincore.client.AbstractClient;
 import ru.sincore.cmd.AbstractCmd;
 
@@ -23,9 +21,9 @@ public class StubHandler extends AbstractCmd
 	{
 		log.info("Cmd : "+cmd+" args : "+args);
 
-        client.sendPrivateMessageFromChatBot("Debug : cmd" + cmd +
-                                             " | args : " + args +
-                                             " | client : " + client.getNick());
+        client.sendPrivateMessageFromHub("Debug : cmd" + cmd +
+                                         " | args : " + args +
+                                         " | client : " + client.getNick());
     }
 }
 

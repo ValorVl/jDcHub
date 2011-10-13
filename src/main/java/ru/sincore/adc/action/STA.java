@@ -49,7 +49,7 @@ public class STA extends Action
 	private void validate()
     {
 		if (!fromClient.isOverrideSpam())
-			fromClient.sendMessageFromChatBot("STA invalid context " + context);
+			fromClient.sendMessageFromHub("STA invalid context " + context);
 	}
 
 	private void prepareDirect() throws STAException

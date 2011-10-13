@@ -43,27 +43,27 @@ public abstract class AbstractClient extends ClientInfo
     private static final Logger log = LoggerFactory.getLogger(AbstractClient.class);
 
 
-    public void sendPrivateMessageFromChatBot(String message)
+    public void sendPrivateMessageFromHub(String message)
     {
         this.sendRawCommand("EMSG " +
                             ConfigurationManager.instance()
-                                                .getString(ConfigurationManager.BOT_CHAT_SID) +
+                                                .getString(ConfigurationManager.HUB_SID) +
                             " " +
                             this.getSid() +
                             " " +
                             AdcUtils.retADCStr(message) +
                             " PM" +
                             ConfigurationManager.instance()
-                                                .getString(ConfigurationManager.BOT_CHAT_SID)
+                                                .getString(ConfigurationManager.HUB_SID)
                            );
     }
 
 
-    public void sendMessageFromChatBot(String message)
+    public void sendMessageFromHub(String message)
     {
         this.sendRawCommand("EMSG " +
                             ConfigurationManager.instance()
-                                                .getString(ConfigurationManager.BOT_CHAT_SID) +
+                                                .getString(ConfigurationManager.HUB_SID) +
                             " " +
                             this.getSid() +
                             " " +

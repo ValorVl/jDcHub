@@ -25,10 +25,13 @@ package ru.sincore;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.sincore.adc.ClientType;
 import ru.sincore.adc.State;
 import ru.sincore.client.AbstractClient;
 import ru.sincore.client.Bot;
+import ru.sincore.client.ChatRoom;
 import ru.sincore.client.Client;
+import ru.sincore.util.AdcUtils;
 
 import java.util.Collection;
 import java.util.Vector;
@@ -54,6 +57,8 @@ public final class ClientManager
 // *********************** Singleton implementation start ********************************
     private static volatile Strategy strategy = new CreateAndReturnStrategy();
     private static ClientManager instance;
+
+    private ConfigurationManager configurationManager = ConfigurationManager.instance();
 
 
     private static interface Strategy
@@ -113,15 +118,14 @@ public final class ClientManager
 
     private void addBots()
     {
-        ConfigurationManager configurationManager = ConfigurationManager.instance();
-
-        // Create new bot
+        // Create new Hub Bot
         Bot bot = new Bot();
-        bot.setSid(configurationManager.getString(ConfigurationManager.BOT_CHAT_SID));
+        bot.setSid(configurationManager.getString(ConfigurationManager.HUB_SID));
         bot.setCid(configurationManager.getString(ConfigurationManager.SECURITY_CID));
-        bot.setNick(configurationManager.getString(ConfigurationManager.BOT_CHAT_NAME));
-        bot.setDescription(configurationManager.getString(ConfigurationManager.BOT_CHAT_DESCRIPTION));
-        bot.setClientType(5);
+        bot.setNick(configurationManager.getString(ConfigurationManager.HUB_NAME));
+        bot.setDescription(configurationManager.getString(ConfigurationManager.HUB_DESCRIPTION));
+        bot.setWeight(100);
+        bot.setClientType(ClientType.HUB | ClientType.BOT); // Client Type 32 is hub
         bot.setValidated();
 
         // load info about bot from db
@@ -134,6 +138,27 @@ public final class ClientManager
 
     private void addChatRooms()
     {
+        ChatRoom opChat = new ChatRoom();
+        opChat.setSid(configurationManager.getString(ConfigurationManager.OP_CHAT_SID));
+        opChat.setCid(configurationManager.getString(ConfigurationManager.OP_CHAT_CID));
+        opChat.setNick(configurationManager.getString(ConfigurationManager.OP_CHAT_NAME));
+        opChat.setDescription(configurationManager.getString(ConfigurationManager.OP_CHAT_DESCRIPTION));
+        opChat.setWeight(configurationManager.getInt(ConfigurationManager.OP_CHAT_WEIGHT));
+        opChat.setClientType(ClientType.BOT | ClientType.OPERATOR);
+        opChat.setValidated();
+        opChat.loadInfo();
+        addClient(opChat);
+
+        ChatRoom vipChat = new ChatRoom();
+        vipChat.setSid(configurationManager.getString(ConfigurationManager.VIP_CHAT_SID));
+        vipChat.setCid(configurationManager.getString(ConfigurationManager.VIP_CHAT_CID));
+        vipChat.setNick(configurationManager.getString(ConfigurationManager.VIP_CHAT_NAME));
+        vipChat.setDescription(configurationManager.getString(ConfigurationManager.VIP_CHAT_DESCRIPTION));
+        vipChat.setWeight(configurationManager.getInt(ConfigurationManager.VIP_CHAT_WEIGHT));
+        vipChat.setClientType(ClientType.BOT | ClientType.OPERATOR);
+        vipChat.setValidated();
+        vipChat.loadInfo();
+        addClient(vipChat);
 
     }
 

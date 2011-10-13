@@ -90,6 +90,6 @@ public class HelpHandler extends AbstractCmd
 			}
 		}
 
-		client.sendPrivateMessageFromChatBot(complexCmdList.toString());
+		client.sendPrivateMessageFromHub(complexCmdList.toString());
 	}
 }
