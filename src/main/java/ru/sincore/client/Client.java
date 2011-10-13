@@ -128,6 +128,7 @@ public class Client extends AbstractClient
         clientInfo.setLastMessage(this.getLastMessageText());
         clientInfo.setLoginCount(this.getLoginCount());
         clientInfo.setTimeOnline(this.getTimeOnline());
+        clientInfo.setLastLogIn(this.getLoggedIn());
 
 
         long timeOnline = System.currentTimeMillis() - this.getLoggedIn().getTime();

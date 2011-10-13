@@ -50,13 +50,10 @@ public class HelpHandler extends AbstractCmd
 		this.args   = args;
 		this.cmd	= cmd;
 
-		if (log.isDebugEnabled())
-		{
-			log.debug("Command : [ "+cmd+" ] execute, args [ "+args+" ], " +
-							  "from client :"+client.getNick());
-		}
+        log.debug("Command : [ " + cmd + " ] execute, args [ " + args + " ], " +
+                  "from client :" + client.getNick());
 
-		getCmdList();
+        getCmdList();
 
 	}
 
