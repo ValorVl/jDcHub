@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
 import ru.sincore.ClientManager;
 import ru.sincore.ConfigurationManager;
 import ru.sincore.Exceptions.STAException;
-import ru.sincore.adc.ClientType;
 import ru.sincore.util.AdcUtils;
 import ru.sincore.util.Constants;
 
@@ -90,9 +89,13 @@ public class ChatRoom extends Bot
                 pmSender.sendRawCommand(constructMessage(getSid(),
                                                          pmSender.getSid(),
                                                          getSid(),
-                                                         AdcUtils.retADCStr("*** You don't have access to this Chat Room. " +
-                                                                            "Your weight is " + pmSender.getWeight() + "." +
-                                                                            "Needed weight is " + getWeight())));
+                                                         AdcUtils.toAdcString(
+                                                                 "*** You don't have access to this Chat Room. " +
+                                                                 "Your weight is " +
+                                                                 pmSender.getWeight() +
+                                                                 "." +
+                                                                 "Needed weight is " +
+                                                                 getWeight())));
                 return;
             }
 

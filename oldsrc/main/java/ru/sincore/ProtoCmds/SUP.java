@@ -162,9 +162,9 @@ public class SUP
 
               handler.sendToClient(AdcUtils.ISID+" "+handler.SID);
              if(Vars.HubDE.equals (""))
-                 handler.sendToClient("IINF CT32 VE"+AdcUtils.retADCStr (Vars.HubVersion)+" NI"+AdcUtils.retADCStr(Vars.HubName));
+                 handler.sendToClient("IINF CT32 VE"+AdcUtils.toAdcString (Vars.HubVersion)+" NI"+AdcUtils.toAdcString(Vars.HubName));
              else
-                handler. sendToClient("IINF CT32 VE"+AdcUtils.retADCStr (Vars.HubVersion)+" NI"+AdcUtils.retADCStr(Vars.HubName)+ " DE"+AdcUtils.retADCStr(Vars.HubDE));
+                handler. sendToClient("IINF CT32 VE"+AdcUtils.toAdcString (Vars.HubVersion)+" NI"+AdcUtils.toAdcString(Vars.HubName)+ " DE"+AdcUtils.toAdcString(Vars.HubDE));
             */
             new STAError(client,
                          100 + Constants.STA_GENERIC_PROTOCOL_ERROR,
@@ -201,12 +201,12 @@ public class SUP
 //
 //            cur_client.sendToClient(AdcUtils.ISID + " " + cur_client.SID);
 //            cur_client.sendToClient("IINF CT32 VE" +
-//                                    AdcUtils.retADCStr(ConfigurationManager.instance().getString(ConfigurationManager.HUB_VERSION)) +
+//                                    AdcUtils.toAdcString(ConfigurationManager.instance().getString(ConfigurationManager.HUB_VERSION)) +
 //                                    " NI" +
-//                                    AdcUtils.retADCStr(ConfigurationManager.instance().getString(ConfigurationManager.HUB_NAME)) +
+//                                    AdcUtils.toAdcString(ConfigurationManager.instance().getString(ConfigurationManager.HUB_NAME)) +
 //                                    // if HUB_DE is not empty, return it
 //                                    (!ConfigLoader.HUB_DE.isEmpty() ?
-//                                     " DE" + AdcUtils.retADCStr(ConfigLoader.HUB_DE) :
+//                                     " DE" + AdcUtils.toAdcString(ConfigLoader.HUB_DE) :
 //                                     "") +
 //                                    // if client is PINGer than return PingString else empty string
 //                                    (cur_client.isPingExtensionSupports ? AdcUtils.getPingString() : ""));

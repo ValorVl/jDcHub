@@ -51,7 +51,7 @@ public class ExtInfo
         {
             aux += ST.nextToken();
         }
-        aux = AdcUtils.retADCStr(aux);
+        aux = AdcUtils.toAdcString(aux);
         Client tempx = null;
 
         if (AdcUtils.isIP(aux))//we have an IP address
@@ -128,7 +128,7 @@ public class ExtInfo
                     {
 
                         String blah11 = "User Info\nNick " +
-                                        AdcUtils.retNormStr(temp.getClientHandler().NI) +
+                                        AdcUtils.fromAdcString(temp.getClientHandler().NI) +
                                         "\nCID " +
                                         temp.getClientHandler().ID +
                                         "\nShare Size " +
@@ -136,11 +136,11 @@ public class ExtInfo
                                         " Bytes\n" +
                                         "Description " +
                                         (temp.getClientHandler().DE != null ?
-                                         AdcUtils.retNormStr(temp.getClientHandler().DE) :
+                                         AdcUtils.fromAdcString(temp.getClientHandler().DE) :
                                          "") +
                                         "\nTag ";
 
-                        String Tag = "<" + AdcUtils.retNormStr(temp.getClientHandler().VE) + ",M:";
+                        String Tag = "<" + AdcUtils.fromAdcString(temp.getClientHandler().VE) + ",M:";
                         if (temp.getClientHandler().active == 1)
                         {
                             Tag = Tag + "A";

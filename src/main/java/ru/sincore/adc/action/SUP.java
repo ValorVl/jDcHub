@@ -165,9 +165,11 @@ public class SUP extends Action
 		StringBuilder inf = new StringBuilder(8);
 
 		inf.append("IINF CT32 VE ");
-		inf.append(AdcUtils.retADCStr(ConfigurationManager.instance().getString(ConfigurationManager.HUB_VERSION)));
+		inf.append(AdcUtils.toAdcString(ConfigurationManager.instance()
+                                                            .getString(ConfigurationManager.HUB_VERSION)));
 		inf.append("IN ");
-		inf.append(AdcUtils.retADCStr(ConfigurationManager.instance().getString(ConfigurationManager.HUB_NAME)));
+		inf.append(AdcUtils.toAdcString(ConfigurationManager.instance()
+                                                            .getString(ConfigurationManager.HUB_NAME)));
 		//Check hub description, if empty, send  IINF without DE option
 		if (!ConfigurationManager.instance().getString(ConfigurationManager.HUB_DESCRIPTION).isEmpty())
 		{

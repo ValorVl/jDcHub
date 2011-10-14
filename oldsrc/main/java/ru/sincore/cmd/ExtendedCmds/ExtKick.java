@@ -69,7 +69,7 @@ public class ExtKick
         ST.nextToken();
         String aux = ST.nextToken();
 
-        //aux=AdcUtils.retADCStr(aux);
+        //aux=AdcUtils.toAdcString(aux);
 
 
         String kickmsg = "";

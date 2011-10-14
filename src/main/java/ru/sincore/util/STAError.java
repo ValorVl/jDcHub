@@ -68,7 +68,7 @@ public class STAError
         this.client = client;
         this.errorCode = errorCode;
 
-        this.errorDescription = AdcUtils.retADCStr(errorDescription).replaceAll("\\\\sTL", " TL");
+        this.errorDescription = AdcUtils.toAdcString(errorDescription).replaceAll("\\\\sTL", " TL");
         String errorString;
         if (errorCode == 0)
         {
@@ -123,7 +123,7 @@ public class STAError
         this.client = client;
         this.errorCode = errorCode;
 
-        this.errorDescription = AdcUtils.retADCStr(errorDescription);
+        this.errorDescription = AdcUtils.toAdcString(errorDescription);
 
 
 

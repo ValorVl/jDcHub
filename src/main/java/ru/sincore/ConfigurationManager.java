@@ -4,6 +4,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.sincore.TigerImpl.CIDGenerator;
+import ru.sincore.util.AdcUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -184,6 +185,11 @@ public class ConfigurationManager extends PropertiesConfiguration
         return instance;
     }
 
+
+    public String getAdcString(String key)
+    {
+        return AdcUtils.toAdcString(super.getString(key));
+    }
 
     public synchronized void load(java.io.Reader in)
             throws org.apache.commons.configuration.ConfigurationException

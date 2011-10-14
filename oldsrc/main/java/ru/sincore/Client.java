@@ -219,7 +219,7 @@ public class Client
                           int bantype,
                           Long kicktime)
     {
-        kickmsg = AdcUtils.retNormStr(kickmsg);
+        kickmsg = AdcUtils.fromAdcString(kickmsg);
 
         if (!handler.isKickable())
         {
@@ -280,10 +280,12 @@ public class Client
                         Long.toString(kicktime);
 
         if (!kickmsg.equals(""))
-            brcast = brcast + " MS" + AdcUtils.retADCStr(kickmsg);
+            brcast = brcast + " MS" + AdcUtils.toAdcString(kickmsg);
 
         if (!ConfigurationManager.instance().getString(ConfigurationManager.REDIRECT_URL).equals(""))
-            brcast = brcast + " RD" + AdcUtils.retADCStr(ConfigurationManager.instance().getString(ConfigurationManager.REDIRECT_URL));
+            brcast = brcast + " RD" + AdcUtils.toAdcString(ConfigurationManager.instance()
+                                                                               .getString(
+                                                                                       ConfigurationManager.REDIRECT_URL));
 
         Broadcast.getInstance().broadcast(brcast);
 
@@ -308,7 +310,7 @@ public class Client
 
     public void kickMeByBot(String kickmsg, int bantype, Long kicktime)
     {
-        kickmsg = AdcUtils.retNormStr(kickmsg);
+        kickmsg = AdcUtils.fromAdcString(kickmsg);
 
         if (!handler.isKickable())
         {
@@ -343,10 +345,12 @@ public class Client
                         " TL" + Long.toString(kicktime);
 
         if (!kickmsg.equals(""))
-            brcast = brcast + " MS" + AdcUtils.retADCStr(kickmsg);
+            brcast = brcast + " MS" + AdcUtils.toAdcString(kickmsg);
 
         if (!ConfigurationManager.instance().getString(ConfigurationManager.REDIRECT_URL).equals(""))
-            brcast = brcast + " RD" + AdcUtils.retADCStr(ConfigurationManager.instance().getString(ConfigurationManager.REDIRECT_URL));
+            brcast = brcast + " RD" + AdcUtils.toAdcString(ConfigurationManager.instance()
+                                                                               .getString(
+                                                                                       ConfigurationManager.REDIRECT_URL));
 
         Broadcast.getInstance().broadcast(brcast);
 
@@ -486,13 +490,13 @@ public class Client
                              " ID" +
                              configurationManager.getString(ConfigurationManager.SECURITY_CID) +
                              " NI" +
-                             AdcUtils.retADCStr(
+                             AdcUtils.toAdcString(
                                      configurationManager.getString(ConfigurationManager.BOT_CHAT_NAME)
-                                               ) +
+                                                 ) +
                              " CT5 DE" +
-                             AdcUtils.retADCStr(
+                             AdcUtils.toAdcString(
                                      configurationManager.getString(ConfigurationManager.BOT_CHAT_DESCRIPTION)
-                                               ));
+                                                 ));
 
         handler.putOpchat(true);
         //sending inf about itself too

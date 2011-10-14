@@ -29,7 +29,6 @@ import ru.sincore.Modules.Module;
 import ru.sincore.TigerImpl.Base32;
 import ru.sincore.adcs.AdcsCommand;
 import ru.sincore.banning.BanList;
-import ru.sincore.cmd.*;
 import ru.sincore.cmd.ExtendedCmds.*;
 import ru.sincore.util.AdcUtils;
 import ru.sincore.util.TimeConv;
@@ -90,7 +89,7 @@ public class CommandParser
 
         String STR = command;
         String NI = client.getClientHandler().NI;
-        String recvbuf = AdcUtils.retNormStr(command.substring(1));
+        String recvbuf = AdcUtils.fromAdcString(command.substring(1));
 
         for (Module myMod : Modulator.myModules)
         {
@@ -133,7 +132,7 @@ public class CommandParser
     public void runx()
     {
 
-        String recvbuf = AdcUtils.retNormStr(command.substring(1));
+        String recvbuf = AdcUtils.fromAdcString(command.substring(1));
         //	String STR = command;
         //	String NI = handler.NI;
 
@@ -710,7 +709,7 @@ public class CommandParser
                 done = true;
                 return;
             }
-            StringTokenizer ST = new StringTokenizer(AdcUtils.retNormStr(recvbuf));
+            StringTokenizer ST = new StringTokenizer(AdcUtils.fromAdcString(recvbuf));
             ST.nextToken();
             String aux = "";
             while (ST.hasMoreTokens())
@@ -721,7 +720,7 @@ public class CommandParser
             {
                 aux = aux.substring(0, aux.length() - 1);
             }
-            aux = AdcUtils.retADCStr(aux);
+            aux = AdcUtils.toAdcString(aux);
             if (aux.length() < ConfigurationManager.instance().getInt(ConfigurationManager.MIN_NICK_SIZE))
             {
                 {
@@ -814,11 +813,11 @@ public class CommandParser
                 done = true;
                 return;
             }
-            //handler.sendFromBot(""+AdcUtils.retADCStr("Sorry but renaming features are temporary disabled until DC++ has UCMD's ( because !rename mister bla new nick has 4 entities and its quite hard to guess what is first nick and what is 2nd nick."));
+            //handler.sendFromBot(""+AdcUtils.toAdcString("Sorry but renaming features are temporary disabled until DC++ has UCMD's ( because !rename mister bla new nick has 4 entities and its quite hard to guess what is first nick and what is 2nd nick."));
             StringTokenizer ST = new StringTokenizer(recvbuf);
             ST.nextToken();
             String aux = ST.nextToken(); //the nick to rename;
-            // aux=AdcUtils.retADCStr(aux);
+            // aux=AdcUtils.toAdcString(aux);
             for (Client temp : SessionManager.getUsers())
             {
                 if (temp.getClientHandler().validated == 1)
@@ -980,7 +979,7 @@ public class CommandParser
                 done = true;
                 return;
             }
-            StringTokenizer ST = new StringTokenizer(AdcUtils.retNormStr(recvbuf));
+            StringTokenizer ST = new StringTokenizer(AdcUtils.fromAdcString(recvbuf));
             ST.nextToken();
             if (!ST.hasMoreTokens())
             {
@@ -991,7 +990,7 @@ public class CommandParser
             String aux = ST.nextToken(); //the thing to unban;
             //al right,now must check if that is a nick, cid or ip
             //first if its a cid...
-            aux = AdcUtils.retADCStr(aux);
+            aux = AdcUtils.toAdcString(aux);
             try
             {
                 Base32.decode(aux);
@@ -1059,7 +1058,7 @@ public class CommandParser
                 done = true;
                 return;
             }
-            StringTokenizer ST = new StringTokenizer(AdcUtils.retNormStr(recvbuf));
+            StringTokenizer ST = new StringTokenizer(AdcUtils.fromAdcString(recvbuf));
             ST.nextToken();
             if (!ST.hasMoreTokens())
             {
@@ -1067,7 +1066,7 @@ public class CommandParser
                 return;
             }
             String aux = ST.nextToken(); //the thing to Ban;
-            aux = AdcUtils.retADCStr(aux);
+            aux = AdcUtils.toAdcString(aux);
             //al right,now must check if that is a nick, cid or ip
             //first if its a cid...
             String reason = "";
@@ -1081,7 +1080,7 @@ public class CommandParser
             {
                 reason = reason.substring(0, reason.length() - 1);
             }
-            reason = AdcUtils.retADCStr(reason);
+            reason = AdcUtils.toAdcString(reason);
             // System.out.println (reason);
             if (AdcUtils.isCID(aux))
             {
@@ -1192,7 +1191,7 @@ public class CommandParser
                 client.getClientHandler().sendFromBot("Access denied.");
                 return;
             }
-            StringTokenizer ST = new StringTokenizer(AdcUtils.retNormStr(recvbuf));
+            StringTokenizer ST = new StringTokenizer(AdcUtils.fromAdcString(recvbuf));
             ST.nextToken();
             if (!ST.hasMoreTokens())
             {
@@ -1200,7 +1199,7 @@ public class CommandParser
                 return;
             }
             String aux = ST.nextToken(); //the thing to Ban;
-            aux = AdcUtils.retADCStr(aux);
+            aux = AdcUtils.toAdcString(aux);
             //al right,now must check if that is a nick online of offline
 
             String reason = "";
@@ -1214,7 +1213,7 @@ public class CommandParser
             {
                 reason = reason.substring(0, reason.length() - 1);
             }
-            reason = AdcUtils.retADCStr(reason);
+            reason = AdcUtils.toAdcString(reason);
             for (Client temp : SessionManager.getUsers())
             {
                 if (temp.getClientHandler().validated == 1)
@@ -1260,7 +1259,7 @@ public class CommandParser
                 client.getClientHandler().sendFromBot("Access denied.");
                 return;
             }
-            StringTokenizer ST = new StringTokenizer(AdcUtils.retNormStr(recvbuf));
+            StringTokenizer ST = new StringTokenizer(AdcUtils.fromAdcString(recvbuf));
             ST.nextToken();
             if (!ST.hasMoreTokens())
             {
@@ -1268,7 +1267,7 @@ public class CommandParser
                 return;
             }
             String aux = ST.nextToken(); //the thing to Ban;
-            aux = AdcUtils.retADCStr(aux);
+            aux = AdcUtils.toAdcString(aux);
             //al right,now must check if that is a  ip or nick
             //first if its a ip...
             String reason = "";
@@ -1281,7 +1280,7 @@ public class CommandParser
             {
                 reason = reason.substring(0, reason.length() - 1);
             }
-            reason = AdcUtils.retADCStr(reason);
+            reason = AdcUtils.toAdcString(reason);
             if (AdcUtils.isIP(aux))
             {
                 //ok if we got here it really is a IP so:
@@ -1427,7 +1426,7 @@ public class CommandParser
                 auxbuf = auxbuf.replaceAll(" ", "\\ ");
                 ConfigurationManager.instance().getString(ConfigurationManager.HUB_DESCRIPTION) = auxbuf;
 
-                Broadcast.getInstance().broadcast("IINF DE" + AdcUtils.retADCStr(auxbuf));
+                Broadcast.getInstance().broadcast("IINF DE" + AdcUtils.toAdcString(auxbuf));
                 Broadcast.getInstance().broadcast("IMSG Topic was changed by " + client.getClientHandler().NI
                                                   + " to \"" + ConfigurationManager.instance().getString(ConfigurationManager.HUB_DESCRIPTION) + "\"");
 
@@ -1535,7 +1534,7 @@ public class CommandParser
 
             for (String historyCommand : history)
             {
-                blah00 = blah00 + AdcUtils.retNormStr(historyCommand);
+                blah00 = blah00 + AdcUtils.fromAdcString(historyCommand);
             }
 
             client.getClientHandler().sendFromBot(blah00.substring(0, blah00.length() - 1));

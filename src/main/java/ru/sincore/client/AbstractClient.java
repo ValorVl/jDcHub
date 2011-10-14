@@ -51,7 +51,7 @@ public abstract class AbstractClient extends ClientInfo
                             " " +
                             this.getSid() +
                             " " +
-                            AdcUtils.retADCStr(message) +
+                            AdcUtils.toAdcString(message) +
                             " PM" +
                             ConfigurationManager.instance()
                                                 .getString(ConfigurationManager.HUB_SID)
@@ -67,7 +67,7 @@ public abstract class AbstractClient extends ClientInfo
                             " " +
                             this.getSid() +
                             " " +
-                            AdcUtils.retADCStr(message)
+                            AdcUtils.toAdcString(message)
                            );
     }
 

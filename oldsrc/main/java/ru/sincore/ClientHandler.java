@@ -1555,7 +1555,7 @@ public class ClientHandler
             }
             else
             {
-                this.sendToClient("EMSG DCBA " + this.SID + " " + AdcUtils.retADCStr(text));
+                this.sendToClient("EMSG DCBA " + this.SID + " " + AdcUtils.toAdcString(text));
             }
         }
     }
@@ -1568,7 +1568,7 @@ public class ClientHandler
             this.sendToClient("EMSG DCBA " +
                               this.SID +
                               " " +
-                              AdcUtils.retADCStr(text) +
+                              AdcUtils.toAdcString(text) +
                               " PMDCBA");
         }
     }
@@ -1583,9 +1583,13 @@ public class ClientHandler
                 this.sendToClient("BINF ABCD ID" +
                                   ConfigurationManager.instance().getString(ConfigurationManager.OP_CHAT_CID) +
                                   " NI" +
-                                  AdcUtils.retADCStr(ConfigurationManager.instance().getString(ConfigurationManager.OP_CHAT_NAME)) +
+                                  AdcUtils.toAdcString(ConfigurationManager.instance()
+                                                                           .getString(
+                                                                                   ConfigurationManager.OP_CHAT_NAME)) +
                                   " CT5 DE" +
-                                  AdcUtils.retADCStr(ConfigurationManager.instance().getString(ConfigurationManager.OP_CHAT_DESCRIPTION)));
+                                  AdcUtils.toAdcString(ConfigurationManager.instance()
+                                                                           .getString(
+                                                                                   ConfigurationManager.OP_CHAT_DESCRIPTION)));
             }
         }
         else

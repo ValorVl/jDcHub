@@ -71,18 +71,23 @@ public class HostTester
             if (ConfigurationManager.instance().getString(ConfigurationManager.HUB_DESCRIPTION).isEmpty())
             {
                 test = "IINF CT32 VE" +
-                       AdcUtils.retADCStr(ConfigurationManager.instance().getString(ConfigurationManager.HUB_VERSION)) +
+                       AdcUtils.toAdcString(ConfigurationManager.instance()
+                                                                .getString(ConfigurationManager.HUB_VERSION)) +
                        " NI" +
-                       AdcUtils.retADCStr(ConfigurationManager.instance().getString(ConfigurationManager.HUB_NAME));
+                       AdcUtils.toAdcString(ConfigurationManager.instance()
+                                                                .getString(ConfigurationManager.HUB_NAME));
             }
             else
             {
                 test = "IINF CT32 VE" +
-                       AdcUtils.retADCStr(ConfigurationManager.instance().getString(ConfigurationManager.HUB_VERSION)) +
+                       AdcUtils.toAdcString(ConfigurationManager.instance()
+                                                                .getString(ConfigurationManager.HUB_VERSION)) +
                        " NI" +
-                       AdcUtils.retADCStr(ConfigurationManager.instance().getString(ConfigurationManager.HUB_NAME)) +
+                       AdcUtils.toAdcString(ConfigurationManager.instance()
+                                                                .getString(ConfigurationManager.HUB_NAME)) +
                        " DE" +
-                       AdcUtils.retADCStr(ConfigurationManager.instance().getString(ConfigurationManager.HUB_DESCRIPTION));
+                       AdcUtils.toAdcString(ConfigurationManager.instance()
+                                                                .getString(ConfigurationManager.HUB_DESCRIPTION));
             }
             if (!INF.equals(test))
             {
@@ -90,13 +95,19 @@ public class HostTester
                                     INF +
                                     "\n" +
                                     "IINF CT32 VE" +
-                                    AdcUtils.retADCStr(ConfigurationManager.instance().getString(ConfigurationManager.HUB_VERSION))
+                                    AdcUtils.toAdcString(ConfigurationManager.instance()
+                                                                             .getString(
+                                                                                     ConfigurationManager.HUB_VERSION))
                                     +
                                     " NI" +
-                                    AdcUtils.retADCStr(ConfigurationManager.instance().getString(ConfigurationManager.HUB_NAME)) +
+                                    AdcUtils.toAdcString(ConfigurationManager.instance()
+                                                                             .getString(
+                                                                                     ConfigurationManager.HUB_NAME)) +
                                     ((ConfigurationManager.instance().getString(ConfigurationManager.HUB_DESCRIPTION).equals(
                                             "")) ?
-                                     (" DE" + AdcUtils.retADCStr(ConfigurationManager.instance().getString(ConfigurationManager.HUB_DESCRIPTION))) :
+                                     (" DE" + AdcUtils.toAdcString(ConfigurationManager.instance()
+                                                                                       .getString(
+                                                                                               ConfigurationManager.HUB_DESCRIPTION))) :
                                      ""));
             }
 
