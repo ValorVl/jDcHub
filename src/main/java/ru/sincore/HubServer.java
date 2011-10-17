@@ -23,6 +23,7 @@ package ru.sincore;
  */
 
 
+import com.adamtaft.eb.EventBusService;
 import org.apache.mina.core.service.IoAcceptor;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
@@ -34,6 +35,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 import ru.sincore.Modules.Modulator;
+import ru.sincore.events.HubShutdownEvent;
+import ru.sincore.events.HubStartupEvent;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -128,6 +131,9 @@ public class HubServer extends Thread
         log.info("Start Time:" + d.toString());
         System.out.print("\n>");
 
+        // Publish startup event
+        EventBusService.publish(new HubStartupEvent());
+
         myAssasin = new ClientAssasin();//temporary removed
     }
 
@@ -136,5 +142,7 @@ public class HubServer extends Thread
     {
 		//TODO realize correctly shutdown server,notify clients, store all collection containers, drop buffers and caches.
         acceptor.unbind();
+
+        EventBusService.publish(new HubShutdownEvent());
     }
 }
