@@ -123,7 +123,7 @@ public final class ClientManager
         bot.setSid(configurationManager.getString(ConfigurationManager.HUB_SID));
         bot.setCid(configurationManager.getString(ConfigurationManager.SECURITY_CID));
         bot.setNick(configurationManager.getString(ConfigurationManager.HUB_NAME));
-        bot.setDescription(configurationManager.getString(ConfigurationManager.HUB_DESCRIPTION));
+        bot.setDescription(configurationManager.getAdcString(ConfigurationManager.HUB_DESCRIPTION));
         bot.setWeight(100);
         bot.setClientType(ClientType.HUB | ClientType.BOT); // Client Type 32 is hub
         bot.setValidated();

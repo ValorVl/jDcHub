@@ -68,26 +68,21 @@ public class HostTester
 //            in.readLine();
             String INF = in.readLine();
             String test = "";
-            if (ConfigurationManager.instance().getString(ConfigurationManager.HUB_DESCRIPTION).isEmpty())
+            if (ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_DESCRIPTION).isEmpty())
             {
                 test = "IINF CT32 VE" +
-                       AdcUtils.toAdcString(ConfigurationManager.instance()
-                                                                .getString(ConfigurationManager.HUB_VERSION)) +
+                       ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_VERSION) +
                        " NI" +
-                       AdcUtils.toAdcString(ConfigurationManager.instance()
-                                                                .getString(ConfigurationManager.HUB_NAME));
+                       ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_NAME);
             }
             else
             {
                 test = "IINF CT32 VE" +
-                       AdcUtils.toAdcString(ConfigurationManager.instance()
-                                                                .getString(ConfigurationManager.HUB_VERSION)) +
+                       ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_VERSION) +
                        " NI" +
-                       AdcUtils.toAdcString(ConfigurationManager.instance()
-                                                                .getString(ConfigurationManager.HUB_NAME)) +
+                       ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_NAME) +
                        " DE" +
-                       AdcUtils.toAdcString(ConfigurationManager.instance()
-                                                                .getString(ConfigurationManager.HUB_DESCRIPTION));
+                       ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_DESCRIPTION);
             }
             if (!INF.equals(test))
             {
@@ -95,19 +90,13 @@ public class HostTester
                                     INF +
                                     "\n" +
                                     "IINF CT32 VE" +
-                                    AdcUtils.toAdcString(ConfigurationManager.instance()
-                                                                             .getString(
-                                                                                     ConfigurationManager.HUB_VERSION))
+                                    ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_VERSION)
                                     +
                                     " NI" +
-                                    AdcUtils.toAdcString(ConfigurationManager.instance()
-                                                                             .getString(
-                                                                                     ConfigurationManager.HUB_NAME)) +
-                                    ((ConfigurationManager.instance().getString(ConfigurationManager.HUB_DESCRIPTION).equals(
-                                            "")) ?
-                                     (" DE" + AdcUtils.toAdcString(ConfigurationManager.instance()
-                                                                                       .getString(
-                                                                                               ConfigurationManager.HUB_DESCRIPTION))) :
+                                    ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_NAME) +
+                                    ((ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_DESCRIPTION).
+                                            equals("")) ?
+                                     (" DE" + ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_DESCRIPTION)) :
                                      ""));
             }
 

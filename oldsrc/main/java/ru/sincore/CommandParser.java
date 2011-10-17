@@ -1401,10 +1401,10 @@ public class CommandParser
             }
             if (recvbuf.toLowerCase().equals("topic"))
             {
-                if (!ConfigurationManager.instance().getString(ConfigurationManager.HUB_DESCRIPTION).isEmpty())
+                if (!ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_DESCRIPTION).isEmpty())
                 {
                     Broadcast.getInstance().broadcast("IINF DE");
-                    client.getClientHandler().sendFromBot("Topic \"" + ConfigurationManager.instance().getString(ConfigurationManager.HUB_DESCRIPTION)
+                    client.getClientHandler().sendFromBot("Topic \"" + ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_DESCRIPTION)
                                                           + "\" deleted.");
                     Broadcast.getInstance().broadcast("IMSG Topic was deleted by " + client.getClientHandler().NI, client);
                 }
@@ -1413,7 +1413,7 @@ public class CommandParser
                     client.getClientHandler().sendFromBot("There wasn't any topic anyway.");
                 }
 				//TODO OMFG O_O!
-                ConfigurationManager.instance().getString(ConfigurationManager.HUB_DESCRIPTION) = "";
+                ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_DESCRIPTION) = "";
 
             }
             else
@@ -1421,14 +1421,14 @@ public class CommandParser
                 String auxbuf = recvbuf.substring(6);
 
                 // Vars.HubDE=Vars.HubDE.replaceAll("\\ "," ");
-                client.getClientHandler().sendFromBot("Topic changed from \"" + ConfigurationManager.instance().getString(ConfigurationManager.HUB_DESCRIPTION)
+                client.getClientHandler().sendFromBot("Topic changed from \"" + ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_DESCRIPTION)
                                                       + "\" " + "to \"" + auxbuf + "\".");
                 auxbuf = auxbuf.replaceAll(" ", "\\ ");
-                ConfigurationManager.instance().getString(ConfigurationManager.HUB_DESCRIPTION) = auxbuf;
+                ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_DESCRIPTION) = auxbuf;
 
                 Broadcast.getInstance().broadcast("IINF DE" + AdcUtils.toAdcString(auxbuf));
                 Broadcast.getInstance().broadcast("IMSG Topic was changed by " + client.getClientHandler().NI
-                                                  + " to \"" + ConfigurationManager.instance().getString(ConfigurationManager.HUB_DESCRIPTION) + "\"");
+                                                  + " to \"" + ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_DESCRIPTION) + "\"");
 
             }
             // TODO remove save "topic" parameter in old config store.
