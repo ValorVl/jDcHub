@@ -34,6 +34,8 @@ import ru.sincore.adc.MessageType;
 import ru.sincore.adc.State;
 import ru.sincore.client.AbstractClient;
 import ru.sincore.cmd.CmdEngine;
+import ru.sincore.db.dao.ChatLogDAO;
+import ru.sincore.db.dao.ChatLogDAOImpl;
 import ru.sincore.util.AdcUtils;
 import ru.sincore.util.Constants;
 import ru.sincore.util.STAError;
@@ -288,8 +290,13 @@ public class MSG extends Action
                 // get flags and parse it
                 parseFlags(tokenizer);
                 // try to find command in message and execute it
-                if (!parseAndExecuteCommandInMessage())
-                    Broadcast.getInstance().broadcast(rawCommand);
+                if (parseAndExecuteCommandInMessage())
+                    break;
+
+                Broadcast.getInstance().broadcast(rawCommand);
+                ChatLogDAO chatLog = new ChatLogDAOImpl();
+                chatLog.saveMessage(ClientManager.getInstance().getClientBySID(mySID).getNick(),
+                                    message);
                 break;
 
             case I:
