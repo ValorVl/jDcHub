@@ -7,5 +7,5 @@ import java.util.List;
 public interface ChatLogDAO
 {
 	void saveMessage(String nick, String message);
-	List<?> getLast(Integer lastRowCount);
+	List<ChatLogPOJO> getLast(Integer lastRowCount);
 }

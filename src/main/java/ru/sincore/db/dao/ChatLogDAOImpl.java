@@ -31,8 +31,8 @@ public class ChatLogDAOImpl implements ChatLogDAO
 		Session session = HibernateUtils.getSessionFactory().openSession();
 		Transaction tx = session.getTransaction();
 
-		try{
-
+		try
+        {
 			tx.begin();
 
 			ChatLogPOJO data = new ChatLogPOJO();
@@ -45,7 +45,9 @@ public class ChatLogDAOImpl implements ChatLogDAO
 
 			tx.commit();
 
-		}catch (Exception ex){
+		}
+        catch (Exception ex)
+        {
 			log.error(ex);
 			tx.rollback();
 		}
@@ -63,8 +65,8 @@ public class ChatLogDAOImpl implements ChatLogDAO
 		Session session = HibernateUtils.getSessionFactory().openSession();
 		Transaction tx = session.getTransaction();
 
-		try{
-
+		try
+        {
 			tx.begin();
 
 			Query query = session.createQuery("from ChatLogPOJO order by sendDate desc");
@@ -75,7 +77,8 @@ public class ChatLogDAOImpl implements ChatLogDAO
 
 			return result;
 
-		}catch (Exception ex)
+		}
+        catch (Exception ex)
 		{
 			log.error(ex);
 			tx.rollback();

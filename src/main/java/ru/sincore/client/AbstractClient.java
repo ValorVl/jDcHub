@@ -77,17 +77,7 @@ public abstract class AbstractClient extends ClientInfo
      */
     public void onLoggedIn()
     {
-        this.sendRawCommand("ISTA 000 Authenticated.");
-
-        this.setLastNick(this.getNick());
-        this.setLastIP(this.getRealIP());
-
-        //user is OK, logged in and cool
-        this.setValidated();
-        this.setState(State.NORMAL);
-        this.setLastLogin(this.getLoggedIn());
-
-        this.setLoggedIn(new Date());
+        log.error("Used unimplemented function onLoggedIn!");
     }
 
 
@@ -96,34 +86,15 @@ public abstract class AbstractClient extends ClientInfo
      */
     public void onConnected()
     {
-        // make client active
-        this.setActive(true);
-
-        ClientManager.getInstance().moveClientToRegularMap(this);
-
-        //ok now sending infs of all others to the handler
-        ClientManager.getInstance().sendClientsInfsToClient(this);
-
-        //sending inf about itself too
-        this.sendRawCommand(this.getINF());
-
-        //ok now must send INF to all clients
-        Broadcast.getInstance().broadcast(this.getINF(), this);
-
-        if (isFeature(Features.UCMD))
-        {
-            //ok, he is ucmd ok, so
-            this.sendRawCommand("ICMD Test CT1 TTTest");
-        }
-        // TODO [lh] send MOTD to client
-        //this.sendFromBot(bigTextManager.getMOTD(fromClient));
-
+        log.error("Used unimplemented function onConnected!");
     }
+
 
     public void sendRawCommand(String rawCommand)
     {
         log.error("Used unimplemented function sendRawCommand!");
     }
+
 
     public boolean loadInfo()
     {

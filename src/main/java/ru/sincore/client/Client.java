@@ -25,10 +25,25 @@ package ru.sincore.client;
 import org.apache.mina.core.session.IoSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.sincore.Broadcast;
+import ru.sincore.ClientManager;
+import ru.sincore.ConfigurationManager;
 import ru.sincore.Exceptions.STAException;
+import ru.sincore.adc.Features;
+import ru.sincore.adc.State;
+import ru.sincore.db.dao.ChatLogDAO;
+import ru.sincore.db.dao.ChatLogDAOImpl;
 import ru.sincore.db.dao.ClientListDAO;
 import ru.sincore.db.dao.ClientListDAOImpl;
+import ru.sincore.db.pojo.ChatLogPOJO;
 import ru.sincore.db.pojo.ClientListPOJO;
+import ru.sincore.util.AdcUtils;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author Alexey 'lh' Antonov
@@ -171,6 +186,80 @@ public class Client extends AbstractClient
         this.setTimeOnline(clientInfo.getTimeOnline());
 
         return true;
+    }
+
+
+    @Override
+    public void onConnected()
+    {
+        // make client active
+        this.setActive(true);
+
+        ClientManager.getInstance().moveClientToRegularMap(this);
+
+        //ok now sending infs of all others to the handler
+        ClientManager.getInstance().sendClientsInfsToClient(this);
+
+        //sending inf about itself too
+        this.sendRawCommand(this.getINF());
+
+        //ok now must send INF to all clients
+        Broadcast.getInstance().broadcast(this.getINF(), this);
+
+        if (isFeature(Features.UCMD))
+        {
+            //ok, he is ucmd ok, so
+            this.sendRawCommand("ICMD Test CT1 TTTest");
+        }
+        // TODO [lh] send MOTD to client
+        //this.sendFromBot(bigTextManager.getMOTD(fromClient));
+
+        this.sendNLastMessages();
+    }
+
+
+    private void sendNLastMessages()
+    {
+        ChatLogDAO chatLogDAO = new ChatLogDAOImpl();
+        List<ChatLogPOJO> chatLog = chatLogDAO.getLast(ConfigurationManager.instance().getInt(
+                ConfigurationManager.LAST_MESSAGES_COUNT));
+
+        // reverse message list (from older to newer)
+        Collections.reverse(chatLog);
+
+        StringBuilder message = new StringBuilder();
+
+        message.append("Last 20 main chat messages:\n\n");
+
+        for (ChatLogPOJO chatLogEntry : chatLog)
+        {
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss: ");
+            message.append(df.format(chatLogEntry.getSendDate()));
+            message.append("<");
+            message.append(chatLogEntry.getNickName());
+            message.append("> ");
+            message.append(AdcUtils.fromAdcString(chatLogEntry.getMessage()));
+            message.append("\n");
+        }
+
+        this.sendMessageFromHub(message.toString());
+    }
+
+
+    @Override
+    public void onLoggedIn()
+    {
+        this.sendRawCommand("ISTA 000 Authenticated.");
+
+        this.setLastNick(this.getNick());
+        this.setLastIP(this.getRealIP());
+
+        //user is OK, logged in and cool
+        this.setValidated();
+        this.setState(State.NORMAL);
+        this.setLastLogin(this.getLoggedIn());
+
+        this.setLoggedIn(new Date());
     }
 
 
