@@ -221,15 +221,17 @@ public class Client extends AbstractClient
     private void sendNLastMessages()
     {
         ChatLogDAO chatLogDAO = new ChatLogDAOImpl();
-        List<ChatLogPOJO> chatLog = chatLogDAO.getLast(ConfigurationManager.instance().getInt(
-                ConfigurationManager.LAST_MESSAGES_COUNT));
+        int lastMessageCount = ConfigurationManager.instance().getInt(ConfigurationManager.LAST_MESSAGES_COUNT);
+        List<ChatLogPOJO> chatLog = chatLogDAO.getLast(lastMessageCount);
 
         // reverse message list (from older to newer)
         Collections.reverse(chatLog);
 
         StringBuilder message = new StringBuilder();
 
-        message.append("Last 20 main chat messages:\n\n");
+        message.append("Last ");
+        message.append(lastMessageCount);
+        message.append(" main chat messages:\n\n");
 
         for (ChatLogPOJO chatLogEntry : chatLog)
         {
