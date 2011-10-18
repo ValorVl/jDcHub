@@ -19,6 +19,10 @@
  */
 package ru.sincore.TigerImpl;
 
+import java.util.Random;
+
+import org.apache.commons.lang.RandomStringUtils;
+
 /**
  * @author Valor
  */
@@ -30,7 +34,8 @@ public class CIDGenerator
 		tiger.engineReset();
 		tiger.init();
 
-		byte[] bytes = String.valueOf(System.currentTimeMillis()).getBytes();
+
+		byte[] bytes = RandomStringUtils.random(4096).getBytes();
 
 		tiger.update(bytes,0,bytes.length);
 

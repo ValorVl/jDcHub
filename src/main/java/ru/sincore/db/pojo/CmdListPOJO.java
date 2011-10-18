@@ -31,8 +31,8 @@ public class CmdListPOJO implements Serializable
 	private String  commandDescription;
 	@Column(name = "enabled",columnDefinition = "TINYINT(1) DEFAULT 1")
 	private Boolean enabled;
-	@Column(name = "logged",columnDefinition = "TINYINT(1) DEFAULT 1")
-	private Boolean logged;
+	@Column(name = "logable",columnDefinition = "TINYINT(1) DEFAULT 1")
+	private Boolean logable;
 
 	public Long getId()
 	{
@@ -106,12 +106,12 @@ public class CmdListPOJO implements Serializable
 
 	public Boolean getLogged()
 	{
-		return logged;
+		return logable;
 	}
 
 	public void setLogged(Boolean logged)
 	{
-		this.logged = logged;
+		this.logable = logged;
 	}
 
 	public Boolean getEnabled()

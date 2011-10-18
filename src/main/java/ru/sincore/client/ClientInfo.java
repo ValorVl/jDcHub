@@ -117,7 +117,7 @@ public class ClientInfo
      * 8=super user, 16=hub owner, 32=hub (used when the hub sends an INF about itself).
      * Multiple types are specified by adding the numbers together.
      */
-    private String clientType = "0";
+    private int clientType = 0;
 
     /**
      * Client Connect time in millis as Syste.gettimemillis() ; ;)
@@ -559,13 +559,13 @@ public class ClientInfo
     }
 
 
-    public String getClientType()
+    public int getClientType()
     {
         return clientType;
     }
 
 
-    public void setClientType(String clientType)
+    public void setClientType(int clientType)
     {
         this.clientType = clientType;
     }

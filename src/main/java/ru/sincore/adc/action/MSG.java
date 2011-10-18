@@ -38,7 +38,6 @@ import ru.sincore.util.AdcUtils;
 import ru.sincore.util.Constants;
 import ru.sincore.util.STAError;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -115,7 +114,7 @@ public class MSG extends Action
      */
     private boolean parseAndExecuteCommandInMessage()
     {
-        String normalMessage = AdcUtils.retNormStr(message);
+        String normalMessage = AdcUtils.fromAdcString(message);
         if (normalMessage.startsWith(ConfigurationManager.instance().getString(ConfigurationManager.OP_COMMAND_PREFIX)) ||
             normalMessage.startsWith(ConfigurationManager.instance().getString(ConfigurationManager.USER_COMMAND_PREFIX)))
         {

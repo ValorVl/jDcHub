@@ -4,6 +4,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.sincore.TigerImpl.CIDGenerator;
+import ru.sincore.util.AdcUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -108,6 +109,7 @@ public class ConfigurationManager extends PropertiesConfiguration
     public static final String OP_CHAT_NAME           = "core.hub.op_chat_name";
     public static final String OP_CHAT_DESCRIPTION    = "core.hub.op_chat_description";
     public static final String OP_CHAT_WEIGHT         = "core.hub.op_chat_weight";
+    public static final String OP_CHAT_SID            = "core.hub.op_chat_sid";
     public static final String BOT_CHAT_NAME          = "core.hub.bot_chat_name";
     public static final String BOT_CHAT_DESCRIPTION   = "core.hub.bot_chat_description";
     public static final String BOT_CHAT_WEIGHT        = "core.hub.bot_chat_weight";
@@ -115,9 +117,11 @@ public class ConfigurationManager extends PropertiesConfiguration
     public static final String VIP_CHAT_NAME          = "core.hub.vip_chat_name";
     public static final String VIP_CHAT_DESCRIPTION   = "core.hub.vip_chat_description";
     public static final String VIP_CHAT_WEIGHT        = "core.hub.vip_chat_weight";
+    public static final String VIP_CHAT_SID           = "core.hub.vip_chat_sid";
     public static final String REG_CHAT_NAME          = "core.hub.reg_chat_name";
     public static final String REG_CHAT_DESCRIPTION   = "core.hub.reg_chat_description";
     public static final String REG_CHAT_WEIGHT        = "core.hub.reg_chat_weight";
+    public static final String REG_CHAT_SID           = "core.hub.reg_chat_sid";
     // If true, return command result in private chat
     public static final String COMMAND_PM_RETURN      = "core.hub.command_pm_return";
     // Mark chat or command for registration users only
@@ -134,6 +138,9 @@ public class ConfigurationManager extends PropertiesConfiguration
 
     // Internal options
     public static final String OP_CHAT_CID  = "internal.op_chat_cid";
+    public static final String VIP_CHAT_CID = "internal.vip_chat_cid";
+    public static final String REG_CHAT_CID = "internal.reg_chat_cid";
+    public static final String BOT_CHAT_CID = "internal.bot_chat_cid";
     public static final String SECURITY_CID = "internal.security_cid";
 
     /*
@@ -179,6 +186,11 @@ public class ConfigurationManager extends PropertiesConfiguration
     }
 
 
+    public String getAdcString(String key)
+    {
+        return AdcUtils.toAdcString(super.getString(key));
+    }
+
     public synchronized void load(java.io.Reader in)
             throws org.apache.commons.configuration.ConfigurationException
     {
@@ -192,6 +204,9 @@ public class ConfigurationManager extends PropertiesConfiguration
 
         // OP_CHAT_CID
         this.setProperty(OP_CHAT_CID, CIDGenerator.generate());
+        this.setProperty(VIP_CHAT_CID, CIDGenerator.generate());
+        this.setProperty(REG_CHAT_CID, CIDGenerator.generate());
+        this.setProperty(BOT_CHAT_CID, CIDGenerator.generate());
 
         // SECURITY_CID
         this.setProperty(SECURITY_CID, CIDGenerator.generate());
@@ -209,6 +224,27 @@ public class ConfigurationManager extends PropertiesConfiguration
         if (!sidPattern.matcher(botChatSid).matches())
         {
             this.setProperty(BOT_CHAT_SID, "DCBA");
+        }
+
+        // OP_CHAT_SID
+        String opChatSid = this.getString(OP_CHAT_SID);
+        if (!sidPattern.matcher(opChatSid).matches())
+        {
+            this.setProperty(OP_CHAT_SID, "ABCE");
+        }
+
+        // VIP_CHAT_SID
+        String vipChatSid = this.getString(VIP_CHAT_SID);
+        if (!sidPattern.matcher(vipChatSid).matches())
+        {
+            this.setProperty(VIP_CHAT_SID, "ABCF");
+        }
+
+        // REG_CHAT_SID
+        String regChatSid = this.getString(REG_CHAT_SID);
+        if (!sidPattern.matcher(regChatSid).matches())
+        {
+            this.setProperty(REG_CHAT_SID, "ABCG");
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////

@@ -32,6 +32,7 @@ import java.util.regex.Pattern;
  *
  * @author Pietricica
  * @author Valor
+ *
  */
 abstract public class AdcUtils
 {
@@ -40,26 +41,26 @@ abstract public class AdcUtils
 														   "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." +
 														   "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b");
 
-	public static String retNormStr(String blah)
+	public static String fromAdcString(String adcString)
     {
 
-        return blah.replaceAll("\\\\s", " ")
+        return adcString.replaceAll("\\\\s", " ")
                    .replaceAll("\\\\n", "\n")
                    .replaceAll("\\\\\\\\", "\\\\")
                    .replaceAll("\\\\ ", "\\\\s")
                    .replaceAll("\\\\\\n", "\\\\n");
     }
 
-    public static String retADCStr(String blah)
+    public static String toAdcString(String normalString)
     {
-        return blah.replaceAll("\\\\", "\\\\\\\\")
+        return normalString.replaceAll("\\\\", "\\\\\\\\")
                    .replaceAll(" ", "\\\\s")
                    .replaceAll("\n", "\\\\n");
     }
 
-    public static boolean isIP(String blah)
+    public static boolean isIP(String ipString)
     {
-        return COMPILE.matcher(blah).matches();
+        return COMPILE.matcher(ipString).matches();
     }
 
     public static boolean isCID(String cid)

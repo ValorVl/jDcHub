@@ -64,8 +64,8 @@ public class ClientRegDefaultHandler extends AbstractCmd
 		// Check client weight and flag "isReg", if weight > 0 and flag true, registration procedure not allowed.
 		if (client.isRegistred() && client.getWeight() > 0)
 		{
-            client.sendPrivateMessageFromChatBot(String.format(Messages.get(Messages.REG_FAIL_MESSAGE),
-                                                               client.getNick()));
+            client.sendPrivateMessageFromHub(String.format(Messages.get(Messages.REG_FAIL_MESSAGE),
+                                                           client.getNick()));
 		}
 		else
 		{
@@ -92,7 +92,7 @@ public class ClientRegDefaultHandler extends AbstractCmd
 				client.setPassword(args.trim());
 			}
 
-			client.setClientType("2");
+			client.setClientType(2);
 			client.setRegistratorNick(client.getNick());
 			client.setCreatedOn(new Date());
 			client.storeInfo();

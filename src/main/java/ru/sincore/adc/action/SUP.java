@@ -165,14 +165,14 @@ public class SUP extends Action
 		StringBuilder inf = new StringBuilder(8);
 
 		inf.append("IINF CT32 VE ");
-		inf.append(AdcUtils.retADCStr(ConfigurationManager.instance().getString(ConfigurationManager.HUB_VERSION)));
+		inf.append(ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_VERSION));
 		inf.append("IN ");
-		inf.append(AdcUtils.retADCStr(ConfigurationManager.instance().getString(ConfigurationManager.HUB_NAME)));
+		inf.append(ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_NAME));
 		//Check hub description, if empty, send  IINF without DE option
-		if (!ConfigurationManager.instance().getString(ConfigurationManager.HUB_DESCRIPTION).isEmpty())
+		if (!ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_DESCRIPTION).isEmpty())
 		{
 			inf.append("DE ");
-			inf.append(ConfigurationManager.instance().getString(ConfigurationManager.HUB_DESCRIPTION));
+			inf.append(ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_DESCRIPTION));
 		}
 
 		// Check client flag isPingExtensionSupports, if true, send PING string

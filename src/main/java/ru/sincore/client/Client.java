@@ -101,7 +101,7 @@ public class Client extends AbstractClient
         // set password
         clientInfo.setPassword(this.getPassword());
 
-        clientInfo.setClientType(Integer.valueOf(this.getClientType()));
+        clientInfo.setClientType(this.getClientType());
 
         if (!this.isRegistred())
         {
@@ -128,6 +128,7 @@ public class Client extends AbstractClient
         clientInfo.setLastMessage(this.getLastMessageText());
         clientInfo.setLoginCount(this.getLoginCount());
         clientInfo.setTimeOnline(this.getTimeOnline());
+        clientInfo.setLastLogIn(this.getLoggedIn());
 
 
         long timeOnline = System.currentTimeMillis() - this.getLoggedIn().getTime();
@@ -173,6 +174,7 @@ public class Client extends AbstractClient
     }
 
 
+    @Override
     public String getINF()
     {
         StringBuilder auxstr = new StringBuilder();
@@ -246,16 +248,10 @@ public class Client extends AbstractClient
         {
             auxstr.append(" HU1");
         }
-        if (getClientType() != null)
+        if (getClientType() != 0) // TODO should change.. more working here
         {
-            if (!getClientType().equals(""))
-            {
-                if (!getClientType().equals("0")) // TODO should change.. more working here
-                {
-                    auxstr.append(" CT");
-                    auxstr.append(getClientType());
-                }
-            }
+            auxstr.append(" CT");
+            auxstr.append(getClientType());
         }
         if (getSharedFiles() != null)
         {
