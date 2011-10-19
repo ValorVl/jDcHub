@@ -104,11 +104,7 @@ public class ClientAssasin extends Thread
 
 
             }
-            //temp.PS.printf
-            // new Broadcast("");
-            //System.out.println("gay.");
-            //if(temp!=null)
-            // new Broadcast("IMSG Debug Message Please Ignore, Check "+temp.NI);
+
             try
             {
                 this.sleep(5000);

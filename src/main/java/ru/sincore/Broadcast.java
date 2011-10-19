@@ -44,20 +44,11 @@ public class Broadcast
 {
     private static final Logger log = LoggerFactory.getLogger(Broadcast.class);
 
-    /**
-     * Contains message history without duplicates
-     * and Info messages
-     */
-    public static StringBuffer history;
-
-    static int size = 0;
-
     // un pool de threaduri ce este folosit pentru executia secventelor de
     // operatii corespunzatoare
     // conextiunilor cu fiecare client
     // final protected ExecutorService pool;
     // final private ThreadFactory tfactory;
-
     static Broadcast _instance = null;
 
 

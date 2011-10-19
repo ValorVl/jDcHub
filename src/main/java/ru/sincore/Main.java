@@ -6,6 +6,8 @@ package ru.sincore;
  *
  * DSHub AdcUtils HubSoft
  * Copyright (C) 2007,2008  Eugen Hristev
+ * Copyright (C) 2011 Valor
+ * Copyright (C) 2011 Alexey 'lh' Antonov
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -30,30 +32,23 @@ import ru.sincore.i18n.Messages;
 
 import java.util.Properties;
 
+
 /**
- * DSHub main class, contains main function ( to call when start application )
- * Listens to System.in in tty for commands ( if run via java command line )
+ * DSHub main class, contains main function ( to call when application started )
  *
  * @author Pietricica
  */
-
-
 public class Main extends Thread
 {
     public static final Logger log = Logger.getLogger(Main.class);
 
-    public static HubServer server;
-    public static Properties 	proppies;
-    public static String        auxhelp;
-    public static BanWordsList  listaBanate;
-    public static String        MOTD = "";
-    public static long          curtime;
+    public static HubServer     server;
+    public static long          startupTime = System.currentTimeMillis();
     public static String        myPath;
 
     public static void init()
     {
 		PropertyConfigurator.configure("./etc/log4j.properties");
-		//ConfigLoader.init();
         ConfigurationManager.instance();
 		HibernateUtils.getSessionFactory();
 		CmdContainer container = CmdContainer.getInstance();
@@ -85,33 +80,38 @@ public class Main extends Thread
         server.shutdown();
         System.gc(); //calling garbage collectors
         Main.server = new HubServer();
-        Main.curtime = System.currentTimeMillis();
-        Main.proppies = System.getProperties();
+        Main.startupTime = System.currentTimeMillis();
     }
 
 
     public static void Restart()
     {
         new Main().start();
-
     }
+
+
     /**
      * @param args the command line arguments (Not used)
      */
-
     public static void main(String[] args)
     {
         init();
-        curtime = System.currentTimeMillis();
+        startupTime = System.currentTimeMillis();
 
         log.info(Messages.get(Messages.SERVER_STARTUP));
 
         server = new HubServer();
 
-        proppies = System.getProperties();
-
         log.info(Messages.get(Messages.SERVER_STARTUP_DONE));
     }
 
 
+    /**
+     * Returns server uptime
+     * @return Server uptime
+     */
+    static public long getUptime()
+    {
+        return System.currentTimeMillis() - startupTime;
+    }
 }

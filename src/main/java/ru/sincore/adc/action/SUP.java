@@ -14,7 +14,6 @@ import ru.sincore.adc.MessageType;
 import ru.sincore.adc.State;
 import ru.sincore.client.AbstractClient;
 import ru.sincore.i18n.Messages;
-import ru.sincore.util.AdcUtils;
 import ru.sincore.util.Constants;
 import ru.sincore.util.STAError;
 
@@ -218,7 +217,7 @@ public class SUP extends Action
 		pingRequest.append(ConfigurationManager.instance().getInt(ConfigurationManager.MAX_USERS));
 		pingRequest.append(" UP");
         // TODO [lh] Remove Main class usage
-		pingRequest.append((System.currentTimeMillis() - Main.curtime));
+		pingRequest.append(Main.getUptime());
 
         return pingRequest.toString();
     }

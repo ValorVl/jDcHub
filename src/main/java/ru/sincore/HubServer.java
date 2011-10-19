@@ -29,7 +29,6 @@ import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.filter.codec.textline.TextLineCodecFactory;
 import org.apache.mina.filter.logging.LoggingFilter;
-import org.apache.mina.filter.ssl.SslFilter;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,13 +60,10 @@ public class HubServer extends Thread
 
     ClientAssasin myAssasin;
 
-    public boolean adcs_ok = false;
-    public static boolean done_adcs = false;
     public static boolean restart;
 
     public IoAcceptor acceptor;
     public Calendar   MyCalendar;
-	private BigTextManager bigTextManager = null;
 
     /**
      * Creates a new instance of HubServer
@@ -80,9 +76,6 @@ public class HubServer extends Thread
     @Override
     public void run()
     {
-		// Get and send MOTD text
-		bigTextManager = new BigTextManager();
-
         restart = false;
 
         Modulator.findModules();
@@ -127,7 +120,7 @@ public class HubServer extends Thread
 		}
 
 
-        Date d = new Date(Main.curtime);
+        Date d = new Date(Main.startupTime);
         log.info("Start Time:" + d.toString());
         System.out.print("\n>");
 
