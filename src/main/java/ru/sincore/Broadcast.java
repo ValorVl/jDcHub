@@ -25,6 +25,8 @@ package ru.sincore;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,12 +52,12 @@ public class Broadcast
     // final protected ExecutorService pool;
     // final private ThreadFactory tfactory;
     static Broadcast _instance = null;
+    private final ExecutorService pool;
 
 
     private Broadcast()
     {
-        // tfactory = new DaemonThreadFactory();
-        // pool = Executors.newSingleThreadScheduledExecutor(tfactory);
+        pool = Executors.newCachedThreadPool();
     }
 
 
@@ -77,7 +79,7 @@ public class Broadcast
     {
         for (AbstractClient toClient : ClientManager.getInstance().getClients())
         {
-            (new Thread(new ClientSender(message, fromClient, toClient))).start();
+            pool.execute(new ClientSender(message, fromClient, toClient));
         }
     }
 
@@ -133,7 +135,7 @@ public class Broadcast
             if (doSend)
             {
                 log.debug("Send to client: " + client.getNick() + "/" + client.getSid());
-                (new Thread(new ClientSender(message, fromClient, client))).start();
+                pool.execute(new ClientSender(message, fromClient, client));
             }
         }
 
