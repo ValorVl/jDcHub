@@ -43,6 +43,8 @@ abstract public class AdcUtils
 
 	public static String fromAdcString(String adcString)
     {
+        if (adcString == null)
+            return null;
 
         return adcString.replaceAll("\\\\s", " ")
                    .replaceAll("\\\\n", "\n")
@@ -53,6 +55,9 @@ abstract public class AdcUtils
 
     public static String toAdcString(String normalString)
     {
+        if (normalString == null)
+            return null;
+
         return normalString.replaceAll("\\\\", "\\\\\\\\")
                    .replaceAll(" ", "\\\\s")
                    .replaceAll("\n", "\\\\n");

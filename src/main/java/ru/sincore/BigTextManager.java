@@ -3,9 +3,8 @@ package ru.sincore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
-import ru.sincore.client.AbstractClient;
-
-import java.io.File;
+import ru.sincore.db.dao.BigStaticDataDAO;
+import ru.sincore.db.dao.BigTextDataDAOImpl;
 
 /**
  * This class manages the preparation for sending the customer a very large blocks of text,
@@ -18,36 +17,36 @@ public class BigTextManager
 	private static final Logger log = LoggerFactory.getLogger(BigTextManager.class);
 	private String 	marker 			= Marker.ANY_MARKER;
 
-	private int 	storageType 		= ConfigurationManager.instance().getInt(ConfigurationManager.BIG_FILE_STORAGE);
 	private String 	defaultLocale 		= ConfigurationManager.instance().getString(ConfigurationManager.HUB_DEFAULT_LOCALE);
-	private String	fileStorageLocation = ConfigurationManager.instance().getString(ConfigurationManager.FILE_STORAGE_LOCATION);
 
-	/**
-	 * A method prepare MOTD text block
-	 * @param client client handler, if null will send MOTD in default locale
-	 * @return MOTD localized text
+    public static final String MOTD     = "MOTD";
+    public static final String RULES    = "RULES";
+
+
+    /**
+     * Return localized bit text
+     *
+     * @param title Text title for search
+     * @return Big text in default locale
+     */
+    public String getText(String title)
+    {
+        return this.getText(title, defaultLocale);
+    }
+
+
+    /**
+	 * Return localized bit text
+     *
+	 * @param title Text title for search
+     * @param locale Text locale
+     * @return Localized text
 	 */
-	public String getMOTD(AbstractClient client)
+	public String getText(String title, String locale)
 	{
-		String motd = "Hell is here";
+        BigStaticDataDAO bigStaticDataDAO = new BigTextDataDAOImpl();
 
-
-
-		if (storageType == 0)
-		{
-			File file = new File("");
-		}
-		else if (storageType == 1)
-		{
-
-		}
-
-		return motd;
-	}
-
-	public String getABOUT()
-	{
-		return "";
+		return bigStaticDataDAO.getData(title, locale);
 	}
 
 }

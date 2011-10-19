@@ -4,8 +4,8 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "static_data")
-public class BigStaticDataPOJO implements Serializable
+@Table(name = "big_text_data")
+public class BigTextDataPOJO implements Serializable
 {
 	@Id
 	@Column(name = "id")

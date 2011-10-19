@@ -30,7 +30,7 @@
      <mapping class="ru.sincore.db.pojo.BanListPOJO"/>
      <mapping class="ru.sincore.db.pojo.ClientListPOJO"/>
      <mapping class="ru.sincore.db.pojo.CmdListPOJO"/>
-     <mapping class="ru.sincore.db.pojo.BigStaticDataPOJO"/>
+     <mapping class="ru.sincore.db.pojo.BigTextDataPOJO"/>
      <mapping class="ru.sincore.db.pojo.CmdLogPOJO"/>
      <mapping class="ru.sincore.db.pojo.KickListPOJO"/>
      <mapping class="ru.sincore.db.pojo.StopWordsPOJO"/>

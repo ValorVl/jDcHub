@@ -1,9 +1,10 @@
 package ru.sincore.db.dao;
 
-import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.sincore.db.HibernateUtils;
 import ru.sincore.db.pojo.ChatLogPOJO;
 
@@ -17,7 +18,7 @@ import java.util.List;
  */
 public class ChatLogDAOImpl implements ChatLogDAO
 {
-	private static final Logger log = Logger.getLogger(ChatLogDAOImpl.class);
+	private static final Logger log = LoggerFactory.getLogger(ChatLogDAOImpl.class);
 
 	/**
 	 * Save nonprivileged user chat message.
@@ -48,7 +49,7 @@ public class ChatLogDAOImpl implements ChatLogDAO
 		}
         catch (Exception ex)
         {
-			log.error(ex);
+			log.error(ex.toString());
 			tx.rollback();
 		}
 	}
@@ -80,7 +81,7 @@ public class ChatLogDAOImpl implements ChatLogDAO
 		}
         catch (Exception ex)
 		{
-			log.error(ex);
+			log.error(ex.toString());
 			tx.rollback();
 		}
 		return null;

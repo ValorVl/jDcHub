@@ -25,6 +25,7 @@ package ru.sincore.client;
 import org.apache.mina.core.session.IoSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.sincore.BigTextManager;
 import ru.sincore.Broadcast;
 import ru.sincore.ClientManager;
 import ru.sincore.ConfigurationManager;
@@ -214,7 +215,15 @@ public class Client extends AbstractClient
         // TODO [lh] send MOTD to client
         //this.sendFromBot(bigTextManager.getMOTD(fromClient));
 
+        this.sendMOTD();
         this.sendNLastMessages();
+    }
+
+
+    private void sendMOTD()
+    {
+        BigTextManager bigTextManager = new BigTextManager();
+        this.sendMessageFromHub(AdcUtils.fromAdcString(bigTextManager.getText(BigTextManager.MOTD)));
     }
 
 
