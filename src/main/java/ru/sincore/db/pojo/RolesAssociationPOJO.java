@@ -24,7 +24,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "roles_association")
-public class RolesAssociation
+public class RolesAssociationPOJO
 {
     @Id
     private Long id;

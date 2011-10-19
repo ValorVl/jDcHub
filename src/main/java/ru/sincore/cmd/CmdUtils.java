@@ -40,7 +40,7 @@ public class CmdUtils
 	 * @param args src string
 	 * @return Array tokens
 	 */
-	public String[] strArgToArray(String args)
+	public static String[] strArgToArray(String args)
 	{
 		try{
 

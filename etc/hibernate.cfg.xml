@@ -32,10 +32,9 @@
      <mapping class="ru.sincore.db.pojo.CmdListPOJO"/>
      <mapping class="ru.sincore.db.pojo.BigTextDataPOJO"/>
      <mapping class="ru.sincore.db.pojo.CmdLogPOJO"/>
-     <mapping class="ru.sincore.db.pojo.KickListPOJO"/>
      <mapping class="ru.sincore.db.pojo.StopWordsPOJO"/>
      <mapping class="ru.sincore.db.pojo.ChatListPOJO"/>
-     <mapping class="ru.sincore.db.pojo.RolesAssociation"/>
+     <mapping class="ru.sincore.db.pojo.RolesAssociationPOJO"/>
 
  </session-factory>
 </hibernate-configuration>

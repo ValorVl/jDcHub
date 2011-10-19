@@ -8,7 +8,6 @@ import org.hibernate.Transaction;
 import ru.sincore.db.HibernateUtils;
 import ru.sincore.db.pojo.BanListPOJO;
 
-import java.util.Date;
 import java.util.List;
 
 public class BanListDAOImpl implements BanListDAO
@@ -18,29 +17,10 @@ public class BanListDAOImpl implements BanListDAO
 	/**
 	 * A method add hub user into ban list.
 	 *
-	 * @param nick nickname a hub user
-	 * @param ip hub user ip address
-	 * @param host hub user host name
-	 * @param banType ban type, passable 1 - nick ban, 2 - ip ban, 3 -
-	 * @param start ban start date and time
-	 * @param end ban end date, if -1 else perm ban
-	 * @param banOwner nickname ban owner
-	 * @param reason reason description
-	 * @param shareSize share size
-	 * @param email email address hub user
 	 * @return 1 id end only if ban success added otherwise return -1
 	 */
 	@Override
-	public Boolean addBan(String nick,
-						  String ip,
-						  String host,
-						  Integer banType,
-						  Date start,
-						  Date end,
-						  String banOwner,
-						  String reason,
-						  Long shareSize,
-						  String email)
+	public Boolean addBan(BanListPOJO ban)
 	{
 		Session session = HibernateUtils.getSessionFactory().openSession();
 		Transaction tx = session.getTransaction();
@@ -49,20 +29,7 @@ public class BanListDAOImpl implements BanListDAO
 
 			tx.begin();
 
-			BanListPOJO data = new BanListPOJO();
-
-			data.setNick(nick);
-			data.setIp(ip);
-			data.setHostName(host);
-			data.setBanType(banType);
-			data.setDateStart(start);
-			data.setFateStop(end);
-			data.setNikOp(banOwner);
-			data.setReason(reason);
-			data.setShareSize(shareSize);
-			data.setEmail(email);
-
-			session.save(data);
+			session.save(ban);
 
 			tx.commit();
 
