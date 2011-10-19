@@ -219,7 +219,11 @@ public final class ClientManager
      */
     public AbstractClient getClientByNick(String nick)
     {
-        return clientsBySID.get(sidByNick.get(nick));
+        String sid = sidByNick.get(nick);
+        if (sid == null)
+            return null;
+
+        return clientsBySID.get(sid);
     }
 
 
