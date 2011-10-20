@@ -80,11 +80,11 @@ public class ClientUtils
 			kickedClient.setIp(client.getIpAddressV4());
 			kickedClient.setBanType(0);
 			kickedClient.setDateStart(startBanDate);
-			kickedClient.setFateStop(calendar.getTime());
+			kickedClient.setDateStop(calendar.getTime());
 			kickedClient.setEmail(client.getEmail());
 			kickedClient.setHostName(null);
 			kickedClient.setNick(client.getNick());
-			kickedClient.setNikOp(commandOwner.getNick());
+			kickedClient.setOpNick(commandOwner.getNick());
 			kickedClient.setShareSize(client.getShareSise());
 			if (reason != null)
 			{
