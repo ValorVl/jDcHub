@@ -32,11 +32,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.sincore.Exceptions.CommandException;
 import ru.sincore.Exceptions.STAException;
-import ru.sincore.Modules.Modulator;
-import ru.sincore.Modules.Module;
 import ru.sincore.TigerImpl.SIDGenerator;
 import ru.sincore.client.AbstractClient;
 import ru.sincore.client.Client;
+import ru.sincore.signals.ClientQuitSignal;
+import ru.sincore.signalservice.Signal;
 import ru.sincore.util.STAError;
 
 import java.util.Collection;
@@ -156,12 +156,12 @@ public class SessionManager extends IoHandlerAdapter
             // broadcast client quited message
             Broadcast.getInstance().broadcast("IQUI " + currentClient.getSid());
         }
-        /** calling plugins...*/
 
-        for (Module myMod : Modulator.myModules)
-        {
-            myMod.onClientQuit(currentClient);
-        }
+        /** calling plugins...*/
+        // Publish async event
+        // TODO
+        // Emit sync signal
+        Signal.emit(new ClientQuitSignal(currentClient));
 
         currentClient.increaseTimeOnline(System.currentTimeMillis() -
                                          currentClient.getLoggedIn().getTime());
