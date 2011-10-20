@@ -623,8 +623,7 @@ public class INF extends Action
 
         validateMinimalINF();
 
-        // TODO [lh] check if user is banned first
-        // TODO [lh] add ban check code here
+        // check if user is banned first
         BanListDAO banList = new BanListDAOImpl();
         BanListPOJO banInfo = banList.getLastBan(fromClient.getNick(), fromClient.getRealIP());
 
@@ -641,7 +640,7 @@ public class INF extends Action
                              "\nThere are still " +
                              Long.toString(timeLeft / 1000) +
                              " seconds remaining.\n" +
-                             Messages.BAN_MESSAGE +
+                             Messages.get(Messages.BAN_MESSAGE) +
                              " TL" +
                              Long.toString(timeLeft / 1000);
 

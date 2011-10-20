@@ -18,23 +18,6 @@ package ru.sincore.cmd.handlers;
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-/*
- * jDcHub ADC HubSoft
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- */
 
 import gnu.getopt.Getopt;
 import gnu.getopt.LongOpt;
@@ -48,7 +31,6 @@ import ru.sincore.util.ClientUtils;
 
 public class KickHandler extends AbstractCmd
 {
-
 	private static final Logger log = LoggerFactory.getLogger(KickHandler.class);
 	private String marker = Marker.ANY_NON_NULL_MARKER;
 
@@ -71,11 +53,11 @@ public class KickHandler extends AbstractCmd
 
 		LongOpt[] longOpts = new LongOpt[3];
 
-		longOpts[0] = new LongOpt("nick",LongOpt.REQUIRED_ARGUMENT,null,0);
+		longOpts[0] = new LongOpt("nick", LongOpt.REQUIRED_ARGUMENT, null, 0);
 
 		String[] argArray = CmdUtils.strArgToArray(args);
 
-		Getopt getopt = new Getopt("kick",argArray,":W",longOpts);
+		Getopt getopt = new Getopt("kick", argArray, ":W", longOpts);
 
 		getopt.setOpterr(true);
 
@@ -89,7 +71,7 @@ public class KickHandler extends AbstractCmd
 					this.nick = getopt.getOptarg();
 					break;
 				case ':':
-					sendError("Ohh.. You need an argument for option"+ (char) getopt.getOptopt());
+					sendError("Ohh.. You need an argument for option" + (char) getopt.getOptopt());
 					break;
 				case '?':
 					sendError("The option " + (char)getopt.getOptopt() + " is not valid");
@@ -115,7 +97,8 @@ public class KickHandler extends AbstractCmd
 		kick();
 	}
 
-	private void kick()
+
+    private void kick()
 	{
 		if (nick == null)
 		{
@@ -124,19 +107,20 @@ public class KickHandler extends AbstractCmd
 		else
 		{
 			ClientUtils.kickClient(client, nick, reason);
-			sendError("nick "+nick+" reason "+reason);
+			sendError("nick " + nick + " reason " + reason);
 		}
 	}
 
-	private void showHelp()
-	{
 
+    private void showHelp()
+	{
 		StringBuilder sb = new StringBuilder();
 
 		sendError("help called");
 	}
 
-	private void sendError(String mess)
+
+    private void sendError(String mess)
 	{
 		client.sendPrivateMessageFromHub(mess);
 	}
