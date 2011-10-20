@@ -27,12 +27,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.sincore.Exceptions.CommandException;
 import ru.sincore.Exceptions.STAException;
-import ru.sincore.Modules.Modulator;
-import ru.sincore.Modules.Module;
 import ru.sincore.adc.Context;
 import ru.sincore.adc.MessageType;
 import ru.sincore.adc.action.*;
 import ru.sincore.client.AbstractClient;
+import ru.sincore.signals.RawCommandSignal;
+import ru.sincore.signalservice.Signal;
 import ru.sincore.util.Constants;
 import ru.sincore.util.STAError;
 
@@ -150,11 +150,10 @@ public class Command
 
 
         /** calling plugins...*/
-
-        for (Module myMod : Modulator.myModules)
-        {
-            myMod.onRawCommand(client, rawCommand);
-        }
+        // Publish async event
+        // TODO
+        // Emit sync signal
+        Signal.emit(new RawCommandSignal(client, rawCommand));
     }
 
 }

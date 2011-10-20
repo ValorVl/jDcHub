@@ -34,9 +34,9 @@ import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
-import ru.sincore.Modules.Modulator;
 import ru.sincore.events.HubShutdownEvent;
 import ru.sincore.events.HubStartupEvent;
+import ru.sincore.modules.ModulesManager;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -85,7 +85,8 @@ public class HubServer extends Thread
 
         restart = false;
 
-        Modulator.findModules();
+        ModulesManager.instance().loadModules();
+
         try
         {
             Thread.sleep(500);
