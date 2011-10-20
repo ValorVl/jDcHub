@@ -63,17 +63,25 @@ public class ClientUtils
 		}
 
 		boolean isKickable = client.isKickable();
+        int     clientWeight     = client.getWeight();
+        int     kickOwnerWeight  = commandOwner.getWeight();
 
 		BanListPOJO kickedClient = new BanListPOJO();
 
 		BanListDAOImpl banListDAO = new BanListDAOImpl();
-
 
 		Date startBanDate = new Date();
 		Calendar calendar = new GregorianCalendar();
 
 		calendar.setTime(startBanDate);
 		calendar.add(Calendar.MINUTE,5);
+
+        if (kickOwnerWeight <= clientWeight)
+        {
+            commandOwner.sendPrivateMessageFromHub("Your weight "+ kickOwnerWeight +" weight of the client you are " +
+                    "trying to kick a "+ clientWeight +" Kick clients with more of your weight is unacceptable!");
+            return;
+        }
 
 		if (isKickable)
 		{
@@ -82,7 +90,7 @@ public class ClientUtils
 			kickedClient.setDateStart(startBanDate);
 			kickedClient.setDateStop(calendar.getTime());
 			kickedClient.setEmail(client.getEmail());
-			kickedClient.setHostName(null);
+			kickedClient.setHostName("Feature not implemented yet");
 			kickedClient.setNick(client.getNick());
 			kickedClient.setOpNick(commandOwner.getNick());
 			kickedClient.setShareSize(client.getShareSise());
@@ -112,8 +120,8 @@ public class ClientUtils
 					log.error(marker,e);
 				}
 
-				StringBuilder sb = new StringBuilder();
-
+				StringBuilder sb = new StringBuilder(5);
+                //TODO localize output message
 				sb.append('\n');
 				sb.append(":: Client ");
 				sb.append(clientNick);
@@ -128,4 +136,31 @@ public class ClientUtils
 			commandOwner.sendPrivateMessageFromHub("Client "+clientNick+" doesn\'t have kickable flag and can not be kicked!");
 		}
 	}
+
+    /**
+     * The method showing formated client statistic information
+     *
+     * @param client client object
+     */
+    public static void getClientStat(AbstractClient client)
+    {
+        if (client == null)
+        {
+            return;
+        }
+
+
+        StringBuilder infoStr = new StringBuilder();
+
+        infoStr.append('\n');
+
+        infoStr.append(" >> You information\n");
+        infoStr.append(" >> You nickname : ");
+        infoStr.append(client.getNick());
+        infoStr.append('\n');
+
+        //TODO add other info and localize this
+
+        client.sendPrivateMessageFromHub(infoStr.toString());
+    }
 }
