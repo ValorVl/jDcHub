@@ -14,6 +14,9 @@ import ru.sincore.adc.Features;
 import ru.sincore.adc.MessageType;
 import ru.sincore.adc.State;
 import ru.sincore.client.AbstractClient;
+import ru.sincore.db.dao.BanListDAO;
+import ru.sincore.db.dao.BanListDAOImpl;
+import ru.sincore.db.pojo.BanListPOJO;
 import ru.sincore.i18n.Messages;
 import ru.sincore.util.Constants;
 import ru.sincore.util.STAError;
@@ -620,59 +623,33 @@ public class INF extends Action
 
         validateMinimalINF();
 
-        // TODO [lh] check if user is banned first
-        // TODO [lh] add ban check code here
-//        fromClient.myban = BanList.getban(3, fromClient.ID);
-//        if (fromClient.myban == null)
-//        {
-//            fromClient.myban =
-//                    BanList.getban(2, (fromClient.realIP));
-//        }
-//        if (fromClient.myban == null)
-//        {
-//            fromClient.myban =
-//                    BanList.getban(1, fromClient.NI);
-//        }
-//        if (fromClient.myban != null) //banned
-//        {
-//            if (fromClient.myban.time == -1)
-//            {
-//                String msg = "Hello there. You are permanently banned.\nOp who banned you: " +
-//                             fromClient.myban.banop +
-//                             "\nReason: " +
-//                             fromClient.myban.banreason +
-//                             "\n" +
-//                             Messages.BAN_MESSAGE;
-//
-//                new STAError(fromClient,
-//                             Constants.STA_SEVERITY_FATAL + Constants.STA_PERMANENTLY_BANNED,
-//                             msg);
-//                return;
-//            }
-//
-//            long TL = System.currentTimeMillis() -
-//                      fromClient.myban.timeofban -
-//                      fromClient.myban.time;
-//            TL = -TL;
-//            if (TL > 0)
-//            {
-//                String msg = "Hello there. You are temporary banned.\nOp who banned you: " +
-//                             fromClient.myban.banop +
-//                             "\nReason: " +
-//                             fromClient.myban.banreason +
-//                             "\nThere are still " +
-//                             Long.toString(TL / 1000) +
-//                             " seconds remaining.\n" +
-//                             Messages.BAN_MESSAGE +
-//                             " TL" +
-//                             Long.toString(TL / 1000);
-//
-//                new STAError(fromClient,
-//                             Constants.STA_SEVERITY_FATAL + Constants.STA_TEMP_BANNED,
-//                             msg);
-//                return;
-//            }
-//        }
+        // check if user is banned first
+        BanListDAO banList = new BanListDAOImpl();
+        BanListPOJO banInfo = banList.getLastBan(fromClient.getNick(), fromClient.getRealIP());
+
+        if (banInfo != null)
+        {
+            long timeLeft = banInfo.getDateStop().getTime() - System.currentTimeMillis();
+
+            if (timeLeft > 0)
+            {
+                String msg = "Hello there. You are temporary banned.\nOp who banned you: " +
+                             banInfo.getOpNick() +
+                             "\nReason: " +
+                             banInfo.getReason() +
+                             "\nThere are still " +
+                             Long.toString(timeLeft / 1000) +
+                             " seconds remaining.\n" +
+                             Messages.get(Messages.BAN_MESSAGE) +
+                             " TL" +
+                             Long.toString(timeLeft / 1000);
+
+                new STAError(fromClient,
+                             Constants.STA_SEVERITY_FATAL + Constants.STA_TEMP_BANNED,
+                             msg);
+            }
+        }
+
 
         // Check nick availability
         // I think, that algo maybe must be rewritten

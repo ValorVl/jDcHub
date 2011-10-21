@@ -63,11 +63,12 @@ public class ClientUtils
 		}
 
 		boolean isKickable = client.isKickable();
+        int     clientWeight     = client.getWeight();
+        int     kickOwnerWeight  = commandOwner.getWeight();
 
 		BanListPOJO kickedClient = new BanListPOJO();
 
 		BanListDAOImpl banListDAO = new BanListDAOImpl();
-
 
 		Date startBanDate = new Date();
 		Calendar calendar = new GregorianCalendar();
@@ -75,16 +76,23 @@ public class ClientUtils
 		calendar.setTime(startBanDate);
 		calendar.add(Calendar.MINUTE,5);
 
+        if (kickOwnerWeight <= clientWeight)
+        {
+            commandOwner.sendPrivateMessageFromHub("Your weight "+ kickOwnerWeight +" weight of the client you are " +
+                    "trying to kick a "+ clientWeight +" Kick clients with bigger weight of yours is unacceptable!");
+            return;
+        }
+
 		if (isKickable)
 		{
 			kickedClient.setIp(client.getIpAddressV4());
 			kickedClient.setBanType(0);
 			kickedClient.setDateStart(startBanDate);
-			kickedClient.setFateStop(calendar.getTime());
+			kickedClient.setDateStop(calendar.getTime());
 			kickedClient.setEmail(client.getEmail());
-			kickedClient.setHostName(null);
+			kickedClient.setHostName("Feature not implemented yet");
 			kickedClient.setNick(client.getNick());
-			kickedClient.setNikOp(commandOwner.getNick());
+			kickedClient.setOpNick(commandOwner.getNick());
 			kickedClient.setShareSize(client.getShareSise());
 			if (reason != null)
 			{
@@ -112,8 +120,8 @@ public class ClientUtils
 					log.error(marker,e);
 				}
 
-				StringBuilder sb = new StringBuilder();
-
+				StringBuilder sb = new StringBuilder(5);
+                //TODO localize output message
 				sb.append('\n');
 				sb.append(":: Client ");
 				sb.append(clientNick);
@@ -128,4 +136,66 @@ public class ClientUtils
 			commandOwner.sendPrivateMessageFromHub("Client "+clientNick+" doesn\'t have kickable flag and can not be kicked!");
 		}
 	}
+
+    /**
+     * The method showing formated client statistic information
+     *
+     * @param client client object
+     * @return Client's stats
+     */
+    public static String getClientStats(AbstractClient client)
+    {
+        if (client == null)
+        {
+            return "";
+        }
+
+
+        StringBuilder infoStr = new StringBuilder();
+
+        infoStr.append("\n >> Your information:");
+        infoStr.append("\n >> Nickname : ");
+        infoStr.append(client.getNick());
+
+        infoStr.append("\n >> Class: ");
+        infoStr.append(client.getWeight());
+
+        infoStr.append("\n >> Password set: ");
+        infoStr.append(((client.getPassword() != null) && (!client.getPassword().equals(""))) ?
+                       "Yes" : "No");
+
+        infoStr.append("\n >> Last login: ");
+        infoStr.append(client.getLastLogin());
+
+        infoStr.append("\n >> Last ip: ");
+        infoStr.append(client.getLastIP());
+
+        infoStr.append("\n >> Login count: ");
+        infoStr.append(client.getLoginCount());
+
+        if (client.isRegistred())
+        {
+            infoStr.append("\n >> Registred since: ");
+            infoStr.append(client.getRegistrationDate());
+
+            infoStr.append("\n >> Registred by: ");
+            infoStr.append(client.getRegistratorNick());
+        }
+        else
+        {
+            infoStr.append("\n >> You are not registred!");
+        }
+
+        infoStr.append("\n >> Total time online: ");
+        infoStr.append(client.getTimeOnline() / 1000);     // TODO [lh] convert it to normal format
+        infoStr.append(" sec");
+
+        infoStr.append("\n >> Maximum time online: ");
+        infoStr.append(client.getMaximumTimeOnline() / 1000);
+        infoStr.append(" sec");
+
+        infoStr.append("\n");
+
+        return infoStr.toString();
+    }
 }

@@ -28,15 +28,15 @@ public class BanListPOJO
 	private Date dateStart;
 
 	@Column(name = "date_stop")
-	private Date fateStop;
+	private Date dateStop;
 
-	@Column(name = "nick_op")
-	private String nikOp;
+	@Column(name = "op_nick")
+	private String opNick;
 
 	@Column(name = "reason", columnDefinition = "TEXT")
 	private String reason;
 
-	@Column(name = "share_siaze",columnDefinition = "BIGINT")
+	@Column(name = "share_size",columnDefinition = "BIGINT")
 	private Long shareSize;
 
 	@Column(name = "email",length = 200,nullable = true)
@@ -102,24 +102,24 @@ public class BanListPOJO
 		this.dateStart = dateStart;
 	}
 
-	public Date getFateStop()
+	public Date getDateStop()
 	{
-		return fateStop;
+		return dateStop;
 	}
 
-	public void setFateStop(Date fateStop)
+	public void setDateStop(Date fateStop)
 	{
-		this.fateStop = fateStop;
+		this.dateStop = fateStop;
 	}
 
-	public String getNikOp()
+	public String getOpNick()
 	{
-		return nikOp;
+		return opNick;
 	}
 
-	public void setNikOp(String nikOp)
+	public void setOpNick(String opNick)
 	{
-		this.nikOp = nikOp;
+		this.opNick = opNick;
 	}
 
 	public String getReason()

@@ -46,12 +46,12 @@ public class BanListDAOImpl implements BanListDAO
 	/**
 	 * Check ip address, or nickname in the presence of the banned list
 	 *
-	 * @param ip ip address hub user
 	 * @param nick nickname hub user
+     * @param ip ip address hub user
 	 * @return BanListPOJO object
 	 */
 	@Override
-	public List<BanListPOJO> getBan(String ip, String nick)
+	public List<BanListPOJO> getBan(String nick, String ip)
 	{
 		Session session = HibernateUtils.getSessionFactory().openSession();
 		Transaction tx = session.getTransaction();
@@ -69,15 +69,47 @@ public class BanListDAOImpl implements BanListDAO
 
 			return result;
 
-		}catch (Exception ex)
+		}
+        catch (Exception ex)
 		{
 			log.error(ex);
 			tx.rollback();
 		}
-		return null;
+
+        return null;
 	}
 
-	/**
+
+    @Override
+    public BanListPOJO getLastBan(String nick, String ip)
+    {
+        Session session = HibernateUtils.getSessionFactory().openSession();
+        Transaction tx = session.getTransaction();
+
+        try{
+            tx.begin();
+
+            Query query = session.createQuery("from BanListPOJO where ip = :ip or nick = :nick order by dateStart desc");
+            query.setParameter("ip", ip).setParameter("nick", nick);
+
+            BanListPOJO result = (BanListPOJO) query.uniqueResult();
+
+            tx.commit();
+
+            return result;
+
+        }
+        catch (Exception ex)
+        {
+            log.error(ex);
+            tx.rollback();
+        }
+
+        return null;
+    }
+
+
+    /**
 	 * Get latest ban entry, limit parameter rowCount
 	 * @param rowCount
 	 * @return	List BanListPOJO ban entry

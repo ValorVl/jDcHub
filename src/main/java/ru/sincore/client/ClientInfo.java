@@ -137,13 +137,12 @@ public class ClientInfo
     /**
      * Date when client was created.
      */
-    private Date    createdOn;
+    private Date registrationDate;
 
     /**
      * Last login date.
      */
     private Date    lastLogin;
-
 
     /**
      * Number of hub visits
@@ -154,6 +153,11 @@ public class ClientInfo
      * How much client was online.
      */
     private long    timeOnline;
+
+    /**
+     * Maximum time online
+     */
+    private long    maximumTimeOnline;
 
     /**
      * Client last ip.
@@ -607,15 +611,15 @@ public class ClientInfo
     }
 
 
-    public Date getCreatedOn()
+    public Date getRegistrationDate()
     {
-        return createdOn;
+        return registrationDate;
     }
 
 
-    public void setCreatedOn(Date createdOn)
+    public void setRegistrationDate(Date registrationDate)
     {
-        this.createdOn = createdOn;
+        this.registrationDate = registrationDate;
     }
 
 
@@ -658,6 +662,18 @@ public class ClientInfo
     public void increaseTimeOnline(long timeRange)
     {
         this.timeOnline += timeRange;
+    }
+
+
+    public long getMaximumTimeOnline()
+    {
+        return maximumTimeOnline;
+    }
+
+
+    public void setMaximumTimeOnline(long maximumTimeOnline)
+    {
+        this.maximumTimeOnline = maximumTimeOnline;
     }
 
 

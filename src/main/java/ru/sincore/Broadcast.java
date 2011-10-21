@@ -109,44 +109,21 @@ public class Broadcast
                                   List<String> requiredFeatures,
                                   List<String> excludedFeatures)
     {
-        Collection<AbstractClient> clients = ClientManager.getInstance().getClients();
-
-        for (final AbstractClient client : clients)
+        for (AbstractClient toClient : ClientManager.getInstance().getClients())
         {
-            boolean doSend = true;
-            for (String feature : requiredFeatures)
-            {
-                if (!client.isFeature(feature))
-                {
-                    doSend = false;
-                    break;
-                }
-            }
-
-            for (String feature : excludedFeatures)
-            {
-                if (client.isFeature(feature))
-                {
-                    doSend = false;
-                    break;
-                }
-            }
-
-            if (doSend)
-            {
-                log.debug("Send to client: " + client.getNick() + "/" + client.getSid());
-                pool.execute(new ClientSender(message, fromClient, client));
-            }
+            pool.execute(new ClientSender(message, fromClient, toClient, requiredFeatures, excludedFeatures));
         }
-
     }
 
 
     private class ClientSender implements Runnable
     {
-        private final String    message;
+        private final String            message;
         private final AbstractClient    fromClient;
         private final AbstractClient    toClient;
+        private final boolean           featured;
+        private final List<String>      requiredFeatures;
+        private final List<String>      excludedFeatures;
 
 
         public ClientSender(String message, AbstractClient fromClient, AbstractClient toClient)
@@ -154,12 +131,52 @@ public class Broadcast
             this.message = message;
             this.fromClient = fromClient;
             this.toClient = toClient;
+
+            this.featured = false;
+            this.requiredFeatures = null;
+            this.excludedFeatures = null;
+        }
+
+
+        public ClientSender(String message, AbstractClient fromClient, AbstractClient toClient,
+                            List<String> requiredFeatures, List<String> excludedFeatures)
+        {
+            this.message = message;
+            this.fromClient = fromClient;
+            this.toClient = toClient;
+
+            this.featured = true;
+            this.requiredFeatures = requiredFeatures;
+            this.excludedFeatures = excludedFeatures;
         }
 
 
         public void run()
         {
-            if (toClient.isActive())
+            boolean doSend = true;
+
+            if (featured)
+            {
+                for (String feature : requiredFeatures)
+                {
+                    if (!toClient.isFeature(feature))
+                    {
+                        doSend = false;
+                        break;
+                    }
+                }
+
+                for (String feature : excludedFeatures)
+                {
+                    if (toClient.isFeature(feature))
+                    {
+                        doSend = false;
+                        break;
+                    }
+                }
+            }
+
+            if (toClient.isActive() && doSend)
             {
                 if (!message.startsWith("E") && toClient.equals(fromClient))
                     return;
