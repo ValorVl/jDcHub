@@ -31,6 +31,7 @@ import ru.sincore.adc.Context;
 import ru.sincore.adc.MessageType;
 import ru.sincore.adc.action.*;
 import ru.sincore.client.AbstractClient;
+import ru.sincore.signals.InfCommandPreprocessSignal;
 import ru.sincore.signals.RawCommandSignal;
 import ru.sincore.signalservice.Signal;
 import ru.sincore.util.Constants;
@@ -104,6 +105,7 @@ public class Command
         /*******************************INF COMMAND*******************************/
         if (rawCommand.substring(1).startsWith("INF"))
         {
+            Signal.emit(new InfCommandPreprocessSignal(client, messageType, rawCommand));
             new INF(messageType, Context.T, client, rawCommand);
         }
         else
