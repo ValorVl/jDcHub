@@ -273,7 +273,6 @@ public class Client extends AbstractClient
         //user is OK, logged in and cool
         this.setValidated();
         this.setState(State.NORMAL);
-        this.setLastLogin(this.getLoggedIn());
 
         this.setLoggedIn(new Date());
     }
