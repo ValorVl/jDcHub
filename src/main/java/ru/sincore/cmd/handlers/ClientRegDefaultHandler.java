@@ -94,7 +94,7 @@ public class ClientRegDefaultHandler extends AbstractCmd
 
 			client.setClientType(2);
 			client.setRegistratorNick(client.getNick());
-			client.setCreatedOn(new Date());
+			client.setRegistrationDate(new Date());
 			client.storeInfo();
 		} catch (STAException e)
 		{

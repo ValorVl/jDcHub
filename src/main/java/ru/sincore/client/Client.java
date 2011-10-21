@@ -39,6 +39,7 @@ import ru.sincore.db.dao.ClientListDAOImpl;
 import ru.sincore.db.pojo.ChatLogPOJO;
 import ru.sincore.db.pojo.ClientListPOJO;
 import ru.sincore.util.AdcUtils;
+import ru.sincore.util.ClientUtils;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -123,7 +124,7 @@ public class Client extends AbstractClient
         {
             clientInfo.setSharedFilesCount(0L);
             clientInfo.setShareSize(0L);
-            clientInfo.setRegDate(this.getCreatedOn());
+            clientInfo.setRegDate(this.getRegistrationDate());
             clientInfo.setWeight(10);
             clientInfo.setRegOwner(this.getRegistratorNick());
             clientInfo.setReg(true);
@@ -170,12 +171,9 @@ public class Client extends AbstractClient
         this.setPassword(clientInfo.getPassword());
         this.setRegistred(clientInfo.getReg());
         this.setLastNick(clientInfo.getLastNick());
-        // TODO [lh] rename
+        this.setLastLogin(clientInfo.getLastLogIn());
+        this.setRegistrationDate(clientInfo.getRegDate());
         this.setRegistratorNick(clientInfo.getRegOwner());
-        // TODO [lh] rename, change type
-        //this.setCreatedOn(clientInfo.getRegDate().getTime());
-        // TODO [lh] change type
-        //this.setLastLogin(clientInfo.getLastLogIn().getTime());
         this.setLastIP(clientInfo.getCurrentIp());
         this.setOverrideShare(clientInfo.getOverrideShare());
         this.setOverrideSpam(clientInfo.getOverrideSpam());
@@ -185,6 +183,7 @@ public class Client extends AbstractClient
         this.setLastMessageText(clientInfo.getLastMessage());
         this.setLoginCount(clientInfo.getLoginCount() + 1);
         this.setTimeOnline(clientInfo.getTimeOnline());
+        this.setMaximumTimeOnline(clientInfo.getMaximumTimeOnline());
 
         return true;
     }
@@ -215,7 +214,13 @@ public class Client extends AbstractClient
         // TODO [lh] send MOTD to client
         //this.sendFromBot(bigTextManager.getMOTD(fromClient));
 
+        // send MOTD
         this.sendMOTD();
+
+        // send info client's stats
+        sendMessageFromHub(ClientUtils.getClientStats(this));
+
+        // send N last messages from main chat
         this.sendNLastMessages();
     }
 

@@ -79,7 +79,7 @@ public class ClientUtils
         if (kickOwnerWeight <= clientWeight)
         {
             commandOwner.sendPrivateMessageFromHub("Your weight "+ kickOwnerWeight +" weight of the client you are " +
-                    "trying to kick a "+ clientWeight +" Kick clients with more of your weight is unacceptable!");
+                    "trying to kick a "+ clientWeight +" Kick clients with bigger weight of yours is unacceptable!");
             return;
         }
 
@@ -141,26 +141,61 @@ public class ClientUtils
      * The method showing formated client statistic information
      *
      * @param client client object
+     * @return Client's stats
      */
-    public static void getClientStat(AbstractClient client)
+    public static String getClientStats(AbstractClient client)
     {
         if (client == null)
         {
-            return;
+            return "";
         }
 
 
         StringBuilder infoStr = new StringBuilder();
 
-        infoStr.append('\n');
-
-        infoStr.append(" >> You information\n");
-        infoStr.append(" >> You nickname : ");
+        infoStr.append("\n >> Your information:");
+        infoStr.append("\n >> Nickname : ");
         infoStr.append(client.getNick());
-        infoStr.append('\n');
 
-        //TODO add other info and localize this
+        infoStr.append("\n >> Class: ");
+        infoStr.append(client.getWeight());
 
-        client.sendPrivateMessageFromHub(infoStr.toString());
+        infoStr.append("\n >> Password set: ");
+        infoStr.append(((client.getPassword() != null) && (!client.getPassword().equals(""))) ?
+                       "Yes" : "No");
+
+        infoStr.append("\n >> Last login: ");
+        infoStr.append(client.getLastLogin());
+
+        infoStr.append("\n >> Last ip: ");
+        infoStr.append(client.getLastIP());
+
+        infoStr.append("\n >> Login count: ");
+        infoStr.append(client.getLoginCount());
+
+        if (client.isRegistred())
+        {
+            infoStr.append("\n >> Registred since: ");
+            infoStr.append(client.getRegistrationDate());
+
+            infoStr.append("\n >> Registred by: ");
+            infoStr.append(client.getRegistratorNick());
+        }
+        else
+        {
+            infoStr.append("\n >> You are not registred!");
+        }
+
+        infoStr.append("\n >> Total time online: ");
+        infoStr.append(client.getTimeOnline() / 1000);     // TODO [lh] convert it to normal format
+        infoStr.append(" sec");
+
+        infoStr.append("\n >> Maximum time online: ");
+        infoStr.append(client.getMaximumTimeOnline() / 1000);
+        infoStr.append(" sec");
+
+        infoStr.append("\n");
+
+        return infoStr.toString();
     }
 }
