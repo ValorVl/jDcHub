@@ -1144,7 +1144,7 @@ public class ClientInfo
         this.inQueueSearch = inQueueSearch;
     }
 
-    public void addExtendedField(String fieldName, Object value)
+    public void setExtendedField(String fieldName, Object value)
     {
         extentedFields.put(fieldName, value);
     }
@@ -1153,6 +1153,12 @@ public class ClientInfo
     public Object getExtendedField(String fieldName)
     {
         return extentedFields.get(fieldName);
+    }
+
+
+    public boolean isExtendedFieldExists(String fieldName)
+    {
+        return extentedFields.containsKey(fieldName);
     }
 
 

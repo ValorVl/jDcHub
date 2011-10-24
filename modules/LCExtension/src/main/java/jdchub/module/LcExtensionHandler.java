@@ -30,7 +30,13 @@ public class LcExtensionHandler
             if (token.startsWith("LC"))
             {
                 String locale = token.substring(2);
-                // TODO: store locale to client info
+
+                // Country and Language tokens can be delimeted by '-' or '_' chars
+                // move all variants simple to underscore delimiter ('_')
+                // ru_RU and ru-RU ==> ru_RU
+                // en_US and en-US ==> en_US
+                locale = locale.replace('-', '_');
+                data.getClient().setExtendedField("LC", locale);
             }
         }
     }
