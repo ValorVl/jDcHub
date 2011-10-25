@@ -2,6 +2,8 @@ package ru.sincore.cmd.handlers;
 
 import gnu.getopt.Getopt;
 import gnu.getopt.LongOpt;
+import org.apache.commons.lang.math.IntRange;
+import org.apache.commons.lang.math.Range;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
@@ -11,6 +13,8 @@ import ru.sincore.client.AbstractClient;
 import ru.sincore.client.Client;
 import ru.sincore.cmd.AbstractCmd;
 import ru.sincore.cmd.CmdUtils;
+
+import java.util.ArrayList;
 
 /**
  * Command for manipulation user right weight
@@ -133,6 +137,12 @@ public class GrantHandler extends AbstractCmd
             return;
         }
 
+        if (!client.isRegistred())
+        {
+            sendError("Client you want to grant rights is not registred user!");
+            return;
+        }
+
         if (client.getWeight() < toClient.getWeight())
         {
             sendError("You doesn't have enough weight to do this!");
@@ -140,6 +150,8 @@ public class GrantHandler extends AbstractCmd
         }
 
         toClient.setWeight(this.weight);
+        toClient.setClientTypeByWeight(this.weight);
+
         try
         {
             toClient.storeInfo();

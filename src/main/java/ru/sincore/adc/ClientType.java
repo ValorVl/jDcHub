@@ -13,10 +13,11 @@ package ru.sincore.adc;
  */
 public class ClientType
 {
-    public static int BOT             = 1;
-    public static int REGISTERED_USER = 2;
-    public static int OPERATOR        = 4;
-    public static int SUPER_USER      = 8;
-    public static int HUB_OWNER       = 16;
-    public static int HUB             = 32;
+    public static int UNREGISTRED_USER  = 0;
+    public static int BOT               = 1;
+    public static int REGISTERED_USER   = 2;
+    public static int OPERATOR          = 4;
+    public static int SUPER_USER        = 8;
+    public static int HUB_OWNER         = 16;
+    public static int HUB               = 32;
 }
