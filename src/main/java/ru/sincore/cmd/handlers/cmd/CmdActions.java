@@ -1,4 +1,4 @@
-package ru.sincore.cmd.handlers.smd;
+package ru.sincore.cmd.handlers.cmd;
 
 /*
  * jDcHub ADC HubSoft
