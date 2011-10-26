@@ -31,7 +31,6 @@ import ru.sincore.client.AbstractClient;
 import ru.sincore.client.Bot;
 import ru.sincore.client.ChatRoom;
 import ru.sincore.client.Client;
-import ru.sincore.util.AdcUtils;
 
 import java.util.Collection;
 import java.util.Vector;
@@ -49,8 +48,9 @@ public final class ClientManager
 {
     private static final Logger log = LoggerFactory.getLogger(ClientManager.class);
 
-    private static ConcurrentHashMap<String,AbstractClient> clientsBySID;
-    private static ConcurrentHashMap<String, String> sidByNick;
+    private static ConcurrentHashMap<String, AbstractClient>    clientsBySID;
+    private static ConcurrentHashMap<String, String>            sidByNick;
+    private static ConcurrentHashMap<String, String>            sidByCID;
 
     private static Vector<AbstractClient> uninitializedClients;
 
@@ -107,6 +107,7 @@ public final class ClientManager
 
         clientsBySID    = new ConcurrentHashMap<String, AbstractClient>(initialCapacity, loadFactor);
         sidByNick       = new ConcurrentHashMap<String, String>(initialCapacity, loadFactor);
+        sidByCID        = new ConcurrentHashMap<String, String>(initialCapacity, loadFactor);
 
         uninitializedClients = new Vector<AbstractClient>(ConfigurationManager.instance().getInt(
                 ConfigurationManager.USER_CONNECTION_BUFFER_INITIAL_SIZE));
@@ -166,6 +167,7 @@ public final class ClientManager
     {
         clientsBySID.put(client.getSid(), client);
         sidByNick.put(client.getNick(), client.getSid());
+        sidByCID.put(client.getCid(), client.getSid());
     }
 
 
@@ -199,6 +201,7 @@ public final class ClientManager
         // Remove all clients from client lists
         clientsBySID.clear();
         sidByNick.clear();
+        sidByCID.clear();
     }
 
 
@@ -209,6 +212,16 @@ public final class ClientManager
     public Collection<AbstractClient> getClients()
     {
         return clientsBySID.values();
+    }
+
+
+    public AbstractClient getClientByCID(String cid)
+    {
+        String sid = sidByCID.get(cid);
+        if (sid == null)
+            return null;
+
+        return clientsBySID.get(sid);
     }
 
 
