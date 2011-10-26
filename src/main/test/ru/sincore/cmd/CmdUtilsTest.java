@@ -35,7 +35,7 @@ public class CmdUtilsTest
 	{
 		CmdUtils cmdUtils = new CmdUtils();
 
-		String[] args = cmdUtils.strArgToArray("dsada asdasd sdasd sdasda -2 3434 1   222");
+		String[] args = cmdUtils.strArgToArray("--nick Valor --reason \"Long test reason\" --wrongOption wronParameter");
 
 		System.out.println(args.length);
 
