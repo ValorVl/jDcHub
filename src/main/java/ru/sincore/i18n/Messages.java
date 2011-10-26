@@ -1,11 +1,14 @@
 package ru.sincore.i18n;
 
-import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
 import ru.sincore.ConfigurationManager;
 
 import java.io.*;
-import java.util.Map;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.text.MessageFormat;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -20,7 +23,8 @@ public class Messages
     private static final String defaultLocale = configurationManager.getString(ConfigurationManager.HUB_DEFAULT_LOCALE);
 
     // define server message var
-    private static final String SERVER_MESSAGE_FILE = "./etc/messages/servermessages.properties";
+    private static final String SERVER_MESSAGE_RESOURCE  = "servermessages";
+    private static final String SERVER_MESSAGE_DIRECTORY = "./etc/messages/";
 
     // Server messages
     public static final String SERVER_MESSAGE_STUB    = "core.server.message.stub";
@@ -47,8 +51,8 @@ public class Messages
     public static final String TIGER_ERROR            = "tiger.error";
 
 
-    private static Map<String, PropertiesConfiguration> messagesMap =
-                                                    new ConcurrentHashMap<String, PropertiesConfiguration>();
+    private static Map<String, ResourceBundle> resourcesMap =
+                                                    new ConcurrentHashMap<String, ResourceBundle>();
 
     // Empty constructor
     private Messages()
@@ -68,136 +72,129 @@ public class Messages
 
 
     /**
-     * Return string message by key in given locale
+     * Return string message by key in given localeString
      * @param key       string key
-     * @param locale    locate in forms like ru_RU, en_US or so on
+     * @param localeString    locate in forms like ru_RU, en_US or so on
      * @return          string message by key or key value if message does not found
      */
-    public static String get(String key, String locale)
+    public static String get(String key, String localeString)
     {
-        String result = key;
+        String result;
 
-        // TODO: optimize
-        if (!messagesMap.containsKey(defaultLocale))
+        if (localeString == null || localeString.isEmpty())
         {
-            loadServerMessages();
-            loadClientMessages(locale);
+            localeString = defaultLocale;
         }
 
-        if (!messagesMap.containsKey(locale))
+        if (!resourcesMap.containsKey(localeString))
         {
-            loadClientMessages(locale);
+            try
+            {
+                loadResources(localeString);
+            }
+            catch (MalformedURLException e)
+            {
+                e.printStackTrace();
+                return key;
+            }
         }
 
-        if (messagesMap.containsKey(locale) && messagesMap.get(locale).containsKey(key))
-        {
-            result = messagesMap.get(locale).getString(key);
-        }
-        else if (messagesMap.containsKey(defaultLocale) && messagesMap.get(defaultLocale).containsKey(key))
-        {
-            result = messagesMap.get(defaultLocale).getString(key);
-        }
-        else
-        {
-            log.error("Can't found message for string '" + key + "' in user locale '" + locale + "' and default locale '" + defaultLocale + "'");
-        }
+        ResourceBundle resourceBundle = resourcesMap.get(localeString);
 
+        try
+        {
+            result = resourceBundle.getString(key);
+        }
+        catch (MissingResourceException e)
+        {
+            e.printStackTrace();
+            result = key;
+        }
 
         return result;
     }
 
 
     /**
-     * Get localized client messages file
-     *
-     * @return return localization filename
+     * Return string message with given replacements in default locale
+     * @param key       message key
+     * @param values    values for replasement of placeholders like {0}, {1}...{n} {@link MessageFormat}
+     * @return message in given locale with resolved placeholders
      */
-    private static String localizedClienMessageFile(String locale)
-            throws FileNotFoundException
+    public static String get(String key, Object values)
     {
-        File dir = new File(ConfigurationManager.instance()
-                                                .getString(ConfigurationManager.HUB_MESSAGES_FILE_DIR));
-        File messageFile;
+        return get(key, values, defaultLocale);
+    }
 
-        if (dir.isDirectory() && dir.exists())
+
+    /**
+     * Return string message with given replacements in given locale
+     * @param key           message key
+     * @param values        values for replasement of placeholders like {0}, {1}...{n} {@link MessageFormat}
+     * @param localeString  locale string, like 'ru_RU' or 'en_US' or 'ru' or 'en'
+     * @return message in given locale with resolved placeholders
+     */
+    public static String get(String key, Object values, String localeString)
+    {
+        if (localeString == null || localeString.isEmpty())
         {
-            messageFile = new File(dir + "/messages." + locale);
-            if (!messageFile.exists() || !messageFile.isFile())
-            {
-                FileNotFoundException exception =
-                        new FileNotFoundException("Client messages file does not found for locale: " + locale);
-                log.error(exception.getMessage());
-                throw exception;
-            }
+            localeString = defaultLocale;
+        }
+
+        String[] localeElements = localeString.split("_");
+        Locale   locale;
+        if (localeElements.length == 1)
+        {
+            locale = new Locale(localeElements[0]);
         }
         else
         {
-            FileNotFoundException exception =
-                    new FileNotFoundException("Localized file directory is not found, create this and try again");
-            log.error(exception.getMessage());
-            throw exception;
+            locale = new Locale(localeElements[0], localeElements[1]);
         }
 
-        log.info("Client message file: " + messageFile);
+        String pattern = get(key, localeString);
+        MessageFormat messageFormat = new MessageFormat(pattern, locale);
 
-        return messageFile.toString();
+        return messageFormat.format(values);
     }
 
 
     /**
-     * Common method for loading client and server messages
-     * @param fileName      properties file with messages
-     * @param locale        locale
+     * Load resources for given locale
+     * @param localeString           locale string in forms like 'ru_RU', 'en_US', 'ru', 'en'
+     * @throws MalformedURLException if resources directories is incorrect
      */
-    private static void loadMessages(String fileName, String locale)
+    private static void loadResources(String localeString)
+            throws MalformedURLException
     {
-        File messagesFile;
-        try
+        String[] localeElements = localeString.split("_");
+        Locale   loc;
+        if (localeElements.length == 1)
         {
-            messagesFile = new File(fileName);
-
-            PropertiesConfiguration propertiesConfiguration = new PropertiesConfiguration(messagesFile);
-            propertiesConfiguration.load();
-
-            if (!messagesMap.containsKey(locale))
-            {
-                messagesMap.put(locale, new PropertiesConfiguration());
-            }
-
-            synchronized (messagesMap.get(locale))
-            {
-                messagesMap.get(locale).append(propertiesConfiguration);
-            }
+            loc = new Locale(localeElements[0]);
         }
-        catch (Exception ex)
+        else
         {
-            log.error("Can not load messages file", ex);
+            loc = new Locale(localeElements[0], localeElements[1]);
         }
-    }
 
+        File           serverMessagesDirectory = new File(SERVER_MESSAGE_DIRECTORY);
+        File           clientMessagesDirectory = new File(ConfigurationManager.instance()
+                                                          .getString(ConfigurationManager.HUB_MESSAGES_FILE_DIR));
 
-    /**
-     * Load client messages in given locale
-     * @param locale locate in forms like ru_RU, en_US or so on
-     */
-    private static void loadClientMessages(String locale)
-    {
-        try
-        {
-            loadMessages(localizedClienMessageFile(locale), locale);
-        }
-        catch (FileNotFoundException e)
-        {
-            log.error("Can not load localized client messages file", e);
-        }
-    }
+        URLClassLoader classLoader;
+        ClassLoader    parentClassLoader = Messages.class.getClassLoader();
 
+        classLoader = new URLClassLoader(new URL[]{
+                                                    serverMessagesDirectory.toURI().toURL(),
+                                                    clientMessagesDirectory.toURI().toURL()
+                                                  },
+                                         parentClassLoader);
 
-    /**
-     * Load server messages
-     */
-    private static void loadServerMessages()
-    {
-        loadMessages(SERVER_MESSAGE_FILE, defaultLocale);
+        ResourceBundle serverMessages = ResourceBundle.getBundle(SERVER_MESSAGE_RESOURCE, loc, classLoader);
+        ResourceBundle clientMessages = ResourceBundle.getBundle("messages", loc, classLoader);
+
+        ResourceBundle resourceBundle = new MergedResourceBundle(new ResourceBundle[] {serverMessages, clientMessages});
+        resourcesMap.put(localeString, resourceBundle);
     }
 }
