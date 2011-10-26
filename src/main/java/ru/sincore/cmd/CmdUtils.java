@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 
+import java.util.Arrays;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -90,9 +91,11 @@ public class CmdUtils
                 argsArray.add(token);
 			}
 
-			return (String[]) argsArray.toArray();
+            Object[] resultArray = argsArray.toArray();
 
-		}catch (Exception e)
+			return Arrays.copyOf(resultArray, resultArray.length, String[].class);
+		}
+        catch (Exception e)
 		{
 			log.error(marker, e);
 		}

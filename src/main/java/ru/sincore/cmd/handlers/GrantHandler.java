@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 import ru.sincore.ClientManager;
+import ru.sincore.ConfigurationManager;
 import ru.sincore.Exceptions.STAException;
 import ru.sincore.client.AbstractClient;
 import ru.sincore.client.Client;
@@ -81,18 +82,7 @@ public class GrantHandler extends AbstractCmd
                     }
                     catch (NumberFormatException nfe)
                     {
-                        if (argument.equals("Moderator"))
-                        {
-                            this.weight = 50;
-                        }
-                        else if (argument.equals("Administrator") || argument.equals("Admin"))
-                        {
-                            this.weight = 60;
-                        }
-                        else
-                        {
-                            sendError("Invalid weight value!");
-                        }
+                        sendError("Invalid weight value!");
                     }
                     break;
 
@@ -137,7 +127,7 @@ public class GrantHandler extends AbstractCmd
             return;
         }
 
-        if (!client.isRegistred())
+        if (!toClient.isRegistred())
         {
             sendError("Client you want to grant rights is not registred user!");
             return;
@@ -160,6 +150,11 @@ public class GrantHandler extends AbstractCmd
         {
             // ignore it
         }
+
+        toClient.sendPrivateMessageFromHub(client.getNick() + " grant to you new weight.\nYour new weight is " + toClient.getWeight());
+        ClientManager.getInstance().getClientBySID(ConfigurationManager.instance().getString(
+                ConfigurationManager.OP_CHAT_SID)).sendPrivateMessageFromHub(
+                toClient.getNick() + " get\'s new weight (" + toClient.getWeight() + ") from " + client.getNick());
 	}
 
 
