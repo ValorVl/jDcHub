@@ -64,8 +64,9 @@ public class ClientRegDefaultHandler extends AbstractCmd
 		// Check client weight and flag "isReg", if weight > 0 and flag true, registration procedure not allowed.
 		if (client.isRegistred() && client.getWeight() > 0)
 		{
-            client.sendPrivateMessageFromHub(String.format(Messages.get(Messages.REG_FAIL_MESSAGE),
-                                                           client.getNick()));
+            client.sendPrivateMessageFromHub(Messages.get(Messages.REG_FAIL_MESSAGE,
+                                                          client.getNick(),
+                                                          (String)client.getExtendedField("LC")));
 		}
 		else
 		{
@@ -84,8 +85,9 @@ public class ClientRegDefaultHandler extends AbstractCmd
 		{
 			if (args == null || args.length() <= passwordMinLen)
 			{
-				new STAError(client, Constants.STA_SEVERITY_FATAL + Constants.STA_INVALID_PASSWORD,
-							 Messages.get(Messages.REG_FAIL_MESSAGE));
+				new STAError(client,
+                             Constants.STA_SEVERITY_FATAL + Constants.STA_INVALID_PASSWORD,
+							 Messages.REG_FAIL_MESSAGE).send();
 			}
 			else
 			{

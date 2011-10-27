@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import ru.sincore.ConfigurationManager;
 import ru.sincore.Exceptions.STAException;
 import ru.sincore.client.AbstractClient;
+import ru.sincore.i18n.Messages;
 
 
 /**
@@ -37,61 +38,40 @@ import ru.sincore.client.AbstractClient;
  * @author Pietricica
  *
  * @author Alexey 'lh' Antonov
+ * @author Alenxader 'hatred' Drozdov
  * @since 2011-09-07
  */
 public class STAError
 {
     private static final Logger log = LoggerFactory.getLogger(STAError.class);
 
-    AbstractClient client;
-    int     errorCode;
-    String  errorDescription;
+    private AbstractClient client           = null;
+    private int            errorCode        = 0;
+    private String         errorDescription = null;
+    private String         prefix           = null;
+    private String         flag             = null;
 
 
     /**
      * Creates a new instance of STAError
      * @param client Client wich message was
      * @param errorCode Error code
-     * @param errorDescription Desctiption of the error
+     * @param messageId Desctiption of the error
      * @throws STAException
      */
-    public STAError(AbstractClient client, int errorCode, String errorDescription)
+    public STAError(AbstractClient client, int errorCode, String messageId)
             throws STAException
     {
-        log.error("Hub sent to client \"" +
+        log.debug("Hub sent to client \"" +
                   client.getNick() +
                   "\"(" +
                   client.getSid() +
                   ") error message : " +
-                  errorDescription);
+                  messageId);
 
-        this.client = client;
-        this.errorCode = errorCode;
-
-        this.errorDescription = AdcUtils.toAdcString(errorDescription).replaceAll("\\\\sTL", " TL");
-        String errorString;
-        if (errorCode == 0)
-        {
-            errorString = "ISTA 000 " + this.errorDescription;
-        }
-        else
-        {
-            errorString = "ISTA " + Integer.toString(this.errorCode) + " " + this.errorDescription;
-        }
-
-        client.sendRawCommand(errorString);
-        if (errorCode >= 200)
-        {
-            if (!ConfigurationManager.instance().getString(ConfigurationManager.REDIRECT_URL).isEmpty())
-            {
-                client.sendRawCommand("IQUI " +
-                                      client.getSid() +
-                                      " RD" +
-                                      ConfigurationManager.instance()
-                                                          .getString(ConfigurationManager.REDIRECT_URL));
-            }
-            throw new STAException(errorString, errorCode);
-        }
+        this.client           = client;
+        this.errorCode        = errorCode;
+        this.errorDescription = AdcUtils.toAdcString(processText(messageId, null)).replaceAll("\\\\sTL", " TL");
 
     }
 
@@ -100,38 +80,152 @@ public class STAError
      * Creates a new instance of STAError
      * @param client Client wich message was
      * @param errorCode Error code
-     * @param errorDescription Desctiption of the error
+     * @param messageId Desctiption of the error
      * @param prefix
      * @param flag
      * @throws STAException
      */
-    public STAError(AbstractClient client, int errorCode, String errorDescription, String prefix, String flag)
-            throws STAException
+    public STAError(AbstractClient client, int errorCode, String messageId, String prefix, String flag)
     {
-        log.error("Hub sent to client \"" +
+        log.debug("Hub sent to client \"" +
                   client.getNick() +
                   "\"(" +
                   client.getSid() +
                   ") error message : \'" +
-                  errorDescription +
+                  messageId +
                   "\' and prefix = \'" +
                   prefix +
                   "\' and flag = \'" +
                   flag +
                   "\'");
 
-        this.client = client;
-        this.errorCode = errorCode;
+        if (prefix == null || flag == null)
+        {
+            throw new NullPointerException("'prefix' or 'flag' can not be null");
+        }
 
-        this.errorDescription = AdcUtils.toAdcString(errorDescription);
+        this.client           = client;
+        this.errorCode        = errorCode;
+        this.errorDescription = AdcUtils.toAdcString(processText(messageId, null));
+        this.prefix           = prefix;
+        this.flag             = flag;
+    }
 
 
+    /**
+     * Creates a new instance of STAError
+     * @param client Client wich message was
+     * @param errorCode Error code
+     * @param messageId Desctiption of the error
+     * @throws STAException
+     */
+    public STAError(AbstractClient client, int errorCode, String messageId, Object values)
+            throws STAException
+    {
+        log.debug("Hub sent to client \"" +
+                  client.getNick() +
+                  "\"(" +
+                  client.getSid() +
+                  ") error message : " +
+                  messageId);
 
-        String errorString =
-                "ISTA " + Integer.toString(this.errorCode) + " " +
-                this.errorDescription + " " + prefix + flag;
+        this.client           = client;
+        this.errorCode        = errorCode;
+        this.errorDescription = AdcUtils.toAdcString(processText(messageId, values)).replaceAll("\\\\sTL", " TL");
 
-        client.sendRawCommand(errorString);
+    }
+
+
+    /**
+     * Creates a new instance of STAError
+     * @param client Client wich message was
+     * @param errorCode Error code
+     * @param messageId Desctiption of the error
+     * @param prefix
+     * @param flag
+     * @throws STAException
+     */
+    public STAError(AbstractClient client, int errorCode, String messageId, Object values, String prefix, String flag)
+    {
+        log.debug("Hub sent to client \"" +
+                  client.getNick() +
+                  "\"(" +
+                  client.getSid() +
+                  ") error message : \'" +
+                  messageId +
+                  "\' and prefix = \'" +
+                  prefix +
+                  "\' and flag = \'" +
+                  flag +
+                  "\'");
+
+        if (prefix == null || flag == null)
+        {
+            throw new NullPointerException("'prefix' or 'flag' can not be null");
+        }
+
+        this.client           = client;
+        this.errorCode        = errorCode;
+        this.errorDescription = AdcUtils.toAdcString(processText(messageId, values));
+        this.prefix           = prefix;
+        this.flag             = flag;
+    }
+
+
+    private String processText(String messageId, Object values)
+    {
+        String localeString = null;
+        String resultString;
+
+        if (client.isExtendedFieldExists("LC"))
+        {
+            localeString = (String) client.getExtendedField("LC");
+        }
+
+        if (values == null)
+        {
+            resultString = Messages.get(messageId, localeString);
+        }
+        else
+        {
+            resultString = Messages.get(messageId, values, localeString);
+        }
+
+        return resultString;
+    }
+
+
+    public String rawCommand()
+    {
+        StringBuffer sb = new StringBuffer("ISTA ");
+
+        if (errorCode == 0)
+        {
+            sb.append("000");
+        }
+        else
+        {
+            sb.append(Integer.toString(this.errorCode));
+        }
+
+        sb.append(" ");
+        sb.append(errorDescription);
+
+        if (prefix != null)
+        {
+            sb.append(" ");
+            sb.append(prefix);
+            sb.append(flag);
+        }
+
+        return sb.toString();
+    }
+
+
+    public void send()
+            throws STAException
+    {
+        client.sendRawCommand(rawCommand());
         if (errorCode >= 200)
         {
             if (!ConfigurationManager.instance().getString(ConfigurationManager.REDIRECT_URL).isEmpty())
@@ -142,9 +236,8 @@ public class STAError
                                       ConfigurationManager.instance()
                                                           .getString(ConfigurationManager.REDIRECT_URL));
             }
-            throw new STAException(errorString, errorCode);
+            throw new STAException(rawCommand(), errorCode);
         }
-
     }
 
 }

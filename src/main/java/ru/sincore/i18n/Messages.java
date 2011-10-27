@@ -49,6 +49,44 @@ public class Messages
     public static final String SEARCH_SPAM_MESSAGE    = "core.search_spam_detected";
     public static final String LOGIN_ERROR_MESSAGE    = "core.login_error_message";
     public static final String TIGER_ERROR            = "tiger.error";
+    public static final String INCORRECT_COMMAND      = "core.protocol.incorrect_command";
+    public static final String INCORRECT_MESSAGE_TYPE = "core.protocol.incorrect_message_type";
+    public static final String MESSAGE_TOO_LONG       = "core.protocol.message_too_long";
+    public static final String INVALID_CONTEXT        = "core.protocol.invalid_context";
+    public static final String WRONG_SID              = "core.protocol.wrong_sid";
+    public static final String TCP_DISABLED           = "core.protocol.tcp_disabled";
+    public static final String VERY_OLD_ADC           = "core.protocol.very_old_adc";
+    public static final String NICK_TAKEN             = "core.protocol.nick_taken";
+    public static final String CID_TAKEN              = "core.protocol.cid_taken";
+    public static final String WEIRD_INFO             = "core.protocol.weird_info";
+    public static final String CT_FIELD_DISALLOWED    = "core.protocol.ct_field_disallowed";
+    public static final String CANT_CHANGE_PID        = "core.protocol.cant_change_pid";
+    public static final String CANT_CHANGE_CID        = "core.protocol.cant_change_cid";
+    public static final String REGISTERED_ONLY        = "core.protocol.registered_only";
+    public static final String INVALID_PID            = "core.protocol.invalid_pid";
+    public static final String INVALID_CID            = "core.protocol.invalid_cid";
+    public static final String USER_NOT_FOUND         = "core.protocol.user_not_found";
+    public static final String WRONG_TARGET_SID       = "core.protocol.wrong_target_sid";
+    public static final String WRONG_SENDER           = "core.protocol.wrong_sender";
+    public static final String WRONG_MY_SID           = "core.protocol.wrong_my_sid";
+    public static final String MESSAGE_EXCEED_MAX_LENGTH = "core.protocol.message_exceed_max_length";
+    public static final String INVALID_FLAG           = "core.protocol.invalid_flag";
+    public static final String INVALID_FLAG_VALUE     = "core.protocol.invalid_flag_value";
+    public static final String PM_RETURN_TO_SELF      = "core.protocol.pm_return_to_self";
+    public static final String PM_TO_SELF             = "core.protocol.pm_to_self";
+    public static final String NO_SID                 = "core.protocol.no_sid";
+    public static final String NO_TARGET_SID          = "core.protocol.no_target_sid";
+    public static final String HASH_FUNCTION_NOT_SELECTED = "core.protocol.hash_function_not_selected";
+    public static final String BASE_FEATURE_NOT_SUPPORTED = "core.protocol.base_feature_not_supported";
+    public static final String UNKNOWN_SUP_TOKEN      = "core.protocol.unknown_sup_token";
+
+    public static final String COMMAND_REGISTERED     = "core.commands.command_registered";
+    public static final String ARGUMENT_REQUIRED      = "core.commands.argument_required";
+    public static final String LOW_WEIGHT             = "core.commands.low_weight";
+    public static final String NICK_NOT_EXISTS        = "core.commands.nick_not_exists";
+    public static final String INVALID_WEIGHT         = "core.commands.grant.invalid_weight";
+    public static final String WEIGHT_REQUIRED        = "core.commands.grant.weight_required";
+    public static final String NICK_REQUIRED          = "core.commands.grant.nick_required";
 
 
     private static Map<String, ResourceBundle> resourcesMap =

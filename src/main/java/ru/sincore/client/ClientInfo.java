@@ -1152,7 +1152,14 @@ public class ClientInfo
 
     public Object getExtendedField(String fieldName)
     {
-        return extentedFields.get(fieldName);
+        if (isExtendedFieldExists(fieldName))
+        {
+            return extentedFields.get(fieldName);
+        }
+        else
+        {
+            return null;
+        }
     }
 
 

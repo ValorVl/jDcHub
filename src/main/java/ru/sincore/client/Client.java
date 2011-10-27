@@ -38,6 +38,7 @@ import ru.sincore.db.dao.ClientListDAO;
 import ru.sincore.db.dao.ClientListDAOImpl;
 import ru.sincore.db.pojo.ChatLogPOJO;
 import ru.sincore.db.pojo.ClientListPOJO;
+import ru.sincore.i18n.Messages;
 import ru.sincore.util.AdcUtils;
 import ru.sincore.util.ClientUtils;
 
@@ -243,9 +244,12 @@ public class Client extends AbstractClient
 
         StringBuilder message = new StringBuilder();
 
-        message.append("Last ");
-        message.append(lastMessageCount);
-        message.append(" main chat messages:\n\n");
+        //message.append("Last ");
+        //message.append(lastMessageCount);
+        //message.append(" main chat messages:\n\n");
+        message.append(Messages.get("core.last_chat_messages_header",
+                                    lastMessageCount,
+                                    (String)getExtendedField("LC")));
 
         for (ChatLogPOJO chatLogEntry : chatLog)
         {

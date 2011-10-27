@@ -373,7 +373,7 @@ public class INF extends Action
         {
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL + Constants.STA_GENERIC_PROTOCOL_ERROR,
-                         "Protocol Error.Wrong SID supplied.");
+                         Messages.WRONG_SID).send();
             return;
         }
 
@@ -389,7 +389,7 @@ public class INF extends Action
                     {
                         new STAError(fromClient,
                                      Constants.STA_SEVERITY_RECOVERABLE,
-                                     "Can't change CID while connected.");
+                                     Messages.CANT_CHANGE_CID);
                         return;
                     }
 
@@ -428,7 +428,7 @@ public class INF extends Action
                     {
                         new STAError(fromClient,
                                      Constants.STA_SEVERITY_RECOVERABLE,
-                                     "Can't change PID while connected.");
+                                     Messages.CANT_CHANGE_PID).send();
                         return;
                     }
 
@@ -585,7 +585,7 @@ public class INF extends Action
                         new STAError(fromClient,
                                      Constants.STA_SEVERITY_FATAL +
                                      Constants.STA_GENERIC_LOGIN_ERROR,
-                                     "Not allowed to have CT field.");
+                                     Messages.CT_FIELD_DISALLOWED).send();
                         return;
                     }
                 }
@@ -617,7 +617,7 @@ public class INF extends Action
         {
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL + Constants.STA_GENERIC_PROTOCOL_ERROR,
-                         "Your client sent weird info, Protocol Error.");
+                         Messages.WEIRD_INFO).send();
             return;
         }
 
@@ -633,20 +633,14 @@ public class INF extends Action
 
             if (timeLeft > 0)
             {
-                String msg = "Hello there. You are temporary banned.\nOp who banned you: " +
-                             banInfo.getOpNick() +
-                             "\nReason: " +
-                             banInfo.getReason() +
-                             "\nThere are still " +
-                             Long.toString(timeLeft / 1000) +
-                             " seconds remaining.\n" +
-                             Messages.get(Messages.BAN_MESSAGE) +
-                             " TL" +
-                             Long.toString(timeLeft / 1000);
-
                 new STAError(fromClient,
                              Constants.STA_SEVERITY_FATAL + Constants.STA_TEMP_BANNED,
-                             msg);
+                             Messages.BAN_MESSAGE,
+                             new Object[] {banInfo.getOpNick(),
+                                           banInfo.getReason(),
+                                           Long.toString(timeLeft / 1000)},
+                             "TL",
+                             Long.toString(timeLeft / 1000)).send();
             }
         }
 
@@ -664,7 +658,7 @@ public class INF extends Action
                     {
                         new STAError(fromClient,
                                      Constants.STA_SEVERITY_FATAL + Constants.STA_NICK_TAKEN,
-                                     "Nick taken, please choose another");
+                                     Messages.NICK_TAKEN).send();
                         return;
                     }
                 }
@@ -698,10 +692,8 @@ public class INF extends Action
             {
                 new STAError(fromClient,
                              Constants.STA_SEVERITY_FATAL + Constants.STA_HUB_FULL,
-                             "Hello there. Hub is full, there are " +
-                             String.valueOf(ClientManager.getInstance().getClientsCount()) +
-                             " users online.\n" +
-                             Messages.get(Messages.HUB_FULL_MESSAGE));
+                             Messages.HUB_FULL_MESSAGE,
+                             String.valueOf(ClientManager.getInstance().getClientsCount())).send();
                 return;
             }
         }
@@ -712,28 +704,28 @@ public class INF extends Action
         {
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL + Constants.STA_CID_TAKEN,
-                         "CID taken. Please go to Settings and pick new PID.");
+                         Messages.CID_TAKEN).send();
             return;
         }
         if (fromClient.getCid().equals(configurationManager.getString(ConfigurationManager.SECURITY_CID)))
         {
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL + Constants.STA_CID_TAKEN,
-                         "CID taken. Please go to Settings and pick new PID.");
+                         Messages.CID_TAKEN).send();
             return;
         }
         if (fromClient.getNick().equalsIgnoreCase(configurationManager.getString(ConfigurationManager.OP_CHAT_NAME)))
         {
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL + Constants.STA_NICK_TAKEN,
-                         "Nick taken, please choose another");
+                         Messages.NICK_TAKEN).send();
             return;
         }
         if (fromClient.getNick().equalsIgnoreCase(configurationManager.getString(ConfigurationManager.BOT_CHAT_NAME)))
         {
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL + Constants.STA_NICK_TAKEN,
-                         "Nick taken, please choose another");
+                         Messages.NICK_TAKEN).send();
             return;
         }
 
@@ -742,10 +734,7 @@ public class INF extends Action
         {
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL + Constants.STA_GENERIC_PROTOCOL_ERROR,
-                         "Your client uses a very old ADC version." +
-                         "Please update in order to connect to this hub." +
-                         "You can get a new version usually by visiting" +
-                         "the developer's webpage from Help/About menu.");
+                         Messages.VERY_OLD_ADC).send();
         }
 
         if (fromClient.getState() == State.PROTOCOL)
@@ -774,7 +763,7 @@ public class INF extends Action
             {
                 new STAError(fromClient,
                              Constants.STA_SEVERITY_FATAL + Constants.STA_GENERIC_LOGIN_ERROR,
-                             "Invalid CID check.");
+                             Messages.INVALID_CID).send();
                 return;
             }
             if (fromClient.getPid().length() != 39)
@@ -786,7 +775,7 @@ public class INF extends Action
         {
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL + Constants.STA_INVALID_PID,
-                         "Invalid PID supplied.");
+                         Messages.INVALID_PID).send();
             return;
         }
         catch (Exception e)
@@ -834,7 +823,7 @@ public class INF extends Action
             {
                 new STAError(fromClient,
                              Constants.STA_SEVERITY_FATAL + Constants.STA_REG_ONLY,
-                             "Registered only hub.");
+                             Messages.REGISTERED_ONLY);
                 return;
             }
 

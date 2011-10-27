@@ -35,6 +35,7 @@ import ru.sincore.Exceptions.STAException;
 import ru.sincore.TigerImpl.SIDGenerator;
 import ru.sincore.client.AbstractClient;
 import ru.sincore.client.Client;
+import ru.sincore.i18n.Messages;
 import ru.sincore.signals.ClientQuitSignal;
 import ru.sincore.signalservice.Signal;
 import ru.sincore.util.STAError;
@@ -90,7 +91,8 @@ public class SessionManager extends IoHandlerAdapter
                 {
                     new STAError(client,
                                  100,
-                                 "Message exceeds buffer." + throwableMessage);
+                                 Messages.MESSAGE_TOO_LONG,
+                                 throwableMessage);
                 }
                 else
                 {

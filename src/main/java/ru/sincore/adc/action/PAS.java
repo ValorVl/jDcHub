@@ -137,7 +137,7 @@ public class PAS extends Action
         {
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL + Constants.STA_INVALID_PASSWORD,
-                         Messages.get(Messages.LOGIN_ERROR_MESSAGE));
+                         Messages.LOGIN_ERROR_MESSAGE).send();
         }
         catch (STAException e)
         {

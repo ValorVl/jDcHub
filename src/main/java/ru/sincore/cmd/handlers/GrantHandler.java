@@ -11,6 +11,7 @@ import ru.sincore.client.AbstractClient;
 import ru.sincore.client.Client;
 import ru.sincore.cmd.AbstractCmd;
 import ru.sincore.cmd.CmdUtils;
+import ru.sincore.i18n.Messages;
 
 /**
  * Command for manipulation user right weight
@@ -62,7 +63,9 @@ public class GrantHandler extends AbstractCmd
                     break;
 
                 case ':':
-                    sendError("Ohh.. You need an argument for option"+ (char) getopt.getOptopt());
+                    sendError(Messages.get(Messages.ARGUMENT_REQUIRED,
+                                           (char)getopt.getOptopt(),
+                                           (String)client.getExtendedField("LC")));
                     break;
 
                 case '?':
@@ -87,7 +90,8 @@ public class GrantHandler extends AbstractCmd
                         }
                         else
                         {
-                            sendError("Invalid weight value!");
+                            sendError(Messages.get(Messages.INVALID_WEIGHT,
+                                                   (String)client.getExtendedField("LC")));
                         }
                     }
                     break;
@@ -109,19 +113,19 @@ public class GrantHandler extends AbstractCmd
 	{
         if (nick == null)
         {
-            sendError("Nick required!");
+            sendError(Messages.get(Messages.NICK_REQUIRED, (String)client.getExtendedField("LC")));
             return;
         }
 
         if (weight == null)
         {
-            sendError("Weight required!");
+            sendError(Messages.get(Messages.WEIGHT_REQUIRED, (String)client.getExtendedField("LC")));
             return;
         }
 
         if (this.client.getWeight() < this.weight)
         {
-            sendError("You doesn't have enough weight to do this!");
+            sendError(Messages.get(Messages.LOW_WEIGHT, (String)client.getExtendedField("LC")));
             return;
         }
 
@@ -129,13 +133,15 @@ public class GrantHandler extends AbstractCmd
         AbstractClient toClient = ClientManager.getInstance().getClientByNick(nick);
         if (toClient == null)
         {
-            sendError("There is no client with nick <" + nick + ">!");
+            sendError(Messages.get(Messages.NICK_NOT_EXISTS,
+                                   nick,
+                                   (String)client.getExtendedField("LC")));
             return;
         }
 
         if (client.getWeight() < toClient.getWeight())
         {
-            sendError("You doesn't have enough weight to do this!");
+            sendError(Messages.get(Messages.LOW_WEIGHT, (String)client.getExtendedField("LC")));
             return;
         }
 
@@ -159,11 +165,8 @@ public class GrantHandler extends AbstractCmd
 
     private void showHelp()
     {
-        StringBuilder result = new StringBuilder();
-
-        result.append("Grant command help");
-
-        sendError(result.toString());
+        sendError(Messages.get("core.commands.grant.help_text",
+                               (String)client.getExtendedField("LC")));
     }
 
 }
