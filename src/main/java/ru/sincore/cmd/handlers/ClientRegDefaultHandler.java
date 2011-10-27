@@ -96,6 +96,9 @@ public class ClientRegDefaultHandler extends AbstractCmd
 			client.setRegistratorNick(client.getNick());
 			client.setRegistrationDate(new Date());
 			client.storeInfo();
+
+			client.sendPrivateMessageFromHub("\n "+client.getNick()+" You successful registered! \n Please reconnect to hub and enter your password.");
+
 		} catch (STAException e)
 		{
 			ex = e;
