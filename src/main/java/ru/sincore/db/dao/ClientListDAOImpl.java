@@ -142,7 +142,7 @@ public class ClientListDAOImpl implements ClientListDAO
 		Session session = HibernateUtils.getSessionFactory().openSession();
 		Transaction tx 	= session.getTransaction();
 
-		String query = 	"from ClientListPOJO where isReg = :flag order by nickName,regDate";
+		String query = 	"from ClientListPOJO where registred = :flag order by nickName,regDate";
 
 		try
 		{
