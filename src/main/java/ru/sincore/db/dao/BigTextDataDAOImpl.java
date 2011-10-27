@@ -1,8 +1,10 @@
 package ru.sincore.db.dao;
 
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.sincore.db.HibernateUtils;
@@ -60,17 +62,22 @@ public class BigTextDataDAOImpl implements BigStaticDataDAO
         Session session = HibernateUtils.getSessionFactory().openSession();
         Transaction tx = session.getTransaction();
 
-        String query = "from BigTextDataPOJO where title=:title and locale=:locale";
-
         try
         {
             tx.begin();
 
-            Query request = session.createQuery(query)
-                                   .setParameter("title", title)
-                                   .setParameter("locale", locale);
+            Criteria criteria = session.createCriteria(BigTextDataPOJO.class);
+            criteria.add(Restrictions.eq("title", title));
+            if (locale == null)
+            {
+                criteria.add(Restrictions.isNull("locale"));
+            }
+            else
+            {
+                criteria.add(Restrictions.eq("locale", locale));
+            }
 
-            BigTextDataPOJO result = (BigTextDataPOJO) request.uniqueResult();
+            BigTextDataPOJO result = (BigTextDataPOJO) criteria.uniqueResult();
 
             if (result == null)
             {
@@ -100,17 +107,22 @@ public class BigTextDataDAOImpl implements BigStaticDataDAO
         Session session = HibernateUtils.getSessionFactory().openSession();
         Transaction tx = session.getTransaction();
 
-        String query = "from BigTextDataPOJO where title=:title and locale=:locale";
-
         try
         {
             tx.begin();
 
-            Query request = session.createQuery(query)
-                                   .setParameter("title", title)
-                                   .setParameter("locale", locale);
+            Criteria criteria = session.createCriteria(BigTextDataPOJO.class);
+            criteria.add(Restrictions.eq("title", title));
+            if (locale == null)
+            {
+                criteria.add(Restrictions.isNull("locale"));
+            }
+            else
+            {
+                criteria.add(Restrictions.eq("locale", locale));
+            }
 
-            BigTextDataPOJO result = (BigTextDataPOJO) request.uniqueResult();
+            BigTextDataPOJO result = (BigTextDataPOJO) criteria.uniqueResult();
 
             if (result == null)
             {
@@ -138,19 +150,24 @@ public class BigTextDataDAOImpl implements BigStaticDataDAO
         Session session = HibernateUtils.getSessionFactory().openSession();
         Transaction tx = session.getTransaction();
 
-        String query = "from BigTextDataPOJO where title=:title and locale=:locale";
-
         String resultText = null;
 
         try
         {
             tx.begin();
 
-            Query request = session.createQuery(query)
-                                   .setParameter("title", title)
-                                   .setParameter("locale", locale);
+            Criteria criteria = session.createCriteria(BigTextDataPOJO.class);
+            criteria.add(Restrictions.eq("title", title));
+            if (locale == null)
+            {
+                criteria.add(Restrictions.isNull("locale"));
+            }
+            else
+            {
+                criteria.add(Restrictions.eq("locale", locale));
+            }
 
-            BigTextDataPOJO result = (BigTextDataPOJO) request.uniqueResult();
+            BigTextDataPOJO result = (BigTextDataPOJO) criteria.uniqueResult();
 
             tx.commit();
 

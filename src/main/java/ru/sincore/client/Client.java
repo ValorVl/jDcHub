@@ -41,6 +41,8 @@ import ru.sincore.db.pojo.ClientListPOJO;
 import ru.sincore.i18n.Messages;
 import ru.sincore.util.AdcUtils;
 import ru.sincore.util.ClientUtils;
+import ru.sincore.util.Constants;
+import ru.sincore.util.STAError;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -228,7 +230,11 @@ public class Client extends AbstractClient
     private void sendMOTD()
     {
         BigTextManager bigTextManager = new BigTextManager();
-        this.sendMessageFromHub(AdcUtils.fromAdcString(bigTextManager.getText(BigTextManager.MOTD)));
+        this.sendMessageFromHub(
+                AdcUtils.fromAdcString(
+                        bigTextManager.getText(
+                                BigTextManager.MOTD,
+                                (String)getExtendedField("LC"))));
     }
 
 
@@ -243,9 +249,6 @@ public class Client extends AbstractClient
 
         StringBuilder message = new StringBuilder();
 
-        //message.append("Last ");
-        //message.append(lastMessageCount);
-        //message.append(" main chat messages:\n\n");
         message.append(Messages.get("core.last_chat_messages_header",
                                     lastMessageCount,
                                     (String)getExtendedField("LC")));
@@ -268,7 +271,14 @@ public class Client extends AbstractClient
     @Override
     public void onLoggedIn()
     {
-        this.sendRawCommand("ISTA 000 Authenticated.");
+        try
+        {
+            new STAError(this, Constants.STA_SEVERITY_SUCCESS, Messages.AUTHENTICATED).send();
+        }
+        catch (STAException e)
+        {
+            e.printStackTrace();
+        }
 
         this.setLastNick(this.getNick());
         this.setLastIP(this.getRealIP());

@@ -803,14 +803,13 @@ public class INF extends Action
         {
             if (fromClient.getPassword().equals(""))//no pass defined ( yet)
             {
-                fromClient.sendRawCommand(
-                        "ISTA 000 Registered,\\sno\\spassword\\srequired.\\sThough,\\sits\\srecomandable\\sto\\sset\\sone.");
+                new STAError(fromClient, Constants.STA_SEVERITY_SUCCESS, Messages.EMPTY_PASSWORD).send();
                 fromClient.onLoggedIn();
             }
             else
             {
                 // check client for registration (Moscow city style : do you have the passport?)
-                fromClient.sendRawCommand("ISTA 000 Registered,\\stype\\syour\\spassword.");
+                new STAError(fromClient, Constants.STA_SEVERITY_SUCCESS, Messages.PASSWORD_REQUIRED).send();
 
                 /* creates some hash for the GPA random data*/
                 fromClient.setEncryptionSalt(Base32.encode(generateSalt()));

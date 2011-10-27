@@ -79,6 +79,9 @@ public class Messages
     public static final String HASH_FUNCTION_NOT_SELECTED = "core.protocol.hash_function_not_selected";
     public static final String BASE_FEATURE_NOT_SUPPORTED = "core.protocol.base_feature_not_supported";
     public static final String UNKNOWN_SUP_TOKEN      = "core.protocol.unknown_sup_token";
+    public static final String EMPTY_PASSWORD         = "core.protocol.empty_password";
+    public static final String PASSWORD_REQUIRED      = "core.protocol.password_required";
+    public static final String AUTHENTICATED          = "core.protocol.authenticated";
 
     public static final String COMMAND_REGISTERED     = "core.commands.command_registered";
     public static final String ARGUMENT_REQUIRED      = "core.commands.argument_required";
@@ -193,7 +196,17 @@ public class Messages
         String pattern = get(key, localeString);
         MessageFormat messageFormat = new MessageFormat(pattern, locale);
 
-        return messageFormat.format(values);
+        Object[] newValues;
+        if (values instanceof Object[])
+        {
+            newValues = (Object[])values;
+        }
+        else
+        {
+            newValues = new Object[] {values};
+        }
+
+        return messageFormat.format(newValues);
     }
 
 

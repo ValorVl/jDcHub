@@ -28,6 +28,7 @@ import ru.sincore.client.AbstractClient;
 import ru.sincore.client.Client;
 import ru.sincore.db.dao.BanListDAOImpl;
 import ru.sincore.db.pojo.BanListPOJO;
+import ru.sincore.i18n.Messages;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -150,52 +151,34 @@ public class ClientUtils
             return "";
         }
 
-
-        StringBuilder infoStr = new StringBuilder();
-
-        infoStr.append("\n >> Your information:");
-        infoStr.append("\n >> Nickname : ");
-        infoStr.append(client.getNick());
-
-        infoStr.append("\n >> Class: ");
-        infoStr.append(client.getWeight());
-
         if (client.isRegistred())
         {
-            infoStr.append("\n >> Password set: ");
-            infoStr.append(((client.getPassword() != null) && (!client.getPassword().equals(""))) ?
-                           "Yes" : "No");
-
-            infoStr.append("\n >> Last login: ");
-            infoStr.append(client.getLastLogin());
-
-            infoStr.append("\n >> Last ip: ");
-            infoStr.append(client.getLastIP());
-
-            infoStr.append("\n >> Login count: ");
-            infoStr.append(client.getLoginCount());
-
-            infoStr.append("\n >> Registred since: ");
-            infoStr.append(client.getRegistrationDate());
-
-            infoStr.append("\n >> Registred by: ");
-            infoStr.append(client.getRegistratorNick());
-
-            infoStr.append("\n >> Total time online: ");
-            infoStr.append(client.getTimeOnline() / 1000);  // TODO [lh] convert it to normal format
-            infoStr.append(" sec");
-
-            infoStr.append("\n >> Maximum time online: ");
-            infoStr.append(client.getMaximumTimeOnline() / 1000);
-            infoStr.append(" sec");
+            return Messages.get("core.registered_client_info",
+                                 new Object[]
+                                 {
+                                         client.getNick(),
+                                         client.getWeight(),
+                                         ((client.getPassword() != null) && (!client.getPassword().equals(""))) ?
+                                            "Yes" : "No",
+                                         client.getLastLogin(),
+                                         client.getLastIP(),
+                                         client.getLoginCount(),
+                                         client.getRegistrationDate(),
+                                         client.getRegistratorNick(),
+                                         client.getTimeOnline() / 1000,
+                                         client.getMaximumTimeOnline() / 1000
+                                 },
+                                 (String)client.getExtendedField("LC"));
         }
         else
         {
-            infoStr.append("\n >> You are not registred!");
+            return Messages.get("core.unregistered_client_info",
+                                 new Object[]
+                                 {
+                                         client.getNick(),
+                                         client.getWeight()
+                                 },
+                                 (String)client.getExtendedField("LC"));
         }
-
-        infoStr.append("\n");
-
-        return infoStr.toString();
-    }
+   }
 }
