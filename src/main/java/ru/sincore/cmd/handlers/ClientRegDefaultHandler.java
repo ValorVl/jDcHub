@@ -92,7 +92,8 @@ public class ClientRegDefaultHandler extends AbstractCmd
 				client.setPassword(args.trim());
 			}
 
-			client.setWeight(10);
+			client.setRegistred(true);
+            client.setWeight(10);
             client.setClientTypeByWeight(client.getWeight());
 			client.setRegistratorNick(client.getNick());
 			client.setRegistrationDate(new Date());
