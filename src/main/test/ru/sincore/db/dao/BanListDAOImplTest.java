@@ -21,8 +21,19 @@ public class BanListDAOImplTest
 	public void testAddBan() throws Exception
 	{
 		BanListDAOImpl banList = new BanListDAOImpl();
-		banList.addBan("Valor","10.10.10.125","valor",1,new Date(),
-					   new Date(),"Valor","test",13123L,"");
+        BanListPOJO banListPOJO = new BanListPOJO();
+
+        // fill ban list pojo
+        banListPOJO.setNick("Valor");
+        banListPOJO.setIp("10.10.10.125");
+        banListPOJO.setOpNick("Valor");
+        banListPOJO.setBanType(1);
+        banListPOJO.setDateStart(new Date());
+        banListPOJO.setDateStop(new Date((new Date()).getTime() + 12123L));
+        banListPOJO.setEmail("valor@valor.en");
+        banListPOJO.setReason("Reason");
+
+		banList.addBan(banListPOJO);
 	}
 
 	@Test

@@ -2,16 +2,21 @@ package ru.sincore.cmd.handlers;
 
 import gnu.getopt.Getopt;
 import gnu.getopt.LongOpt;
+import org.apache.commons.lang.math.IntRange;
+import org.apache.commons.lang.math.Range;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 import ru.sincore.ClientManager;
+import ru.sincore.ConfigurationManager;
 import ru.sincore.Exceptions.STAException;
 import ru.sincore.client.AbstractClient;
 import ru.sincore.client.Client;
 import ru.sincore.cmd.AbstractCmd;
 import ru.sincore.cmd.CmdUtils;
 import ru.sincore.i18n.Messages;
+
+import java.util.ArrayList;
 
 /**
  * Command for manipulation user right weight
@@ -80,19 +85,8 @@ public class GrantHandler extends AbstractCmd
                     }
                     catch (NumberFormatException nfe)
                     {
-                        if (argument.equals("Moderator"))
-                        {
-                            this.weight = 50;
-                        }
-                        else if (argument.equals("Administrator") || argument.equals("Admin"))
-                        {
-                            this.weight = 60;
-                        }
-                        else
-                        {
-                            sendError(Messages.get(Messages.INVALID_WEIGHT,
+                        sendError(Messages.get(Messages.INVALID_WEIGHT,
                                                    (String)client.getExtendedField("LC")));
-                        }
                     }
                     break;
 
@@ -139,6 +133,12 @@ public class GrantHandler extends AbstractCmd
             return;
         }
 
+        if (!toClient.isRegistred())
+        {
+            sendError("Client you want to grant rights is not registred user!");
+            return;
+        }
+
         if (client.getWeight() < toClient.getWeight())
         {
             sendError(Messages.get(Messages.LOW_WEIGHT, (String)client.getExtendedField("LC")));
@@ -146,6 +146,8 @@ public class GrantHandler extends AbstractCmd
         }
 
         toClient.setWeight(this.weight);
+        toClient.setClientTypeByWeight(this.weight);
+
         try
         {
             toClient.storeInfo();
@@ -154,6 +156,11 @@ public class GrantHandler extends AbstractCmd
         {
             // ignore it
         }
+
+        toClient.sendPrivateMessageFromHub(client.getNick() + " grant to you new weight.\nYour new weight is " + toClient.getWeight());
+        ClientManager.getInstance().getClientBySID(ConfigurationManager.instance().getString(
+                ConfigurationManager.OP_CHAT_SID)).sendPrivateMessageFromHub(
+                toClient.getNick() + " get\'s new weight (" + toClient.getWeight() + ") from " + client.getNick());
 	}
 
 

@@ -119,8 +119,6 @@ public class Client extends AbstractClient
         // set password
         clientInfo.setPassword(this.getPassword());
 
-        clientInfo.setClientType(this.getClientType());
-
         if (!this.isRegistred())
         {
             clientInfo.setSharedFilesCount(0L);
@@ -171,6 +169,7 @@ public class Client extends AbstractClient
         this.setWeight(clientInfo.getWeight());
         this.setPassword(clientInfo.getPassword());
         this.setRegistred(clientInfo.getReg());
+        this.setClientTypeByWeight(clientInfo.getClientType());
         this.setLastNick(clientInfo.getLastNick());
         this.setLastLogin(clientInfo.getLastLogIn());
         this.setRegistrationDate(clientInfo.getRegDate());

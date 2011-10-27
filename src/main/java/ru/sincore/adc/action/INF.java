@@ -393,6 +393,14 @@ public class INF extends Action
                         return;
                     }
 
+                    if (ClientManager.getInstance().getClientByCID(fromClient.getCid()) != null)
+                    {
+                        new STAError(fromClient,
+                                     Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_CID_TAKEN,
+                                     "CID already taken by another user. Please generate new CID in your client.");
+                        return;
+                    }
+
                     fromClient.setCid(token.substring(2));
                     currentINF.append(" ID");
                     currentINF.append(fromClient.getCid());
@@ -400,18 +408,15 @@ public class INF extends Action
                 else if (token.startsWith("NI"))
                 {
                     // TODO validate nick
-
-/*
-                if (! Nick.validateNick(aux.substring(2)))
-                {
-                    new STAError(fromClient,
-                                 Constants.STA_SEVERITY_FATAL + Constants.STA_NICK_INVALID,
-                                 "Nick not valid, please choose another");
-                    return;
-                }
-*/
-
                     fromClient.setNick(token.substring(2));
+
+                    if (ClientManager.getInstance().getClientByNick(fromClient.getNick()) != null)
+                    {
+                        new STAError(fromClient,
+                                     Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_NICK_TAKEN,
+                                     "Nick already taken. Please choose another.");
+                        return;
+                    }
 
                     if (fromClient.getState() != State.PROTOCOL)
                     {

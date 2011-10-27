@@ -22,8 +22,11 @@
 
 package ru.sincore.client;
 
+import org.apache.commons.lang.math.IntRange;
+import ru.sincore.adc.ClientType;
 import ru.sincore.adc.State;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
@@ -572,6 +575,57 @@ public class ClientInfo
     public void setClientType(int clientType)
     {
         this.clientType = clientType;
+    }
+
+
+    public void setClientTypeByWeight(int clientType)
+    {
+        // TODO [lh] values for corresponding are hardcoded, must be moved to db or config
+        ArrayList<IntRange> clientTypeRanges = new ArrayList<IntRange>(5);
+        clientTypeRanges.add(new IntRange(0, 9));   // add unregistred users range
+        clientTypeRanges.add(new IntRange(10, 69)); // add registred users range
+        clientTypeRanges.add(new IntRange(70, 89)); // add operators range
+        clientTypeRanges.add(new IntRange(90, 99)); // add super users range
+        clientTypeRanges.add(new IntRange(100));
+
+        int i = 0;
+        boolean rangeFound = false;
+        while (i < clientTypeRanges.size() && !rangeFound)
+        {
+            if (clientTypeRanges.get(i).containsInteger(this.weight))
+            {
+                rangeFound = true;
+            }
+            else
+            {
+                i++;
+            }
+        }
+
+        switch (i)
+        {
+            case 0:
+                this.setClientType(ClientType.UNREGISTRED_USER);
+                break;
+
+            case 1:
+                this.setClientType(ClientType.REGISTERED_USER);
+                break;
+
+            case 2:
+                this.setClientType(ClientType.REGISTERED_USER | ClientType.OPERATOR);
+                break;
+
+            case 3:
+                this.setClientType(ClientType.REGISTERED_USER | ClientType.SUPER_USER);
+                break;
+
+            case 4:
+                this.setClientType(ClientType.REGISTERED_USER | ClientType.HUB_OWNER);
+                break;
+
+            default:
+        }
     }
 
 

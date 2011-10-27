@@ -160,39 +160,39 @@ public class ClientUtils
         infoStr.append("\n >> Class: ");
         infoStr.append(client.getWeight());
 
-        infoStr.append("\n >> Password set: ");
-        infoStr.append(((client.getPassword() != null) && (!client.getPassword().equals(""))) ?
-                       "Yes" : "No");
-
-        infoStr.append("\n >> Last login: ");
-        infoStr.append(client.getLastLogin());
-
-        infoStr.append("\n >> Last ip: ");
-        infoStr.append(client.getLastIP());
-
-        infoStr.append("\n >> Login count: ");
-        infoStr.append(client.getLoginCount());
-
         if (client.isRegistred())
         {
+            infoStr.append("\n >> Password set: ");
+            infoStr.append(((client.getPassword() != null) && (!client.getPassword().equals(""))) ?
+                           "Yes" : "No");
+
+            infoStr.append("\n >> Last login: ");
+            infoStr.append(client.getLastLogin());
+
+            infoStr.append("\n >> Last ip: ");
+            infoStr.append(client.getLastIP());
+
+            infoStr.append("\n >> Login count: ");
+            infoStr.append(client.getLoginCount());
+
             infoStr.append("\n >> Registred since: ");
             infoStr.append(client.getRegistrationDate());
 
             infoStr.append("\n >> Registred by: ");
             infoStr.append(client.getRegistratorNick());
+
+            infoStr.append("\n >> Total time online: ");
+            infoStr.append(client.getTimeOnline() / 1000);  // TODO [lh] convert it to normal format
+            infoStr.append(" sec");
+
+            infoStr.append("\n >> Maximum time online: ");
+            infoStr.append(client.getMaximumTimeOnline() / 1000);
+            infoStr.append(" sec");
         }
         else
         {
             infoStr.append("\n >> You are not registred!");
         }
-
-        infoStr.append("\n >> Total time online: ");
-        infoStr.append(client.getTimeOnline() / 1000);     // TODO [lh] convert it to normal format
-        infoStr.append(" sec");
-
-        infoStr.append("\n >> Maximum time online: ");
-        infoStr.append(client.getMaximumTimeOnline() / 1000);
-        infoStr.append(" sec");
 
         infoStr.append("\n");
 

@@ -22,7 +22,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 
+import java.util.Arrays;
 import java.util.StringTokenizer;
+import java.util.Vector;
 
 /**
  *  Class contains command utils methods
@@ -44,24 +46,58 @@ public class CmdUtils
 	{
 		try{
 
-			String[] argsArray;
+			Vector<String> argsArray = new Vector<String>();
 
 			StringTokenizer argsTokens = new StringTokenizer(args.trim()," ");
 
-			int countTokens = 0;
+            boolean isInQuotes;
 
-			argsArray = new String[argsTokens.countTokens()];
-
-			while (argsTokens.hasMoreElements())
+			while (argsTokens.hasMoreTokens())
 			{
-				argsArray[countTokens++] = argsTokens.nextToken();
+                String token = argsTokens.nextToken();
+
+                if (token.startsWith("\""))
+                {
+                    StringBuilder quotedToken = new StringBuilder();
+                    token = token.substring(1);
+
+                    isInQuotes = true;
+                    while (isInQuotes)
+                    {
+                        if (token.endsWith("\""))
+                        {
+                            token = token.substring(0, token.length() - 1);
+                            isInQuotes = false;
+
+                            quotedToken.append(token);
+                            quotedToken.append(" ");
+                        }
+                        else
+                        {
+                            quotedToken.append(token);
+                            quotedToken.append(" ");
+
+                            if (argsTokens.hasMoreTokens())
+                                token = argsTokens.nextToken();
+                            else
+                                isInQuotes = false;
+                        }
+                    }
+
+                    isInQuotes = false;
+                    token = quotedToken.toString();
+                }
+
+                argsArray.add(token);
 			}
 
-			return argsArray;
+            Object[] resultArray = argsArray.toArray();
 
-		}catch (Exception e)
+			return Arrays.copyOf(resultArray, resultArray.length, String[].class);
+		}
+        catch (Exception e)
 		{
-			log.error(marker,e);
+			log.error(marker, e);
 		}
 
 		return null;
