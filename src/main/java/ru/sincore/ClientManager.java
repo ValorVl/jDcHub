@@ -48,13 +48,13 @@ public final class ClientManager
 {
     private static final Logger log = LoggerFactory.getLogger(ClientManager.class);
 
-    private static ConcurrentHashMap<String, AbstractClient>    clientsBySID;
-    private static ConcurrentHashMap<String, String>            sidByNick;
-    private static ConcurrentHashMap<String, String>            sidByCID;
+    private static ConcurrentHashMap<String, AbstractClient> clientsBySID;
+    private static ConcurrentHashMap<String, String>         sidByNick;
+    private static ConcurrentHashMap<String, String>         sidByCID;
 
-    private static Vector<AbstractClient> uninitializedClients;
+    private static ConcurrentHashMap<String, AbstractClient> uninitializedClients;
 
-// *********************** Singleton implementation start ********************************
+    // *********************** Singleton implementation start ********************************
     private static volatile Strategy strategy = new CreateAndReturnStrategy();
     private static ClientManager instance;
 
@@ -102,15 +102,19 @@ public final class ClientManager
 
     private ClientManager()
     {
-        int initialCapacity = ConfigurationManager.instance().getInt(ConfigurationManager.USER_INITIAL_CAPACITY);
-        float loadFactor = ConfigurationManager.instance().getFloat(ConfigurationManager.USER_LOAD_FACTOR);
+        int initialCapacity =
+                ConfigurationManager.instance().getInt(ConfigurationManager.USER_INITIAL_CAPACITY);
+        float loadFactor =
+                ConfigurationManager.instance().getFloat(ConfigurationManager.USER_LOAD_FACTOR);
 
-        clientsBySID    = new ConcurrentHashMap<String, AbstractClient>(initialCapacity, loadFactor);
-        sidByNick       = new ConcurrentHashMap<String, String>(initialCapacity, loadFactor);
-        sidByCID        = new ConcurrentHashMap<String, String>(initialCapacity, loadFactor);
+        clientsBySID = new ConcurrentHashMap<String, AbstractClient>(initialCapacity, loadFactor);
+        sidByNick = new ConcurrentHashMap<String, String>(initialCapacity, loadFactor);
+        sidByCID = new ConcurrentHashMap<String, String>(initialCapacity, loadFactor);
 
-        uninitializedClients = new Vector<AbstractClient>(ConfigurationManager.instance().getInt(
-                ConfigurationManager.USER_CONNECTION_BUFFER_INITIAL_SIZE));
+        uninitializedClients = new ConcurrentHashMap<String, AbstractClient>(
+                ConfigurationManager.instance()
+                                    .getInt(ConfigurationManager.USER_CONNECTION_BUFFER_INITIAL_SIZE),
+                loadFactor);
 
         addBots();
         addChatRooms();
@@ -163,7 +167,8 @@ public final class ClientManager
 
     }
 
-    public void addClient (AbstractClient client)
+
+    public void addClient(AbstractClient client)
     {
         clientsBySID.put(client.getSid(), client);
         sidByNick.put(client.getNick(), client.getSid());
@@ -174,16 +179,20 @@ public final class ClientManager
     public void addNewClient(AbstractClient client)
     {
         client.setState(State.PROTOCOL);
-        uninitializedClients.add(client);
+        uninitializedClients.put(client.getSid(), client);
     }
+
 
     synchronized public void moveClientToRegularMap(AbstractClient client)
     {
-        if (!uninitializedClients.remove(client))
+        if (uninitializedClients.remove(client.getSid()) == null)
+        {
             log.error("Client was not found in uninitialized clients vector!");
+        }
 
         addClient(client);
     }
+
 
     public void removeAllClients()
     {
@@ -207,6 +216,7 @@ public final class ClientManager
 
     /**
      * Return collection of clients
+     *
      * @return collection of clients
      */
     public Collection<AbstractClient> getClients()
@@ -219,7 +229,9 @@ public final class ClientManager
     {
         String sid = sidByCID.get(cid);
         if (sid == null)
+        {
             return null;
+        }
 
         return clientsBySID.get(sid);
     }
@@ -227,14 +239,18 @@ public final class ClientManager
 
     /**
      * Return client with {@link Client#nick} equals to nick
+     *
      * @param nick Client nick (NI)
+     *
      * @return Client
      */
     public AbstractClient getClientByNick(String nick)
     {
         String sid = sidByNick.get(nick);
         if (sid == null)
+        {
             return null;
+        }
 
         return clientsBySID.get(sid);
     }
@@ -244,6 +260,7 @@ public final class ClientManager
      * Return client with {@link Client#sid} equals to sid
      *
      * @param sid Client SID {@link ru.sincore.client.Client#sid}
+     *
      * @return Client
      */
     public AbstractClient getClientBySID(String sid)
@@ -265,7 +282,9 @@ public final class ClientManager
         for (AbstractClient client : clientsBySID.values())
         {
             if (client.isValidated())
+            {
                 count++;
+            }
         }
 
         return count;
@@ -308,9 +327,9 @@ public final class ClientManager
     }
 
 
-    synchronized public boolean removeClient (AbstractClient client)
+    synchronized public boolean removeClient(AbstractClient client)
     {
-        if (uninitializedClients.remove(client))
+        if (uninitializedClients.remove(client.getSid()) != null)
         {
             log.debug("Uninitialized client with sid = \'" +
                       client.getSid() +
@@ -321,7 +340,9 @@ public final class ClientManager
         AbstractClient removedClient = clientsBySID.remove(client.getSid());
 
         if (removedClient == null)
+        {
             log.debug("User with sid = \'" + client.getSid() + "\' not in clientsBySID.");
+        }
         else
         {
             sidByNick.remove(removedClient.getNick());
@@ -340,7 +361,9 @@ public final class ClientManager
         for (AbstractClient oldClient : clientsBySID.values())
         {
             if (oldClient.isValidated() && !oldClient.equals(client))
+            {
                 client.sendRawCommand(oldClient.getINF());
+            }
         }
     }
 }

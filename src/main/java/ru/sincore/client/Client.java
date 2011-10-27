@@ -121,23 +121,18 @@ public class Client extends AbstractClient
         // set password
         clientInfo.setPassword(this.getPassword());
 
-        if (!this.isRegistred())
+        if (!clientInfo.isRegistred())
         {
-            clientInfo.setSharedFilesCount(0L);
-            clientInfo.setShareSize(0L);
             clientInfo.setRegDate(this.getRegistrationDate());
-            clientInfo.setWeight(10);
             clientInfo.setRegOwner(this.getRegistratorNick());
-            clientInfo.setReg(true);
-        }
-        else
-        {
-            clientInfo.setSharedFilesCount(this.getSharedFiles());
-            clientInfo.setShareSize(this.getShareSise());
-            clientInfo.setWeight(this.getWeight());
-            clientInfo.setLastNick(this.getLastNick());
         }
 
+        clientInfo.setSharedFilesCount(this.getSharedFiles());
+        clientInfo.setShareSize(this.getShareSise());
+        clientInfo.setWeight(this.getWeight());
+        clientInfo.setLastNick(this.getLastNick());
+
+        clientInfo.setRegistred(this.isRegistred());
         clientInfo.setOverrideShare(this.isOverrideShare());
         clientInfo.setOverrideSpam(this.isOverrideSpam());
         clientInfo.setOverrideFull(this.isOverrideFull());
@@ -170,8 +165,8 @@ public class Client extends AbstractClient
 
         this.setWeight(clientInfo.getWeight());
         this.setPassword(clientInfo.getPassword());
-        this.setRegistred(clientInfo.getReg());
-        this.setClientTypeByWeight(clientInfo.getClientType());
+        this.setRegistred(clientInfo.isRegistred());
+        this.setClientTypeByWeight(clientInfo.getWeight());
         this.setLastNick(clientInfo.getLastNick());
         this.setLastLogin(clientInfo.getLastLogIn());
         this.setRegistrationDate(clientInfo.getRegDate());

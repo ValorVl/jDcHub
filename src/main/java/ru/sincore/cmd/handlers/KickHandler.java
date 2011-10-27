@@ -106,7 +106,7 @@ public class KickHandler extends AbstractCmd
 		}
 		else
 		{
-			ClientUtils.kickClient(client, nick, reason);
+			ClientUtils.kickOrBanClient(client, nick, 0, null, reason);
 			sendError("nick " + nick + " reason " + reason);
 		}
 	}

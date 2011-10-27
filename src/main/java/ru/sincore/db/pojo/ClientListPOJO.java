@@ -29,14 +29,6 @@ public class ClientListPOJO implements Serializable
 	private String 		cid;
 
 	/**
-     * Client (user) type, 1=bot, 2=registered user, 4=operator,
-     * 8=super user, 16=hub owner, 32=hub (used when the hub sends an INF about itself).
-     * Multiple types are specified by adding the numbers together.
-     */
-	@Column(name = "client_type", length = 2,nullable = false)
-	private Integer 	clientType = 0;
-
-	/**
 	 *  Count bytes of share size
 	 */
 	@Column(name = "share_size",nullable = false)
@@ -71,7 +63,7 @@ public class ClientListPOJO implements Serializable
 	 *  parameter are configured separately.
 	 */
 	@Column(name = "is_reg",columnDefinition = "TINYINT(1) DEFAULT 0",nullable = false)
-	private Boolean 	isReg = false;
+	private Boolean registred = false;
 	/**
 	 *  Column "nickName" String userid hub.
 	 */
@@ -186,7 +178,7 @@ public class ClientListPOJO implements Serializable
 	/**
 	 *  Column "isPing" indicates if client is a pinger a.k.a. PING extension
 	 */
-	@Column(name = "isPing",columnDefinition = "TINYINT(1) DEFAULT 0",nullable = false)
+	@Column(name = "is_ping",columnDefinition = "TINYINT(1) DEFAULT 0",nullable = false)
 	private Boolean		ping = false;
 
 	/**
@@ -278,14 +270,14 @@ public class ClientListPOJO implements Serializable
 		this.keyAuthAllowed = keyAuthAllowed;
 	}
 
-	public Boolean getReg()
+	public Boolean isRegistred()
 	{
-		return isReg;
+		return registred;
 	}
 
-	public void setReg(Boolean reg)
+	public void setRegistred(Boolean reg)
 	{
-		isReg = reg;
+		registred = reg;
 	}
 
 	public String getNickName()
@@ -546,16 +538,6 @@ public class ClientListPOJO implements Serializable
 	public void setLocale(String locale)
 	{
 		this.locale = locale;
-	}
-
-	public Integer getClientType()
-	{
-		return clientType;
-	}
-
-	public void setClientType(Integer clientType)
-	{
-		this.clientType = clientType;
 	}
 
 	public Long getShareSize()

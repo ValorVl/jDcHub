@@ -94,10 +94,14 @@ public class ClientRegDefaultHandler extends AbstractCmd
 				client.setPassword(args.trim());
 			}
 
-			client.setClientType(2);
+			client.setWeight(10);
+            client.setClientTypeByWeight(client.getWeight());
 			client.setRegistratorNick(client.getNick());
 			client.setRegistrationDate(new Date());
 			client.storeInfo();
+
+			client.sendPrivateMessageFromHub("\n "+client.getNick()+" You successful registered! \n Please reconnect to hub and enter your password.");
+
 		} catch (STAException e)
 		{
 			ex = e;
