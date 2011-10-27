@@ -5,7 +5,7 @@
  <session-factory>
   <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
   <property name="hibernate.connection.password">Satana666</property>
-  <property name="hibernate.connection.url">jdbc:mysql://10.10.10.129/jdchub?characterEncoding=UTF-8</property>
+  <property name="hibernate.connection.url">jdbc:mysql://192.168.158.160/jdchub?characterEncoding=UTF-8</property>
   <property name="hibernate.connection.username">valor</property>
   <property name="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</property>
   <property name="hibernate.c3p0.acquire_increment">1</property>
