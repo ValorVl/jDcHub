@@ -119,16 +119,15 @@ public class ClientListPOJO implements Serializable
 	/**
 	 *  Colimn "currentIp" Contains curant IP address (IPv4 or IPv6)
 	 */
-	@Index(name = "index_by_current_ip")
-	@Column(name = "current_ip",columnDefinition = "VARCHAR(250)",nullable = false)
-	private String 		currentIp;
+	@Column(name = "current_ip",columnDefinition = "VARCHAR(250)",nullable = true)
+	private String 		currentIp = null;
 
 	/**
 	 *  Column "realIp" Contains a "white" IP gateway, if there is. Defined by the client through NPnP
 	 *  or another similar service. Passable NULL.
 	 */
 	@Column(name = "real_ip",columnDefinition = "VARCHAR(250)",nullable = true)
-	private String 		realIp;
+	private String 		realIp = null;
 
 	/**
 	 *  Column "hideShare" boolean flag. Hidden if a user share.
