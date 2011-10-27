@@ -126,7 +126,8 @@ public class MSG extends Action
             String command = commandTokenizer.nextToken().substring(1);
             if (!cmd.commandExist(command))
             {
-                 // TODO say to client that command doesn't exist
+                 // say to client command doesn't exist
+                fromClient.sendPrivateMessageFromHub("Command not found!");
 
                 // return result like command was executed
                 // that needed to don't broadcast message

@@ -49,12 +49,17 @@ public class GrantHandler extends AbstractCmd
 
         longOpts[0] = new LongOpt("nick", LongOpt.REQUIRED_ARGUMENT, null, 'n');
         longOpts[1] = new LongOpt("weight", LongOpt.REQUIRED_ARGUMENT, null, 'w');
+        longOpts[2] = new LongOpt("type", LongOpt.REQUIRED_ARGUMENT, null, 't');
 
         String[] argArray = CmdUtils.strArgToArray(args);
 
-        Getopt getopt = new Getopt("grant", argArray, "n:w:", longOpts);
+        Getopt getopt = new Getopt("grant", argArray, "n:w:t:", longOpts);
 
-        //getopt.setOpterr(true);
+        if (argArray.length < 1)
+        {
+            showHelp();
+            return;
+        }
 
         int c;
 
@@ -72,6 +77,18 @@ public class GrantHandler extends AbstractCmd
 
                 case '?':
                     showHelp();
+                    break;
+
+                case 't':
+                    String arg = getopt.getOptarg();
+                    if (arg.equals("Op"))
+                    {
+                        this.weight = 70;
+                    }
+                    else if (arg.equals("SU"))
+                    {
+                        this.weight = 90;
+                    }
                     break;
 
                 case 'w':
@@ -168,7 +185,10 @@ public class GrantHandler extends AbstractCmd
     {
         StringBuilder result = new StringBuilder();
 
-        result.append("Grant command help");
+        result.append("\nKick user from hub.\n");
+        result.append("Usage: !kick --nick <nick>\n");
+        result.append("\tWhere\n");
+        result.append("\t\t<nick> - user nick\n");
 
         sendError(result.toString());
     }

@@ -18,21 +18,24 @@ public class CmdEngine
 	 */
 	public void executeCmd(String cmd, String args, AbstractClient client)
 	{
-
 		log.debug("Cmd : "+cmd+" | args : "+args+" | client : "+ client);
 
 		CmdContainer container = CmdContainer.getInstance();
 		AbstractCmd cmdExec = container.getCommandExecutor(cmd);
 
         if (cmdExec == null)
+        {
             return;
+        }
 
-		int clientRightWeight = 100; //This stub
-
-		if(cmdExec.validateRights(clientRightWeight))
+		if(cmdExec.validateRights(client.getWeight()))
 		{
 			cmdExec.execute(cmd,args,client);
 		}
+        else
+        {
+            client.sendPrivateMessageFromHub("You doesn\'t have anough rights!");
+        }
 	}
 
 	/**
@@ -44,12 +47,7 @@ public class CmdEngine
 	{
 		CmdContainer cmdContainer = CmdContainer.getInstance();
 
-		if (cmdContainer.getConteiner().containsKey(command))
-		{
-			return true;
-		}
-
-		return false;
+		return cmdContainer.getConteiner().containsKey(command);
 	}
 
 	/**
@@ -64,7 +62,7 @@ public class CmdEngine
 	 * @param executor full FQDN class name
 	 * @param weight rights weight
 	 */
-//	public void registryCmd(String cmdName, String executor, Integer weight,Boolean enabled, Boolean logged)
+//	public void registerCmd(String cmdName, String executor, Integer weight,Boolean enabled, Boolean logged)
 //	{
 //		// first, register command in command container
 //		CmdContainer container = CmdContainer.getInstance();

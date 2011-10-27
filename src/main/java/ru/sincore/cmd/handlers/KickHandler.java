@@ -53,13 +53,17 @@ public class KickHandler extends AbstractCmd
 
 		LongOpt[] longOpts = new LongOpt[3];
 
-		longOpts[0] = new LongOpt("nick", LongOpt.REQUIRED_ARGUMENT, null, 0);
+		longOpts[0] = new LongOpt("nick", LongOpt.REQUIRED_ARGUMENT, null, 'n');
 
 		String[] argArray = CmdUtils.strArgToArray(args);
 
-		Getopt getopt = new Getopt("kick", argArray, ":W", longOpts);
+		Getopt getopt = new Getopt("kick", argArray, "n:", longOpts);
 
-		getopt.setOpterr(true);
+        if (argArray.length < 1)
+        {
+            showHelp();
+            return;
+        }
 
 		int c;
 
@@ -70,15 +74,15 @@ public class KickHandler extends AbstractCmd
 				case 0:
 					this.nick = getopt.getOptarg();
 					break;
+
 				case ':':
 					sendError("Ohh.. You need an argument for option" + (char) getopt.getOptopt());
 					break;
+
 				case '?':
 					sendError("The option " + (char)getopt.getOptopt() + " is not valid");
 					break;
-				case 'W':
-					sendError("Hmmm. You tried a -W with an incorrect long option name");
-					break;
+
 				default:
 					showHelp();
 					break;
@@ -114,9 +118,14 @@ public class KickHandler extends AbstractCmd
 
     private void showHelp()
 	{
-		StringBuilder sb = new StringBuilder();
+		StringBuilder result = new StringBuilder();
 
-		sendError("help called");
+        result.append("\nGrant new weight to user.\n");
+        result.append("Usage: !grant --nick <nick> (--weight <weight> | --type <type>)\n");
+        result.append("\tWhere\n");
+        result.append("\t\t<nick> - user nick\n");
+
+		sendError(result.toString());
 	}
 
 

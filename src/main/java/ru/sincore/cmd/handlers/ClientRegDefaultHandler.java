@@ -78,34 +78,46 @@ public class ClientRegDefaultHandler extends AbstractCmd
 		String  hubName		= configInstance.getString(ConfigurationManager.HUB_NAME);
 		int passwordMinLen  = configInstance.getInt(ConfigurationManager.MIN_PASSWORD_LEN);
 
-		STAException ex = null;
+        if ((passwordMinLen != 0) && (args == null))
+        {
+            client.sendPrivateMessageFromHub("\nYou cannot register without password.\n");
+            return;
+        }
+        else if (args.length() < passwordMinLen)
+        {
+            client.sendPrivateMessageFromHub("\nPassword length is too small. Min length : " +
+                                             passwordMinLen +
+                                             "\n");
+            return;
+        }
+        else if (args != null)
+        {
+            client.setPassword(args.trim());
+        }
+        else
+        {
+            client.setPassword("");
+        }
 
-		try
-		{
-			if (args == null || args.length() <= passwordMinLen)
-			{
-				new STAError(client, Constants.STA_SEVERITY_FATAL + Constants.STA_INVALID_PASSWORD,
-							 Messages.get(Messages.REG_FAIL_MESSAGE));
-			}
-			else
-			{
-				client.setPassword(args.trim());
-			}
+        client.setRegistred(true);
+        client.setWeight(10);
+        client.setClientTypeByWeight(client.getWeight());
+        client.setRegistratorNick(client.getNick());
+        client.setRegistrationDate(new Date());
 
-			client.setRegistred(true);
-            client.setWeight(10);
-            client.setClientTypeByWeight(client.getWeight());
-			client.setRegistratorNick(client.getNick());
-			client.setRegistrationDate(new Date());
-			client.storeInfo();
+        Exception e = null;
 
-			client.sendPrivateMessageFromHub("\n "+client.getNick()+" You successful registered! \n Please reconnect to hub and enter your password.");
+        try
+        {
+            client.storeInfo();
+        }
+        catch (STAException ex)
+        {
+            e = ex;
+        }
 
-		} catch (STAException e)
-		{
-			ex = e;
-		}
+        client.sendPrivateMessageFromHub("\n "+client.getNick()+" You successful registered! \n Please reconnect to hub and enter your password.");
 
-		CmdLogger.log(this, client, "Registered by "+hubName, args, ex);
+		CmdLogger.log(this, client, "Registered by "+hubName, args, e);
 	}
 }
