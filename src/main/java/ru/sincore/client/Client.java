@@ -213,7 +213,9 @@ public class Client extends AbstractClient
         this.sendMOTD();
 
         // send info client's stats
-        sendMessageFromHub("\n >> Your information:" + ClientUtils.getClientStats(this));
+        sendMessageFromHub(Messages.get("core.client_info_header",
+                                        this.getExtendedField("LC")) +
+                           ClientUtils.getClientStats(this));
 
         // send N last messages from main chat
         this.sendNLastMessages();
