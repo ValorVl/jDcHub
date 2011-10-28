@@ -51,10 +51,14 @@ public class InfoHandler extends AbstractCmd
         this.cmd	= cmd;
         this.args	= args;
 
+        StringBuilder info = new StringBuilder();
+        info.append("\n >> Information about client:");
+
         if (args == null || args.isEmpty())
         {
             // send info client's stats
-            client.sendPrivateMessageFromHub(ClientUtils.getClientStats(client));
+            info.append(ClientUtils.getClientStats(client));
+            client.sendPrivateMessageFromHub(info.toString());
         }
         else if ((args.equals("?")))
         {
@@ -70,7 +74,8 @@ public class InfoHandler extends AbstractCmd
                 return;
             }
 
-            client.sendPrivateMessageFromHub(ClientUtils.getClientStats(clientAbout));
+            info.append(ClientUtils.getClientStats(clientAbout));
+            client.sendPrivateMessageFromHub(info.toString());
         }
     }
 

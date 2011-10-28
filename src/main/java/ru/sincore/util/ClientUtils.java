@@ -176,7 +176,6 @@ public class ClientUtils
 
         StringBuilder infoStr = new StringBuilder();
 
-        infoStr.append("\n >> Your information:");
         infoStr.append("\n >> Nickname : ");
         infoStr.append(client.getNick());
 
