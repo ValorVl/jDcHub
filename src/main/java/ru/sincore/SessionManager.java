@@ -151,11 +151,8 @@ public class SessionManager extends IoHandlerAdapter
         session.removeAttribute("client");
         ClientManager.getInstance().removeClient(currentClient);
 
-        if (currentClient.isValidated())
-        {
-            // broadcast client quited message
-            Broadcast.getInstance().broadcast("IQUI " + currentClient.getSid());
-        }
+        // broadcast client quited message
+        Broadcast.getInstance().broadcast("IQUI " + currentClient.getSid());
 
         /** calling plugins...*/
         // Publish async event
