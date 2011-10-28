@@ -82,6 +82,19 @@ public class Messages
     public static final String EMPTY_PASSWORD         = "core.protocol.empty_password";
     public static final String PASSWORD_REQUIRED      = "core.protocol.password_required";
     public static final String AUTHENTICATED          = "core.protocol.authenticated";
+    public static final String NICK_TOO_SMALL         = "core.protocol.nick_too_small";
+    public static final String NICK_TOO_LARGE         = "core.protocol.nick_too_large";
+    public static final String MISSING_FIELD          = "core.protocol.missing_field";
+    public static final String WRONG_IP_ADDRESS       = "core.protocol.wrong_ip_address";
+    public static final String REGISTERED_ON_MANY_HUBS = "core.protocol.registered_on_many_hubs";
+    public static final String OPERATOR_ON_MANY_HUBS   = "core.protocol.operator_on_many_hubs";
+    public static final String TOO_MANY_HUBS_OPEN     = "core.protocol.too_many_hubs_open";
+    public static final String TOO_MANY_SLOTS         = "core.protocol.too_many_slots";
+    public static final String TOO_FEW_SLOTS          = "core.protocol.too_few_slots";
+    public static final String TOO_SMALL_SHARE        = "core.protocol.too_small_share";
+    public static final String TOO_LARGE_SHARE        = "core.protocol.too_large_share";
+    public static final String TOO_LARGE_MAIL         = "core.protocol.too_large_mail";
+    public static final String TOO_LARGE_DESCRIPTION  = "core.protocol.too_large_description";
 
     public static final String COMMAND_REGISTERED     = "core.commands.command_registered";
     public static final String ARGUMENT_REQUIRED      = "core.commands.argument_required";
@@ -91,6 +104,8 @@ public class Messages
     public static final String WEIGHT_REQUIRED        = "core.commands.grant.weight_required";
     public static final String NICK_REQUIRED          = "core.commands.grant.nick_required";
 
+    public static final String TIME_FORMAT            = "core.time_format";
+    public static final String TIME_PERIOD_FORMAT     = "core.time_period_format";
 
     private static Map<String, ResourceBundle> resourcesMap =
                                                     new ConcurrentHashMap<String, ResourceBundle>();

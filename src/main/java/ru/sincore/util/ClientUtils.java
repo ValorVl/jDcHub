@@ -18,6 +18,7 @@ package ru.sincore.util;
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
@@ -33,6 +34,7 @@ import ru.sincore.i18n.Messages;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 /**
  *  @author Valor
@@ -176,6 +178,19 @@ public class ClientUtils
 
         if (client.isRegistred())
         {
+            String onlinePeriodStr = DurationFormatUtils.formatDuration(client.getTimeOnline(),
+                                                                        Messages.get(Messages.TIME_PERIOD_FORMAT,
+                                                                                     (String) client
+                                                                                             .getExtendedField(
+                                                                                                     "LC")),
+                                                                        true);
+            String maxOnlinePeriodStr =
+                    DurationFormatUtils.formatDuration(client.getMaximumTimeOnline(),
+                                                       Messages.get(Messages.TIME_PERIOD_FORMAT,
+                                                                    (String) client.getExtendedField(
+                                                                            "LC")),
+                                                       true);
+
             return Messages.get("core.registered_client_info",
                                  new Object[]
                                  {
@@ -188,8 +203,8 @@ public class ClientUtils
                                          client.getLoginCount(),
                                          client.getRegistrationDate(),
                                          client.getRegistratorNick(),
-                                         client.getTimeOnline() / 1000,
-                                         client.getMaximumTimeOnline() / 1000
+                                         onlinePeriodStr,
+                                         maxOnlinePeriodStr
                                  },
                                  (String)client.getExtendedField("LC"));
         }
