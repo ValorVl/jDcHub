@@ -1,17 +1,28 @@
-core.reg_message            = You have been registered by Server. No password set, login does not require pass, however, its recomandable for you to set one...
-core.search_spam_detected   = Search ticket Reserved. Please be patient while search is being processed. Do NOT close this window or start other search or you will.
-tiger.error                 = Cannot find any compatible hash function to use. Defaulting to TIGER.
-core.reg_fail_message       = {0} - you already registered! Registration procedure is not allowed.
-core.login_error_message    = Login fail
+#
+# Use this file as source to produce messages_ru_RU.properties boundle via next command:
+#   cat messages_ru_RU.properties.in | native2ascii > messages_ru_RU.properties
+#
 
-core.hub_is_full = Hello there. Hub is full, there are {0}  users online.
-core.ban_message = Hello there. You are temporary banned.\nOp who banned you: {0}\nReason: {1}\nThere are still {2}\n seconds remaining.
+core.reg_message            = Вы бы были зарегистрированы сервером. Пароль не установлен, для входа пароль так же не требуется, но мы рекомендуем установить пароль...
+core.search_spam_detected   = Search ticket Reserved. Please be patient while search is being processed. Do NOT close this window or start other search or you will.
+tiger.error                 = Не найдена ни одна совместимая Hash функция. Используется TIGER.
+core.reg_fail_message       = {0} - вы уже зарегистрированы! Невозможно повторно зарегестрироваться.
+core.login_error_message    = Ошибка входа
+
+core.hub_is_full = Хаб переполнен. {0} пользователей в сети.
+# {0} - op who make ban
+# {1} - cause
+# {2} - ban time
+core.ban_message = Вы временно забанены.\nОператор, забанивший вас: {0}\nПричина: {1}\nДо истечении бана осталось: {2}.
 
 core.last_chat_messages_header = Last {0} main chat messages:\n
+# {0} - amount of chat messages
+core.last_chat_messages_header = Последние {0} сообщений(я) из главного чата:\n
 
 core.time_format = yyyy-MM-dd HH:mm:ss
 core.time_period_format = yyyy-MM-dd HH:mm:ss
 
+core.client_info_header = \n >> Ваша информация:
 # {0} - nick
 # {1} - class (aka weight)
 # {2} - password: Yes/No
@@ -23,92 +34,97 @@ core.time_period_format = yyyy-MM-dd HH:mm:ss
 # {8} - total time online
 # {9} - maximum time online
 core.registered_client_info = \
-\n >> Your information: \
-\n >> Nickname : {0} \
-\n >> Class: {1} \
-\n >> Password set: {2} \
-\n >> Last login: {3} \
-\n >> Last ip: {4} \
-\n >> Login count: {5} \
-\n >> Registred since: {6} \
-\n >> Registred by: {7} \
-\n >> Total time online: {8} \
-\n >> Maximum time online: {9}\n
+\n >> Ник : {0} \
+\n >> Класс: {1} \
+\n >> Установлен ли пароль: {2} \
+\n >> Время последнего входа: {3} \
+\n >> Последний IP адрес: {4} \
+\n >> Число входов: {5} \
+\n >> Зарегистрирован с: {6} \
+\n >> Зарегистрирован: {7} \
+\n >> Общее время в сети: {8} \
+\n >> Максимальная продолжительность в сети: {9}\n
 
 core.unregistered_client_info = \
-\n >> Your information: \
-\n >> Nickname : {0} \
-\n >> Class: {1} \
-\n >> You are not registred!
+\n >> Ник : {0} \
+\n >> Класс: {1} \
+\n >> Не зарегистрирован(ы)!
 
 
 
-core.protocol.incorrect_command = Incorrect protocol command
-core.protocol.incorrect_message_type = Invalid message type in message: '{0}'
-core.protocol.message_too_long = Message exceeds buffer: {0}
-core.protocol.invalid_context = Invalid context: {0}
-core.protocol.tcp_disabled = Error: Must be TCP active to use CTM.
-core.protocol.very_old_adc = Your client uses a very old ADC version. Please update in order to connect to this hub. You can get a new version usually by visiting the developer's webpage from Help/About menu.
-core.protocol.nick_taken = Nick taken, please choose another
-core.protocol.cid_taken = CID taken. Please go to Settings and pick new PID.
-core.protocol.weird_info = Your client sent weird info, Protocol Error.
-core.protocol.ct_field_disallowed = Not allowed to have CT field.
-core.protocol.cant_change_pid = Can't change PID while connected.
-core.protocol.cant_change_cid = Can't change CID while connected.
-core.protocol.registered_only = Registered only hub.
-core.protocol.invalid_pid = Invalid PID supplied.
-core.protocol.invalid_cid = Invalid CID check.
-core.protocol.wrong_sid = Protocol Error. Wrong SID supplied.
-core.protocol.wrong_target_sid = Invalid target SID
-core.protocol.wrong_my_sid = MSG contains wrong my_sid value!
-core.protocol.wrong_sender = MSG my_sid not equal to sender's sid.
-core.protocol.no_sid = Must supply SID
-core.protocol.no_target_sid = Must supply target SID
-core.protocol.user_not_found = MSG User not found.
-core.protocol.message_exceed_max_length = MSG Message exceeds maximum length.
-core.protocol.invalid_flag = MSG Invalid Flag.
-core.protocol.invalid_flag_value = MSG Invalid flag value.
-core.protocol.pm_return_to_self = MSG PM not returning to self.
-core.protocol.pm_to_self = MSG Can't send private message to yourself.
-core.protocol.hash_function_not_selected = Cannot find any compatible hash function to use. Defaulting to TIGER.
-core.protocol.base_feature_not_supported = You removed BASE features therefore you can't stay on hub anymore.
-core.protocol.unknown_sup_token = Unknown SUP token (not an 'AD' or 'RM').
-core.protocol.empty_password = Registered, no password required. Though, its recomandable to set one.
-core.protocol.password_required = Registered, type your password.
-core.protocol.authenticated = Authenticated
-core.protocol.nick_too_small = Nick too small
-core.protocol.nick_too_large = Nick too large
-core.protocol.missing_field = Missing field
-core.protocol.wrong_ip_address = Wrong IP address supplied.
+core.protocol.incorrect_command = Некорректная команда протокола
+
+# {0} - message type
+core.protocol.incorrect_message_type = Неправильный тип сообщения: '{0}'
+
+# {0} - actual message size
+core.protocol.message_too_long = Сообщение слишком большое: {0}
+
+# {0} - actual context
+core.protocol.invalid_context = Неправильный контекст команды: {0}
+
+core.protocol.tcp_disabled = Ошибка: опция TCP обязана быть включенной для использования команды CTM.
+core.protocol.very_old_adc = Ваш клиент использует слишком старую версию ADC протокола. Пожалуйста обновите его, что бы подключиться к этому хабу. Обычно, вы можете получить новую версию, посетив страницу разработчиков, указанную в меню "Помошь/О программе"
+core.protocol.nick_taken = Ник занят, пожалуйста, выберите другой.
+core.protocol.cid_taken = CID занят. Пожалуйста, зайдите в настройки клиента и выберите новый PID.
+core.protocol.weird_info = Ошибка протокола: Ваш клиент отослал подозрительную информацию с командой INF.
+core.protocol.ct_field_disallowed = Поле CT установлено в недопустимое значение.
+core.protocol.cant_change_pid = Невозможно сменить PID во время подключения к хабу.
+core.protocol.cant_change_cid = Невозможно сменить CID во время подключения к хабу.
+core.protocol.registered_only = Хаб только для зарегестрированных пользователей.
+core.protocol.invalid_pid = Указан некорректный PID.
+core.protocol.invalid_cid = Указан некорректный CID.
+core.protocol.wrong_sid = Ошибка протокола: указан некорректный SID.
+core.protocol.wrong_target_sid = Некорректный целевой SID
+core.protocol.wrong_my_sid = MSG содержит некорректное значение my_sid!
+core.protocol.wrong_sender = MSG my_sid не равен SID отправителя.
+core.protocol.no_sid = Необходимо указать SID
+core.protocol.no_target_sid = Необходимо указать целевой SID
+core.protocol.user_not_found = MSG Пользователь не найден.
+core.protocol.message_exceed_max_length = MSG Сообщение достигло максимального размера.
+core.protocol.invalid_flag = MSG Некорректный флаг.
+core.protocol.invalid_flag_value = MSG Некорректное значение флага.
+core.protocol.pm_return_to_self = MSG Приватное сообщение не может быть возвращено самому себе.
+core.protocol.pm_to_self = MSG Невозможно отослать приватное сообщение самому себе.
+core.protocol.hash_function_not_selected = Невозможно найти ни одну поддерживаемую HASH функцию. Используется TIGER.
+core.protocol.base_feature_not_supported = У вас не установлена опция BASE, теоретически, вы не можете работать с этим хабом.
+core.protocol.unknown_sup_token = Неизвестный токен у команды SUP (не 'AD' и не 'RM').
+core.protocol.empty_password = Вы зарегистрированы. Пустой пароль допустим, но мы рекомендуем установить его.
+core.protocol.password_required = Вы зарегистрированы, введите свой пароль.
+core.protocol.authenticated = Проверка пароля пройдена
+core.protocol.nick_too_small = Ник слишком короткий
+core.protocol.nick_too_large = Ник слишком длинный
+core.protocol.missing_field = Некорректное поле
+core.protocol.wrong_ip_address = Указан неверный IP адрес.
 # {0} - max amount of hubs where you can be registered
-core.protocol.registered_on_many_hubs = You are registered on too many hubs. Sorry.
+core.protocol.registered_on_many_hubs = Извините, вы зарегистрированы на очень большом количестве хабов.
 # {0} - max amount of hubs where you can be operator
-core.protocol.operator_on_many_hubs = You are operator on too many hubs. Sorry.
+core.protocol.operator_on_many_hubs = Извините, вы являетесь оператором на очень большом количестве хабов.
 # {0} - how many opened hubs is allowed
-core.protocol.too_many_hubs_open = Too many hubs open, close some.
+core.protocol.too_many_hubs_open = Слишком много хабов открыто.
 # {0} - max slots count
-core.protocol.too_many_slots = Too many slots, close some.
+core.protocol.too_many_slots = Слишком много слотов, закройте некоторые.
 # {0} - min slots count
-core.protocol.too_few_slots = Too few slots, open up more.
+core.protocol.too_few_slots = Слишком мало слотов, откройте больше.
 # {0} - min share size
-core.protocol.too_small_share = Share too small. Minimum {0}  MiB required.
+core.protocol.too_small_share = Шара слишком мала. Требуется минимум: {0}  MiB.
 # {0} - max share size
-core.protocol.too_large_share = Share too large. Maximum {0} MiB allowed.
+core.protocol.too_large_share = Шара слишком велика. Допустимый максимум: {0} MiB.
 # {0} - max e-mail length
-core.protocol.too_large_mail = E-mail too large. Maximum {0} chars allowed.
+core.protocol.too_large_mail = E-mail адрес слишком длинный. Допустимо максимум {0} символов.
 # {0} - max description length
-core.protocol.too_large_description = Description too large. Maximum {0} chars allowed.
+core.protocol.too_large_description = Описание слишком длинное. Допустимо максимум {0} символов.
 
-core.commands.command_registered = Command : {0} registered
+core.commands.command_registered = Зарегистрирована команда: {0}.
 # {0} - wrong option name
-core.commands.argument_required = Ohh.. You need an argument for option \'{0}\'
-core.commands.low_weight = You doesn't have enough weight to do this!
+core.commands.argument_required = Требуется аргумент для опции: {0}
+core.commands.low_weight = У вас слишком маленький вес, что бы выполнить данную операцию!
 # {0} - nick name
-core.commands.nick_not_exists = There is no client with nick <{0}>!
+core.commands.nick_not_exists = Нет клиента с данным ником: <{0}>
 
-core.commands.grant.invalid_weight = Invalid weight value!
-core.commands.grant.weight_required = Weight required!
-core.commands.grant.nick_required = Nick required!
-core.commands.grant.help_text = Grant command help
+core.commands.grant.invalid_weight = Неправильное значение веса!
+core.commands.grant.weight_required = Необходимо указать вес!
+core.commands.grant.nick_required = Необходимо указать ник!
+core.commands.grant.help_text = Помощь для команды grant
 
 
