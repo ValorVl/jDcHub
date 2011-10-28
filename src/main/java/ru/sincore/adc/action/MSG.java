@@ -36,6 +36,7 @@ import ru.sincore.client.AbstractClient;
 import ru.sincore.cmd.CmdEngine;
 import ru.sincore.db.dao.ChatLogDAO;
 import ru.sincore.db.dao.ChatLogDAOImpl;
+import ru.sincore.i18n.Messages;
 import ru.sincore.util.AdcUtils;
 import ru.sincore.util.Constants;
 import ru.sincore.util.STAError;
@@ -191,13 +192,15 @@ public class MSG extends Action
                 if (pmSID.length() != 4)
                     new STAError(fromClient,
                                  Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
-                                 "MSG Invalid flag value.");
+                                 Messages.INVALID_FLAG_VALUE).send();
 
                 // TODO [lh] check what will be, if message will be sent to group
                 if (pmSID.equals(mySID) && messageType != MessageType.E)
+                {
                     new STAError(fromClient,
                                  Constants.STA_SEVERITY_RECOVERABLE,
-                                 "MSG Can\'t send private message to yourself.");
+                                 Messages.PM_TO_SELF).send();
+                }
             }
             else if (token.startsWith("ME"))
             {
@@ -206,7 +209,7 @@ public class MSG extends Action
                 else
                     new STAError(fromClient,
                                  Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
-                                 "MSG Invalid Flag.");
+                                 Messages.INVALID_FLAG).send();
             }
         }
     }
@@ -220,7 +223,7 @@ public class MSG extends Action
         if (messageText.length() > ConfigurationManager.instance().getInt(ConfigurationManager.MAX_CHAT_MESSAGE_SIZE))
             new STAError(fromClient,
                          Constants.STA_SEVERITY_RECOVERABLE,
-                         "MSG Message exceeds maximum length.");
+                         Messages.MESSAGE_EXCEED_MAX_LENGTH).send();
 
         message = messageText;
     }
@@ -234,12 +237,12 @@ public class MSG extends Action
         if (mySID.length() != 4)
             new STAError(fromClient,
                          Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
-                         "MSG contains wrong my_sid value!");
+                         Messages.WRONG_MY_SID).send();
 
         if (!mySID.equals(fromClient.getSid()))
             new STAError(fromClient,
                          Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
-                         "MSG my_sid not equal to sender\'s sid.");
+                         Messages.WRONG_SENDER).send();
     }
 
 
@@ -251,18 +254,18 @@ public class MSG extends Action
         if (targetSID.length() != 4)
             new STAError(fromClient,
                          Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
-                         "MSG contains wrong target_sid value!");
+                         Messages.WRONG_TARGET_SID).send();
 
         if (targetSID.equals(fromClient.getSid()))
             new STAError(fromClient,
                          Constants.STA_SEVERITY_RECOVERABLE,
-                         "MSG PM not returning to self.");
+                         Messages.PM_RETURN_TO_SELF).send();
 
         AbstractClient tempClient = ClientManager.getInstance().getClientBySID(targetSID);
         if (tempClient == null)
             new STAError(fromClient,
                          Constants.STA_SEVERITY_RECOVERABLE,
-                         "MSG User not found."); //not kick, maybe the other client just left after he sent the msg;
+                         Messages.USER_NOT_FOUND).send(); //not kick, maybe the other client just left after he sent the msg;
 
         toClient = tempClient;
     }

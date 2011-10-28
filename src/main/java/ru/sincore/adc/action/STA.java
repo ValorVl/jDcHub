@@ -7,6 +7,7 @@ import ru.sincore.adc.Context;
 import ru.sincore.adc.MessageType;
 import ru.sincore.adc.State;
 import ru.sincore.client.AbstractClient;
+import ru.sincore.i18n.Messages;
 import ru.sincore.util.Constants;
 import ru.sincore.util.STAError;
 
@@ -49,7 +50,10 @@ public class STA extends Action
 	private void validate()
     {
 		if (!fromClient.isOverrideSpam())
-			fromClient.sendMessageFromHub("STA invalid context " + context);
+        {
+            String msg = "STA " + Messages.get(Messages.INVALID_CONTEXT, context, (String)fromClient.getExtendedField("LC"));
+            fromClient.sendMessageFromHub(msg);
+        }
 	}
 
 	private void prepareDirect() throws STAException
@@ -62,7 +66,7 @@ public class STA extends Action
 		{
 			new STAError(fromClient,
 						 Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
-						 "Must supply SID");
+						 Messages.NO_SID).send();
 			return;
 		}
 		String curSid = tk.nextToken();
@@ -70,14 +74,14 @@ public class STA extends Action
 		{
 			new STAError(fromClient,
 						 Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
-						 "Protocol Error.Wrong SID supplied.");
+						 Messages.WRONG_SID).send();
 			return;
 		}
 		if (!tk.hasMoreTokens())
 		{
 			new STAError(fromClient,
 						 Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
-						 "Must supply target SID");
+						 Messages.NO_TARGET_SID).send();
 			return;
 		}
 		String dSid = tk.nextToken();
@@ -88,7 +92,9 @@ public class STA extends Action
 		}
 		else
 		{
-			new STAError(fromClient, Constants.STA_SEVERITY_RECOVERABLE, "Invalid Target Sid.");
+			new STAError(fromClient,
+                         Constants.STA_SEVERITY_RECOVERABLE,
+                         Messages.WRONG_TARGET_SID).send();
 		}
 	}
 
@@ -100,7 +106,9 @@ public class STA extends Action
 		tk.nextToken();
 		if (!tk.hasMoreTokens())
 		{
-			new STAError(fromClient, Constants.STA_SEVERITY_RECOVERABLE, "Must supply SID");
+			new STAError(fromClient,
+                         Constants.STA_SEVERITY_RECOVERABLE,
+                         Messages.NO_SID).send();
 			return;
 		}
 		String curSid = tk.nextToken();
@@ -108,14 +116,14 @@ public class STA extends Action
 		{
 			new STAError(fromClient,
 						 Constants.STA_SEVERITY_FATAL + Constants.STA_GENERIC_PROTOCOL_ERROR,
-						 "Protocol Error.Wrong SID supplied.");
+						 Messages.WRONG_SID).send();
 			return;
 		}
 		if (!tk.hasMoreTokens())
 		{
 			new STAError(fromClient,
 						 Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
-						 "Must supply SID");
+						 Messages.NO_SID).send();
 			return;
 		}
 		String eSid = tk.nextToken();
@@ -127,7 +135,9 @@ public class STA extends Action
 		}
 		else
 		{
-			new STAError(fromClient, Constants.STA_SEVERITY_RECOVERABLE, "Invalid Target Sid.");
+			new STAError(fromClient,
+                         Constants.STA_SEVERITY_RECOVERABLE,
+                         Messages.WRONG_TARGET_SID).send();
 		}
 	}
 

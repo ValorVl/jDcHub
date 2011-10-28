@@ -1,11 +1,14 @@
 package ru.sincore.i18n;
 
-import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
 import ru.sincore.ConfigurationManager;
 
 import java.io.*;
-import java.util.Map;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.text.MessageFormat;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -20,7 +23,8 @@ public class Messages
     private static final String defaultLocale = configurationManager.getString(ConfigurationManager.HUB_DEFAULT_LOCALE);
 
     // define server message var
-    private static final String SERVER_MESSAGE_FILE = "./etc/messages/servermessages.properties";
+    private static final String SERVER_MESSAGE_RESOURCE  = "servermessages";
+    private static final String SERVER_MESSAGE_DIRECTORY = "./etc/messages/";
 
     // Server messages
     public static final String SERVER_MESSAGE_STUB    = "core.server.message.stub";
@@ -45,10 +49,66 @@ public class Messages
     public static final String SEARCH_SPAM_MESSAGE    = "core.search_spam_detected";
     public static final String LOGIN_ERROR_MESSAGE    = "core.login_error_message";
     public static final String TIGER_ERROR            = "tiger.error";
+    public static final String INCORRECT_COMMAND      = "core.protocol.incorrect_command";
+    public static final String INCORRECT_MESSAGE_TYPE = "core.protocol.incorrect_message_type";
+    public static final String MESSAGE_TOO_LONG       = "core.protocol.message_too_long";
+    public static final String INVALID_CONTEXT        = "core.protocol.invalid_context";
+    public static final String WRONG_SID              = "core.protocol.wrong_sid";
+    public static final String TCP_DISABLED           = "core.protocol.tcp_disabled";
+    public static final String VERY_OLD_ADC           = "core.protocol.very_old_adc";
+    public static final String NICK_TAKEN             = "core.protocol.nick_taken";
+    public static final String CID_TAKEN              = "core.protocol.cid_taken";
+    public static final String WEIRD_INFO             = "core.protocol.weird_info";
+    public static final String CT_FIELD_DISALLOWED    = "core.protocol.ct_field_disallowed";
+    public static final String CANT_CHANGE_PID        = "core.protocol.cant_change_pid";
+    public static final String CANT_CHANGE_CID        = "core.protocol.cant_change_cid";
+    public static final String REGISTERED_ONLY        = "core.protocol.registered_only";
+    public static final String INVALID_PID            = "core.protocol.invalid_pid";
+    public static final String INVALID_CID            = "core.protocol.invalid_cid";
+    public static final String USER_NOT_FOUND         = "core.protocol.user_not_found";
+    public static final String WRONG_TARGET_SID       = "core.protocol.wrong_target_sid";
+    public static final String WRONG_SENDER           = "core.protocol.wrong_sender";
+    public static final String WRONG_MY_SID           = "core.protocol.wrong_my_sid";
+    public static final String MESSAGE_EXCEED_MAX_LENGTH = "core.protocol.message_exceed_max_length";
+    public static final String INVALID_FLAG           = "core.protocol.invalid_flag";
+    public static final String INVALID_FLAG_VALUE     = "core.protocol.invalid_flag_value";
+    public static final String PM_RETURN_TO_SELF      = "core.protocol.pm_return_to_self";
+    public static final String PM_TO_SELF             = "core.protocol.pm_to_self";
+    public static final String NO_SID                 = "core.protocol.no_sid";
+    public static final String NO_TARGET_SID          = "core.protocol.no_target_sid";
+    public static final String HASH_FUNCTION_NOT_SELECTED = "core.protocol.hash_function_not_selected";
+    public static final String BASE_FEATURE_NOT_SUPPORTED = "core.protocol.base_feature_not_supported";
+    public static final String UNKNOWN_SUP_TOKEN      = "core.protocol.unknown_sup_token";
+    public static final String EMPTY_PASSWORD         = "core.protocol.empty_password";
+    public static final String PASSWORD_REQUIRED      = "core.protocol.password_required";
+    public static final String AUTHENTICATED          = "core.protocol.authenticated";
+    public static final String NICK_TOO_SMALL         = "core.protocol.nick_too_small";
+    public static final String NICK_TOO_LARGE         = "core.protocol.nick_too_large";
+    public static final String MISSING_FIELD          = "core.protocol.missing_field";
+    public static final String WRONG_IP_ADDRESS       = "core.protocol.wrong_ip_address";
+    public static final String REGISTERED_ON_MANY_HUBS = "core.protocol.registered_on_many_hubs";
+    public static final String OPERATOR_ON_MANY_HUBS   = "core.protocol.operator_on_many_hubs";
+    public static final String TOO_MANY_HUBS_OPEN     = "core.protocol.too_many_hubs_open";
+    public static final String TOO_MANY_SLOTS         = "core.protocol.too_many_slots";
+    public static final String TOO_FEW_SLOTS          = "core.protocol.too_few_slots";
+    public static final String TOO_SMALL_SHARE        = "core.protocol.too_small_share";
+    public static final String TOO_LARGE_SHARE        = "core.protocol.too_large_share";
+    public static final String TOO_LARGE_MAIL         = "core.protocol.too_large_mail";
+    public static final String TOO_LARGE_DESCRIPTION  = "core.protocol.too_large_description";
 
+    public static final String COMMAND_REGISTERED     = "core.commands.command_registered";
+    public static final String ARGUMENT_REQUIRED      = "core.commands.argument_required";
+    public static final String LOW_WEIGHT             = "core.commands.low_weight";
+    public static final String NICK_NOT_EXISTS        = "core.commands.nick_not_exists";
+    public static final String INVALID_WEIGHT         = "core.commands.grant.invalid_weight";
+    public static final String WEIGHT_REQUIRED        = "core.commands.grant.weight_required";
+    public static final String NICK_REQUIRED          = "core.commands.grant.nick_required";
 
-    private static Map<String, PropertiesConfiguration> messagesMap =
-                                                    new ConcurrentHashMap<String, PropertiesConfiguration>();
+    public static final String TIME_FORMAT            = "core.time_format";
+    public static final String TIME_PERIOD_FORMAT     = "core.time_period_format";
+
+    private static Map<String, ResourceBundle> resourcesMap =
+                                                    new ConcurrentHashMap<String, ResourceBundle>();
 
     // Empty constructor
     private Messages()
@@ -68,136 +128,139 @@ public class Messages
 
 
     /**
-     * Return string message by key in given locale
+     * Return string message by key in given localeString
      * @param key       string key
-     * @param locale    locate in forms like ru_RU, en_US or so on
+     * @param localeString    locate in forms like ru_RU, en_US or so on
      * @return          string message by key or key value if message does not found
      */
-    public static String get(String key, String locale)
+    public static String get(String key, String localeString)
     {
-        String result = key;
+        String result;
 
-        // TODO: optimize
-        if (!messagesMap.containsKey(defaultLocale))
+        if (localeString == null || localeString.isEmpty())
         {
-            loadServerMessages();
-            loadClientMessages(locale);
+            localeString = defaultLocale;
         }
 
-        if (!messagesMap.containsKey(locale))
+        if (!resourcesMap.containsKey(localeString))
         {
-            loadClientMessages(locale);
+            try
+            {
+                loadResources(localeString);
+            }
+            catch (MalformedURLException e)
+            {
+                e.printStackTrace();
+                return key;
+            }
         }
 
-        if (messagesMap.containsKey(locale) && messagesMap.get(locale).containsKey(key))
-        {
-            result = messagesMap.get(locale).getString(key);
-        }
-        else if (messagesMap.containsKey(defaultLocale) && messagesMap.get(defaultLocale).containsKey(key))
-        {
-            result = messagesMap.get(defaultLocale).getString(key);
-        }
-        else
-        {
-            log.error("Can't found message for string '" + key + "' in user locale '" + locale + "' and default locale '" + defaultLocale + "'");
-        }
+        ResourceBundle resourceBundle = resourcesMap.get(localeString);
 
+        try
+        {
+            result = resourceBundle.getString(key);
+        }
+        catch (MissingResourceException e)
+        {
+            e.printStackTrace();
+            result = key;
+        }
 
         return result;
     }
 
 
     /**
-     * Get localized client messages file
-     *
-     * @return return localization filename
+     * Return string message with given replacements in default locale
+     * @param key       message key
+     * @param values    values for replasement of placeholders like {0}, {1}...{n} {@link MessageFormat}
+     * @return message in given locale with resolved placeholders
      */
-    private static String localizedClienMessageFile(String locale)
-            throws FileNotFoundException
+    public static String get(String key, Object values)
     {
-        File dir = new File(ConfigurationManager.instance()
-                                                .getString(ConfigurationManager.HUB_MESSAGES_FILE_DIR));
-        File messageFile;
+        return get(key, values, defaultLocale);
+    }
 
-        if (dir.isDirectory() && dir.exists())
+
+    /**
+     * Return string message with given replacements in given locale
+     * @param key           message key
+     * @param values        values for replasement of placeholders like {0}, {1}...{n} {@link MessageFormat}
+     * @param localeString  locale string, like 'ru_RU' or 'en_US' or 'ru' or 'en'
+     * @return message in given locale with resolved placeholders
+     */
+    public static String get(String key, Object values, String localeString)
+    {
+        if (localeString == null || localeString.isEmpty())
         {
-            messageFile = new File(dir + "/messages." + locale);
-            if (!messageFile.exists() || !messageFile.isFile())
-            {
-                FileNotFoundException exception =
-                        new FileNotFoundException("Client messages file does not found for locale: " + locale);
-                log.error(exception.getMessage());
-                throw exception;
-            }
+            localeString = defaultLocale;
+        }
+
+        String[] localeElements = localeString.split("_");
+        Locale   locale;
+        if (localeElements.length == 1)
+        {
+            locale = new Locale(localeElements[0]);
         }
         else
         {
-            FileNotFoundException exception =
-                    new FileNotFoundException("Localized file directory is not found, create this and try again");
-            log.error(exception.getMessage());
-            throw exception;
+            locale = new Locale(localeElements[0], localeElements[1]);
         }
 
-        log.info("Client message file: " + messageFile);
+        String pattern = get(key, localeString);
+        MessageFormat messageFormat = new MessageFormat(pattern, locale);
 
-        return messageFile.toString();
+        Object[] newValues;
+        if (values instanceof Object[])
+        {
+            newValues = (Object[])values;
+        }
+        else
+        {
+            newValues = new Object[] {values};
+        }
+
+        return messageFormat.format(newValues);
     }
 
 
     /**
-     * Common method for loading client and server messages
-     * @param fileName      properties file with messages
-     * @param locale        locale
+     * Load resources for given locale
+     * @param localeString           locale string in forms like 'ru_RU', 'en_US', 'ru', 'en'
+     * @throws MalformedURLException if resources directories is incorrect
      */
-    private static void loadMessages(String fileName, String locale)
+    private static void loadResources(String localeString)
+            throws MalformedURLException
     {
-        File messagesFile;
-        try
+        String[] localeElements = localeString.split("_");
+        Locale   loc;
+        if (localeElements.length == 1)
         {
-            messagesFile = new File(fileName);
-
-            PropertiesConfiguration propertiesConfiguration = new PropertiesConfiguration(messagesFile);
-            propertiesConfiguration.load();
-
-            if (!messagesMap.containsKey(locale))
-            {
-                messagesMap.put(locale, new PropertiesConfiguration());
-            }
-
-            synchronized (messagesMap.get(locale))
-            {
-                messagesMap.get(locale).append(propertiesConfiguration);
-            }
+            loc = new Locale(localeElements[0]);
         }
-        catch (Exception ex)
+        else
         {
-            log.error("Can not load messages file", ex);
+            loc = new Locale(localeElements[0], localeElements[1]);
         }
-    }
 
+        File           serverMessagesDirectory = new File(SERVER_MESSAGE_DIRECTORY);
+        File           clientMessagesDirectory = new File(ConfigurationManager.instance()
+                                                          .getString(ConfigurationManager.HUB_MESSAGES_FILE_DIR));
 
-    /**
-     * Load client messages in given locale
-     * @param locale locate in forms like ru_RU, en_US or so on
-     */
-    private static void loadClientMessages(String locale)
-    {
-        try
-        {
-            loadMessages(localizedClienMessageFile(locale), locale);
-        }
-        catch (FileNotFoundException e)
-        {
-            log.error("Can not load localized client messages file", e);
-        }
-    }
+        URLClassLoader classLoader;
+        ClassLoader    parentClassLoader = Messages.class.getClassLoader();
 
+        classLoader = new URLClassLoader(new URL[]{
+                                                    serverMessagesDirectory.toURI().toURL(),
+                                                    clientMessagesDirectory.toURI().toURL()
+                                                  },
+                                         parentClassLoader);
 
-    /**
-     * Load server messages
-     */
-    private static void loadServerMessages()
-    {
-        loadMessages(SERVER_MESSAGE_FILE, defaultLocale);
+        ResourceBundle serverMessages = ResourceBundle.getBundle(SERVER_MESSAGE_RESOURCE, loc, classLoader);
+        ResourceBundle clientMessages = ResourceBundle.getBundle("messages", loc, classLoader);
+
+        ResourceBundle resourceBundle = new MergedResourceBundle(new ResourceBundle[] {serverMessages, clientMessages});
+        resourcesMap.put(localeString, resourceBundle);
     }
 }

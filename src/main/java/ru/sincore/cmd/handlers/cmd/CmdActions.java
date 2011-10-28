@@ -22,6 +22,7 @@ import ru.sincore.client.AbstractClient;
 import ru.sincore.cmd.AbstractCmd;
 import ru.sincore.cmd.CmdContainer;
 import ru.sincore.db.dao.CmdListDAOImpl;
+import ru.sincore.i18n.Messages;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -77,7 +78,9 @@ public class CmdActions extends AbstractCmd
 
 			if (response)
 			{
-                client.sendPrivateMessageFromHub("Command : " + cmd + " registered.");
+                client.sendPrivateMessageFromHub(Messages.get(Messages.COMMAND_REGISTERED,
+                                                              cmd,
+                                                              (String)client.getExtendedField("LC")));
 			}
 		}
 

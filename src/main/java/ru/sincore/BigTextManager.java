@@ -1,5 +1,6 @@
 package ru.sincore;
 
+import org.omg.CORBA.StringHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
@@ -45,6 +46,25 @@ public class BigTextManager
 	public String getText(String title, String locale)
 	{
         BigStaticDataDAO bigStaticDataDAO = new BigTextDataDAOImpl();
+
+        String text = bigStaticDataDAO.getData(title, locale);
+        if (text == null || text.isEmpty())
+        {
+            if (!defaultLocale.equals(locale))
+            {
+                text = bigStaticDataDAO.getData(title, defaultLocale);
+            }
+        }
+
+        if (text == null || text.isEmpty())
+        {
+            text = bigStaticDataDAO.getData(title, null);
+        }
+
+        if (text == null || text.isEmpty())
+        {
+            text = "";
+        }
 
 		return bigStaticDataDAO.getData(title, locale);
 	}

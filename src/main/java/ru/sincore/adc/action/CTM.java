@@ -31,6 +31,7 @@ import ru.sincore.adc.Context;
 import ru.sincore.adc.MessageType;
 import ru.sincore.adc.State;
 import ru.sincore.client.AbstractClient;
+import ru.sincore.i18n.Messages;
 import ru.sincore.util.Constants;
 import ru.sincore.util.STAError;
 
@@ -74,7 +75,9 @@ public class CTM extends Action
     {
         if (!fromClient.isActive())
         {
-            new STAError(fromClient, 100, "Error: Must be TCP active to use CTM.");
+            new STAError(fromClient,
+                         Constants.STA_SEVERITY_RECOVERABLE,
+                         Messages.TCP_DISABLED).send();
             return;
         }
 
@@ -83,8 +86,8 @@ public class CTM extends Action
         if (!mySID.equals(fromClient.getSid()))
         {
             new STAError(fromClient,
-                         200 + Constants.STA_GENERIC_PROTOCOL_ERROR,
-                         "Protocol Error. Wrong SID supplied.");
+                         Constants.STA_SEVERITY_FATAL + Constants.STA_GENERIC_PROTOCOL_ERROR,
+                         Messages.WRONG_SID).send();
             return;
         }
 

@@ -97,7 +97,9 @@ public class SUP extends Action
 			}
 			else
 			{
-				new STAError(fromClient, 100, "Unknown SUP token (not an \'AD\' or \'RM\').");
+				new STAError(fromClient,
+                             Constants.STA_SEVERITY_RECOVERABLE,
+                             Messages.UNKNOWN_SUP_TOKEN).send();
 			}
 
 			//TODO [Valor] maybe rewrite this ?
@@ -113,7 +115,7 @@ public class SUP extends Action
 		{
 			new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL + Constants.STA_GENERIC_PROTOCOL_ERROR,
-                         "You removed BASE features therefore you can't stay on hub anymore.");
+                         Messages.BASE_FEATURE_NOT_SUPPORTED).send();
 		}
 
 		// Check support TIGER hash..
@@ -121,7 +123,7 @@ public class SUP extends Action
 		{
 			new STAError(fromClient,
                          Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_NO_HASH_OVERLAP,
-                         "Cannot find any compatible hash function to use. Defaulting to TIGER.");
+                         Messages.HASH_FUNCTION_NOT_SELECTED).send();
 		}
 
         // if client in PROTOCOL state, send info about hub to him
@@ -148,7 +150,9 @@ public class SUP extends Action
 		// Check client TIGER hash support if not, send error code 147 and reason
         if (!toClient.isFeature(Features.TIGER))
 		{
-			new STAError(fromClient,100 + Constants.STA_NO_HASH_OVERLAP, Messages.get(Messages.TIGER_ERROR));
+			new STAError(fromClient,
+                         Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_NO_HASH_OVERLAP,
+                         Messages.TIGER_ERROR).send();
 		}
 
 		// Check extension list, if list empty, send error message in log file and stop server

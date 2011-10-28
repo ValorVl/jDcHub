@@ -31,6 +31,7 @@ import ru.sincore.adc.Context;
 import ru.sincore.adc.MessageType;
 import ru.sincore.adc.action.*;
 import ru.sincore.client.AbstractClient;
+import ru.sincore.i18n.Messages;
 import ru.sincore.signals.InfCommandPreprocessSignal;
 import ru.sincore.signals.RawCommandSignal;
 import ru.sincore.signalservice.Signal;
@@ -79,7 +80,7 @@ public class Command
         {
             new STAError(client,
                          Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
-                         "Incorrect command");
+                         Messages.INCORRECT_COMMAND).send();
             return;
         }
 
@@ -93,7 +94,8 @@ public class Command
         {
             new STAError(client,
                          Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
-                         "Invalid message type in message : \'" + rawCommand + "\'");
+                         Messages.INCORRECT_MESSAGE_TYPE,
+                         rawCommand).send();
         }
 
         /*******************************MSG COMMAND*******************************/

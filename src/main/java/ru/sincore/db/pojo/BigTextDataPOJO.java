@@ -16,7 +16,7 @@ public class BigTextDataPOJO implements Serializable
 	@Column(name = "data",columnDefinition = "LONGBLOB",nullable = false)
 	private byte[] data;
 
-	@Column(name = "locale",length = 5,nullable = false)
+	@Column(name = "locale",length = 7,nullable = true)
 	private String locale;
 
 	public Long getId()

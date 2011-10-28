@@ -1,5 +1,6 @@
 package ru.sincore.adc.action;
 
+import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.sincore.Broadcast;
@@ -77,9 +78,9 @@ public class INF extends Action
         {
             new STAError(client,
                          Constants.STA_SEVERITY_FATAL + Constants.STA_NICK_INVALID,
-                         "Nick too large",
+                         Messages.NICK_TOO_LARGE,
                          "FB",
-                         "NI");
+                         "NI").send();
             return false;
         }
 
@@ -87,9 +88,9 @@ public class INF extends Action
         {
             new STAError(client,
                          Constants.STA_SEVERITY_FATAL + Constants.STA_NICK_INVALID,
-                         "Nick too small",
+                         Messages.NICK_TOO_SMALL,
                          "FB",
-                         "NI");
+                         "NI").send();
             return false;
         }
 
@@ -134,9 +135,10 @@ public class INF extends Action
                     new STAError(fromClient,
                                  Constants.STA_SEVERITY_FATAL +
                                  Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
-                                 "Too few slots, open up more.",
+                                 Messages.TOO_FEW_SLOTS,
+                                 configurationManager.getInt(ConfigurationManager.MIN_SLOT_COUNT),
                                  "FB",
-                                 "SL");
+                                 "SL").send();
                 }
             }
             //TODO : add without tag allow ?
@@ -154,9 +156,10 @@ public class INF extends Action
                     new STAError(fromClient,
                                  Constants.STA_SEVERITY_FATAL +
                                  Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
-                                 "Description too large",
+                                 Messages.TOO_LARGE_DESCRIPTION,
+                                 configurationManager.getInt(ConfigurationManager.MAX_DESCRIPTION_CHAR_COUNT),
                                  "FB",
-                                 "DE");
+                                 "DE").send();
                     return;
                 }
             }
@@ -169,9 +172,10 @@ public class INF extends Action
                     new STAError(fromClient,
                                  Constants.STA_SEVERITY_FATAL +
                                  Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
-                                 "E-mail too large",
+                                 Messages.TOO_LARGE_MAIL,
+                                 configurationManager.getInt(ConfigurationManager.MAX_EMAIL_CHAR_COUNT),
                                  "FB",
-                                 "EM");
+                                 "EM").send();
                     return;
                 }
             }
@@ -186,9 +190,10 @@ public class INF extends Action
                     new STAError(fromClient,
                                  Constants.STA_SEVERITY_FATAL +
                                  Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
-                                 "Share too large",
+                                 Messages.TOO_LARGE_SHARE,
+                                 configurationManager.getLong(ConfigurationManager.MAX_SHARE_SIZE),
                                  "FB",
-                                 "SS");
+                                 "SS").send();
                     return;
                 }
 
@@ -198,11 +203,10 @@ public class INF extends Action
                     new STAError(fromClient,
                                  Constants.STA_SEVERITY_FATAL +
                                  Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
-                                 "Share too small " +
-                                 configurationManager.getLong(ConfigurationManager.MIN_SHARE_SIZE) +
-                                 " MiB required.",
+                                 Messages.TOO_SMALL_SHARE,
+                                 configurationManager.getLong(ConfigurationManager.MIN_SHARE_SIZE),
                                  "FB",
-                                 "SS");
+                                 "SS").send();
                     return;
                 }
             }
@@ -215,9 +219,10 @@ public class INF extends Action
                     new STAError(fromClient,
                                  Constants.STA_SEVERITY_FATAL +
                                  Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
-                                 "Too few slots, open up more.",
+                                 Messages.TOO_FEW_SLOTS,
+                                 configurationManager.getInt(ConfigurationManager.MIN_SLOT_COUNT),
                                  "FB",
-                                 "SL");
+                                 "SL").send();
                     return;
                 }
 
@@ -227,9 +232,10 @@ public class INF extends Action
                     new STAError(fromClient,
                                  Constants.STA_SEVERITY_FATAL +
                                  Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
-                                 "Too many slots, close some.",
+                                 Messages.TOO_MANY_SLOTS,
+                                 configurationManager.getInt(ConfigurationManager.MAX_SLOT_COUNT),
                                  "FB",
-                                 "SL");
+                                 "SL").send();
                     return;
                 }
             }
@@ -242,9 +248,10 @@ public class INF extends Action
                     new STAError(fromClient,
                                  Constants.STA_SEVERITY_FATAL +
                                  Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
-                                 "Too many hubs open, close some.",
+                                 Messages.TOO_MANY_HUBS_OPEN,
+                                 configurationManager.getInt(ConfigurationManager.MAX_HUBS_USERS),
                                  "FB",
-                                 "HN");
+                                 "HN").send();
                     return;
                 }
             }
@@ -257,9 +264,10 @@ public class INF extends Action
                     new STAError(fromClient,
                                  Constants.STA_SEVERITY_FATAL +
                                  Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
-                                 "You are operator on too many hubs. Sorry.",
+                                 Messages.OPERATOR_ON_MANY_HUBS,
+                                 configurationManager.getInt(ConfigurationManager.MAX_OP_IN_HUB),
                                  "FB",
-                                 "HO");
+                                 "HO").send();
                     return;
                 }
             }
@@ -272,9 +280,10 @@ public class INF extends Action
                     new STAError(fromClient,
                                  Constants.STA_SEVERITY_FATAL +
                                  Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
-                                 "You are registered on too many hubs. Sorry.",
+                                 Messages.REGISTERED_ON_MANY_HUBS,
+                                 configurationManager.getInt(ConfigurationManager.MAX_HUBS_REGISTERED),
                                  "FB",
-                                 "HR");
+                                 "HR").send();
                     return;
                 }
             }
@@ -291,9 +300,9 @@ public class INF extends Action
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL +
                          Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
-                         "Missing field",
+                         Messages.MISSING_FIELD,
                          "FM",
-                         "ID");
+                         "ID").send();
             return;
         }
         else if (fromClient.getCid().equals(""))
@@ -301,9 +310,9 @@ public class INF extends Action
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL +
                          Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
-                         "Missing field",
+                         Messages.MISSING_FIELD,
                          "FM",
-                         "ID");
+                         "ID").send();
             return;
         }
 
@@ -312,9 +321,9 @@ public class INF extends Action
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL +
                          Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
-                         "Missing field",
+                         Messages.MISSING_FIELD,
                          "FM",
-                         "PD");
+                         "PD").send();
             return;
         }
         else if (fromClient.getPid().equals(""))
@@ -322,9 +331,9 @@ public class INF extends Action
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL +
                          Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
-                         "Missing field",
+                         Messages.MISSING_FIELD,
                          "FM",
-                         "PD");
+                         "PD").send();
             return;
         }
 
@@ -333,9 +342,9 @@ public class INF extends Action
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL +
                          Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
-                         "Missing field",
+                         Messages.MISSING_FIELD,
                          "FM",
-                         "NI");
+                         "NI").send();
             return;
         }
         else if (fromClient.getNick().equals(""))
@@ -343,9 +352,9 @@ public class INF extends Action
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL +
                          Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
-                         "Missing field",
+                         Messages.MISSING_FIELD,
                          "FM",
-                         "NI");
+                         "NI").send();
             return;
         }
 
@@ -354,9 +363,9 @@ public class INF extends Action
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL +
                          Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
-                         "Missing field",
+                         Messages.MISSING_FIELD,
                          "FM",
-                         "HN");
+                         "HN").send();
         }
     }
 
@@ -373,7 +382,7 @@ public class INF extends Action
         {
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL + Constants.STA_GENERIC_PROTOCOL_ERROR,
-                         "Protocol Error.Wrong SID supplied.");
+                         Messages.WRONG_SID).send();
             return;
         }
 
@@ -389,7 +398,7 @@ public class INF extends Action
                     {
                         new STAError(fromClient,
                                      Constants.STA_SEVERITY_RECOVERABLE,
-                                     "Can't change CID while connected.");
+                                     Messages.CANT_CHANGE_CID);
                         return;
                     }
 
@@ -433,7 +442,7 @@ public class INF extends Action
                     {
                         new STAError(fromClient,
                                      Constants.STA_SEVERITY_RECOVERABLE,
-                                     "Can't change PID while connected.");
+                                     Messages.CANT_CHANGE_PID).send();
                         return;
                     }
 
@@ -456,9 +465,9 @@ public class INF extends Action
                     {
                         new STAError(fromClient,
                                      Constants.STA_SEVERITY_FATAL + Constants.STA_INVALID_IP,
-                                     "Wrong IP address supplied.",
+                                     Messages.WRONG_IP_ADDRESS,
                                      "I4",
-                                     fromClient.getRealIP());
+                                     fromClient.getRealIP()).send();
                         return;
                     }
 
@@ -590,7 +599,7 @@ public class INF extends Action
                         new STAError(fromClient,
                                      Constants.STA_SEVERITY_FATAL +
                                      Constants.STA_GENERIC_LOGIN_ERROR,
-                                     "Not allowed to have CT field.");
+                                     Messages.CT_FIELD_DISALLOWED).send();
                         return;
                     }
                 }
@@ -622,7 +631,7 @@ public class INF extends Action
         {
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL + Constants.STA_GENERIC_PROTOCOL_ERROR,
-                         "Your client sent weird info, Protocol Error.");
+                         Messages.WEIRD_INFO).send();
             return;
         }
 
@@ -638,20 +647,20 @@ public class INF extends Action
 
             if (timeLeft > 0)
             {
-                String msg = "Hello there. You are temporary banned.\nOp who banned you: " +
-                             banInfo.getOpNick() +
-                             "\nReason: " +
-                             banInfo.getReason() +
-                             "\nThere are still " +
-                             Long.toString(timeLeft / 1000) +
-                             " seconds remaining.\n" +
-                             Messages.get(Messages.BAN_MESSAGE) +
-                             " TL" +
-                             Long.toString(timeLeft / 1000);
+                String timeLeftString = DurationFormatUtils.formatDuration(
+                        timeLeft,
+                        Messages.get(Messages.TIME_PERIOD_FORMAT,
+                                     (String) fromClient.getExtendedField("LC")),
+                        true);
 
                 new STAError(fromClient,
                              Constants.STA_SEVERITY_FATAL + Constants.STA_TEMP_BANNED,
-                             msg);
+                             Messages.BAN_MESSAGE,
+                             new Object[] {banInfo.getOpNick(),
+                                           banInfo.getReason(),
+                                           timeLeftString},
+                             "TL",
+                             Long.toString(timeLeft / 1000)).send();
             }
         }
 
@@ -669,7 +678,7 @@ public class INF extends Action
                     {
                         new STAError(fromClient,
                                      Constants.STA_SEVERITY_FATAL + Constants.STA_NICK_TAKEN,
-                                     "Nick taken, please choose another");
+                                     Messages.NICK_TAKEN).send();
                         return;
                     }
                 }
@@ -703,10 +712,8 @@ public class INF extends Action
             {
                 new STAError(fromClient,
                              Constants.STA_SEVERITY_FATAL + Constants.STA_HUB_FULL,
-                             "Hello there. Hub is full, there are " +
-                             String.valueOf(ClientManager.getInstance().getClientsCount()) +
-                             " users online.\n" +
-                             Messages.get(Messages.HUB_FULL_MESSAGE));
+                             Messages.HUB_FULL_MESSAGE,
+                             String.valueOf(ClientManager.getInstance().getClientsCount())).send();
                 return;
             }
         }
@@ -717,28 +724,28 @@ public class INF extends Action
         {
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL + Constants.STA_CID_TAKEN,
-                         "CID taken. Please go to Settings and pick new PID.");
+                         Messages.CID_TAKEN).send();
             return;
         }
         if (fromClient.getCid().equals(configurationManager.getString(ConfigurationManager.SECURITY_CID)))
         {
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL + Constants.STA_CID_TAKEN,
-                         "CID taken. Please go to Settings and pick new PID.");
+                         Messages.CID_TAKEN).send();
             return;
         }
         if (fromClient.getNick().equalsIgnoreCase(configurationManager.getString(ConfigurationManager.OP_CHAT_NAME)))
         {
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL + Constants.STA_NICK_TAKEN,
-                         "Nick taken, please choose another");
+                         Messages.NICK_TAKEN).send();
             return;
         }
         if (fromClient.getNick().equalsIgnoreCase(configurationManager.getString(ConfigurationManager.BOT_CHAT_NAME)))
         {
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL + Constants.STA_NICK_TAKEN,
-                         "Nick taken, please choose another");
+                         Messages.NICK_TAKEN).send();
             return;
         }
 
@@ -747,10 +754,7 @@ public class INF extends Action
         {
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL + Constants.STA_GENERIC_PROTOCOL_ERROR,
-                         "Your client uses a very old ADC version." +
-                         "Please update in order to connect to this hub." +
-                         "You can get a new version usually by visiting" +
-                         "the developer's webpage from Help/About menu.");
+                         Messages.VERY_OLD_ADC).send();
         }
 
         if (fromClient.getState() == State.PROTOCOL)
@@ -779,7 +783,7 @@ public class INF extends Action
             {
                 new STAError(fromClient,
                              Constants.STA_SEVERITY_FATAL + Constants.STA_GENERIC_LOGIN_ERROR,
-                             "Invalid CID check.");
+                             Messages.INVALID_CID).send();
                 return;
             }
             if (fromClient.getPid().length() != 39)
@@ -791,7 +795,7 @@ public class INF extends Action
         {
             new STAError(fromClient,
                          Constants.STA_SEVERITY_FATAL + Constants.STA_INVALID_PID,
-                         "Invalid PID supplied.");
+                         Messages.INVALID_PID).send();
             return;
         }
         catch (Exception e)
@@ -814,14 +818,13 @@ public class INF extends Action
         {
             if (fromClient.getPassword().equals(""))//no pass defined ( yet)
             {
-                fromClient.sendRawCommand(
-                        "ISTA 000 Registered,\\sno\\spassword\\srequired.\\sThough,\\sits\\srecomandable\\sto\\sset\\sone.");
+                new STAError(fromClient, Constants.STA_SEVERITY_SUCCESS, Messages.EMPTY_PASSWORD).send();
                 fromClient.onLoggedIn();
             }
             else
             {
                 // check client for registration (Moscow city style : do you have the passport?)
-                fromClient.sendRawCommand("ISTA 000 Registered,\\stype\\syour\\spassword.");
+                new STAError(fromClient, Constants.STA_SEVERITY_SUCCESS, Messages.PASSWORD_REQUIRED).send();
 
                 /* creates some hash for the GPA random data*/
                 fromClient.setEncryptionSalt(Base32.encode(generateSalt()));
@@ -839,7 +842,7 @@ public class INF extends Action
             {
                 new STAError(fromClient,
                              Constants.STA_SEVERITY_FATAL + Constants.STA_REG_ONLY,
-                             "Registered only hub.");
+                             Messages.REGISTERED_ONLY);
                 return;
             }
 

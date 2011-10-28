@@ -31,6 +31,7 @@ import ru.sincore.adc.Context;
 import ru.sincore.adc.MessageType;
 import ru.sincore.adc.State;
 import ru.sincore.client.AbstractClient;
+import ru.sincore.i18n.Messages;
 import ru.sincore.util.Constants;
 import ru.sincore.util.STAError;
 
@@ -170,8 +171,8 @@ public abstract class Action
 
         if (rawCommand.length() < minimalCommandLength)
             new STAError(fromClient,
-                         100 + Constants.STA_GENERIC_PROTOCOL_ERROR,
-                         "Incorrect protocol command");
+                         Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
+                         Messages.INCORRECT_COMMAND);
     }
 
 
@@ -209,7 +210,7 @@ public abstract class Action
                     parseUDP();
                     break;
                 default:
-                    new STAError(fromClient, Constants.STA_SEVERITY_RECOVERABLE, "Invalid context : " + context);
+                    new STAError(fromClient, Constants.STA_SEVERITY_RECOVERABLE, Messages.INVALID_CONTEXT, context).send();
                     break;
             }
         }
@@ -234,7 +235,7 @@ public abstract class Action
     protected void parseIncoming()
             throws STAException, CommandException
 	{
-        new STAError(fromClient, Constants.STA_SEVERITY_RECOVERABLE, "Invalid context : " + context);
+        new STAError(fromClient, Constants.STA_SEVERITY_RECOVERABLE, Messages.INVALID_CONTEXT, context).send();
     }
 
 
@@ -246,7 +247,7 @@ public abstract class Action
     protected void parseOutgoing()
             throws STAException, CommandException
     {
-        new STAError(fromClient, Constants.STA_SEVERITY_RECOVERABLE, "Invalid context : " + context);
+        new STAError(fromClient, Constants.STA_SEVERITY_RECOVERABLE, Messages.INVALID_CONTEXT, context).send();
     }
 
 
@@ -257,7 +258,7 @@ public abstract class Action
     protected void parsePassiveTransition()
             throws STAException
     {
-        new STAError(fromClient, Constants.STA_SEVERITY_RECOVERABLE, "Invalid context : " + context);
+        new STAError(fromClient, Constants.STA_SEVERITY_RECOVERABLE, Messages.INVALID_CONTEXT, context).send();
     }
 
 
@@ -268,7 +269,7 @@ public abstract class Action
     protected void parseUDP()
             throws STAException
     {
-        new STAError(fromClient, Constants.STA_SEVERITY_RECOVERABLE, "Invalid context : " + context);
+        new STAError(fromClient, Constants.STA_SEVERITY_RECOVERABLE, Messages.INVALID_CONTEXT, context).send();
     }
 
     public abstract String toString ();

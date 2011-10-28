@@ -18,6 +18,7 @@ package ru.sincore.util;
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
@@ -28,10 +29,12 @@ import ru.sincore.client.AbstractClient;
 import ru.sincore.client.Client;
 import ru.sincore.db.dao.BanListDAOImpl;
 import ru.sincore.db.pojo.BanListPOJO;
+import ru.sincore.i18n.Messages;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 /**
  *  @author Valor
@@ -173,51 +176,47 @@ public class ClientUtils
             return "";
         }
 
-
-        StringBuilder infoStr = new StringBuilder();
-
-        infoStr.append("\n >> Nickname : ");
-        infoStr.append(client.getNick());
-
-        infoStr.append("\n >> Class: ");
-        infoStr.append(client.getWeight());
-
         if (client.isRegistred())
         {
-            infoStr.append("\n >> Password set: ");
-            infoStr.append(((client.getPassword() != null) && (!client.getPassword().equals(""))) ?
-                           "Yes" : "No");
+            String onlinePeriodStr = DurationFormatUtils.formatDuration(client.getTimeOnline(),
+                                                                        Messages.get(Messages.TIME_PERIOD_FORMAT,
+                                                                                     (String) client
+                                                                                             .getExtendedField(
+                                                                                                     "LC")),
+                                                                        true);
+            String maxOnlinePeriodStr =
+                    DurationFormatUtils.formatDuration(client.getMaximumTimeOnline(),
+                                                       Messages.get(Messages.TIME_PERIOD_FORMAT,
+                                                                    (String) client.getExtendedField(
+                                                                            "LC")),
+                                                       true);
 
-            infoStr.append("\n >> Last login: ");
-            infoStr.append(client.getLastLogin());
-
-            infoStr.append("\n >> Last ip: ");
-            infoStr.append(client.getLastIP());
-
-            infoStr.append("\n >> Login count: ");
-            infoStr.append(client.getLoginCount());
-
-            infoStr.append("\n >> Registred since: ");
-            infoStr.append(client.getRegistrationDate());
-
-            infoStr.append("\n >> Registred by: ");
-            infoStr.append(client.getRegistratorNick());
-
-            infoStr.append("\n >> Total time online: ");
-            infoStr.append(client.getTimeOnline() / 1000);  // TODO [lh] convert it to normal format
-            infoStr.append(" sec");
-
-            infoStr.append("\n >> Maximum time online: ");
-            infoStr.append(client.getMaximumTimeOnline() / 1000);
-            infoStr.append(" sec");
+            return Messages.get("core.registered_client_info",
+                                 new Object[]
+                                 {
+                                         client.getNick(),
+                                         client.getWeight(),
+                                         ((client.getPassword() != null) && (!client.getPassword().equals(""))) ?
+                                            "Yes" : "No",
+                                         client.getLastLogin(),
+                                         client.getLastIP(),
+                                         client.getLoginCount(),
+                                         client.getRegistrationDate(),
+                                         client.getRegistratorNick(),
+                                         onlinePeriodStr,
+                                         maxOnlinePeriodStr
+                                 },
+                                 (String)client.getExtendedField("LC"));
         }
         else
         {
-            infoStr.append("\n >> Not registred!");
+            return Messages.get("core.unregistered_client_info",
+                                 new Object[]
+                                 {
+                                         client.getNick(),
+                                         client.getWeight()
+                                 },
+                                 (String)client.getExtendedField("LC"));
         }
-
-        infoStr.append("\n");
-
-        return infoStr.toString();
-    }
+   }
 }
