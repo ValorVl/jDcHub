@@ -348,14 +348,6 @@ public class ClientInfo
     private boolean hubItself = false;
 
     /**
-     * SU field.
-     * Comma-separated list of feature FOURCC's.
-     * This notifies other clients of extended capabilities of the connecting client.
-     * Use with discretion.
-     */
-    private String supportedFeatures;
-
-    /**
      * RF field.
      * URL of referer (hub in case of redirect, web page)
      */
@@ -410,6 +402,12 @@ public class ClientInfo
 
     private HashMap<String, Object> extentedFields = new HashMap<String, Object>();
 
+    /**
+     * SU field.
+     * Comma-separated list of feature FOURCC's.
+     * This notifies other clients of extended capabilities of the connecting client.
+     * Use with discretion.
+     */
     private Vector<String> features = new Vector<String>();
 
 
@@ -1055,18 +1053,6 @@ public class ClientInfo
     }
 
 
-    public String getSupportedFeatures()
-    {
-        return supportedFeatures;
-    }
-
-
-    public void setSupportedFeatures(String supportedFeatures)
-    {
-        this.supportedFeatures = supportedFeatures;
-    }
-
-
     public String getRedirectUrl()
     {
         return redirectUrl;
@@ -1235,6 +1221,22 @@ public class ClientInfo
         {
             features.add(feature);
         }
+    }
+
+
+    public String getSupportedFeatures()
+    {
+        StringBuilder supportedFeatures = new StringBuilder();
+
+        for (String feature : features)
+        {
+            supportedFeatures.append(feature);
+            supportedFeatures.append(",");
+        }
+
+        supportedFeatures.deleteCharAt(supportedFeatures.length() - 1);
+
+        return supportedFeatures.toString();
     }
 
 

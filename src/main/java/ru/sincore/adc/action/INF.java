@@ -612,9 +612,15 @@ public class INF extends Action
                 // TODO [lh] Replace by SUP class usage
                 else if (token.startsWith("SU"))
                 {
-                    fromClient.setSupportedFeatures(token.substring(2));
+                    String tokens = token.substring(2);
+                    StringTokenizer featuresTokenizer = new StringTokenizer(tokens, ",");
+                    while (featuresTokenizer.hasMoreTokens())
+                    {
+                        fromClient.addFeature(featuresTokenizer.nextToken());
+                    }
+
                     currentINF.append(" SU");
-                    currentINF.append(fromClient.getSupportedFeatures());
+                    currentINF.append(tokens);
                 }
                 else
                 {
