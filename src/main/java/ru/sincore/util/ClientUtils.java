@@ -214,7 +214,7 @@ public class ClientUtils
         }
         else
         {
-            infoStr.append("\n >> You are not registred!");
+            infoStr.append("\n >> Not registred!");
         }
 
         infoStr.append("\n");

@@ -205,8 +205,6 @@ public class Client extends AbstractClient
             //ok, he is ucmd ok, so
             this.sendRawCommand("ICMD Test CT1 TTTest");
         }
-        // TODO [lh] send MOTD to client
-        //this.sendFromBot(bigTextManager.getMOTD(fromClient));
 
         // send MOTD
         this.sendMOTD();
