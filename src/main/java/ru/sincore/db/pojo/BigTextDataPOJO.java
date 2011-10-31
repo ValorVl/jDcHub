@@ -8,6 +8,7 @@ import java.io.Serializable;
 public class BigTextDataPOJO implements Serializable
 {
 	@Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id")
 	private Long id;
 	@Column(name = "title",length = 250)
