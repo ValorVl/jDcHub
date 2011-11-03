@@ -96,7 +96,7 @@ public class ShutdownHandler extends AbstractCmd
     {
         if (this.message != null)
         {
-            Broadcast.getInstance().broadcast(message);
+            Broadcast.getInstance().broadcastTextMessage(message);
         }
 
         try

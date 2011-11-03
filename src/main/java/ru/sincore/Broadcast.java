@@ -30,6 +30,7 @@ import java.util.concurrent.Executors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.sincore.client.AbstractClient;
+import ru.sincore.util.AdcUtils;
 
 /**
  * Provides broadcasts and feature broadcasts constructors to all connected
@@ -95,6 +96,14 @@ public class Broadcast
     }
 
 
+    public void broadcastTextMessage(String message)
+    {
+        for (AbstractClient toClient : ClientManager.getInstance().getClients())
+        {
+            pool.execute(new ClientSender(message, toClient));
+        }
+    }
+
     /**
      * Send droadcast message depend on given features list
      *
@@ -150,6 +159,18 @@ public class Broadcast
         }
 
 
+        public ClientSender(String message, AbstractClient toClient)
+        {
+            this.message = message;
+            this.fromClient = null;
+            this.toClient = toClient;
+
+            this.featured = false;
+            this.requiredFeatures = null;
+            this.excludedFeatures = null;
+        }
+
+
         public void run()
         {
             boolean doSend = true;
@@ -180,7 +201,14 @@ public class Broadcast
                 if (!message.startsWith("E") && toClient.equals(fromClient))
                     return;
 
-                toClient.sendRawCommand(message);
+                if (fromClient == null)
+                {
+                    toClient.sendMessageFromHub(message);
+                }
+                else
+                {
+                    toClient.sendRawCommand(message);
+                }
             }
         }
     }

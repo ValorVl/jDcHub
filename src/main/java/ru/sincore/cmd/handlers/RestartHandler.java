@@ -96,14 +96,11 @@ public class RestartHandler extends AbstractCmd
     {
         if (this.message != null)
         {
-            // TODO [lh] broadcast text message
-            Broadcast.getInstance().broadcast(message);
-            log.debug("Broadcasting message.");
+            Broadcast.getInstance().broadcastTextMessage(message);
         }
 
         try
         {
-            log.debug("Waiting...");
             Thread.sleep(timeout);
         }
         catch (InterruptedException ex)
@@ -111,7 +108,6 @@ public class RestartHandler extends AbstractCmd
             // ignored
         }
 
-        log.debug("Calling restart command from Main class.");
         Main.restart();
     }
 
