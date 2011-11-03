@@ -63,9 +63,7 @@ public class SIDGenerator
             tempSID = Base32.encode(sid).substring(0, 4);
 
             // if sid not unique, regenerate sid
-            if ((ClientManager.getInstance().getClientBySID(tempSID) != null) ||
-                tempSID.equals(ConfigurationManager.instance().getString(ConfigurationManager.HUB_SID)) ||
-                tempSID.equals(ConfigurationManager.instance().getString(ConfigurationManager.BOT_CHAT_SID)))
+            if (ClientManager.getInstance().getClientBySID(tempSID) != null)
                 newSIDGenerated = false;
         }
 
