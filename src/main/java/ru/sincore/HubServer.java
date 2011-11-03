@@ -4,8 +4,9 @@ package ru.sincore;
  *
  * Created on 03 martie 2007, 23:00
  *
- * DSHub AdcUtils HubSoft
+ * jDcHub
  * Copyright (C) 2007,2008  Eugen Hristev
+ * Copyright (C) 2011 Valor, Alexey 'lh' Antonov, Alexander 'hatred' Drozdov
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -40,7 +41,6 @@ import ru.sincore.modules.ModulesManager;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
-import java.util.Calendar;
 import java.util.Date;
 
 
@@ -51,33 +51,27 @@ import java.util.Date;
  * @author Pietricica
  *
  * @author Alexey 'lh' Antonov
+ * @author Alexander 'hatred' Drozdov
  * @since 2011-09-06
  */
-public class HubServer extends Thread
+public class HubServer
 {
-    private static final Logger log = LoggerFactory.getLogger(HubServer.class);
-    private final String marker = Marker.ANY_MARKER;
+    private static final Logger        log    = LoggerFactory.getLogger(HubServer.class);
+    private final        String        marker = Marker.ANY_MARKER;
 
-    ClientAssasin myAssasin;
-
-    public static boolean restart;
-
-    public IoAcceptor acceptor;
-    public Calendar   MyCalendar;
+    private              ClientAssasin assasin;
+    private              IoAcceptor    acceptor;
 
     /**
      * Creates a new instance of HubServer
      */
     public HubServer()
     {
-        start();
+        init();
     }
 
-    @Override
-    public void run()
+    private void init()
     {
-        restart = false;
-
         ModulesManager.instance().loadModules();
 
         try
@@ -89,8 +83,8 @@ public class HubServer extends Thread
             // ignored
         }
 
-        acceptor = new NioSocketAcceptor();
-        NioSocketAcceptor nsa = (NioSocketAcceptor) acceptor;
+        NioSocketAcceptor nsa = new NioSocketAcceptor();
+        acceptor = nsa;
         nsa.setReuseAddress(true);
 
 
@@ -99,7 +93,6 @@ public class HubServer extends Thread
         myx.setDecoderMaxLineLength(64 * 1024);
         myx.setEncoderMaxLineLength(64 * 1024);
         acceptor.getFilterChain().addLast("codec", new ProtocolCodecFilter(myx));
-        MyCalendar = Calendar.getInstance();
 
         // TODO Uncomment this when it will be added to config file
         //acceptor.getSessionConfig().setReadBufferSize(64 * 1024);
@@ -121,21 +114,26 @@ public class HubServer extends Thread
 		}
 
 
-        Date d = new Date(Main.startupTime);
-        log.info("Start Time:" + d.toString());
+        Date d = new Date(Main.getStartTime());
+        log.info("Start Time: " + d.toString());
         System.out.print("\n>");
 
         // Publish startup event
         EventBusService.publish(new HubStartupEvent());
 
-        myAssasin = new ClientAssasin();//temporary removed
+        assasin = new ClientAssasin();//temporary removed
     }
 
 
     public void shutdown()
     {
-		//TODO realize correctly shutdown server,notify clients, store all collection containers, drop buffers and caches.
+        //TODO realize correctly shutdown server,notify clients, store all collection containers, drop buffers and caches.
         acceptor.unbind();
+
+        assasin.stopClientAssasin();
+
+        // TODO: [hatred] send server shutdown message before
+        ClientManager.getInstance().removeAllClients();
 
         EventBusService.publish(new HubShutdownEvent());
     }

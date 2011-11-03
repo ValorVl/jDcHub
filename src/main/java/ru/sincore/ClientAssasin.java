@@ -38,26 +38,32 @@ public class ClientAssasin extends Thread
      * Creates a new instance of ClientAssasin
      */
 
+    private boolean doRun = true;
+
 
     public ClientAssasin()
     {
-
         start();
+    }
+
+
+    public void stopClientAssasin()
+    {
+        doRun = false;
+        interrupt(); // force exit from sleep()
     }
 
 
     @Override
     public void run()
     {
-
-        while (!Main.server.restart)
+        while (doRun)
         {
-
             if (ClientManager.getInstance().getClientsCount() == 0)
             {
                 try
                 {
-                    Thread.sleep(1000);
+                    this.sleep(1000);
                 }
                 catch (InterruptedException ex)
                 {
@@ -99,10 +105,7 @@ public class ClientAssasin extends Thread
                         client.setInQueueSearch(null);
                         client.setLastSearch(currentTime);
                     }
-
                 }
-
-
             }
 
             try

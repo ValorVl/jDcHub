@@ -4,10 +4,9 @@ package ru.sincore;
  *
  * Created on 03 martie 2007, 22:57
  *
- * DSHub AdcUtils HubSoft
+ * jDcHub
  * Copyright (C) 2007,2008  Eugen Hristev
- * Copyright (C) 2011 Valor
- * Copyright (C) 2011 Alexey 'lh' Antonov
+ * Copyright (C) 2011 Valor, Alexey 'lh' Antonov, Alexander 'hatred' Drozdov
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -30,77 +29,80 @@ import ru.sincore.cmd.CmdContainer;
 import ru.sincore.db.HibernateUtils;
 import ru.sincore.i18n.Messages;
 
-import java.util.Properties;
-
-
 /**
- * DSHub main class, contains main function ( to call when application started )
+ * jDcHub main class, contains main function ( to call when application started )
  *
  * @author Pietricica
+ * @author Valor
+ * @author Alexey 'lh' Antonov
+ * @author Alexander 'hatred' Drozdov
  */
-public class Main extends Thread
+public class Main
 {
-    public static final Logger log = Logger.getLogger(Main.class);
+    private static final Logger    log         = Logger.getLogger(Main.class);
 
-    public static HubServer     server;
-    public static long          startupTime = System.currentTimeMillis();
-    public static String        myPath;
+    private static       HubServer server;
+    private static       long      startupTime = System.currentTimeMillis();
 
-    public static void init()
+    // TODO: [hatred] remove it
+    public static       String    myPath;
+
+    private static void init()
     {
-		PropertyConfigurator.configure("./etc/log4j.properties");
+        PropertyConfigurator.configure("./etc/log4j.properties");
         ConfigurationManager.instance();
-		HibernateUtils.getSessionFactory();
-		CmdContainer container = CmdContainer.getInstance();
-		container.buildList();
-    }
-
-
-    public static void Exit()
-    {
-        log.warn(Messages.get(Messages.CLOSE_HUB));
-
-        try
-        {
-            sleep(500);
-        }
-        catch (InterruptedException ex)
-        {
-        }
-        System.exit(0);
-    }
-
-
-    public void run()
-    {
-        log.warn(Messages.get(Messages.RESTART_HUB));
-
-        ClientManager.getInstance().removeAllClients();
-
-        server.shutdown();
-        System.gc(); //calling garbage collectors
-        Main.server = new HubServer();
-        Main.startupTime = System.currentTimeMillis();
-    }
-
-
-    public static void Restart()
-    {
-        new Main().start();
+        HibernateUtils.getSessionFactory();
+        CmdContainer container = CmdContainer.getInstance();
+        container.buildList();
     }
 
 
     /**
-     * @param args the command line arguments (Not used)
+     * Shutdown server
      */
-    public static void main(String[] args)
+    public static void exit()
     {
-        init();
-        startupTime = System.currentTimeMillis();
+        log.warn(Messages.get(Messages.CLOSE_HUB));
 
-        log.info(Messages.get(Messages.SERVER_STARTUP));
+        // Correctly shutdown server, notice all clients
+        if (server != null)
+        {
+            server.shutdown();
+        }
+
+        try
+        {
+            Thread.sleep(500);
+        }
+        catch (InterruptedException ex)
+        {}
+
+        System.exit(0);
+    }
+
+
+    public static void restart()
+    {
+        start();
+    }
+
+
+    synchronized public static void start()
+    {
+        if (server != null)
+        {
+            log.info(Messages.get(Messages.RESTART_HUB));
+
+            server.shutdown();
+            System.gc(); //calling garbage collectors
+        }
+        else
+        {
+            log.info(Messages.get(Messages.SERVER_STARTUP));
+        }
 
         server = new HubServer();
+        startupTime = System.currentTimeMillis();
 
         log.info(Messages.get(Messages.SERVER_STARTUP_DONE));
     }
@@ -113,5 +115,26 @@ public class Main extends Thread
     static public long getUptime()
     {
         return System.currentTimeMillis() - startupTime;
+    }
+
+
+    /**
+     * Return server start up time
+     * @return server start time
+     */
+    static public long getStartTime()
+    {
+        return startupTime;
+    }
+
+
+    /**
+     * jDcHub entry point
+     * @param args the command line arguments (Not used)
+     */
+    public static void main(String[] args)
+    {
+        init();
+        start();
     }
 }
