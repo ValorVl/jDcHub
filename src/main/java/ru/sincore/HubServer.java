@@ -127,13 +127,11 @@ public class HubServer
 
     public void shutdown()
     {
-        //TODO realize correctly shutdown server,notify clients, store all collection containers, drop buffers and caches.
-        acceptor.unbind();
-
         assasin.stopClientAssasin();
 
         // TODO: [hatred] send server shutdown message before
-        ClientManager.getInstance().removeAllClients();
+        //TODO realize correctly shutdown server,notify clients, store all collection containers, drop buffers and caches.
+        acceptor.unbind();
 
         EventBusService.publish(new HubShutdownEvent());
     }

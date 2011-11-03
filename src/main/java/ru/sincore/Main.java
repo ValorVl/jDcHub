@@ -62,6 +62,20 @@ public class Main
      */
     public static void exit()
     {
+        // We must do it in new thread to free user session that initiated it
+        new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                asyncExit();
+            }
+        }).start();
+    }
+
+
+    synchronized private static void asyncExit()
+    {
         log.warn(Messages.get(Messages.CLOSE_HUB));
 
         // Correctly shutdown server, notice all clients
@@ -87,7 +101,20 @@ public class Main
     }
 
 
-    synchronized public static void start()
+    public static void start()
+    {
+        // We must do it in new thread to free user session that initiated it
+        new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                asyncStart();
+            }
+        }).start();
+    }
+
+    synchronized private static void asyncStart()
     {
         if (server != null)
         {
