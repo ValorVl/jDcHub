@@ -94,14 +94,8 @@ public class ClientAssasin extends Thread
                     if ((currentTime - client.getLastSearch()) > xx)
                     {
 
-                        if (client.getInQueueSearch().startsWith("B"))
-                        {
-                            Broadcast.getInstance().broadcast(client.getInQueueSearch());
-                        }
-                        else
-                        {
-                            Broadcast.getInstance().broadcast(client.getInQueueSearch());
-                        }
+                        Broadcast.getInstance().broadcast(client.getInQueueSearch(), client);
+
                         client.setInQueueSearch(null);
                         client.setLastSearch(currentTime);
                     }

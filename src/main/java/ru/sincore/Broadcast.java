@@ -126,24 +126,12 @@ public class Broadcast
 
     private class ClientSender implements Runnable
     {
-        private final String            message;
-        private final AbstractClient    fromClient;
-        private final AbstractClient    toClient;
-        private final boolean           featured;
-        private final List<String>      requiredFeatures;
-        private final List<String>      excludedFeatures;
-
-
-        public ClientSender(String message, AbstractClient fromClient, AbstractClient toClient)
-        {
-            this.message = message;
-            this.fromClient = fromClient;
-            this.toClient = toClient;
-
-            this.featured = false;
-            this.requiredFeatures = null;
-            this.excludedFeatures = null;
-        }
+        private String            message = "";
+        private AbstractClient    fromClient = null;
+        private AbstractClient    toClient = null;
+        private boolean           featured = false;
+        private List<String>      requiredFeatures = null;
+        private List<String>      excludedFeatures = null;
 
 
         public ClientSender(String message, AbstractClient fromClient, AbstractClient toClient,
@@ -159,15 +147,16 @@ public class Broadcast
         }
 
 
+        public ClientSender(String message, AbstractClient fromClient, AbstractClient toClient)
+        {
+            this(message, fromClient, toClient, null, null);
+            this.featured = false;
+        }
+
+
         public ClientSender(String message, AbstractClient toClient)
         {
-            this.message = message;
-            this.fromClient = null;
-            this.toClient = toClient;
-
-            this.featured = false;
-            this.requiredFeatures = null;
-            this.excludedFeatures = null;
+            this(message, null, toClient);
         }
 
 
@@ -198,15 +187,15 @@ public class Broadcast
 
             if (toClient.isActive() && doSend)
             {
-                if (!message.startsWith("E") && toClient.equals(fromClient))
-                    return;
-
                 if (fromClient == null)
                 {
                     toClient.sendMessageFromHub(message);
                 }
                 else
                 {
+                    if ((!message.startsWith("E") && !message.startsWith("B")) && toClient.equals(fromClient))
+                        return;
+
                     toClient.sendRawCommand(message);
                 }
             }

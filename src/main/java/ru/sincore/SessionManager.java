@@ -154,7 +154,7 @@ public class SessionManager extends IoHandlerAdapter
         ClientManager.getInstance().removeClient(currentClient);
 
         // broadcast client quited message
-        Broadcast.getInstance().broadcast("IQUI " + currentClient.getSid());
+        Broadcast.getInstance().broadcast("IQUI " + currentClient.getSid(), currentClient);
 
         /** calling plugins...*/
         // Publish async event

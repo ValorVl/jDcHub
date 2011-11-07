@@ -766,7 +766,7 @@ public class INF extends Action
         if (fromClient.getState() == State.PROTOCOL)
             makeProtocolStateChecks();
 
-        Broadcast.getInstance().broadcast(currentINF.toString());
+        Broadcast.getInstance().broadcast(currentINF.toString(), fromClient);
     }
 
 

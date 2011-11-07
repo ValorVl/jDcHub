@@ -79,7 +79,7 @@ public class SCH extends MSG
                 break;
 
             case B:
-                Broadcast.getInstance().broadcast(rawCommand);
+                Broadcast.getInstance().broadcast(rawCommand, fromClient);
                 break;
 
             case C:

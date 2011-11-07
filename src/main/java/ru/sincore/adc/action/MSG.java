@@ -297,7 +297,7 @@ public class MSG extends Action
                 if (parseAndExecuteCommandInMessage())
                     break;
 
-                Broadcast.getInstance().broadcast(rawCommand);
+                Broadcast.getInstance().broadcast(rawCommand, fromClient);
                 ChatLogDAO chatLog = new ChatLogDAOImpl();
                 chatLog.saveMessage(ClientManager.getInstance().getClientBySID(mySID).getNick(),
                                     message);
