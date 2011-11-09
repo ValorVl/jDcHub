@@ -23,11 +23,10 @@
 package jdchub.module;
 
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.util.resource.Resource;
 import ru.sincore.modules.Module;
 import org.eclipse.jetty.xml.XmlConfiguration;
 
-import java.io.IOException;
+import java.io.*;
 
 /**
  * @author Alexey 'lh' Antonov
@@ -43,22 +42,22 @@ public class ModuleMain extends Module
     @Override
     public boolean init()
     {
-        XmlConfiguration configuration = null;
+        File file = new File("./etc/config.xml");
 
-        try
+        if (!file.exists())
         {
-            Resource resource = Resource.newSystemResource("./etc/config.xml");
-            configuration = new XmlConfiguration(resource.getInputStream());
-            server = (Server) configuration.configure();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
             return false;
         }
 
         try
         {
+            BufferedInputStream in = new BufferedInputStream(new FileInputStream(file));
+            XmlConfiguration configuration = new XmlConfiguration(in);
+
+            server = (Server) configuration.configure();
+
+            in.close();
+
             server.start();
         }
         catch (Exception e)
@@ -70,6 +69,10 @@ public class ModuleMain extends Module
         if (server.isStarted())
         {
             (new Thread(new HTTPServer(server))).start();
+        }
+        else
+        {
+            return false;
         }
 
         System.out.println("Module " + moduleName + " inited");

@@ -1,6 +1,10 @@
 /*
  * jDcHub ADC HubSoft
  *
+ * HTTPServer.java
+ *
+ * Copyright (C) 2011 Alexey 'lh' Antonov
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
@@ -20,6 +24,10 @@ package jdchub.module;
 
 import org.eclipse.jetty.server.Server;
 
+/**
+ * @author Alexey 'lh' Antonov
+ * @since 2011-11-09
+ */
 public class HTTPServer implements Runnable
 {
     private Server server = null;

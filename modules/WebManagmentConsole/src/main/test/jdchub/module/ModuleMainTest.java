@@ -48,6 +48,12 @@ public class ModuleMainTest
     {
         boolean initiated = moduleMain.init();
         assert initiated : "ModuleMain doesn't initiated";
+
+        long i = 0;
+        while (i != 10000000000L)
+        {
+            i++;
+        }
     }
 
 
