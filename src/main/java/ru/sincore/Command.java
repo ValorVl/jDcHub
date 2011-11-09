@@ -138,6 +138,7 @@ public class Command
         /*******************************RES COMMAND*******************************/
         if (rawCommand.substring(1).startsWith("RES ")) //direct search result, only active to passive must send this
         {
+            log.info("RES command usage.");
         }
         else
         /*******************************CTM COMMAND*******************************/

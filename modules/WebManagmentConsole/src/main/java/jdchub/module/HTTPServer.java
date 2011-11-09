@@ -1,5 +1,3 @@
-package main.java.jdchub.module;
-
 /*
  * jDcHub ADC HubSoft
  *
@@ -18,7 +16,31 @@ package main.java.jdchub.module;
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-public class HTTPServer
-{
+package jdchub.module;
 
+import org.eclipse.jetty.server.Server;
+
+public class HTTPServer implements Runnable
+{
+    private Server server = null;
+
+
+    HTTPServer(Server server)
+    {
+        this.server = server;
+    }
+
+
+    @Override
+    public void run()
+    {
+        try
+        {
+            server.join();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
 }
