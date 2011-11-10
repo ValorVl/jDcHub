@@ -23,7 +23,7 @@
                                     <Item>index.html</Item>
                                 </Array>
                             </Set>
-                            <Set name="resourceBase">./www/</Set>
+                            <Set name="resourceBase">modules/WebManagementConsole-1.0.jar/www/</Set>
                         </New>
                     </Item>
                     <Item>

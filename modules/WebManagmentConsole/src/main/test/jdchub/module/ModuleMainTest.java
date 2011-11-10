@@ -22,6 +22,11 @@
 
 package jdchub.module;
 
+import java.io.File;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
+
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -38,6 +43,14 @@ public class ModuleMainTest
     public void setUp()
             throws Exception
     {
+        URLClassLoader classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+
+        // Hack for adding given directory to exists class-path
+        Class clazz = URLClassLoader.class;
+        Method method = clazz.getDeclaredMethod("addURL", new Class[]{URL.class});
+        method.setAccessible(true);
+        method.invoke(classLoader, new Object[] {new File("./etc/").toURI().toURL()});
+
         moduleMain = new ModuleMain();
     }
 

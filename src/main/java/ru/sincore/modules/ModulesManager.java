@@ -10,6 +10,9 @@ import java.util.Set;
 
 import com.adamtaft.eb.EventBusService;
 import org.apache.mina.util.CopyOnWriteMap;
+import org.xeustechnologies.jcl.Configuration;
+import org.xeustechnologies.jcl.JarClassLoader;
+import org.xeustechnologies.jcl.JclObjectFactory;
 import ru.sincore.signalservice.Signal;
 
 /**
@@ -43,17 +46,61 @@ public class ModulesManager
     // Non-static interfaces
     //
 
-    public boolean loadModule(File moduleJar)
+    private Module getModuleInstance(File moduleJar)
+            throws
+            MalformedURLException,
+            ClassNotFoundException,
+            IllegalAccessException,
+            InstantiationException
     {
-        try
+        Module instance = null;
+
+        if (moduleJar.isDirectory())
         {
+            // Module as directory
+
+            JarClassLoader jcl = new JarClassLoader();
+
+            // Try load dependecyes
+            File libDirectory = new File(moduleJar.getAbsolutePath() + "/lib/");
+            if (libDirectory.exists() && libDirectory.isDirectory())
+            {
+                jcl.add(libDirectory.getAbsolutePath());
+            }
+
+            // Add etc (config dir) to class-path
+            File etcDirectory = new File(moduleJar.getAbsolutePath() + "/etc/");
+            if (etcDirectory.exists() && etcDirectory.isDirectory())
+            {
+                URLClassLoader classLoader = new URLClassLoader(new URL[]{ etcDirectory.toURI().toURL() });
+                jcl.addLoader(new ConfigLoader(classLoader));
+            }
+
+            JclObjectFactory factory = JclObjectFactory.getInstance();
+            instance = (Module) factory.create(jcl, "jdchub.module.ModuleMain");
+        }
+        else
+        {
+            // Module as file
+
             URLClassLoader classLoader;
             ClassLoader parentClassLoader = ModulesManager.class.getClassLoader();
             classLoader = new URLClassLoader(new URL[]{ moduleJar.toURI().toURL() },
                                              parentClassLoader);
 
             Class moduleClass = classLoader.loadClass("jdchub.module.ModuleMain");
-            Module moduleInstance = (Module) moduleClass.newInstance();
+            instance = (Module) moduleClass.newInstance();
+        }
+
+        return instance;
+    }
+
+
+    public boolean loadModule(File moduleJar)
+    {
+        try
+        {
+            Module moduleInstance = getModuleInstance(moduleJar);
 
             // TODO: load info about module from DB and skip init process if module disabled
             boolean isInited = moduleInstance.init();

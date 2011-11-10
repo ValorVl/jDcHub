@@ -42,21 +42,12 @@ public class ModuleMain extends Module
     @Override
     public boolean init()
     {
-        File file = new File("./etc/config.xml");
-
-        if (!file.exists())
-        {
-            return false;
-        }
-
         try
         {
-            BufferedInputStream in = new BufferedInputStream(new FileInputStream(file));
-            XmlConfiguration configuration = new XmlConfiguration(in);
+            XmlConfiguration configuration = new XmlConfiguration(
+                    getClass().getClassLoader().getResourceAsStream("jetty-config.xml"));
 
             server = (Server) configuration.configure();
-
-            in.close();
 
             server.start();
         }
