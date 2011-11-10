@@ -38,8 +38,8 @@
         </fileSet>
 
         <fileSet>
-            <directory>${project.basedir}/www</directory>
-            <outputDirectory>www</outputDirectory>
+            <directory>${project.basedir}/webapps</directory>
+            <outputDirectory>webapps</outputDirectory>
         </fileSet>
 
     </fileSets>

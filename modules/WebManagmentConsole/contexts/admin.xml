@@ -1,0 +1,20 @@
+<?xml version="1.0"  encoding="ISO-8859-1"?>
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure.dtd">
+
+<Configure class="org.eclipse.jetty.webapp.WebAppContext">
+
+
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+  <!-- Required minimal context configuration :                        -->
+  <!--  + contextPath                                                  -->
+  <!--  + war OR resourceBase                                          -->
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+  <Set name="contextPath">/</Set>
+  <Set name="war"><SystemProperty name="jetty.home" default="modules/WebManagementConsole.jar"/>/webapps/admin.war/</Set>
+
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+  <!-- Optional context configuration                                  -->
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+  <Set name="defaultsDescriptor"><SystemProperty name="jetty.home" default="modules/WebManagementConsole.jar"/>/etc/webdefault.xml</Set>
+
+</Configure>

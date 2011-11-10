@@ -16,38 +16,54 @@
             <Set name="handlers">
                 <Array type="org.eclipse.jetty.server.Handler">
                     <Item>
-                        <New class="org.eclipse.jetty.server.handler.ContextHandlerCollection"/>
+                        <New id="Contexts" class="org.eclipse.jetty.server.handler.ContextHandlerCollection"/>
                     </Item>
                     <Item>
-                        <New class="org.eclipse.jetty.server.handler.DefaultHandler"/>
+                        <New id="DefaultHandler" class="org.eclipse.jetty.server.handler.DefaultHandler"/>
                     </Item>
                 </Array>
             </Set>
         </New>
     </Set>
 
-    <!-- JSP and servlets support -->
-
-    <Call id="webappprovider" name="addAppProvider">
+    <Call name="addBean">
         <Arg>
-            <New class="org.eclipse.jetty.deploy.providers.WebAppProvider">
-                <Set name="monitoredDirName">
-                    <Property name="jetty.home" default="modules/WebManagementConsole-1.0.jar"/>
-                    /webapps
+            <New id="DeploymentManager" class="org.eclipse.jetty.deploy.DeploymentManager">
+                <Set name="contexts">
+                    <Ref id="Contexts"/>
                 </Set>
-                <Set name="defaultsDescriptor">
-                    <Property name="jetty.home" default="modules/WebManagementConsole-1.0.jar"/>
-                    /etc/webdefault.xml
-                </Set>
-                <Set name="contextXmlDir">
-                    <Property name="jetty.home" default="modules/WebManagementConsole-1.0.jar"/>
-                    /contexts
-                </Set>
-                <Set name="scanInterval">1</Set>
-                <!-- UNCOMMENT if extracting needed
-                <Set name="extractWars">true</Set> -->
+                <Call name="setContextAttribute">
+                    <Arg>org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern</Arg>
+                    <Arg>.*/servlet-api-[^/]*\.jar$</Arg>
+                </Call>
             </New>
         </Arg>
     </Call>
+
+    <!-- JSP and servlets support -->
+    <Ref id="DeploymentManager">
+        <Call id="webappprovider" name="addAppProvider">
+            <Arg>
+                <New class="org.eclipse.jetty.deploy.providers.WebAppProvider">
+                    <Set name="monitoredDirName">
+                        <Property name="jetty.home" default="modules/WebManagementConsole.jar"/>
+                        /webapps
+                    </Set>
+                    <Set name="defaultsDescriptor">
+                        <Property name="jetty.home" default="modules/WebManagementConsole.jar"/>
+                        /etc/webdefault.xml
+                    </Set>
+                    <Set name="contextXmlDir">
+                        <Property name="jetty.home" default="modules/WebManagementConsole.jar"/>
+                        /contexts
+                    </Set>
+                    <Set name="scanInterval">1</Set>
+                    <!-- UNCOMMENT if extracting needed
+                  <Set name="extractWars">true</Set> -->
+                </New>
+            </Arg>
+        </Call>
+    </Ref>
+
 
 </Configure>
