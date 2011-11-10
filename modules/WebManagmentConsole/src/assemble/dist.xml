@@ -12,7 +12,7 @@
         <format>dir</format>
     </formats>
 
-    <baseDirectory>${project.build.finalName}.jar</baseDirectory>
+    <baseDirectory>${project.artifactId}.jar</baseDirectory>
 
     <fileSets>
 
