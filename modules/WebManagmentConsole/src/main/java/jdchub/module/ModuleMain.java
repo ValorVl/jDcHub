@@ -42,6 +42,8 @@ public class ModuleMain extends Module
     @Override
     public boolean init()
     {
+        System.setProperty("org.eclipse.jetty.util.log.stderr.DEBUG", "true");
+        System.setProperty("org.eclipse.jetty.util.log.stderr.SOURCE", "true");
         try
         {
             XmlConfiguration configuration = new XmlConfiguration(

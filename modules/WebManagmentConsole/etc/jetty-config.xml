@@ -12,7 +12,7 @@
     </Call>
 
     <Set name="handler">
-        <New class="org.eclipse.jetty.server.handler.HandlerCollection">
+        <New id="Handlers" class="org.eclipse.jetty.server.handler.HandlerCollection">
             <Set name="handlers">
                 <Array type="org.eclipse.jetty.server.Handler">
                     <Item>
@@ -26,6 +26,7 @@
         </New>
     </Set>
 
+    <!-- Deploy Manager -->
     <Call name="addBean">
         <Arg>
             <New id="DeploymentManager" class="org.eclipse.jetty.deploy.DeploymentManager">
@@ -40,7 +41,8 @@
         </Arg>
     </Call>
 
-    <!-- JSP and servlets support -->
+
+    <!-- Add a WebAppProvider to the deployment manager                  -->
     <Ref id="DeploymentManager">
         <Call id="webappprovider" name="addAppProvider">
             <Arg>
@@ -58,12 +60,80 @@
                         /contexts
                     </Set>
                     <Set name="scanInterval">1</Set>
-                    <!-- UNCOMMENT if extracting needed
-                  <Set name="extractWars">true</Set> -->
+                    <!-- UNCOMMENT if extracting needed -->
+                    <Set name="extractWars">false</Set>
                 </New>
             </Arg>
         </Call>
     </Ref>
 
+
+    <!-- Add a ContextProvider to the deployment manager                 -->
+    <Ref id="DeploymentManager">
+      <Call name="addAppProvider">
+        <Arg>
+          <New class="org.eclipse.jetty.deploy.providers.ContextProvider">
+            <Set name="monitoredDir"><Property name="jetty.home" default="modules/WebManagementConsole.jar" />/contexts</Set>
+            <Set name="scanInterval">1</Set>
+          </New>
+        </Arg>
+      </Call>
+    </Ref>
+
+
+    <Ref id="Handlers">
+      <Call name="addHandler">
+        <Arg>
+          <New id="RequestLog" class="org.eclipse.jetty.server.handler.RequestLogHandler">
+            <Set name="requestLog">
+              <New id="RequestLogImpl" class="org.eclipse.jetty.server.NCSARequestLog">
+                <Set name="filename"><Property name="jetty.logs" default="./log"/>/web-console-yyyy-mm-dd.request.log</Set>
+                <Set name="filenameDateFormat">yyyy_MM_dd</Set>
+                <Set name="retainDays">90</Set>
+                <Set name="append">true</Set>
+                <Set name="extended">false</Set>
+                <Set name="logCookies">false</Set>
+                <Set name="LogTimeZone">GMT</Set>
+              </New>
+            </Set>
+          </New>
+        </Arg>
+      </Call>
+    </Ref>
+
+
+    <!--
+    <New id="ServerLog" class="java.io.PrintStream">
+      <Arg>
+        <New class="org.eclipse.jetty.util.RolloverFileOutputStream">
+          <Arg><Property name="jetty.logs" default="./log"/>/web-console-yyyy-mm-dd.stderrout.log</Arg>
+          <Arg type="boolean">false</Arg>
+          <Arg type="int">90</Arg>
+          <Arg><Call class="java.util.TimeZone" name="getTimeZone"><Arg>GMT</Arg></Call></Arg>
+          <Get id="ServerLogName" name="datedFilename"/>
+        </New>
+      </Arg>
+    </New>
+
+    <Call class="org.eclipse.jetty.util.log.Log" name="debug">
+        <Arg>Redirecting stderr/stdout to <Ref id="ServerLogName"/></Arg>
+    </Call>
+    <Call class="java.lang.System" name="setErr"><Arg><Ref id="ServerLog"/></Arg></Call>
+    <Call class="java.lang.System" name="setOut"><Arg><Ref id="ServerLog"/></Arg></Call>
+    -->
+
+    <Get id="oldhandler" name="handler"/>
+    <Set name="handler">
+      <New id="DebugHandler" class="org.eclipse.jetty.server.handler.DebugHandler">
+        <Set name="handler"><Ref id="oldhandler"/></Set>
+        <Set name="outputStream">
+          <New class="org.eclipse.jetty.util.RolloverFileOutputStream">
+            <Arg type="String"><Property name="jetty.logs" default="./log"/>/web-console-yyyy-mm-dd.debug.log</Arg>
+            <Arg type="boolean">true</Arg> <!-- append -->
+            <Arg type="int">90</Arg> <!-- retain days -->
+          </New>
+        </Set>
+      </New>
+    </Set>
 
 </Configure>
