@@ -2,17 +2,20 @@ package ru.sincore.modules;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import com.adamtaft.eb.EventBusService;
 import org.apache.mina.util.CopyOnWriteMap;
-import org.xeustechnologies.jcl.Configuration;
-import org.xeustechnologies.jcl.JarClassLoader;
-import org.xeustechnologies.jcl.JclObjectFactory;
+
+import ru.sincore.Main;
 import ru.sincore.signalservice.Signal;
 
 /**
@@ -46,51 +49,122 @@ public class ModulesManager
     // Non-static interfaces
     //
 
+    private void fillClassPath(File file, List<File> list)
+    {
+        final File[] childs = file.listFiles();
+        if (childs != null)
+        {
+            for (File child : childs)
+            {
+                if (child.getName().endsWith(".jar") && (child.isFile() || child.isDirectory()))
+                {
+                    list.add(child);
+                }
+                else if (child.isDirectory())
+                {
+                    fillClassPath(child, list);
+                }
+                else
+                {
+                    // TODO
+                }
+            }
+        }
+    }
+
+
     private Module getModuleInstance(File moduleJar)
             throws
             MalformedURLException,
             ClassNotFoundException,
             IllegalAccessException,
-            InstantiationException
+            InstantiationException,
+            NoSuchMethodException,
+            InvocationTargetException,
+            InterruptedException
     {
         Module instance = null;
+
+        // Detect parent class loader
+        ClassLoader parentClassLoader = ModulesManager.class.getClassLoader();
+
+        if (parentClassLoader == null)
+        {
+            parentClassLoader = ClassLoader.getSystemClassLoader();
+        }
+
+
+        List<URL> classPath = new ArrayList<URL>();
 
         if (moduleJar.isDirectory())
         {
             // Module as directory
 
-            JarClassLoader jcl = new JarClassLoader();
+            List<File> jarFiles = new ArrayList<File>();
 
-            // Try load dependecyes
+            // Try load dependecies
+            /*
             File libDirectory = new File(moduleJar.getAbsolutePath() + "/lib/");
             if (libDirectory.exists() && libDirectory.isDirectory())
             {
-                jcl.add(libDirectory.getAbsolutePath());
+                fillClassPath(libDirectory, jarFiles);
+
+                if (!jarFiles.isEmpty())
+                {
+                    URLClassLoader classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+
+                    // Hack for adding given directory to exists class-path
+                    Class clazz = URLClassLoader.class;
+                    Method method = clazz.getDeclaredMethod("addURL", new Class[]{URL.class});
+                    method.setAccessible(true);
+
+                    for (File jar : jarFiles)
+                    {
+                        method.invoke(classLoader, new Object[] {jar.toURI().toURL()});
+                    }
+
+                    jarFiles.clear();
+                }
             }
+            */
 
             // Add etc (config dir) to class-path
             File etcDirectory = new File(moduleJar.getAbsolutePath() + "/etc/");
             if (etcDirectory.exists() && etcDirectory.isDirectory())
             {
-                URLClassLoader classLoader = new URLClassLoader(new URL[]{ etcDirectory.toURI().toURL() });
-                jcl.addLoader(new ConfigLoader(classLoader));
+                jarFiles.add(etcDirectory);
             }
 
-            JclObjectFactory factory = JclObjectFactory.getInstance();
-            instance = (Module) factory.create(jcl, "jdchub.module.ModuleMain");
+            File mainDirectory = new File(moduleJar.getAbsolutePath() + "/main/");
+            if (mainDirectory.exists() && mainDirectory.isDirectory())
+            {
+                fillClassPath(mainDirectory, jarFiles);
+            }
+            else
+            {
+                throw new RuntimeException("Directory 'main' in directory-based plugin does not found: " + moduleJar);
+            }
+
+            // Fill class path for URLClassLoader
+            for (File jar : jarFiles)
+            {
+                classPath.add(jar.toURI().toURL());
+            }
+
         }
         else
         {
             // Module as file
-
-            URLClassLoader classLoader;
-            ClassLoader parentClassLoader = ModulesManager.class.getClassLoader();
-            classLoader = new URLClassLoader(new URL[]{ moduleJar.toURI().toURL() },
-                                             parentClassLoader);
-
-            Class moduleClass = classLoader.loadClass("jdchub.module.ModuleMain");
-            instance = (Module) moduleClass.newInstance();
+            classPath.add(moduleJar.toURI().toURL());
         }
+
+        final URLClassLoader classLoader;
+        classLoader = new URLClassLoader(classPath.toArray(new URL[0]),
+                                         parentClassLoader);
+
+        Class moduleClass = classLoader.loadClass("jdchub.module.ModuleMain");
+        instance = (Module) moduleClass.newInstance();
+        instance.setModuleClassLoader(classLoader);
 
         return instance;
     }
@@ -103,7 +177,16 @@ public class ModulesManager
             Module moduleInstance = getModuleInstance(moduleJar);
 
             // TODO: load info about module from DB and skip init process if module disabled
-            boolean isInited = moduleInstance.init();
+            Thread moduleThread = new Thread(moduleInstance);
+
+            // Wait for module initialization
+            synchronized (moduleInstance)
+            {
+                moduleThread.start();
+                moduleInstance.wait(10000);
+            }
+
+            boolean isInited = moduleInstance.isRun();
             String name = moduleInstance.getName();
 
             if (isInited)
@@ -141,6 +224,18 @@ public class ModulesManager
             e.printStackTrace();
         }
         catch (IllegalAccessException e)
+        {
+            e.printStackTrace();
+        }
+        catch (NoSuchMethodException e)
+        {
+            e.printStackTrace();
+        }
+        catch (InvocationTargetException e)
+        {
+            e.printStackTrace();
+        }
+        catch (InterruptedException e)
         {
             e.printStackTrace();
         }
@@ -187,6 +282,8 @@ public class ModulesManager
             return false;
         }
 
+        System.out.println("Unload module: " + moduleName);
+
         boolean returnResult = true;
         ModuleInfo moduleInfo = modules.get(moduleName);
 
@@ -200,6 +297,12 @@ public class ModulesManager
 
         if (returnResult)
         {
+            // Stop module thread
+            moduleInfo.getModuleInstance().stop();
+        }
+
+        if (returnResult)
+        {
             if (eventHandler != null)
             {
                 EventBusService.unsubscribe(eventHandler);
@@ -209,6 +312,10 @@ public class ModulesManager
             {
                 Signal.removeHandler(signalHandler);
             }
+        }
+        else
+        {
+            System.out.println("Can't unload module: " + moduleName);
         }
 
         return returnResult;

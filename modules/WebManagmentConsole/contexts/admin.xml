@@ -10,11 +10,11 @@
   <!--  + war OR resourceBase                                          -->
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
   <Set name="contextPath">/</Set>
-  <Set name="war"><SystemProperty name="jetty.home" default="modules/WebManagementConsole.jar"/>/webapps/admin.war/</Set>
+  <Set name="war"><SystemProperty name="jetty.home"/>/webapps/admin.war/</Set>
 
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
   <!-- Optional context configuration                                  -->
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-  <Set name="defaultsDescriptor"><SystemProperty name="jetty.home" default="modules/WebManagementConsole.jar"/>/etc/webdefault.xml</Set>
+  <Set name="defaultsDescriptor"><SystemProperty name="jetty.home"/>/etc/webdefault.xml</Set>
 
 </Configure>

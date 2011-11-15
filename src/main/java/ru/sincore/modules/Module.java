@@ -1,5 +1,7 @@
 package ru.sincore.modules;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * Abstract module class
  *
@@ -8,8 +10,11 @@ package ru.sincore.modules;
  *         Date: 19.10.11
  *         Time: 14:23
  */
-public abstract class Module
+public abstract class Module implements Runnable
 {
+    private ClassLoader moduleClassLoader = null;
+    private AtomicBoolean isRun = new AtomicBoolean(false);
+
     /**
      * Initial module procedure
      *
@@ -23,7 +28,6 @@ public abstract class Module
      * @return true if module successfuly deinitialized else false is returned
      */
     public abstract boolean deinit();
-
 
     /**
      * Provide internal module name
@@ -60,5 +64,46 @@ public abstract class Module
     public Object getSignalHandler()
     {
         return null;
+    }
+
+
+    public boolean isRun()
+    {
+        return this.isRun.get();
+    }
+
+
+    public void stop()
+    {
+        isRun = new AtomicBoolean(false);
+    }
+
+
+    public void setModuleClassLoader(ClassLoader classLoader)
+    {
+        this.moduleClassLoader = classLoader;
+    }
+
+
+
+    public void run()
+    {
+        if (moduleClassLoader != null)
+        {
+            Thread.currentThread().setContextClassLoader(moduleClassLoader);
+        }
+
+        isRun.set(init());
+
+        while (isRun.get())
+        {
+            synchronized (this)
+            {
+                // Notify all that init process completed and module worked
+                this.notifyAll();
+            }
+
+            try { Thread.sleep(1000); } catch (InterruptedException e) {}
+        }
     }
 }
