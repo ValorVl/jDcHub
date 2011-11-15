@@ -34,7 +34,6 @@ import java.util.List;
  * DAO Class for manipulation clients entity
  * @author Valor
  * @since  13.09.2011
- * @version 0.0.2
  */
 public class ClientListDAOImpl implements ClientListDAO
 {

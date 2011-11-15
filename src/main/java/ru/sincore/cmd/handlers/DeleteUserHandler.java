@@ -1,7 +1,7 @@
 /*
-* RestartHandler.java
+* DeleteUserHandler.java
 *
-* Created on 31 october 2011, 16:12
+* Created on 15 11 2011, 15:39
 *
 * Copyright (C) 2011 Alexey 'lh' Antonov
 *
@@ -9,12 +9,12 @@
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
 * of the License, or any later version.
-*
+
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*
+
 * You should have received a copy of the GNU General Public License
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -24,50 +24,51 @@ package ru.sincore.cmd.handlers;
 
 import gnu.getopt.Getopt;
 import gnu.getopt.LongOpt;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Marker;
-import ru.sincore.Broadcast;
-import ru.sincore.Main;
 import ru.sincore.client.AbstractClient;
 import ru.sincore.cmd.AbstractCmd;
 import ru.sincore.cmd.CmdUtils;
+import ru.sincore.db.dao.ClientListDAO;
+import ru.sincore.db.dao.ClientListDAOImpl;
 import ru.sincore.i18n.Messages;
 
 /**
  * @author Alexey 'lh' Antonov
- * @since 2011-10-31
+ * @since 2011-11-15
  */
-public class RestartHandler extends AbstractCmd
+public class DeleteUserHandler extends AbstractCmd
 {
-    private static final Logger log = LoggerFactory.getLogger(RestartHandler.class);
-    private String marker = Marker.ANY_NON_NULL_MARKER;
+    private AbstractClient client;
+    private String         cmd;
+    private String         args;
 
-    private AbstractClient  client;
-    private String          cmd;
-    private String          args;
-
-    private long            timeout = 5000;
-    private String          message;
+    private String nick;
+    private String reason;
 
 
     @Override
     public void execute(String cmd, String args, AbstractClient client)
     {
+        this.client = client;
         this.cmd = cmd;
         this.args = args;
-        this.client = client;
 
-        this.message = null;
+        this.nick = null;
+        this.reason = null;
 
         LongOpt[] longOpts = new LongOpt[3];
 
-        longOpts[0] = new LongOpt("timeout", LongOpt.REQUIRED_ARGUMENT, null, 't');
-        longOpts[1] = new LongOpt("message", LongOpt.REQUIRED_ARGUMENT, null, 'm');
+        longOpts[0] = new LongOpt("nick", LongOpt.REQUIRED_ARGUMENT, null, 'n');
+        longOpts[1] = new LongOpt("reason", LongOpt.REQUIRED_ARGUMENT, null, 'r');
 
         String[] argArray = CmdUtils.strArgToArray(args);
 
-        Getopt getopt = new Getopt("restart", argArray, "t:m:", longOpts);
+        Getopt getopt = new Getopt("grant", argArray, "n:w:t:", longOpts);
+
+        if (argArray.length < 1)
+        {
+            showHelp();
+            return;
+        }
 
         int c;
 
@@ -75,47 +76,56 @@ public class RestartHandler extends AbstractCmd
         {
             switch (c)
             {
-                case 't':
-                    this.timeout = Long.parseLong(getopt.getOptarg()) * 1000; // from sec to ms
-                    break;
-
-                case 'm':
-                    this.message = getopt.getOptarg();
+                case 'n':
+                    this.nick = getopt.getOptarg();
                     break;
 
                 case '?':
                     showHelp();
                     break;
+
+                case 'r':
+                    this.reason = getopt.getOptarg();
+                    break;
+
+                default:
+                    showHelp();
+                    break;
             }
         }
 
-        restartHub();
+        deleteUser();
     }
 
 
-    private void restartHub()
+    private void deleteUser()
     {
-        if (this.message != null)
+        if (nick == null)
         {
-            Broadcast.getInstance().broadcastTextMessage(message);
+            sendError(Messages.get(Messages.NICK_REQUIRED, (String)client.getExtendedField("LC")));
+            return;
         }
 
-        try
-        {
-            Thread.sleep(timeout);
-        }
-        catch (InterruptedException ex)
-        {
-            // ignored
-        }
+        ClientListDAO clientListDAO = new ClientListDAOImpl();
 
-        Main.restart();
+        boolean deleted = clientListDAO.delClient(nick);
+
+        if (!deleted)
+        {
+            sendError("Client you want to delete is not a registred user!");
+        }
+    }
+
+
+    private void sendError(String message)
+    {
+        client.sendPrivateMessageFromHub(message);
     }
 
 
     private void showHelp()
     {
-        client.sendPrivateMessageFromHub((Messages.get("core.commands.restart.help_text",
+        sendError((Messages.get("core.commands.delete_user.help_text",
                                 (String) client.getExtendedField("LC"))));
     }
 }

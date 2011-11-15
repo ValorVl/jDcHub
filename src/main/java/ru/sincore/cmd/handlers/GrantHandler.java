@@ -168,7 +168,7 @@ public class GrantHandler extends AbstractCmd
 
         if (!toClient.isRegistred())
         {
-            sendError("Client you want to grant rights is not registred user!");
+            sendError("Client you want to grant rights is not a registred user!");
             return;
         }
 

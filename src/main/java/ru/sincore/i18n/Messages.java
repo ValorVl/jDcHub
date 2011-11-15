@@ -103,9 +103,9 @@ public class Messages
     public static final String ARGUMENT_REQUIRED      = "core.commands.argument_required";
     public static final String LOW_WEIGHT             = "core.commands.low_weight";
     public static final String NICK_NOT_EXISTS        = "core.commands.nick_not_exists";
-    public static final String INVALID_WEIGHT         = "core.commands.grant.invalid_weight";
-    public static final String WEIGHT_REQUIRED        = "core.commands.grant.weight_required";
-    public static final String NICK_REQUIRED          = "core.commands.grant.nick_required";
+    public static final String INVALID_WEIGHT         = "core.commands.invalid_weight";
+    public static final String WEIGHT_REQUIRED        = "core.commands.weight_required";
+    public static final String NICK_REQUIRED          = "core.commands.nick_required";
 
     public static final String TIME_FORMAT            = "core.time_format";
     public static final String TIME_PERIOD_FORMAT     = "core.time_period_format";
