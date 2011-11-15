@@ -1,5 +1,11 @@
 package ru.sincore.modules;
 
+import com.adamtaft.eb.EventBusService;
+import org.apache.mina.util.CopyOnWriteMap;
+import org.xeustechnologies.jcl.JarClassLoader;
+import org.xeustechnologies.jcl.JclObjectFactory;
+import ru.sincore.signalservice.Signal;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.net.MalformedURLException;
@@ -7,13 +13,6 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Map;
 import java.util.Set;
-
-import com.adamtaft.eb.EventBusService;
-import org.apache.mina.util.CopyOnWriteMap;
-import org.xeustechnologies.jcl.Configuration;
-import org.xeustechnologies.jcl.JarClassLoader;
-import org.xeustechnologies.jcl.JclObjectFactory;
-import ru.sincore.signalservice.Signal;
 
 /**
  * Dynamicaly adding modules manager

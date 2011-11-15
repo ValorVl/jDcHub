@@ -1,7 +1,6 @@
 package ru.sincore.signals;
 
 import ru.sincore.client.AbstractClient;
-import ru.sincore.client.Client;
 
 /**
  * Signal that emited when raw command handling is called

@@ -24,7 +24,6 @@ package ru.sincore.client;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.sincore.util.AdcUtils;
 
 /**
  * @author Alexey 'lh' Antonov

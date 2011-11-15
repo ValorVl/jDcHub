@@ -25,7 +25,6 @@
 package ru.sincore.TigerImpl;
 
 import ru.sincore.ClientManager;
-import ru.sincore.ConfigurationManager;
 
 import java.util.Random;
 

@@ -1,7 +1,5 @@
 package ru.sincore.events;
 
-import java.util.EventObject;
-
 /**
  * Event that sended after hub startup
  *

@@ -23,8 +23,6 @@ package ru.sincore.cmd.handlers;
 
 import gnu.getopt.Getopt;
 import gnu.getopt.LongOpt;
-import org.apache.commons.lang.math.IntRange;
-import org.apache.commons.lang.math.Range;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
@@ -32,12 +30,9 @@ import ru.sincore.ClientManager;
 import ru.sincore.ConfigurationManager;
 import ru.sincore.Exceptions.STAException;
 import ru.sincore.client.AbstractClient;
-import ru.sincore.client.Client;
 import ru.sincore.cmd.AbstractCmd;
 import ru.sincore.cmd.CmdUtils;
 import ru.sincore.i18n.Messages;
-
-import java.util.ArrayList;
 
 /**
  * Command for manipulation user right weight

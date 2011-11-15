@@ -1,5 +1,5 @@
 /*
- * SimpleHandler.java
+ * SessionManager.java
  *
  * Created on 06 noiembrie 2007, 14:34
  *
@@ -40,7 +40,6 @@ import ru.sincore.signals.ClientQuitSignal;
 import ru.sincore.signalservice.Signal;
 import ru.sincore.util.STAError;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.StringTokenizer;
 

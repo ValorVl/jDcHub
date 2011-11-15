@@ -1,7 +1,5 @@
 package ru.sincore.adc.action;
 
-import java.util.StringTokenizer;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.sincore.ConfigurationManager;
@@ -17,6 +15,8 @@ import ru.sincore.client.Client;
 import ru.sincore.i18n.Messages;
 import ru.sincore.util.Constants;
 import ru.sincore.util.STAError;
+
+import java.util.StringTokenizer;
 
 /**
  * Class/file description
@@ -97,12 +97,12 @@ public class PAS extends Action
 
         byte[] passwordBytes        = new byte[clientPassword.getBytes().length + salt.length];
 
-        log.debug("Pass size: "  + clientPassword.getBytes().length);
-        log.debug("Salt size: "  + salt.length);
+        log.debug("Pass size: " + clientPassword.getBytes().length);
+        log.debug("Salt size: " + salt.length);
         log.debug("Salt value: " + salt);
 
         System.arraycopy(clientPassword.getBytes(), 0, passwordBytes, 0,                                clientPassword.getBytes().length);
-        System.arraycopy(salt,                      0, passwordBytes, clientPassword.getBytes().length, salt.length);
+        System.arraycopy(salt, 0, passwordBytes, clientPassword.getBytes().length, salt.length);
 
         // Get Tiger hash
         Tiger tiger = new Tiger();

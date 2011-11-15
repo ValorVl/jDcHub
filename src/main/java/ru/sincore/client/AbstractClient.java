@@ -24,16 +24,9 @@ package ru.sincore.client;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.sincore.Broadcast;
-import ru.sincore.ClientManager;
 import ru.sincore.ConfigurationManager;
 import ru.sincore.Exceptions.STAException;
-import ru.sincore.adc.Features;
-import ru.sincore.adc.State;
-import ru.sincore.i18n.Messages;
 import ru.sincore.util.AdcUtils;
-
-import java.util.Date;
 
 /**
  * @author Alexey 'lh' Antonov

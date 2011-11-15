@@ -19,8 +19,6 @@
  */
 package ru.sincore.TigerImpl;
 
-import java.util.Random;
-
 import org.apache.commons.lang.RandomStringUtils;
 
 /**

@@ -23,13 +23,11 @@
 
 package ru.sincore.python;
 
+import org.python.util.PythonInterpreter;
 import ru.sincore.Main;
 
 import java.io.File;
 import java.util.LinkedList;
-
-import org.python.core.*;
-import org.python.util.*;
 
 /**
  * @author Pietricica

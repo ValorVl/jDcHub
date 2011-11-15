@@ -26,8 +26,6 @@ import ru.sincore.client.AbstractClient;
 import ru.sincore.cmd.AbstractCmd;
 import ru.sincore.cmd.CmdLogger;
 import ru.sincore.i18n.Messages;
-import ru.sincore.util.Constants;
-import ru.sincore.util.STAError;
 
 import java.util.Date;
 

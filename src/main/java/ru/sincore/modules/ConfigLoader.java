@@ -1,10 +1,10 @@
 package ru.sincore.modules;
 
-import java.io.InputStream;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xeustechnologies.jcl.ProxyClassLoader;
+
+import java.io.InputStream;
 
 /**
  * Given

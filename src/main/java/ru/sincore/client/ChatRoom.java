@@ -22,8 +22,6 @@
 
 package ru.sincore.client;
 
-import java.util.StringTokenizer;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.sincore.ClientManager;
@@ -31,6 +29,8 @@ import ru.sincore.ConfigurationManager;
 import ru.sincore.Exceptions.STAException;
 import ru.sincore.util.AdcUtils;
 import ru.sincore.util.Constants;
+
+import java.util.StringTokenizer;
 
 /**
  * @author Alexey 'lh' Antonov

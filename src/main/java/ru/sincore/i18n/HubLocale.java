@@ -1,9 +1,9 @@
 package ru.sincore.i18n;
 
-import java.util.Locale;
-
 import ru.sincore.ConfigurationManager;
 import ru.sincore.client.AbstractClient;
+
+import java.util.Locale;
 
 /**
  * Class/file description

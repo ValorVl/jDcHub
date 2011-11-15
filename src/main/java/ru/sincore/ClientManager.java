@@ -33,7 +33,6 @@ import ru.sincore.client.ChatRoom;
 import ru.sincore.client.Client;
 
 import java.util.Collection;
-import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
