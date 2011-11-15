@@ -102,7 +102,7 @@ public class DeleteUserHandler extends AbstractCmd
     {
         if (nick == null)
         {
-            sendError(Messages.get(Messages.NICK_REQUIRED, (String)client.getExtendedField("LC")));
+            sendError(Messages.get(Messages.NICK_REQUIRED, (String) client.getExtendedField("LC")));
             return;
         }
 

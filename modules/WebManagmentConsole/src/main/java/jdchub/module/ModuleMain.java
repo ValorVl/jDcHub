@@ -26,8 +26,6 @@ import org.eclipse.jetty.server.Server;
 import ru.sincore.modules.Module;
 import org.eclipse.jetty.xml.XmlConfiguration;
 
-import java.io.*;
-
 /**
  * @author Alexey 'lh' Antonov
  * @since 2011-11-09
@@ -42,29 +40,20 @@ public class ModuleMain extends Module
     @Override
     public boolean init()
     {
-        System.setProperty("org.eclipse.jetty.util.log.stderr.DEBUG", "true");
-        System.setProperty("org.eclipse.jetty.util.log.stderr.SOURCE", "true");
         try
         {
             XmlConfiguration configuration = new XmlConfiguration(
                     getClass().getClassLoader().getResourceAsStream("jetty-config.xml"));
 
-            server = (Server) configuration.configure();
+            server = new Server();
+
+            configuration.configure(server);
 
             server.start();
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            return false;
-        }
-
-        if (server.isStarted())
-        {
-            (new Thread(new HTTPServer(server))).start();
-        }
-        else
-        {
             return false;
         }
 
@@ -82,7 +71,7 @@ public class ModuleMain extends Module
             return false;
         }
 
-        System.out.println(server.getState());
+        System.out.println("Jetty server state: " + server.getState());
 
         try
         {
@@ -94,8 +83,14 @@ public class ModuleMain extends Module
             return false;
         }
 
-        System.out.println("Module " + moduleName + " deinited");
-        return server.isStopped();
+
+        if (server.isStopped())
+        {
+            System.out.println("Module " + moduleName + " deinited");
+            return true;
+        }
+
+        return false;
     }
 
 

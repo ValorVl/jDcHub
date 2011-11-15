@@ -49,9 +49,17 @@
 
     </fileSets>
 
+    <files>
+        <file>
+            <source>${project.build.directory}/${project.build.finalName}.jar</source>
+            <outputDirectory>main</outputDirectory>
+        </file>
+    </files>
+
     <dependencySets>
         <dependencySet>
             <outputDirectory>/lib</outputDirectory>
+            <useProjectArtifact>false</useProjectArtifact>
             <scope>runtime</scope>
         </dependencySet>
     </dependencySets>

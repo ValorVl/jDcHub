@@ -3,10 +3,89 @@
 
 <Configure id="WebManagementConsole" class="org.eclipse.jetty.server.Server">
 
+    <!-- =========================================================== -->
+    <!-- Define some SystemProperties                                -->
+    <!-- =========================================================== -->
+    <Call class="java.lang.System" name="setProperty">
+        <Arg>jetty.home</Arg>
+        <Arg><SystemProperty name="jetty.home" default="modules/WebManagementConsole.jar"/></Arg>
+    </Call>
+    <Call class="java.lang.System" name="setProperty">
+        <Arg>derby.system.home</Arg>
+        <Arg><SystemProperty name="java.io.tmpdir"/></Arg>
+    </Call>
+    <!--
+    <Call class="java.lang.System" name="setProperty">
+        <Arg>org.eclipse.jetty.util.log.stderr.DEBUG</Arg>
+        <Arg>false</Arg>
+    </Call>
+    <Call class="java.lang.System" name="setProperty">
+        <Arg>org.eclipse.jetty.util.log.stderr.SOURCE</Arg>
+        <Arg>false</Arg>
+    </Call>
+    -->
+    <!-- disable internal JSP compiller -->
+    <Call class="java.lang.System"  name="setProperty">
+        <Arg>org.apache.jasper.compiler.disablejsr199</Arg>
+        <Arg>true</Arg>
+    </Call>
+
+
+    <!-- =========================================================== -->
+    <!-- JMX                                                         -->
+    <!-- =========================================================== -->
+
+
+    <!-- =========================================================== -->
+    <!-- Initialize an mbean server                                  -->
+    <!-- =========================================================== -->
+    <Call id="MBeanServer" class="java.lang.management.ManagementFactory" name="getPlatformMBeanServer" />
+
+    <!-- =========================================================== -->
+    <!-- Initialize the Jetty MBean container                        -->
+    <!-- =========================================================== -->
+    <New id="MBeanContainer" class="org.eclipse.jetty.jmx.MBeanContainer">
+        <Arg>
+            <Ref id="MBeanServer" />
+        </Arg>
+    </New>
+
+    <!-- Add to the Server to listen for object events -->
+    <Get id="Container" name="container">
+        <Call name="addEventListener">
+            <Arg>
+                <Ref id="MBeanContainer" />
+            </Arg>
+        </Call>
+    </Get>
+
+    <!-- Add to the Server as a lifecycle -->
+    <!-- Only do this if you know you will only have a single jetty server -->
+    <Call name="addBean">
+        <Arg>
+            <Ref id="MBeanContainer" />
+        </Arg>
+    </Call>
+
+    <!-- Add the static log -->
+    <Get id="Logger" class="org.eclipse.jetty.util.log.Log" name="log" />
+    <Ref id="MBeanContainer">
+        <Call name="addBean">
+            <Arg>
+                <Ref id="Logger" />
+            </Arg>
+        </Call>
+    </Ref>
+
+
+    <!-- =========================================================== -->
+    <!-- Set conntectors                                             -->
+    <!-- =========================================================== -->
     <Call name="addConnector">
         <Arg>
             <New class="org.eclipse.jetty.server.nio.SelectChannelConnector">
-                <Set name="port">8080</Set>
+                <Set name="host"><Property name="jetty.host" /></Set>
+                <Set name="port"><Property name="jetty.port" default="8080"/></Set>
             </New>
         </Arg>
     </Call>
@@ -26,12 +105,13 @@
         </New>
     </Set>
 
+
     <!-- Deploy Manager -->
     <Call name="addBean">
         <Arg>
             <New id="DeploymentManager" class="org.eclipse.jetty.deploy.DeploymentManager">
                 <Set name="contexts">
-                    <Ref id="Contexts"/>
+                    <Ref id="Contexts" />
                 </Set>
                 <Call name="setContextAttribute">
                     <Arg>org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern</Arg>
@@ -42,22 +122,20 @@
     </Call>
 
 
+
     <!-- Add a WebAppProvider to the deployment manager                  -->
     <Ref id="DeploymentManager">
         <Call id="webappprovider" name="addAppProvider">
             <Arg>
                 <New class="org.eclipse.jetty.deploy.providers.WebAppProvider">
                     <Set name="monitoredDirName">
-                        <Property name="jetty.home" default="modules/WebManagementConsole.jar"/>
-                        /webapps
+                        <SystemProperty name="jetty.home"/>/webapps
                     </Set>
                     <Set name="defaultsDescriptor">
-                        <Property name="jetty.home" default="modules/WebManagementConsole.jar"/>
-                        /etc/webdefault.xml
+                        <SystemProperty name="jetty.home"/>/etc/webdefault.xml
                     </Set>
                     <Set name="contextXmlDir">
-                        <Property name="jetty.home" default="modules/WebManagementConsole.jar"/>
-                        /contexts
+                        <SystemProperty name="jetty.home"/>/contexts
                     </Set>
                     <Set name="scanInterval">1</Set>
                     <!-- UNCOMMENT if extracting needed -->
@@ -70,35 +148,37 @@
 
     <!-- Add a ContextProvider to the deployment manager                 -->
     <Ref id="DeploymentManager">
-      <Call name="addAppProvider">
-        <Arg>
-          <New class="org.eclipse.jetty.deploy.providers.ContextProvider">
-            <Set name="monitoredDir"><Property name="jetty.home" default="modules/WebManagementConsole.jar" />/contexts</Set>
-            <Set name="scanInterval">1</Set>
-          </New>
-        </Arg>
-      </Call>
+        <Call name="addAppProvider">
+            <Arg>
+                <New class="org.eclipse.jetty.deploy.providers.ContextProvider">
+                    <Set name="monitoredDir">
+                        <SystemProperty name="jetty.home"/>/contexts
+                    </Set>
+                    <Set name="scanInterval">1</Set>
+                </New>
+            </Arg>
+        </Call>
     </Ref>
 
 
     <Ref id="Handlers">
-      <Call name="addHandler">
-        <Arg>
-          <New id="RequestLog" class="org.eclipse.jetty.server.handler.RequestLogHandler">
-            <Set name="requestLog">
-              <New id="RequestLogImpl" class="org.eclipse.jetty.server.NCSARequestLog">
-                <Set name="filename"><Property name="jetty.logs" default="./log"/>/web-console-yyyy-mm-dd.request.log</Set>
-                <Set name="filenameDateFormat">yyyy_MM_dd</Set>
-                <Set name="retainDays">90</Set>
-                <Set name="append">true</Set>
-                <Set name="extended">false</Set>
-                <Set name="logCookies">false</Set>
-                <Set name="LogTimeZone">GMT</Set>
-              </New>
-            </Set>
-          </New>
-        </Arg>
-      </Call>
+        <Call name="addHandler">
+            <Arg>
+                <New id="RequestLog" class="org.eclipse.jetty.server.handler.RequestLogHandler">
+                    <Set name="requestLog">
+                        <New id="RequestLogImpl" class="org.eclipse.jetty.server.NCSARequestLog">
+                            <Set name="filename"><Property name="jetty.logs" default="./log"/>/web-console-yyyy-mm-dd.request.log</Set>
+                            <Set name="filenameDateFormat">yyyy_MM_dd</Set>
+                            <Set name="retainDays">90</Set>
+                            <Set name="append">true</Set>
+                            <Set name="extended">false</Set>
+                            <Set name="logCookies">false</Set>
+                            <Set name="LogTimeZone">GMT</Set>
+                        </New>
+                    </Set>
+                </New>
+            </Arg>
+        </Call>
     </Ref>
 
 
@@ -122,6 +202,7 @@
     <Call class="java.lang.System" name="setOut"><Arg><Ref id="ServerLog"/></Arg></Call>
     -->
 
+    <!--
     <Get id="oldhandler" name="handler"/>
     <Set name="handler">
       <New id="DebugHandler" class="org.eclipse.jetty.server.handler.DebugHandler">
@@ -129,11 +210,12 @@
         <Set name="outputStream">
           <New class="org.eclipse.jetty.util.RolloverFileOutputStream">
             <Arg type="String"><Property name="jetty.logs" default="./log"/>/web-console-yyyy-mm-dd.debug.log</Arg>
-            <Arg type="boolean">true</Arg> <!-- append -->
-            <Arg type="int">90</Arg> <!-- retain days -->
+            <Arg type="boolean">true</Arg>
+            <Arg type="int">90</Arg>
           </New>
         </Set>
       </New>
     </Set>
+    -->
 
 </Configure>
