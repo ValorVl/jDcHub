@@ -154,25 +154,11 @@ public class ConfigurationManager extends PropertiesConfiguration
     */
     private ConfigurationManager()
     {
-        File hubPropertiesFile;
-        InputStream fileInput;
-        InputStreamReader reader;
-
-        try
+        if (!loadConfigs())
         {
-            hubPropertiesFile = new File(HUB_CONFIG);
-            fileInput = new FileInputStream(hubPropertiesFile);
-            reader = new InputStreamReader(fileInput);
-
-            this.load(reader);
-        }
-        catch (Exception e)
-        {
-            log.error("Fatal error>>>", e);
+            log.error("Fatal error! Can\'t load configs. Hub doesn't started.");
             System.exit(0);
         }
-
-
     }
 
 
@@ -189,6 +175,29 @@ public class ConfigurationManager extends PropertiesConfiguration
     public String getAdcString(String key)
     {
         return AdcUtils.toAdcString(super.getString(key));
+    }
+
+    public synchronized boolean loadConfigs()
+    {
+        File hubPropertiesFile;
+        InputStream fileInput;
+        InputStreamReader reader;
+
+        try
+        {
+            hubPropertiesFile = new File(HUB_CONFIG);
+            fileInput = new FileInputStream(hubPropertiesFile);
+            reader = new InputStreamReader(fileInput);
+
+            this.load(reader);
+        }
+        catch (Exception e)
+        {
+            log.error("Error >>>", e);
+            return false;
+        }
+
+        return true;
     }
 
     public synchronized void load(java.io.Reader in)
