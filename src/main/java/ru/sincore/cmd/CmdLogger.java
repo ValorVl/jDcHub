@@ -54,12 +54,12 @@ public class CmdLogger
 				cmdExecutionResult = cmdResult;
 			}
 
-			cmdLog.putLog(client.getNick(), cmd.getCmdNames(), cmdExecutionResult, realArgs);
+			cmdLog.putLog(client.getNick(), cmd.getCmdName(), cmdExecutionResult, realArgs);
 
 		}
 		else
 		{
-			loger.warn("Logging into DB has DISABLED! CMD : "+cmd.getCmdNames()+" Args : "+realArgs+" CmdResult : "+cmdResult,e);
+			loger.warn("Logging into DB has DISABLED! CMD : "+cmd.getCmdName()+" Args : "+realArgs+" CmdResult : "+cmdResult,e);
 		}
 	}
 

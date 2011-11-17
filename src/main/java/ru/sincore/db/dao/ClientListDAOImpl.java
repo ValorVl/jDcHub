@@ -126,7 +126,8 @@ public class ClientListDAOImpl implements ClientListDAO
 
 			return client;
 
-		}catch (Exception ex)
+		}
+        catch (Exception ex)
 		{
 			log.error(marker,ex);
 			tx.rollback();

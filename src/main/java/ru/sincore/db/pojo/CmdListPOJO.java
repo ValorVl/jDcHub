@@ -4,11 +4,14 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 /**
- * @author Valor
- * @since 14.09.2011
- * @version 0.0.1
+ * If you do changes in class fields, please do the same changes in AbstractCmd class.
  */
 
+/**
+ * @author Valor
+ * @since 14.09.2011
+ * @author Alexey 'lh' Antonov
+ */
 @Entity
 @Table(name = "cmd_list")
 public class CmdListPOJO implements Serializable
@@ -19,20 +22,18 @@ public class CmdListPOJO implements Serializable
 	private Long 	id;
 	@Column(name = "command_name",columnDefinition = "VARCHAR(50)",nullable = false,unique = true)
 	private String 	commandName;
-	@Column(name = "command_executor_class",columnDefinition = "VARCHAR(250)",nullable = false)
-	private String 	commandExecutorClass;
-	@Column(name = "command_weight",columnDefinition = "INT(3) DEFAULT 0")
-	private Integer commandWeight;
+	@Column(name = "command_weight",columnDefinition = "INT(3) DEFAULT 100")
+	private Integer commandWeight = 100;
 	@Column(name = "command_args",columnDefinition = "TEXT",nullable = true)
-	private String 	commandArgs;
+	private String 	commandArgs = "";
 	@Column(name = "command_syntax",columnDefinition = "TEXT",nullable = true)
-	private String 	commandSyntax;
+	private String 	commandSyntax = "";
 	@Column(name = "commandDescription", columnDefinition = "TEXT",nullable = true)
-	private String  commandDescription;
+	private String  commandDescription = "";
 	@Column(name = "enabled",columnDefinition = "TINYINT(1) DEFAULT 1")
-	private Boolean enabled;
-	@Column(name = "logable",columnDefinition = "TINYINT(1) DEFAULT 1")
-	private Boolean logable;
+	private Boolean enabled = true;
+	@Column(name = "logs",columnDefinition = "TINYINT(1) DEFAULT 1")
+	private Boolean logs = true;
 
 	public Long getId()
 	{
@@ -52,16 +53,6 @@ public class CmdListPOJO implements Serializable
 	public void setCommandName(String commandName)
 	{
 		this.commandName = commandName;
-	}
-
-	public String getCommandExecutorClass()
-	{
-		return commandExecutorClass;
-	}
-
-	public void setCommandExecutorClass(String commandExecutorClass)
-	{
-		this.commandExecutorClass = commandExecutorClass;
 	}
 
 	public Integer getCommandWeight()
@@ -104,17 +95,17 @@ public class CmdListPOJO implements Serializable
 		this.commandDescription = commandDescription;
 	}
 
-	public Boolean getLogged()
+	public Boolean isLogs()
 	{
-		return logable;
+		return logs;
 	}
 
-	public void setLogged(Boolean logged)
+	public void setLogs(Boolean logs)
 	{
-		this.logable = logged;
+		this.logs = logs;
 	}
 
-	public Boolean getEnabled()
+	public Boolean isEnabled()
 	{
 		return enabled;
 	}

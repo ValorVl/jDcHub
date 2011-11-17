@@ -62,7 +62,7 @@ public class DeleteUserHandler extends AbstractCmd
 
         String[] argArray = CmdUtils.strArgToArray(args);
 
-        Getopt getopt = new Getopt("grant", argArray, "n:w:t:", longOpts);
+        Getopt getopt = new Getopt(cmd, argArray, "n:r:", longOpts);
 
         if (argArray.length < 1)
         {

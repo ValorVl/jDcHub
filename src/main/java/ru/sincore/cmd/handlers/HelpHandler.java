@@ -40,7 +40,6 @@ public class HelpHandler extends AbstractCmd
 	public HelpHandler()
 	{
 		this.setCmdWeight(0);
-
 	}
 
 	@Override
@@ -63,22 +62,22 @@ public class HelpHandler extends AbstractCmd
 
 		StringBuilder complexCmdList = new StringBuilder();
 		complexCmdList.append('\n');
-		complexCmdList.append("| command | description | weight");
-		complexCmdList.append('\n');
+		complexCmdList.append("command - description [weight]\n");
+        complexCmdList.append('\n');
 
 		for(CmdListPOJO entry : cmdList.getCommandList())
 		{
 			StringBuilder cmdRow = new StringBuilder();
 
 			cmdRow.append(entry.getCommandName());
-			cmdRow.append(" 		-                 ");
+			cmdRow.append(" - ");
 			cmdRow.append(entry.getCommandDescription());
 
 			if (client.getWeight() != 0)
 			{
-				cmdRow.append(" [ ");
+				cmdRow.append(" [");
 				cmdRow.append(entry.getCommandWeight());
-				cmdRow.append(" ] \n");
+				cmdRow.append("]\n");
 			}
 
 			if (client.getWeight() >= entry.getCommandWeight())

@@ -67,7 +67,7 @@ public class RestartHandler extends AbstractCmd
 
         String[] argArray = CmdUtils.strArgToArray(args);
 
-        Getopt getopt = new Getopt("restart", argArray, "t:m:", longOpts);
+        Getopt getopt = new Getopt(cmd, argArray, "t:m:", longOpts);
 
         int c;
 

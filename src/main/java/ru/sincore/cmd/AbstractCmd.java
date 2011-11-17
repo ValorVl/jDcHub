@@ -8,41 +8,41 @@ public abstract class AbstractCmd
 {
 	private static final Logger log = LoggerFactory.getLogger(AbstractCmd.class);
 
-	String 	cmdNames;
+	String  cmdName;
 	String 	cmdArgs;
 	String 	cmdDescription;
-	String 	cmdExecutorClass;
 	String 	cmdSyntax;
 	Integer cmdWeight;
 	Boolean enabled;
-	Boolean logged;
+	Boolean logs;
 
 
 	public abstract void execute(String cmd,String args, AbstractClient client);
 
 	Boolean validateRights(Integer clientRightWeight)
 	{
-		log.info("Validate...");
+		log.info("Validating user rights to execute command...");
 
 		if(clientRightWeight >= cmdWeight)
 		{
-			log.info("Right normal.. follow..");
+			log.info("Rights are normal. Continue executing.");
 			return true;
-		}else
+		}
+        else
 		{
-			log.info("Client right weight :"+clientRightWeight+" < "+cmdWeight);
+			log.info("User have no anough weight.");
 			return false;
 		}
 	}
 
-	public String getCmdNames()
+	public String getCmdName()
 	{
-		return cmdNames;
+		return cmdName;
 	}
 
-	public void setCmdNames(String cmdNames)
+	public void setCmdName(String cmdName)
 	{
-		this.cmdNames = cmdNames;
+		this.cmdName = cmdName;
 	}
 
 	public String getCmdArgs()
@@ -65,16 +65,6 @@ public abstract class AbstractCmd
 		this.cmdDescription = cmdDescription;
 	}
 
-	public String getCmdExecutorClass()
-	{
-		return cmdExecutorClass;
-	}
-
-	public void setCmdExecutorClass(String cmdExecutorClass)
-	{
-		this.cmdExecutorClass = cmdExecutorClass;
-	}
-
 	public String getCmdSyntax()
 	{
 		return cmdSyntax;
@@ -95,7 +85,7 @@ public abstract class AbstractCmd
 		this.cmdWeight = cmdWeight;
 	}
 
-	public Boolean getEnabled()
+	public Boolean isEnabled()
 	{
 		return enabled;
 	}
@@ -105,13 +95,13 @@ public abstract class AbstractCmd
 		this.enabled = enabled;
 	}
 
-	public Boolean getLogged()
+	public Boolean isLogs()
 	{
-		return logged;
+		return logs;
 	}
 
-	public void setLogged(Boolean logged)
+	public void setLogs(Boolean logs)
 	{
-		this.logged = logged;
+		this.logs = logs;
 	}
 }

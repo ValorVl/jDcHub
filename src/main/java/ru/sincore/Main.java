@@ -25,7 +25,6 @@ package ru.sincore;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
-import ru.sincore.cmd.CmdContainer;
 import ru.sincore.db.HibernateUtils;
 import ru.sincore.i18n.Messages;
 
@@ -52,8 +51,6 @@ public class Main
         PropertyConfigurator.configure("./etc/log4j.properties");
         ConfigurationManager.instance();
         HibernateUtils.getSessionFactory();
-        CmdContainer container = CmdContainer.getInstance();
-        container.buildList();
     }
 
 

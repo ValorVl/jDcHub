@@ -57,7 +57,7 @@ public class KickHandler extends AbstractCmd
 
 		String[] argArray = CmdUtils.strArgToArray(args);
 
-		Getopt getopt = new Getopt("kick", argArray, "n:", longOpts);
+		Getopt getopt = new Getopt(cmd, argArray, "n:", longOpts);
 
         if (argArray.length < 1)
         {

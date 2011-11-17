@@ -34,6 +34,8 @@ import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
+import ru.sincore.cmd.CmdEngine;
+import ru.sincore.cmd.handlers.*;
 import ru.sincore.events.HubShutdownEvent;
 import ru.sincore.events.HubStartupEvent;
 import ru.sincore.modules.ModulesManager;
@@ -70,8 +72,14 @@ public class HubServer
         init();
     }
 
+
+    /**
+     * Initialize hub server
+     */
     private void init()
     {
+        initCmdEngine();
+
         ModulesManager.instance().loadModules();
 
         try
@@ -122,6 +130,31 @@ public class HubServer
         EventBusService.publish(new HubStartupEvent());
 
         assasin = new ClientAssasin();//temporary removed
+    }
+
+
+    /**
+     * Initialize command engine with default handlers
+     */
+    private void initCmdEngine()
+    {
+        log.debug("Initializing CmdEngine...");
+
+        CmdEngine cmdEngine = CmdEngine.getInstance();
+
+        // remove all commands (it must be done, if server was restarted)
+        cmdEngine.removeAllCommands();
+
+        // register default handlers
+        cmdEngine.registerCommand("about",      new AboutHandler());
+        cmdEngine.registerCommand("help",       new HelpHandler());
+        cmdEngine.registerCommand("regme",      new ClientRegDefaultHandler());
+        cmdEngine.registerCommand("info",       new InfoHandler());
+        cmdEngine.registerCommand("kick",       new KickHandler());
+        cmdEngine.registerCommand("grant",      new GrantHandler());
+        cmdEngine.registerCommand("reload",     new ReloadHandler());
+        cmdEngine.registerCommand("restart",    new RestartHandler());
+        cmdEngine.registerCommand("shutdown",   new ShutdownHandler());
     }
 
 

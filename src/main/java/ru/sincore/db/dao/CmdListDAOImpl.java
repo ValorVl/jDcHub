@@ -16,6 +16,8 @@ import java.util.List;
  *  @author Valor
  *  @since 14.09.2011
  *  @version 0.0.1
+ *  @author Alexey 'lh' Antonov
+ *  @since 17.11.2011
  */
 public class CmdListDAOImpl implements CmdListDAO
 {
@@ -23,45 +25,40 @@ public class CmdListDAOImpl implements CmdListDAO
 
 	private static String marker = Marker.ANY_MARKER;
 
-	@Override
+
+    @Override
 	public boolean addCommand(String name,
 							  int weight,
-							  String executorClass,
 							  String args,
 							  String description,
 							  String syntax,
 							  Boolean enabled,
-							  Boolean logged)
+							  Boolean logs)
 	{
 		Session session = HibernateUtils.getSessionFactory().openSession();
 		Transaction tx = session.getTransaction();
 
 		try{
-
 			tx.begin();
 
 			CmdListPOJO pojo = new CmdListPOJO();
 
 			pojo.setCommandName(name);
 			pojo.setCommandWeight(weight);
-			pojo.setCommandExecutorClass(executorClass);
 			pojo.setCommandArgs(args);
 			pojo.setCommandDescription(description);
 			pojo.setCommandSyntax(syntax);
 			pojo.setEnabled(enabled);
-			pojo.setLogged(logged);
+			pojo.setLogs(logs);
 
 			session.save(pojo);
 			tx.commit();
 
-			if (log.isDebugEnabled())
-			{
-				log.debug(marker,"Command  :"+name+" stored.");
-			}
+			log.debug(marker,"Command  :" + name + " stored.");
 
 			return true;
-
-		}catch (Exception ex)
+		}
+        catch (Exception ex)
 		{
 			tx.rollback();
 			log.error(marker, ex);
@@ -70,34 +67,58 @@ public class CmdListDAOImpl implements CmdListDAO
 		return false;
 	}
 
-	@Override
+
+    @Override
+    public boolean addCommand(CmdListPOJO command)
+    {
+        Session session = HibernateUtils.getSessionFactory().openSession();
+        Transaction tx = session.getTransaction();
+
+        try
+        {
+            tx.begin();
+            session.save(command);
+            tx.commit();
+
+            log.debug(marker,"Command  : " + command.getCommandName() + " stored.");
+            return true;
+        }
+        catch (Exception ex)
+        {
+            tx.rollback();
+            log.error(marker, ex);
+        }
+
+        return false;
+    }
+
+
+    @Override
 	public boolean delCommand(String name)
 	{
 		Session session = HibernateUtils.getSessionFactory().openSession();
 		Transaction tx = session.getTransaction();
 
-		try{
-
+		try
+        {
 			tx.begin();
 
-			Query query = session.createQuery("delete from CmdListPOJO where commandName = :commandName").setParameter("commandName",name);
+			Query query = session.createQuery("delete from CmdListPOJO where commandName = :name").setParameter("name", name);
 
 			query.executeUpdate();
 
 			tx.commit();
 
-			if(log.isDebugEnabled())
-			{
-				log.debug(marker,"Command : "+name+" deleted");
-			}
+			log.debug(marker, "Command : " + name + " was deleted.");
 
 			return true;
-
-		}catch (Exception ex)
+		}
+        catch (Exception ex)
 		{
 			tx.rollback();
 			log.error(marker, ex);
 		}
+
 		return false;
 	}
 
@@ -107,20 +128,17 @@ public class CmdListDAOImpl implements CmdListDAO
 		Session session = HibernateUtils.getSessionFactory().openSession();
 		Transaction tx = session.getTransaction();
 
-		try{
-
+		try
+        {
 			tx.begin();
 			session.update(commandObject);
 			tx.commit();
 
-			if (log.isDebugEnabled())
-			{
-				log.debug(marker,"Command : "+commandObject.getCommandName()+" updated");
-			}
+		    log.debug(marker,"Command : " + commandObject.getCommandName() + " updated");
 
 			return true;
-
-		}catch (Exception ex)
+		}
+        catch (Exception ex)
 		{
 			tx.rollback();
 			log.error(marker, ex);
@@ -129,7 +147,8 @@ public class CmdListDAOImpl implements CmdListDAO
 		return false;
 	}
 
-	@Override
+
+    @Override
 	public List<CmdListPOJO> getCommandList()
 	{
 		Session session = HibernateUtils.getSessionFactory().openSession();
@@ -147,7 +166,8 @@ public class CmdListDAOImpl implements CmdListDAO
 
 			return resultList;
 
-		}catch (HibernateException ex)
+		}
+        catch (HibernateException ex)
 		{
 			tx.rollback();
 			log.error(marker, ex);
@@ -156,7 +176,9 @@ public class CmdListDAOImpl implements CmdListDAO
 		return null;
 	}
 
-	public CmdListPOJO getCommandInfo(String command)
+
+    @Override
+    public CmdListPOJO getCommand(String name)
 	{
 		Session session = HibernateUtils.getSessionFactory().openSession();
 		Transaction tx = session.getTransaction();
@@ -165,9 +187,9 @@ public class CmdListDAOImpl implements CmdListDAO
 
 			tx.begin();
 
-			Query query = session.createQuery("from CmdListPOJO where commandName =:cmd");
+			Query query = session.createQuery("from CmdListPOJO where commandName =:name");
 
-			query.setParameter("cmd",command);
+			query.setParameter("name", name);
 
 			CmdListPOJO result = (CmdListPOJO) query.uniqueResult();
 
@@ -175,7 +197,8 @@ public class CmdListDAOImpl implements CmdListDAO
 
 			return result;
 
-		}catch (HibernateException ex)
+		}
+        catch (HibernateException ex)
 		{
 			tx.rollback();
 			log.error(marker, ex);

@@ -123,9 +123,9 @@ public class MSG extends Action
         {
             StringTokenizer commandTokenizer = new StringTokenizer(normalMessage, " ");
 
-            CmdEngine cmd = new CmdEngine();
+            CmdEngine cmd = CmdEngine.getInstance();
             String command = commandTokenizer.nextToken().substring(1);
-            if (!cmd.commandExist(command))
+            if (!cmd.commandExists(command))
             {
                  // say to client command doesn't exist
                 fromClient.sendPrivateMessageFromHub("Command not found!");

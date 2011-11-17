@@ -66,7 +66,7 @@ public class ShutdownHandler extends AbstractCmd
 
         String[] argArray = CmdUtils.strArgToArray(args);
 
-        Getopt getopt = new Getopt("shutdown", argArray, "t:m:", longOpts);
+        Getopt getopt = new Getopt(cmd, argArray, "t:m:", longOpts);
 
         int c;
 
