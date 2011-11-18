@@ -1,0 +1,6 @@
+Version 0.2.0:
+
+1. Create database table for store big text data, MOTD, RULES, etc.
+2. Create POJO and DAO classes for mapping and management BIG text data
+3. Modules architecture
+4. Scripting engine
