@@ -69,6 +69,7 @@ public class CmdEngine
     {
         log.debug("Cmd : " + cmd + " | args : " + args + " | client : " + client);
 
+        String commandExecutionResult = null;
         AbstractCmd cmdExecutor = commandContainer.get(cmd);
 
         if (cmdExecutor == null)
@@ -83,17 +84,23 @@ public class CmdEngine
 
         if (cmdExecutor.validateRights(client.getWeight()))
         {
-            if (cmdExecutor.isLogs())
+            try
             {
-                log.info("Command \'" + cmd + "\' executed by user \'" + client.getNick() + "\'.");
+                commandExecutionResult = cmdExecutor.execute(cmd, args, client);
             }
-
-            cmdExecutor.execute(cmd, args, client);
+            catch (Exception e)
+            {
+                CmdLogger.log(cmdExecutor, args, client, e.toString());
+                return;
+            }
         }
         else
         {
             client.sendPrivateMessageFromHub("You don\'t have anough rights!");
+            commandExecutionResult = "Client don\'t have anough rights!";
         }
+
+        CmdLogger.log(cmdExecutor, args, client, commandExecutionResult);
     }
 
 

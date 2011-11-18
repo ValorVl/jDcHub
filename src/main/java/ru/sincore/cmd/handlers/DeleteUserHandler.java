@@ -46,7 +46,7 @@ public class DeleteUserHandler extends AbstractCmd
 
 
     @Override
-    public void execute(String cmd, String args, AbstractClient client)
+    public String execute(String cmd, String args, AbstractClient client)
     {
         this.client = client;
         this.cmd = cmd;
@@ -67,7 +67,7 @@ public class DeleteUserHandler extends AbstractCmd
         if (argArray.length < 1)
         {
             showHelp();
-            return;
+            return null;
         }
 
         int c;
@@ -94,16 +94,17 @@ public class DeleteUserHandler extends AbstractCmd
             }
         }
 
-        deleteUser();
+        return deleteUser();
     }
 
 
-    private void deleteUser()
+    private String deleteUser()
     {
         if (nick == null)
         {
-            sendError(Messages.get(Messages.NICK_REQUIRED, (String) client.getExtendedField("LC")));
-            return;
+            String result = Messages.get(Messages.NICK_REQUIRED, (String) client.getExtendedField("LC"));
+            sendError(result);
+            return result;
         }
 
         ClientListDAO clientListDAO = new ClientListDAOImpl();
@@ -112,8 +113,12 @@ public class DeleteUserHandler extends AbstractCmd
 
         if (!deleted)
         {
-            sendError("Client you want to delete is not a registred user!");
+            String result = "Client you want to delete is not a registred user!";
+            sendError(result);
+            return result;
         }
+
+        return "Successfully deleted.";
     }
 
 

@@ -37,7 +37,7 @@ public class ReloadHandler extends AbstractCmd
 
 
     @Override
-    public void execute(String cmd, String args, AbstractClient client)
+    public String execute(String cmd, String args, AbstractClient client)
     {
         Broadcast.getInstance().broadcastTextMessage("Hub will be freezed due to configs loading...");
 
@@ -50,13 +50,18 @@ public class ReloadHandler extends AbstractCmd
             // ignored
         }
 
+        String result = null;
         if (ConfigurationManager.instance().loadConfigs())
         {
-            client.sendPrivateMessageFromHub("Configs reloaded.");
+            result = "Configs reloaded.";
+            client.sendPrivateMessageFromHub(result);
         }
         else
         {
-            client.sendPrivateMessageFromHub("Configs doesn\'t reloaded. See logs for more information.");
+            result = "Configs doesn\'t reloaded. See logs for more information.";
+            client.sendPrivateMessageFromHub(result);
         }
+
+        return result;
     }
 }

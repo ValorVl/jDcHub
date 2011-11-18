@@ -11,9 +11,9 @@ public class ScriptHandler extends AbstractCmd
 	private static final Logger log = LoggerFactory.getLogger(ScriptHandler.class);
 
 	@Override
-	public void execute(String cmd, String args, AbstractClient client)
+	public String execute(String cmd, String args, AbstractClient client)
 	{
-
+        return null;
 	}
 
 

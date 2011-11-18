@@ -40,14 +40,12 @@ public class CmdHandler extends AbstractCmd
 	private String args;
 
 	@Override
-	public void execute(String cmd, String args, AbstractClient client)
+	public String execute(String cmd, String args, AbstractClient client)
 	{
 		this.client = client;
 		this.cmd	= cmd;
 		this.args	= args;
 
-
-
-
+        return null;
 	}
 }

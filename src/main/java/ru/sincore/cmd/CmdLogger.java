@@ -1,7 +1,5 @@
-package ru.sincore.cmd;
-
 /*
- * jDcHub ADC HubSoft
+ * jDcHub
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,9 +16,11 @@ package ru.sincore.cmd;
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+package ru.sincore.cmd;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.Marker;
+import ru.sincore.ConfigurationManager;
 import ru.sincore.client.AbstractClient;
 import ru.sincore.db.dao.CmdLogDAOImpl;
 
@@ -29,38 +29,35 @@ import ru.sincore.db.dao.CmdLogDAOImpl;
  *	if logging in DB disabled, log must be written in file
  *
  *  @author Valor
+ *  @author Alexey 'lh' Antonov
  */
 public class CmdLogger
 {
+	private static final Logger log = LoggerFactory.getLogger(CmdLogger.class);
 
-	private static final Logger loger = LoggerFactory.getLogger(CmdLogger.class);
+	public static void log(AbstractCmd cmd, String args, AbstractClient client, String commandResult)
+    {
+        if (ConfigurationManager.instance().getBoolean(ConfigurationManager.COMMAND_SAVE_LOG))
+        {
+            if (cmd.isLogs())
+            {
+                if (ConfigurationManager.instance().getBoolean(ConfigurationManager.COMMAND_SAVE_LOG_TO_DB))
+                {
+                    CmdLogDAOImpl cmdLog = new CmdLogDAOImpl();
+                    cmdLog.putLog(cmd.getCmdName(), args, client.getNick(), commandResult);
+                }
 
-	private String marker = Marker.ANY_NON_NULL_MARKER;
-
-	public static void log(AbstractCmd cmd, AbstractClient client, String cmdResult, String realArgs, Exception e)
-	{
-		if (cmd.enabled)
-		{
-			CmdLogDAOImpl cmdLog = new CmdLogDAOImpl();
-
-			String cmdExecutionResult;
-
-			if (e != null)
-			{
-				cmdExecutionResult = cmdResult + e.getLocalizedMessage();
-			}
-			else
-			{
-				cmdExecutionResult = cmdResult;
-			}
-
-			cmdLog.putLog(client.getNick(), cmd.getCmdName(), cmdExecutionResult, realArgs);
-
-		}
-		else
-		{
-			loger.warn("Logging into DB has DISABLED! CMD : "+cmd.getCmdName()+" Args : "+realArgs+" CmdResult : "+cmdResult,e);
-		}
-	}
+                log.info("Command \'" +
+                         cmd.getCmdName() +
+                         "\' with args \'" +
+                         args +
+                        "\' was executed by \'" +
+                        client.getNick() +
+                        "\' and gets result \'" +
+                        commandResult +
+                        "\'.");
+            }
+        }
+    }
 
 }

@@ -45,7 +45,7 @@ public class InfoHandler extends AbstractCmd
 
 
     @Override
-    public void execute(String cmd, String args, AbstractClient client)
+    public String execute(String cmd, String args, AbstractClient client)
     {
         this.client = client;
         this.cmd	= cmd;
@@ -63,6 +63,7 @@ public class InfoHandler extends AbstractCmd
         else if ((args.equals("?")))
         {
             showHelp();
+            return null;
         }
         else
         {
@@ -70,13 +71,16 @@ public class InfoHandler extends AbstractCmd
 
             if (clientAbout == null)
             {
-                client.sendPrivateMessageFromHub("Client with nick \'" + args + "\' not found!");
-                return;
+                String result = "Client with nick \'" + args + "\' not found!";
+                client.sendPrivateMessageFromHub(result);
+                return result;
             }
 
             info.append(ClientUtils.getClientStats(clientAbout));
             client.sendPrivateMessageFromHub(info.toString());
         }
+
+        return info.toString();
     }
 
 

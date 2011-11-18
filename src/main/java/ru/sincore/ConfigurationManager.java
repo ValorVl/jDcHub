@@ -76,11 +76,17 @@ public class ConfigurationManager extends PropertiesConfiguration
     public static final String REDIRECT_URL               = "core.hub.redirect_url";
     // The main redirect URL to send faulty users ( or default redirects )
     public static final String HUB_SID                    = "core.hub.sid";
-    // Command engine
+
+    /** Command engine ***************************************************************************/
     public static final String OP_COMMAND_PREFIX          = "core.hub.command.engine.op_prefix";
     public static final String USER_COMMAND_PREFIX        = "core.hub.command.engine.user_prefix";
+    // If true, return command result in private chat
+    public static final String COMMAND_PM_RETURN          = "core.hub.command.pm_return";
+    public static final String COMMAND_SAVE_LOG           = "core.hub.save_log";
+    public static final String COMMAND_SAVE_LOG_TO_DB     = "core.hub.command.save_log_to_db";
 
-    // Search settings
+
+    /** Search settings **************************************************************************/
     public static final String MIN_CHARS_SEARCH_REQUEST  = "core.hub.min_char_search_request";
     public static final String MAX_CHARS_SEARCH_REQUEST  = "core.hub.max_char_search_request";
     //Save log in DB
@@ -122,8 +128,7 @@ public class ConfigurationManager extends PropertiesConfiguration
     public static final String REG_CHAT_DESCRIPTION   = "core.hub.reg_chat_description";
     public static final String REG_CHAT_WEIGHT        = "core.hub.reg_chat_weight";
     public static final String REG_CHAT_SID           = "core.hub.reg_chat_sid";
-    // If true, return command result in private chat
-    public static final String COMMAND_PM_RETURN      = "core.hub.command_pm_return";
+
     // Mark chat or command for registration users only
     public static final String MARK_REGISTRATION_ONLY = "core.hub.mark_registration_only";
 

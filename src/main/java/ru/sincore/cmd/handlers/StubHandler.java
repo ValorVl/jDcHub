@@ -17,13 +17,15 @@ public class StubHandler extends AbstractCmd
 	}
 
 	@Override
-	public void execute(String cmd, String args, AbstractClient client)
+	public String execute(String cmd, String args, AbstractClient client)
 	{
 		log.info("Cmd : "+cmd+" args : "+args);
 
         client.sendPrivateMessageFromHub("Debug : cmd" + cmd +
                                          " | args : " + args +
                                          " | client : " + client.getNick());
+
+        return null;
     }
 }
 

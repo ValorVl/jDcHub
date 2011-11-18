@@ -53,7 +53,7 @@ public class GrantHandler extends AbstractCmd
 
 
 	@Override
-	public void execute(String cmd, String args, AbstractClient client)
+	public String execute(String cmd, String args, AbstractClient client)
 	{
         this.client = client;
         this.cmd	= cmd;
@@ -75,7 +75,7 @@ public class GrantHandler extends AbstractCmd
         if (argArray.length < 1)
         {
             showHelp();
-            return;
+            return null;
         }
 
         int c;
@@ -129,53 +129,61 @@ public class GrantHandler extends AbstractCmd
             }
         }
 
-        changedWeight();
+        return changedWeight();
 	}
 
 
 	/**
 	 *  Update weight
 	 */
-	private void changedWeight()
+	private String changedWeight()
 	{
+        String result = null;
+
         if (nick == null)
         {
-            sendError(Messages.get(Messages.NICK_REQUIRED, (String)client.getExtendedField("LC")));
-            return;
+            result = Messages.get(Messages.NICK_REQUIRED, (String)client.getExtendedField("LC"));
+            sendError(result);
+            return result;
         }
 
         if (weight == null)
         {
-            sendError(Messages.get(Messages.WEIGHT_REQUIRED, (String)client.getExtendedField("LC")));
-            return;
+            result = Messages.get(Messages.WEIGHT_REQUIRED, (String)client.getExtendedField("LC"));
+            sendError(result);
+            return result;
         }
 
         if (this.client.getWeight() < this.weight)
         {
-            sendError(Messages.get(Messages.LOW_WEIGHT, (String)client.getExtendedField("LC")));
-            return;
+            result = Messages.get(Messages.LOW_WEIGHT, (String)client.getExtendedField("LC"));
+            sendError(result);
+            return result;
         }
 
 
         AbstractClient toClient = ClientManager.getInstance().getClientByNick(nick);
         if (toClient == null)
         {
-            sendError(Messages.get(Messages.NICK_NOT_EXISTS,
+            result = Messages.get(Messages.NICK_NOT_EXISTS,
                                    nick,
-                                   (String)client.getExtendedField("LC")));
-            return;
+                                   (String)client.getExtendedField("LC"));
+            sendError(result);
+            return result;
         }
 
         if (!toClient.isRegistred())
         {
-            sendError("Client you want to grant rights is not a registred user!");
-            return;
+            result = "Client you want to grant rights is not a registred user!";
+            sendError(result);
+            return result;
         }
 
         if (client.getWeight() < toClient.getWeight())
         {
-            sendError(Messages.get(Messages.LOW_WEIGHT, (String)client.getExtendedField("LC")));
-            return;
+            result = Messages.get(Messages.LOW_WEIGHT, (String)client.getExtendedField("LC"));
+            sendError(result);
+            return result;
         }
 
         toClient.setWeight(this.weight);
@@ -187,13 +195,15 @@ public class GrantHandler extends AbstractCmd
         }
         catch (STAException staex)
         {
-            // ignore it
+            return staex.toString();
         }
 
         toClient.sendPrivateMessageFromHub(client.getNick() + " grant to you new weight.\nYour new weight is " + toClient.getWeight());
         ClientManager.getInstance().getClientBySID(ConfigurationManager.instance().getString(
                 ConfigurationManager.OP_CHAT_SID)).sendPrivateMessageFromHub(
                 toClient.getNick() + " get\'s new weight (" + toClient.getWeight() + ") from " + client.getNick());
+
+        return "New weight successfully granted.";
 	}
 
 

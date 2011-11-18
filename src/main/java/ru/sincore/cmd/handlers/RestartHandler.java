@@ -52,7 +52,7 @@ public class RestartHandler extends AbstractCmd
 
 
     @Override
-    public void execute(String cmd, String args, AbstractClient client)
+    public String execute(String cmd, String args, AbstractClient client)
     {
         this.cmd = cmd;
         this.args = args;
@@ -90,6 +90,8 @@ public class RestartHandler extends AbstractCmd
         }
 
         restartHub();
+
+        return "Hub restarted.";
     }
 
 

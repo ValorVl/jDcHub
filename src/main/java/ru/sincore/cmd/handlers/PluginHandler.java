@@ -6,9 +6,9 @@ import ru.sincore.cmd.AbstractCmd;
 public class PluginHandler extends AbstractCmd
 {
 	@Override
-	public void execute(String cmd, String args, AbstractClient client)
+	public String execute(String cmd, String args, AbstractClient client)
 	{
-
+        return null;
 	}
 
 	private void reload()

@@ -43,7 +43,7 @@ public class HelpHandler extends AbstractCmd
 	}
 
 	@Override
-	public void execute(String cmd, String args, AbstractClient client)
+	public String execute(String cmd, String args, AbstractClient client)
 	{
 		this.client = client;
 		this.args   = args;
@@ -54,6 +54,7 @@ public class HelpHandler extends AbstractCmd
 
         getCmdList();
 
+        return null;
 	}
 
 	private void getCmdList()
@@ -67,6 +68,11 @@ public class HelpHandler extends AbstractCmd
 
 		for(CmdListPOJO entry : cmdList.getCommandList())
 		{
+            if (!entry.isEnabled())
+            {
+                continue;
+            }
+
 			StringBuilder cmdRow = new StringBuilder();
 
 			cmdRow.append(entry.getCommandName());

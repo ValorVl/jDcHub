@@ -41,9 +41,9 @@ public class KickHandler extends AbstractCmd
 	private String nick 	= null;
 	private String reason	= null;
 
-	public void execute(String cmd, String args, AbstractClient client)
+	@Override
+    public String execute(String cmd, String args, AbstractClient client)
 	{
-
 		this.client = client;
 		this.cmd	= cmd;
 		this.args	= args;
@@ -62,7 +62,7 @@ public class KickHandler extends AbstractCmd
         if (argArray.length < 1)
         {
             showHelp();
-            return;
+            return null;
         }
 
 		int c;
@@ -98,22 +98,23 @@ public class KickHandler extends AbstractCmd
 
 		reason = sb.toString();
 
-		kick();
+		return kick();
 	}
 
 
-    private void kick()
+    private String kick()
 	{
 		if (nick == null)
 		{
 			showHelp();
+            return null;
 		}
-		else
-		{
-			ClientUtils.kickOrBanClient(client, nick, 0, null, reason);
-			sendError("nick " + nick + " reason " + reason);
-		}
-	}
+
+        ClientUtils.kickOrBanClient(client, nick, 0, null, reason);
+        sendError("nick " + nick + " reason " + reason);
+
+        return "Client was kicked";
+    }
 
 
     private void showHelp()

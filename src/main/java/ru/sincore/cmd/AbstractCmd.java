@@ -8,16 +8,16 @@ public abstract class AbstractCmd
 {
 	private static final Logger log = LoggerFactory.getLogger(AbstractCmd.class);
 
-	String  cmdName;
-	String 	cmdArgs;
-	String 	cmdDescription;
-	String 	cmdSyntax;
-	Integer cmdWeight;
-	Boolean enabled;
-	Boolean logs;
+	private String  cmdName;
+	private String 	cmdArgs;
+	private String 	cmdDescription;
+	private String 	cmdSyntax;
+	private Integer cmdWeight;
+	private Boolean enabled;
+	private Boolean logs;
 
 
-	public abstract void execute(String cmd,String args, AbstractClient client);
+	public abstract String execute(String cmd,String args, AbstractClient client);
 
 	Boolean validateRights(Integer clientRightWeight)
 	{

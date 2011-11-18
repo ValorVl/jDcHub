@@ -52,27 +52,32 @@ public class ClientRegDefaultHandler extends AbstractCmd
 	}
 
 	@Override
-	public void execute(String cmd, String args, AbstractClient client)
+	public String execute(String cmd, String args, AbstractClient client)
 	{
 
 		this.client = client;
 		this.cmd	= cmd;
 		this.args	= args;
 
+        String result = null;
+
 		// Check client weight and flag "isReg", if weight > 0 and flag true, registration procedure not allowed.
 		if (client.isRegistred() && client.getWeight() > 0)
 		{
-            client.sendPrivateMessageFromHub(Messages.get(Messages.REG_FAIL_MESSAGE,
+            result = Messages.get(Messages.REG_FAIL_MESSAGE,
                                                           client.getNick(),
-                                                          (String)client.getExtendedField("LC")));
+                                                          (String)client.getExtendedField("LC"));
+            client.sendPrivateMessageFromHub(result);
 		}
 		else
 		{
-			regClient();
+			result = regClient();
 		}
+
+        return result;
 	}
 
-	private void regClient()
+	private String regClient()
 	{
 		String  hubName		= configInstance.getString(ConfigurationManager.HUB_NAME);
 		int passwordMinLen  = configInstance.getInt(ConfigurationManager.MIN_PASSWORD_LEN);
@@ -80,14 +85,14 @@ public class ClientRegDefaultHandler extends AbstractCmd
         if ((passwordMinLen != 0) && (args == null))
         {
             client.sendPrivateMessageFromHub("\nYou cannot register without password.\n");
-            return;
+            return "You cannot register without password.";
         }
         else if (args.length() < passwordMinLen)
         {
             client.sendPrivateMessageFromHub("\nPassword length is too small. Min length : " +
                                              passwordMinLen +
                                              "\n");
-            return;
+            return "Password length is too small. Min length : " + passwordMinLen;
         }
         else if (args != null)
         {
@@ -115,8 +120,15 @@ public class ClientRegDefaultHandler extends AbstractCmd
             e = ex;
         }
 
-        client.sendPrivateMessageFromHub("\n "+client.getNick()+" You successful registered! \n Please reconnect to hub and enter your password.");
+        if (e != null)
+        {
+            return "Error occured: " + e.toString();
+        }
 
-		CmdLogger.log(this, client, "Registered by "+hubName, args, e);
-	}
+        client.sendPrivateMessageFromHub("\n" +
+                                         client.getNick() +
+                                         " You successfully registered!\nPlease reconnect to hub and enter your password.");
+
+        return "Successfully registred";
+    }
 }

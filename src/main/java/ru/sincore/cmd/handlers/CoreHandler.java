@@ -18,11 +18,12 @@ public class CoreHandler extends AbstractCmd
 	}
 
 	@Override
-	public void execute(String cmd, String args, AbstractClient client)
+	public String execute(String cmd, String args, AbstractClient client)
 	{
 		this.client = client;
 		this.cmd = cmd;
 
+        return null;
 	}
 
 	private void hubShutdown()

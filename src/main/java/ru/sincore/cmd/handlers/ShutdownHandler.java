@@ -51,7 +51,7 @@ public class ShutdownHandler extends AbstractCmd
 
 
     @Override
-    public void execute(String cmd, String args, AbstractClient client)
+    public String execute(String cmd, String args, AbstractClient client)
     {
         this.cmd = cmd;
         this.args = args;
@@ -89,6 +89,8 @@ public class ShutdownHandler extends AbstractCmd
         }
 
         shutdownHub();
+
+        return null;
     }
 
 

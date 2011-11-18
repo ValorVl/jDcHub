@@ -20,7 +20,7 @@ public class CmdListDAOImplTest
 	public void testAddCommand() throws Exception
 	{
 	   	CmdListDAOImpl cmdList = new CmdListDAOImpl();
-		boolean res = cmdList.addCommand("Test1",10,"bla","arg","Desc","Syntax",true,false);
+		boolean res = cmdList.addCommand("Test1",10,"bla","arg","Desc",true,false);
 		System.out.println(res);
 	}
 

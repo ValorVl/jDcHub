@@ -1,3 +1,25 @@
+/*
+* CmdLogDAOImpl.java
+*
+*
+* Copyright (C) 2011 Valor
+* Copyright (C) 2011 Alexey 'lh' Antonov
+*
+* This program is free software; you can redistribute it and/or
+* modify it under the terms of the GNU General Public License
+* as published by the Free Software Foundation; either version 2
+* of the License, or any later version.
+
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
+
 package ru.sincore.db.dao;
 
 import org.hibernate.HibernateException;
@@ -6,7 +28,6 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.Marker;
 import ru.sincore.db.HibernateUtils;
 import ru.sincore.db.pojo.CmdLogPOJO;
 
@@ -15,16 +36,15 @@ import java.util.List;
 
 /**
  * @author Valor
+ * @author Alexey 'lh' Antonov
  */
 public class CmdLogDAOImpl implements CmdLogDAO
 {
-
 	private static final Logger log = LoggerFactory.getLogger(CmdLogDAOImpl.class);
 
-	private String marker = Marker.ANY_MARKER;
 
 	@Override
-	public void putLog(String nickName, String commandName, String commandResult, String commandArgs)
+	public void putLog(String commandName, String commandArgs, String nickName, String commandResult)
 	{
 		Session session = HibernateUtils.getSessionFactory().openSession();
 		Transaction tx 	= session.getTransaction();
@@ -37,20 +57,19 @@ public class CmdLogDAOImpl implements CmdLogDAO
 
 			pojo.setNickName(nickName);
 			pojo.setCommandName(commandName);
-			pojo.setExecuteResult(commandResult);
 			pojo.setCommandArgs(commandArgs);
+            pojo.setExecuteResult(commandResult);
 			pojo.setExecuteDate(new Date());
 
 			session.save(pojo);
 
 			tx.commit();
-
-		}catch (HibernateException ex)
+		}
+        catch (HibernateException ex)
 		{
 			tx.rollback();
-			log.error(marker,ex);
+			log.error(ex.toString());
 		}
-
 	}
 
 	@Override
@@ -72,11 +91,11 @@ public class CmdLogDAOImpl implements CmdLogDAO
 			tx.commit();
 
 			return result;
-
-		}catch (HibernateException ex)
+		}
+        catch (HibernateException ex)
 		{
 			tx.rollback();
-			log.error(marker,ex);
+			log.error(ex.toString());
 		}
 
 		return null;
