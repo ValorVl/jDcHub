@@ -35,6 +35,7 @@
      <mapping class="ru.sincore.db.pojo.StopWordsPOJO"/>
      <mapping class="ru.sincore.db.pojo.ChatListPOJO"/>
      <mapping class="ru.sincore.db.pojo.RolesAssociationPOJO"/>
+     <mapping class="ru.sincore.db.pojo.ModuleListPOJO"/>
 
  </session-factory>
 </hibernate-configuration>

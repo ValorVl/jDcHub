@@ -112,10 +112,11 @@ public class HubServer
 
 		try
 		{
-
-			acceptor.bind(new InetSocketAddress(ConfigurationManager.instance().getInt(ConfigurationManager.HUB_PORT)));
-
-		} catch (IOException e)
+            int hubPort = ConfigurationManager.instance().getInt(ConfigurationManager.HUB_PORT);
+			acceptor.bind(new InetSocketAddress(hubPort));
+            log.info("Hub successfully binded on port : " + hubPort);
+		}
+        catch (IOException e)
 		{
 			log.error(marker,e);
 			shutdown();
