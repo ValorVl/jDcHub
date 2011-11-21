@@ -2,12 +2,14 @@ package ru.sincore.modules;
 
 import com.adamtaft.eb.EventBusService;
 import org.apache.mina.util.CopyOnWriteMap;
+import ru.sincore.db.dao.ModuleListDAO;
+import ru.sincore.db.dao.ModuleListDAOImpl;
+import ru.sincore.db.pojo.ModuleListPOJO;
 import ru.sincore.signalservice.Signal;
 
 import java.io.File;
 import java.io.FilenameFilter;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -15,11 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import com.adamtaft.eb.EventBusService;
-import org.apache.mina.util.CopyOnWriteMap;
-import ru.sincore.Main;
-import ru.sincore.signalservice.Signal;
 
 /**
  * Dynamicaly adding modules manager
@@ -180,6 +177,12 @@ public class ModulesManager
             Module moduleInstance = getModuleInstance(moduleJar);
 
             // TODO: load info about module from DB and skip init process if module disabled
+
+            if (!isModuleEnabled(moduleInstance.getName()))
+            {
+                return false;
+            }
+
             Thread moduleThread = new Thread(moduleInstance);
 
             // Wait for module initialization
@@ -345,7 +348,7 @@ public class ModulesManager
 
     public boolean enableModule(String moduleName, boolean isEnabled)
     {
-        if (modules.containsKey(moduleName) == false)
+        if (!modules.containsKey(moduleName))
         {
             return false;
         }
@@ -360,7 +363,7 @@ public class ModulesManager
 
         boolean returnResult = true;
 
-        if (isEnabled == true)
+        if (isEnabled)
         {
             returnResult = moduleInfo.getModuleInstance().init();
             EventBusService.subscribe(moduleInfo.getModuleInstance().getEventHandler());
@@ -381,12 +384,20 @@ public class ModulesManager
 
     public boolean isModuleEnabled(String moduleName)
     {
-        if (modules.containsKey(moduleName) == false)
+        ModuleListDAO moduleListDAO = new ModuleListDAOImpl();
+        ModuleListPOJO module = moduleListDAO.getModule(moduleName);
+
+        if (module != null)
         {
-            return false;
+            return module.isEnabled();
         }
 
-        return modules.get(moduleName).isEnabled();
+        module = new ModuleListPOJO();
+
+        module.setName(moduleName);
+        module.setEnabled(true);
+
+        return moduleListDAO.addModule(module);
     }
 
 

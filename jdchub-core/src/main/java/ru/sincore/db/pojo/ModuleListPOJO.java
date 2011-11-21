@@ -23,6 +23,7 @@
 package ru.sincore.db.pojo;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * @author Alexey 'lh' Antonov
@@ -30,7 +31,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "module_list")
-public class ModuleListPOJO
+public class ModuleListPOJO implements Serializable
 {
     @Id
     @Column(name = "id")
@@ -66,7 +67,7 @@ public class ModuleListPOJO
     }
 
 
-    public Boolean getEnabled()
+    public Boolean isEnabled()
     {
         return enabled;
     }

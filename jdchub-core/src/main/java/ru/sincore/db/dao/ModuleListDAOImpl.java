@@ -193,7 +193,7 @@ public class ModuleListDAOImpl implements ModuleListDAO
         {
             tx.begin();
 
-            Query query = session.createQuery("from ModuleListPOJO where name = :name")
+            Query query = session.createQuery("from ModuleListPOJO where name =:name")
                                  .setParameter("name", name);
 
             ModuleListPOJO result = (ModuleListPOJO) query.uniqueResult();
