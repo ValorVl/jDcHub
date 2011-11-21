@@ -18,8 +18,7 @@ PROPERTIES=
 
 start()
 {
-    pwd
-    ${JAVA_HOME}/bin/java $PROPERTIES -cp "${CLASSPATH}" -jar ./jdchub-core*.jar
+    ${JAVA_HOME}/bin/java $PROPERTIES -cp "${CLASSPATH}" -jar ./jdchub-core*.jar > /dev/null 2>&1 &
 }
 
 stop()
