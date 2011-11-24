@@ -853,6 +853,7 @@ public class INF extends Action
             }
 
             fromClient.setValidated();
+            fromClient.setState(State.NORMAL);
         }
 
         fromClient.onConnected();

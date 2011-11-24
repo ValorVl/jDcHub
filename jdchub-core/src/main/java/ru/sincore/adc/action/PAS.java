@@ -118,13 +118,13 @@ public class PAS extends Action
 
         if (receivedPassword.equals(calculatedPassword))
         {
-            // Password math
+            // Password match
             fromClient.onLoggedIn();
             fromClient.onConnected();
         }
         else
         {
-            // Error: password does not math
+            // Error: password does not match
             loginError();
         }
     }
