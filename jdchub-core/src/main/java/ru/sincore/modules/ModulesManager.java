@@ -2,6 +2,8 @@ package ru.sincore.modules;
 
 import com.adamtaft.eb.EventBusService;
 import org.apache.mina.util.CopyOnWriteMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.sincore.db.dao.ModuleListDAO;
 import ru.sincore.db.dao.ModuleListDAOImpl;
 import ru.sincore.db.pojo.ModuleListPOJO;
@@ -28,6 +30,8 @@ import java.util.Set;
  */
 public class ModulesManager
 {
+    private static final Logger log = LoggerFactory.getLogger(ModulesManager.class);
+
     private final Map<String, ModuleInfo> modules = new CopyOnWriteMap<String, ModuleInfo>();
 
     private String modulesDirectory = "./modules";
@@ -176,8 +180,6 @@ public class ModulesManager
         {
             Module moduleInstance = getModuleInstance(moduleJar);
 
-            // TODO: load info about module from DB and skip init process if module disabled
-
             if (!isModuleEnabled(moduleInstance.getName()))
             {
                 return false;
@@ -265,9 +267,6 @@ public class ModulesManager
             }
         });
 
-        System.out.println(modulesDirectory.getAbsolutePath());
-        System.out.println(moduleJars);
-
         if (moduleJars == null)
         {
             return;
@@ -288,7 +287,7 @@ public class ModulesManager
             return false;
         }
 
-        System.out.println("Unload module: " + moduleName);
+        log.info("Unload module: " + moduleName);
 
         boolean returnResult = true;
         ModuleInfo moduleInfo = modules.get(moduleName);
@@ -321,7 +320,7 @@ public class ModulesManager
         }
         else
         {
-            System.out.println("Can't unload module: " + moduleName);
+            log.error("Can't unload module: " + moduleName);
         }
 
         return returnResult;

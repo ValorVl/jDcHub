@@ -22,6 +22,7 @@
 
 package ru.sincore.cmd;
 
+import com.adamtaft.eb.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
@@ -229,4 +230,19 @@ public class CmdEngine
         }
     }
 
+
+    @EventHandler
+    public void handleUserCommandEvent(String cmd, String args, AbstractClient client)
+    {
+        if (!commandExists(cmd))
+        {
+             // say to client command doesn't exist
+            client.sendPrivateMessageFromHub("Command not found!");
+
+            // return result like command was executed
+            // that needed to don't broadcast message
+            return;
+        }
+
+    }
 }
