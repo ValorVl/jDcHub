@@ -1,5 +1,7 @@
+package ru.sincore.cmd.handlers;
+
 /*
- * jDcHub
+ * jDcHub ADC HubSoft
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,10 +18,34 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package ru.sincore.cmd.handlers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ru.sincore.client.AbstractClient;
+import ru.sincore.cmd.AbstractCommand;
 
-
-public class BanHandler
+/**
+ *  A class managed command engine.
+ *  <br>
+ *  Implements function e.g. help,add, del, update, list, redeploy, etc..
+ *
+ *  @author Valor
+ */
+public class Cmd extends AbstractCommand
 {
 
+	private static final Logger log = LoggerFactory.getLogger(Cmd.class);
+
+	private AbstractClient client;
+	private String cmd;
+	private String args;
+
+	@Override
+	public String execute(String cmd, String args, AbstractClient client)
+	{
+		this.client = client;
+		this.cmd	= cmd;
+		this.args	= args;
+
+        return null;
+	}
 }

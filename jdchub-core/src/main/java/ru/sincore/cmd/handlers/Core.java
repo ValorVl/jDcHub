@@ -3,16 +3,16 @@ package ru.sincore.cmd.handlers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.sincore.client.AbstractClient;
-import ru.sincore.cmd.AbstractCmd;
+import ru.sincore.cmd.AbstractCommand;
 
-public class CoreHandler extends AbstractCmd
+public class Core extends AbstractCommand
 {
-	private static final Logger log = LoggerFactory.getLogger(CoreHandler.class);
+	private static final Logger log = LoggerFactory.getLogger(Core.class);
 
 	private AbstractClient client 	= null;
 	private String cmd		= "";
 
-	public CoreHandler()
+	public Core()
 	{
 		this.setCmdWeight(100);
 	}

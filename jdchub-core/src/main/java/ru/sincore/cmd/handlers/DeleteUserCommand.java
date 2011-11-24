@@ -25,8 +25,8 @@ package ru.sincore.cmd.handlers;
 import gnu.getopt.Getopt;
 import gnu.getopt.LongOpt;
 import ru.sincore.client.AbstractClient;
-import ru.sincore.cmd.AbstractCmd;
-import ru.sincore.cmd.CmdUtils;
+import ru.sincore.cmd.AbstractCommand;
+import ru.sincore.cmd.CommandUtils;
 import ru.sincore.db.dao.ClientListDAO;
 import ru.sincore.db.dao.ClientListDAOImpl;
 import ru.sincore.i18n.Messages;
@@ -35,7 +35,7 @@ import ru.sincore.i18n.Messages;
  * @author Alexey 'lh' Antonov
  * @since 2011-11-15
  */
-public class DeleteUserHandler extends AbstractCmd
+public class DeleteUserCommand extends AbstractCommand
 {
     private AbstractClient client;
     private String         cmd;
@@ -60,7 +60,7 @@ public class DeleteUserHandler extends AbstractCmd
         longOpts[0] = new LongOpt("nick", LongOpt.REQUIRED_ARGUMENT, null, 'n');
         longOpts[1] = new LongOpt("reason", LongOpt.REQUIRED_ARGUMENT, null, 'r');
 
-        String[] argArray = CmdUtils.strArgToArray(args);
+        String[] argArray = CommandUtils.strArgToArray(args);
 
         Getopt getopt = new Getopt(cmd, argArray, "n:r:", longOpts);
 

@@ -31,11 +31,11 @@ import ru.sincore.db.dao.CmdLogDAOImpl;
  *  @author Valor
  *  @author Alexey 'lh' Antonov
  */
-public class CmdLogger
+public class CommandLogger
 {
-	private static final Logger log = LoggerFactory.getLogger(CmdLogger.class);
+	private static final Logger log = LoggerFactory.getLogger(CommandLogger.class);
 
-	public static void log(AbstractCmd cmd, String args, AbstractClient client, String commandResult)
+	public static void log(AbstractCommand cmd, String args, AbstractClient client, String commandResult)
     {
         if (ConfigurationManager.instance().getBoolean(ConfigurationManager.COMMAND_SAVE_LOG))
         {

@@ -1,9 +1,21 @@
 package ru.sincore.cmd;
 
-import org.apache.log4j.PropertyConfigurator;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import ru.sincore.cmd.handlers.*;
+import ru.sincore.cmd.CommandEngine;
+import ru.sincore.cmd.handlers.AboutCommand;
+import ru.sincore.cmd.handlers.HelpCommand;
+import ru.sincore.cmd.handlers.InfoCommand;
+import ru.sincore.cmd.handlers.RegmeCommand;
+import ru.sincore.cmd.handlers.InfoCommand;
+import ru.sincore.cmd.handlers.KickCommand;
+import ru.sincore.cmd.handlers.GrantCommand;
+import ru.sincore.cmd.handlers.ReloadCommand;
+import ru.sincore.cmd.handlers.RestartCommand;
+import ru.sincore.cmd.handlers.ShutdownCommand;
+
+import java.lang.Exception;
+import java.lang.System;
 
 public class CommandEngineTest
 {
@@ -16,21 +28,21 @@ public class CommandEngineTest
 		engine = new CommandEngine();
 
         engine.removeAllCommands();
-        engine.registerCommand("about",      new AboutHandler());
-        engine.registerCommand("help",       new HelpHandler());
-        engine.registerCommand("regme",      new ClientRegDefaultHandler());
-        engine.registerCommand("info",       new InfoHandler());
-        engine.registerCommand("kick",       new KickHandler());
-        engine.registerCommand("grant",      new GrantHandler());
-        engine.registerCommand("reload",     new ReloadHandler());
-        engine.registerCommand("restart",    new RestartHandler());
-        engine.registerCommand("shutdown",   new ShutdownHandler());
+        engine.registerCommand("about",      new AboutCommand());
+        engine.registerCommand("help",       new HelpCommand());
+        engine.registerCommand("regme",      new RegmeCommand());
+        engine.registerCommand("info",       new InfoCommand());
+        engine.registerCommand("kick",       new KickCommand());
+        engine.registerCommand("grant",      new GrantCommand());
+        engine.registerCommand("reload",     new ReloadCommand());
+        engine.registerCommand("restart",    new RestartCommand());
+        engine.registerCommand("shutdown",   new ShutdownCommand());
 	}
 
 	@Test
 	public void testExecuteCmd() throws Exception
 	{
-		engine.executeCmd("Test1","-h", null);
+		engine.executeCommand("Test1","-h", null);
 	}
 
 	@Test
@@ -45,6 +57,6 @@ public class CommandEngineTest
 	public void testRegistryCmd() throws Exception
 	{
 		// Command syntax: cmd add {command_name} {class executor [script_name]} weight
-		//cmdEngine.registryCmd("Test2","ru.sincore.cmd.handlers.StubHandler", 0,true,true);
+		//cmdEngine.registryCmd("Test2","ru.sincore.cmd.handlers.StubCommand", 0,true,true);
 	}
 }

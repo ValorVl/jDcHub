@@ -1,5 +1,5 @@
  /*
- * InfoHandler.java
+ * InfoCommand.java
  *
  * Created on 28 october 2011, 13:52
  *
@@ -27,16 +27,16 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 import ru.sincore.ClientManager;
 import ru.sincore.client.AbstractClient;
-import ru.sincore.cmd.AbstractCmd;
+import ru.sincore.cmd.AbstractCommand;
 import ru.sincore.util.ClientUtils;
 
  /**
  * @author Alexey 'lh' Antonov
  * @since 2011-10-28
  */
-public class InfoHandler extends AbstractCmd
+public class InfoCommand extends AbstractCommand
 {
-    private static final Logger log = LoggerFactory.getLogger(InfoHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(InfoCommand.class);
     private String marker = Marker.ANY_NON_NULL_MARKER;
 
     private AbstractClient  client;

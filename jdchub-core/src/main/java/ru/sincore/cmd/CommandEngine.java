@@ -22,7 +22,6 @@
 
 package ru.sincore.cmd;
 
-import com.adamtaft.eb.EventBus;
 import com.adamtaft.eb.EventBusService;
 import com.adamtaft.eb.EventHandler;
 import org.slf4j.Logger;
@@ -37,31 +36,31 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class CommandEngine
 {
-    private static final Logger log    = LoggerFactory.getLogger(CommandEngine.class);
+    private static final Logger log = LoggerFactory.getLogger(CommandEngine.class);
 
-    private static ConcurrentHashMap<String, AbstractCmd> commandContainer;
+    private static ConcurrentHashMap<String, AbstractCommand> commandContainer;
 
 
     public CommandEngine()
     {
         EventBusService.subscribe(this);
-        commandContainer = new ConcurrentHashMap<String, AbstractCmd>();
+        commandContainer = new ConcurrentHashMap<String, AbstractCommand>();
     }
 
 
     /**
      * Execute command
      *
-     * @param cmd    command name
+     * @param command    command name
      * @param args   command args
      * @param client client entity
      */
-    public void executeCmd(String cmd, String args, AbstractClient client)
+    public void executeCommand(String command, String args, AbstractClient client)
     {
-        log.debug("Cmd : " + cmd + " | args : " + args + " | client : " + client);
+        log.debug("Cmd : " + command + " | args : " + args + " | client : " + client);
 
         String commandExecutionResult = null;
-        AbstractCmd cmdExecutor = commandContainer.get(cmd);
+        AbstractCommand cmdExecutor = commandContainer.get(command);
 
         if (cmdExecutor == null)
         {
@@ -77,11 +76,11 @@ public class CommandEngine
         {
             try
             {
-                commandExecutionResult = cmdExecutor.execute(cmd, args, client);
+                commandExecutionResult = cmdExecutor.execute(command, args, client);
             }
             catch (Exception e)
             {
-                CmdLogger.log(cmdExecutor, args, client, e.toString());
+                CommandLogger.log(cmdExecutor, args, client, e.toString());
                 return;
             }
         }
@@ -91,7 +90,7 @@ public class CommandEngine
             commandExecutionResult = "Client don\'t have anough rights!";
         }
 
-        CmdLogger.log(cmdExecutor, args, client, commandExecutionResult);
+        CommandLogger.log(cmdExecutor, args, client, commandExecutionResult);
     }
 
 
@@ -126,9 +125,9 @@ public class CommandEngine
      * and activity logging, passed class-handler or a script ..
      *
      * @param name     name of command
-     * @param executor object
+     * @param command object
      */
-    public void registerCommand(String name, AbstractCmd executor)
+    public void registerCommand(String name, AbstractCommand command)
     {
         if (name == null || name.isEmpty())
         {
@@ -137,23 +136,23 @@ public class CommandEngine
         }
 
         CmdListDAO cmdListDAO = new CmdListDAOImpl();
-        CmdListPOJO command = cmdListDAO.getCommand(name);
+        CmdListPOJO commandPojo = cmdListDAO.getCommand(name);
 
-        if (command == null)
+        if (commandPojo == null)
         {
-            command = new CmdListPOJO();
-            command.setCommandName(name);
+            commandPojo = new CmdListPOJO();
+            commandPojo.setCommandName(name);
         }
 
-        executor.setCmdName(name);
-        executor.setCmdArgs(command.getCommandArgs());
-        executor.setCmdDescription(command.getCommandDescription());
-        executor.setCmdSyntax(command.getCommandSyntax());
-        executor.setEnabled(command.isEnabled());
-        executor.setCmdWeight(command.getCommandWeight());
-        executor.setLogs(command.isLogs());
+        command.setCmdName(name);
+        command.setCmdArgs(commandPojo.getCommandArgs());
+        command.setCmdDescription(commandPojo.getCommandDescription());
+        command.setCmdSyntax(commandPojo.getCommandSyntax());
+        command.setEnabled(commandPojo.isEnabled());
+        command.setCmdWeight(commandPojo.getCommandWeight());
+        command.setLogs(commandPojo.isLogs());
 
-        commandContainer.put(name, executor);
+        commandContainer.put(name, command);
 
         log.debug("Command \'" + name + "\' was successfully registred.");
     }
@@ -191,7 +190,7 @@ public class CommandEngine
      */
     public void disableCommand(String name)
     {
-        AbstractCmd command = null;
+        AbstractCommand command = null;
 
         try
         {
@@ -231,6 +230,6 @@ public class CommandEngine
             return;
         }
 
-        this.executeCmd(event.getCommand(), event.getArgs(), event.getClient());
+        this.executeCommand(event.getCommand(), event.getArgs(), event.getClient());
     }
 }

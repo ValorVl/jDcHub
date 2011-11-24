@@ -23,8 +23,7 @@ import org.slf4j.LoggerFactory;
 import ru.sincore.ConfigurationManager;
 import ru.sincore.Exceptions.STAException;
 import ru.sincore.client.AbstractClient;
-import ru.sincore.cmd.AbstractCmd;
-import ru.sincore.cmd.CmdLogger;
+import ru.sincore.cmd.AbstractCommand;
 import ru.sincore.i18n.Messages;
 
 import java.util.Date;
@@ -35,10 +34,10 @@ import java.util.Date;
  *
  *  @author Valor
  */
-public class ClientRegDefaultHandler extends AbstractCmd
+public class RegmeCommand extends AbstractCommand
 {
 
-	private static final Logger log = LoggerFactory.getLogger(ClientRegDefaultHandler.class);
+	private static final Logger log = LoggerFactory.getLogger(RegmeCommand.class);
 
 	private AbstractClient client;
 	private String cmd;
@@ -46,7 +45,7 @@ public class ClientRegDefaultHandler extends AbstractCmd
 
 	private ConfigurationManager configInstance = ConfigurationManager.instance();
 
-	public ClientRegDefaultHandler()
+	public RegmeCommand()
 	{
 		//
 	}

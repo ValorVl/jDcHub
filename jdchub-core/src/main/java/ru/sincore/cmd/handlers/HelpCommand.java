@@ -22,22 +22,22 @@ package ru.sincore.cmd.handlers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.sincore.client.AbstractClient;
-import ru.sincore.cmd.AbstractCmd;
+import ru.sincore.cmd.AbstractCommand;
 import ru.sincore.db.dao.CmdListDAOImpl;
 import ru.sincore.db.pojo.CmdListPOJO;
 
 /**
  *  Get, format and send available command list.
  */
-public class HelpHandler extends AbstractCmd
+public class HelpCommand extends AbstractCommand
 {
-	private static final Logger log = LoggerFactory.getLogger(HelpHandler.class);
+	private static final Logger log = LoggerFactory.getLogger(HelpCommand.class);
 
 	private AbstractClient client 	= null;
 	private String args 	= "";
 	private String cmd		= "";
 
-	public HelpHandler()
+	public HelpCommand()
 	{
 		this.setCmdWeight(0);
 	}

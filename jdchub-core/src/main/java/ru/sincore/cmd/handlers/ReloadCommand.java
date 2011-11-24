@@ -25,13 +25,13 @@ package ru.sincore.cmd.handlers;
 import ru.sincore.Broadcast;
 import ru.sincore.ConfigurationManager;
 import ru.sincore.client.AbstractClient;
-import ru.sincore.cmd.AbstractCmd;
+import ru.sincore.cmd.AbstractCommand;
 
 /**
  * @author Alexey 'lh' Antonov
  * @since 2011-11-16
  */
-public class ReloadHandler extends AbstractCmd
+public class ReloadCommand extends AbstractCommand
 {
     private long timeout = 1000;
 

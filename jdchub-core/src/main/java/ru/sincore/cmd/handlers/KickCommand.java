@@ -25,13 +25,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 import ru.sincore.client.AbstractClient;
-import ru.sincore.cmd.AbstractCmd;
-import ru.sincore.cmd.CmdUtils;
+import ru.sincore.cmd.AbstractCommand;
+import ru.sincore.cmd.CommandUtils;
 import ru.sincore.util.ClientUtils;
 
-public class KickHandler extends AbstractCmd
+public class KickCommand extends AbstractCommand
 {
-	private static final Logger log = LoggerFactory.getLogger(KickHandler.class);
+	private static final Logger log = LoggerFactory.getLogger(KickCommand.class);
 	private String marker = Marker.ANY_NON_NULL_MARKER;
 
 	private AbstractClient client;
@@ -55,7 +55,7 @@ public class KickHandler extends AbstractCmd
 
 		longOpts[0] = new LongOpt("nick", LongOpt.REQUIRED_ARGUMENT, null, 'n');
 
-		String[] argArray = CmdUtils.strArgToArray(args);
+		String[] argArray = CommandUtils.strArgToArray(args);
 
 		Getopt getopt = new Getopt(cmd, argArray, "n:", longOpts);
 

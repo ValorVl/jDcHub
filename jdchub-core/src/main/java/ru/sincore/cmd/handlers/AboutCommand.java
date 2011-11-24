@@ -24,13 +24,13 @@ package ru.sincore.cmd.handlers;
 
 import ru.sincore.ClientManager;
 import ru.sincore.client.AbstractClient;
-import ru.sincore.cmd.AbstractCmd;
+import ru.sincore.cmd.AbstractCommand;
 
 /**
  * @author Alexey 'lh' Antonov
  * @since 2011-11-11
  */
-public class AboutHandler extends AbstractCmd
+public class AboutCommand extends AbstractCommand
 {
     @Override
     public String execute(String cmd, String args, AbstractClient client)

@@ -150,15 +150,15 @@ public class HubServer
         commandEngine = new CommandEngine();
 
         // register default handlers
-        commandEngine.registerCommand("about",      new AboutHandler());
-        commandEngine.registerCommand("help",       new HelpHandler());
-        commandEngine.registerCommand("regme",      new ClientRegDefaultHandler());
-        commandEngine.registerCommand("info",       new InfoHandler());
-        commandEngine.registerCommand("kick",       new KickHandler());
-        commandEngine.registerCommand("grant",      new GrantHandler());
-        commandEngine.registerCommand("reload",     new ReloadHandler());
-        commandEngine.registerCommand("restart",    new RestartHandler());
-        commandEngine.registerCommand("shutdown",   new ShutdownHandler());
+        commandEngine.registerCommand("about",      new AboutCommand());
+        commandEngine.registerCommand("help",       new HelpCommand());
+        commandEngine.registerCommand("regme",      new RegmeCommand());
+        commandEngine.registerCommand("info",       new InfoCommand());
+        commandEngine.registerCommand("kick",       new KickCommand());
+        commandEngine.registerCommand("grant",      new GrantCommand());
+        commandEngine.registerCommand("reload",     new ReloadCommand());
+        commandEngine.registerCommand("restart",    new RestartCommand());
+        commandEngine.registerCommand("shutdown",   new ShutdownCommand());
     }
 
 

@@ -31,10 +31,10 @@ import java.util.Vector;
  *
  *  @author Valor
  */
-public class CmdUtils
+public class CommandUtils
 {
 
-	private static final Logger log = LoggerFactory.getLogger(CmdUtils.class);
+	private static final Logger log = LoggerFactory.getLogger(CommandUtils.class);
 	private static String marker = Marker.ANY_MARKER;
 
 	/**
