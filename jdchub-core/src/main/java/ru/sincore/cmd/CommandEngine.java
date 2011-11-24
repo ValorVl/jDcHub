@@ -22,42 +22,32 @@
 
 package ru.sincore.cmd;
 
+import com.adamtaft.eb.EventBus;
+import com.adamtaft.eb.EventBusService;
 import com.adamtaft.eb.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.Marker;
 import ru.sincore.client.AbstractClient;
 import ru.sincore.db.dao.CmdListDAO;
 import ru.sincore.db.dao.CmdListDAOImpl;
 import ru.sincore.db.pojo.CmdListPOJO;
+import ru.sincore.events.UserCommandEvent;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-public class CmdEngine
+public class CommandEngine
 {
-    private static final Logger log    = LoggerFactory.getLogger(CmdEngine.class);
-
-    private static CmdEngine instance = null;
+    private static final Logger log    = LoggerFactory.getLogger(CommandEngine.class);
 
     private static ConcurrentHashMap<String, AbstractCmd> commandContainer;
 
 
-    public static CmdEngine getInstance()
+    public CommandEngine()
     {
-        if (instance == null)
-        {
-                instance = new CmdEngine();
-                commandContainer = new ConcurrentHashMap<String, AbstractCmd>();
-        }
-
-        return instance;
+        EventBusService.subscribe(this);
+        commandContainer = new ConcurrentHashMap<String, AbstractCmd>();
     }
 
-
-    private CmdEngine()
-    {
-        // empty constructor for singleton
-    }
 
     /**
      * Execute command
@@ -232,17 +222,15 @@ public class CmdEngine
 
 
     @EventHandler
-    public void handleUserCommandEvent(String cmd, String args, AbstractClient client)
+    public void handleUserCommandEvent(UserCommandEvent event)
     {
-        if (!commandExists(cmd))
+        if (!commandExists(event.getCommand()))
         {
              // say to client command doesn't exist
-            client.sendPrivateMessageFromHub("Command not found!");
-
-            // return result like command was executed
-            // that needed to don't broadcast message
+            event.getClient().sendPrivateMessageFromHub("Command not found!");
             return;
         }
 
+        this.executeCmd(event.getCommand(), event.getArgs(), event.getClient());
     }
 }

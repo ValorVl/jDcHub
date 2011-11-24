@@ -5,14 +5,15 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import ru.sincore.cmd.handlers.*;
 
-public class CmdEngineTest
+public class CommandEngineTest
 {
+    private CommandEngine engine;
 
 	@BeforeMethod
 	public void setUp() throws Exception
 	{
 		PropertyConfigurator.configure("./etc/log4j.properties");
-		CmdEngine engine = CmdEngine.getInstance();
+		engine = new CommandEngine();
 
         engine.removeAllCommands();
         engine.registerCommand("about",      new AboutHandler());
@@ -29,14 +30,12 @@ public class CmdEngineTest
 	@Test
 	public void testExecuteCmd() throws Exception
 	{
-		CmdEngine engine = CmdEngine.getInstance();
 		engine.executeCmd("Test1","-h", null);
 	}
 
 	@Test
 	public void testCommandExist() throws Exception
 	{
-		CmdEngine engine = CmdEngine.getInstance();
 		boolean flag = engine.commandExists("Test2");
 		System.out.println(flag);
 
@@ -46,7 +45,6 @@ public class CmdEngineTest
 	public void testRegistryCmd() throws Exception
 	{
 		// Command syntax: cmd add {command_name} {class executor [script_name]} weight
-		CmdEngine engine = CmdEngine.getInstance();
 		//cmdEngine.registryCmd("Test2","ru.sincore.cmd.handlers.StubHandler", 0,true,true);
 	}
 }

@@ -34,7 +34,6 @@ import ru.sincore.adc.Context;
 import ru.sincore.adc.MessageType;
 import ru.sincore.adc.State;
 import ru.sincore.client.AbstractClient;
-import ru.sincore.cmd.CmdEngine;
 import ru.sincore.db.dao.ChatLogDAO;
 import ru.sincore.db.dao.ChatLogDAOImpl;
 import ru.sincore.events.UserCommandEvent;
