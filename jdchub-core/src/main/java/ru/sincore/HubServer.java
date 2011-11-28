@@ -159,6 +159,7 @@ public class HubServer
         commandEngine.registerCommand("reload",     new ReloadCommand());
         commandEngine.registerCommand("restart",    new RestartCommand());
         commandEngine.registerCommand("shutdown",   new ShutdownCommand());
+        commandEngine.registerCommand("broadcast",  new BroadcastCommand());
     }
 
 

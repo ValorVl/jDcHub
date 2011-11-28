@@ -49,9 +49,6 @@ public class HelpCommand extends AbstractCommand
 		this.args   = args;
 		this.cmd	= cmd;
 
-        log.debug("Command : [ " + cmd + " ] execute, args [ " + args + " ], " +
-                  "from client :" + client.getNick());
-
         getCmdList();
 
         return null;
@@ -68,7 +65,7 @@ public class HelpCommand extends AbstractCommand
 
 		for(CmdListPOJO entry : cmdList.getCommandList())
 		{
-            if (!entry.isEnabled())
+            if (!entry.isEnabled() || (client.getWeight() < entry.getCommandWeight()))
             {
                 continue;
             }
@@ -83,13 +80,11 @@ public class HelpCommand extends AbstractCommand
 			{
 				cmdRow.append(" [");
 				cmdRow.append(entry.getCommandWeight());
-				cmdRow.append("]\n");
+				cmdRow.append("]");
 			}
 
-			if (client.getWeight() >= entry.getCommandWeight())
-			{
-				complexCmdList.append(cmdRow.toString());
-			}
+            cmdRow.append("\n");
+       		complexCmdList.append(cmdRow.toString());
 		}
 
 		client.sendPrivateMessageFromHub(complexCmdList.toString());

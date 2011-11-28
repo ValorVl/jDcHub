@@ -57,7 +57,8 @@ public class CommandEngine
      */
     public void executeCommand(String command, String args, AbstractClient client)
     {
-        log.debug("Cmd : " + command + " | args : " + args + " | client : " + client);
+        log.debug("Command : [ " + command + " ] executed with args [ " + args + " ] " +
+                  "by client :[ " + client.getNick() + " ]");
 
         String commandExecutionResult = null;
         AbstractCommand cmdExecutor = commandContainer.get(command);
@@ -142,6 +143,7 @@ public class CommandEngine
         {
             commandPojo = new CmdListPOJO();
             commandPojo.setCommandName(name);
+            cmdListDAO.addCommand(commandPojo);
         }
 
         command.setCmdName(name);

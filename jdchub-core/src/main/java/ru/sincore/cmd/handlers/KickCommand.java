@@ -121,10 +121,11 @@ public class KickCommand extends AbstractCommand
 	{
 		StringBuilder result = new StringBuilder();
 
-        result.append("\nGrant new weight to user.\n");
-        result.append("Usage: !grant --nick <nick> (--weight <weight> | --type <type>)\n");
+        result.append("\nKick user from hub (equals to ban for 5 min.\n");
+        result.append("Usage: !kick --nick <nick> [--reason <reason>]\n");
         result.append("\tWhere\n");
         result.append("\t\t<nick> - user nick\n");
+        result.append("\t\t<reason> - kick reason\n");
 
 		sendError(result.toString());
 	}
