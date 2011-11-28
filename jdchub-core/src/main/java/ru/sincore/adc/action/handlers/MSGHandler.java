@@ -11,9 +11,9 @@ import ru.sincore.Exceptions.STAException;
 import ru.sincore.adc.MessageType;
 import ru.sincore.adc.action.actions.MSG;
 import ru.sincore.client.AbstractClient;
-import ru.sincore.cmd.CmdEngine;
 import ru.sincore.db.dao.ChatLogDAO;
 import ru.sincore.db.dao.ChatLogDAOImpl;
+import ru.sincore.events.UserCommandEvent;
 import ru.sincore.util.AdcUtils;
 import ru.sincore.util.STAError;
 
@@ -111,12 +111,12 @@ public class MSGHandler extends AbstractActionHandler<MSG>
         if (normalMessage.startsWith(configurationManager.getString(ConfigurationManager.OP_COMMAND_PREFIX)) ||
             normalMessage.startsWith(configurationManager.getString(ConfigurationManager.USER_COMMAND_PREFIX)))
         {
-            /*if (normalMessage.startsWith(configurationManager.getString(ConfigurationManager.OP_COMMAND_PREFIX)) &&
+            if (normalMessage.startsWith(configurationManager.getString(ConfigurationManager.OP_COMMAND_PREFIX)) &&
                     (sourceClient.getWeight() < configurationManager.getInt(ConfigurationManager.CLIENT_WEIGHT_REGISTRED) + 1))
             {
                 sourceClient.sendPrivateMessageFromHub("You don\'t have anough rights to use Op commands.");
                 return true;
-            }*/
+            }
 
             StringTokenizer commandTokenizer = new StringTokenizer(normalMessage, " ");
 
@@ -129,7 +129,7 @@ public class MSGHandler extends AbstractActionHandler<MSG>
                 commandParams = normalMessage.substring(command.length() + 1);
 
             // publish event about user command coming
-            //EventBusService.publish(new UserCommandEvent(command, commandParams.trim(), fromClient));
+            EventBusService.publish(new UserCommandEvent(command, commandParams.trim(), sourceClient));
 
             return true;
         }
