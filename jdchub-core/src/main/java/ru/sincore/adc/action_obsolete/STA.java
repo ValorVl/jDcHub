@@ -26,6 +26,7 @@ public class STA extends Action
 		availableStates   = State.ALL;
 	}
 
+
 	public STA(MessageType messageType, int context, AbstractClient client)
 	{
 		this(messageType,
@@ -34,6 +35,7 @@ public class STA extends Action
              (context == Context.F ? null : client));
 	}
 
+
 	public STA(MessageType messageType, int context, AbstractClient client, String rawCommand) throws CommandException, STAException
 	{
 		this(messageType, context, client);
@@ -41,22 +43,26 @@ public class STA extends Action
         parse(rawCommand);
 	}
 
+
 	@Override
 	public String toString()
 	{
 		return null;
 	}
 
+
+// What this function do?
 	private void validate()
     {
-		if (!fromClient.isOverrideSpam())
-        {
-            String msg = "STA " + Messages.get(Messages.INVALID_CONTEXT, context, (String)fromClient.getExtendedField("LC"));
-            fromClient.sendMessageFromHub(msg);
-        }
+//		if (!fromClient.isOverrideSpam())
+//        {
+//            String msg = "STA " + Messages.get(Messages.INVALID_CONTEXT, context, (String)fromClient.getExtendedField("LC"));
+//            fromClient.sendMessageFromHub(msg);
+//        }
 	}
 
-	private void prepareDirect() throws STAException
+
+    private void prepareDirect() throws STAException
 	{
 		validate();
 
@@ -97,6 +103,7 @@ public class STA extends Action
                          Messages.WRONG_TARGET_SID).send();
 		}
 	}
+
 
 	private void prepareEcho() throws STAException
 	{
@@ -140,6 +147,7 @@ public class STA extends Action
                          Messages.WRONG_TARGET_SID).send();
 		}
 	}
+
 
 	protected void parseIncoming() throws STAException
 	{

@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package ru.sincore.python;
+package ru.sincore.script.python;
 
 import org.python.util.PythonInterpreter;
 import ru.sincore.Main;

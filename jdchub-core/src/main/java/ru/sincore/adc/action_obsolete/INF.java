@@ -759,7 +759,9 @@ public class INF extends Action
         if (!fromClient.isFeature(Features.BASE))
         {
             new STAError(fromClient,
-                         Constants.STA_SEVERITY_FATAL + Constants.STA_GENERIC_PROTOCOL_ERROR,
+                         // remove comment from next line if wants ADC 1.0 support only, nor old ADC
+                         //Constants.STA_SEVERITY_FATAL + Constants.STA_GENERIC_PROTOCOL_ERROR,
+                         Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
                          Messages.VERY_OLD_ADC).send();
         }
 
@@ -853,6 +855,7 @@ public class INF extends Action
             }
 
             fromClient.setValidated();
+            fromClient.setState(State.NORMAL);
         }
 
         fromClient.onConnected();

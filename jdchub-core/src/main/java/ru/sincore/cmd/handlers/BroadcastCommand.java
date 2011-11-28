@@ -1,7 +1,7 @@
 /*
-* ReloadHandler.java
+* BroadcastCommand.java
 *
-* Created on 16 november 2011, 12:08
+* Created on 25 11 2011, 16:48
 *
 * Copyright (C) 2011 Alexey 'lh' Antonov
 *
@@ -23,45 +23,43 @@
 package ru.sincore.cmd.handlers;
 
 import ru.sincore.Broadcast;
-import ru.sincore.ConfigurationManager;
 import ru.sincore.client.AbstractClient;
-import ru.sincore.cmd.AbstractCmd;
+import ru.sincore.cmd.AbstractCommand;
 
 /**
  * @author Alexey 'lh' Antonov
- * @since 2011-11-16
+ * @since 2011-11-25
  */
-public class ReloadHandler extends AbstractCmd
+public class BroadcastCommand extends AbstractCommand
 {
-    private long timeout = 1000;
-
+    private AbstractClient client;
 
     @Override
     public String execute(String cmd, String args, AbstractClient client)
     {
-        Broadcast.getInstance().broadcastTextMessage("Hub will be freezed due to configs loading...");
+        this.client = client;
 
-        try
+        if (args.equals("") || args.isEmpty())
         {
-            Thread.sleep(timeout);
-        }
-        catch (InterruptedException ex)
-        {
-            // ignored
+            showHelp();
+            return null;
         }
 
-        String result = null;
-        if (ConfigurationManager.instance().loadConfigs())
-        {
-            result = "Configs reloaded.";
-            client.sendPrivateMessageFromHub(result);
-        }
-        else
-        {
-            result = "Configs doesn\'t reloaded. See logs for more information.";
-            client.sendPrivateMessageFromHub(result);
-        }
+        Broadcast.getInstance().broadcastTextMessage(args);
 
-        return result;
+        return null;
+    }
+
+
+    private void showHelp()
+    {
+        StringBuilder result = new StringBuilder();
+
+        result.append("\nBroadcast message as PM from hub.\n");
+        result.append("Usage: !broadcast <message>\n");
+        result.append("\tWhere\n");
+        result.append("\t\t<message> - text message\n");
+
+        client.sendPrivateMessageFromHub(result.toString());
     }
 }

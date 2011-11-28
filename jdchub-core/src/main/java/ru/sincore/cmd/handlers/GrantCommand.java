@@ -30,8 +30,8 @@ import ru.sincore.ClientManager;
 import ru.sincore.ConfigurationManager;
 import ru.sincore.Exceptions.STAException;
 import ru.sincore.client.AbstractClient;
-import ru.sincore.cmd.AbstractCmd;
-import ru.sincore.cmd.CmdUtils;
+import ru.sincore.cmd.AbstractCommand;
+import ru.sincore.cmd.CommandUtils;
 import ru.sincore.i18n.Messages;
 
 /**
@@ -39,11 +39,8 @@ import ru.sincore.i18n.Messages;
  *
  * @author Valor
  */
-public class GrantHandler extends AbstractCmd
+public class GrantCommand extends AbstractCommand
 {
-    private static final Logger log = LoggerFactory.getLogger(GrantHandler.class);
-    private String marker = Marker.ANY_NON_NULL_MARKER;
-
     private AbstractClient  client;
     private String          cmd;
     private String          args;
@@ -68,7 +65,7 @@ public class GrantHandler extends AbstractCmd
         longOpts[1] = new LongOpt("weight", LongOpt.REQUIRED_ARGUMENT, null, 'w');
         longOpts[2] = new LongOpt("type", LongOpt.REQUIRED_ARGUMENT, null, 't');
 
-        String[] argArray = CmdUtils.strArgToArray(args);
+        String[] argArray = CommandUtils.strArgToArray(args);
 
         Getopt getopt = new Getopt(cmd, argArray, "n:w:t:", longOpts);
 

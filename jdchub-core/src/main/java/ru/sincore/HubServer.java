@@ -34,7 +34,7 @@ import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
-import ru.sincore.cmd.CmdEngine;
+import ru.sincore.cmd.CommandEngine;
 import ru.sincore.cmd.handlers.*;
 import ru.sincore.events.HubShutdownEvent;
 import ru.sincore.events.HubStartupEvent;
@@ -63,7 +63,7 @@ public class HubServer
 
     private              ClientAssasin assasin;
     private              IoAcceptor    acceptor;
-
+    private              CommandEngine commandEngine;
     /**
      * Creates a new instance of HubServer
      */
@@ -78,7 +78,7 @@ public class HubServer
      */
     private void init()
     {
-        initCmdEngine();
+        initCommandEngine();
 
         ModulesManager.instance().loadModules();
 
@@ -137,25 +137,30 @@ public class HubServer
     /**
      * Initialize actionName engine with default handlers
      */
-    private void initCmdEngine()
+    private void initCommandEngine()
     {
-        log.debug("Initializing CmdEngine...");
+        log.debug("Initializing CommandEngine...");
 
-        CmdEngine cmdEngine = CmdEngine.getInstance();
+        if (commandEngine != null)
+        {
+            // remove all commands (it must be done, if server was restarted)
+            commandEngine.removeAllCommands();
+        }
 
-        // remove all commands (it must be done, if server was restarted)
-        cmdEngine.removeAllCommands();
+        commandEngine = new CommandEngine();
 
         // register default handlers
-        cmdEngine.registerCommand("about",      new AboutHandler());
-        cmdEngine.registerCommand("help",       new HelpHandler());
-        cmdEngine.registerCommand("regme",      new ClientRegDefaultHandler());
-        cmdEngine.registerCommand("info",       new InfoHandler());
-        cmdEngine.registerCommand("kick",       new KickHandler());
-        cmdEngine.registerCommand("grant",      new GrantHandler());
-        cmdEngine.registerCommand("reload",     new ReloadHandler());
-        cmdEngine.registerCommand("restart",    new RestartHandler());
-        cmdEngine.registerCommand("shutdown",   new ShutdownHandler());
+        commandEngine.registerCommand("about",      new AboutCommand());
+        commandEngine.registerCommand("help",       new HelpCommand());
+        commandEngine.registerCommand("regme",      new RegmeCommand());
+        commandEngine.registerCommand("info",       new InfoCommand());
+        commandEngine.registerCommand("kick",       new KickCommand());
+        commandEngine.registerCommand("grant",      new GrantCommand());
+        commandEngine.registerCommand("reload",     new ReloadCommand());
+        commandEngine.registerCommand("restart",    new RestartCommand());
+        commandEngine.registerCommand("shutdown",   new ShutdownCommand());
+        commandEngine.registerCommand("broadcast",  new BroadcastCommand());
+        commandEngine.registerCommand("changepass", new ChangePassCommand());
     }
 
 

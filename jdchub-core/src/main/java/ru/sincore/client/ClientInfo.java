@@ -23,6 +23,7 @@
 package ru.sincore.client;
 
 import org.apache.commons.lang.math.IntRange;
+import ru.sincore.ConfigurationManager;
 import ru.sincore.adc.ClientType;
 import ru.sincore.adc.State;
 
@@ -465,6 +466,12 @@ public class ClientInfo
     }
 
 
+    public boolean isOp()
+    {
+        return getWeight() > ConfigurationManager.instance().getInt(ConfigurationManager.CLIENT_WEIGHT_REGISTRED);
+    }
+
+
     public void setWeight(int weight)
     {
         this.weight = weight;
@@ -575,13 +582,23 @@ public class ClientInfo
 
     public void setClientTypeByWeight(int clientType)
     {
-        // TODO [lh] values for corresponding are hardcoded, must be moved to db or config
+        ConfigurationManager configurationManager =  ConfigurationManager.instance();
+
         ArrayList<IntRange> clientTypeRanges = new ArrayList<IntRange>(5);
-        clientTypeRanges.add(new IntRange(0, 9));   // add unregistred users range
-        clientTypeRanges.add(new IntRange(10, 69)); // add registred users range
-        clientTypeRanges.add(new IntRange(70, 89)); // add operators range
-        clientTypeRanges.add(new IntRange(90, 99)); // add super users range
-        clientTypeRanges.add(new IntRange(100));
+        // add unregistred users range
+        clientTypeRanges.add(new IntRange(0,
+                                          configurationManager.getInt(ConfigurationManager.CLIENT_WEIGHT_UNREGISTRED)));
+        // add registred users range
+        clientTypeRanges.add(new IntRange(configurationManager.getInt(ConfigurationManager.CLIENT_WEIGHT_UNREGISTRED) + 1,
+                                          configurationManager.getInt(ConfigurationManager.CLIENT_WEIGHT_REGISTRED)));
+        // add operators range
+        clientTypeRanges.add(new IntRange(configurationManager.getInt(ConfigurationManager.CLIENT_WEIGHT_REGISTRED) + 1,
+                                          configurationManager.getInt(ConfigurationManager.CLIENT_WEIGHT_OPERATOR)));
+        // add super users range
+        clientTypeRanges.add(new IntRange(configurationManager.getInt(ConfigurationManager.CLIENT_WEIGHT_OPERATOR) + 1,
+                                          configurationManager.getInt(ConfigurationManager.CLIENT_WEIGHT_SUPER_USER)));
+        // add hub owner
+        clientTypeRanges.add(new IntRange(configurationManager.getInt(ConfigurationManager.CLIENT_WEIGHT_HUB_OWNER)));
 
         int i = 0;
         boolean rangeFound = false;

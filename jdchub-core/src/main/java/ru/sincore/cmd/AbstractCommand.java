@@ -4,9 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.sincore.client.AbstractClient;
 
-public abstract class AbstractCmd
+public abstract class AbstractCommand
 {
-	private static final Logger log = LoggerFactory.getLogger(AbstractCmd.class);
+	private static final Logger log = LoggerFactory.getLogger(AbstractCommand.class);
 
 	private String  cmdName;
 	private String 	cmdArgs;

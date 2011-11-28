@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 /**
- * If you do changes in class fields, please do the same changes in AbstractCmd class.
+ * If you do changes in class fields, please do the same changes in AbstractCommand class.
  */
 
 /**

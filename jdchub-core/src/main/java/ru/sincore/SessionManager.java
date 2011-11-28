@@ -183,7 +183,10 @@ public class SessionManager extends IoHandlerAdapter
         newClient.setSession(session);
         StringTokenizer ST = new StringTokenizer(session.getRemoteAddress().toString(), "/:");
 
-		newClient.setRealIP(ST.nextToken());
+        String realIp = ST.nextToken();
+        log.debug("Client real IP: " + realIp);
+
+		newClient.setRealIP(realIp);
         newClient.setSid(SIDGenerator.generate());
         newClient.setLoggedIn(new Date());
 

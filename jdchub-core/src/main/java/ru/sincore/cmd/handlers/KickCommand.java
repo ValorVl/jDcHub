@@ -25,13 +25,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 import ru.sincore.client.AbstractClient;
-import ru.sincore.cmd.AbstractCmd;
-import ru.sincore.cmd.CmdUtils;
+import ru.sincore.cmd.AbstractCommand;
+import ru.sincore.cmd.CommandUtils;
 import ru.sincore.util.ClientUtils;
 
-public class KickHandler extends AbstractCmd
+public class KickCommand extends AbstractCommand
 {
-	private static final Logger log = LoggerFactory.getLogger(KickHandler.class);
+	private static final Logger log = LoggerFactory.getLogger(KickCommand.class);
 	private String marker = Marker.ANY_NON_NULL_MARKER;
 
 	private AbstractClient client;
@@ -54,10 +54,11 @@ public class KickHandler extends AbstractCmd
 		LongOpt[] longOpts = new LongOpt[3];
 
 		longOpts[0] = new LongOpt("nick", LongOpt.REQUIRED_ARGUMENT, null, 'n');
+        longOpts[1] = new LongOpt("reason", LongOpt.REQUIRED_ARGUMENT, null, 'r');
 
-		String[] argArray = CmdUtils.strArgToArray(args);
+		String[] argArray = CommandUtils.strArgToArray(args);
 
-		Getopt getopt = new Getopt(cmd, argArray, "n:", longOpts);
+		Getopt getopt = new Getopt(cmd, argArray, "n:r:", longOpts);
 
         if (argArray.length < 1)
         {
@@ -71,16 +72,16 @@ public class KickHandler extends AbstractCmd
 		{
 			switch (c)
 			{
-				case 0:
+				case 'n':
 					this.nick = getopt.getOptarg();
 					break;
 
-				case ':':
-					sendError("Ohh.. You need an argument for option" + (char) getopt.getOptopt());
-					break;
+                case 'r':
+                    this.reason = getopt.getOptarg();
+                    break;
 
 				case '?':
-					sendError("The option " + (char)getopt.getOptopt() + " is not valid");
+					showHelp();
 					break;
 
 				default:
@@ -88,15 +89,6 @@ public class KickHandler extends AbstractCmd
 					break;
 			}
 		}
-
-		StringBuilder sb = new StringBuilder();
-
-		for (int i = getopt.getOptind(); i < argArray.length; i++)
-		{
-			sb.append(argArray[i]);
-		}
-
-		reason = sb.toString();
 
 		return kick();
 	}
@@ -121,10 +113,11 @@ public class KickHandler extends AbstractCmd
 	{
 		StringBuilder result = new StringBuilder();
 
-        result.append("\nGrant new weight to user.\n");
-        result.append("Usage: !grant --nick <nick> (--weight <weight> | --type <type>)\n");
+        result.append("\nKick user from hub (equals to ban for 5 min.\n");
+        result.append("Usage: !kick --nick <nick> [--reason <reason>]\n");
         result.append("\tWhere\n");
         result.append("\t\t<nick> - user nick\n");
+        result.append("\t\t<reason> - kick reason\n");
 
 		sendError(result.toString());
 	}

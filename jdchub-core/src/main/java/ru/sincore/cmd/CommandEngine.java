@@ -22,55 +22,46 @@
 
 package ru.sincore.cmd;
 
+import com.adamtaft.eb.EventBusService;
+import com.adamtaft.eb.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.Marker;
 import ru.sincore.client.AbstractClient;
 import ru.sincore.db.dao.CmdListDAO;
 import ru.sincore.db.dao.CmdListDAOImpl;
 import ru.sincore.db.pojo.CmdListPOJO;
+import ru.sincore.events.UserCommandEvent;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-public class CmdEngine
+public class CommandEngine
 {
-    private static final Logger log    = LoggerFactory.getLogger(CmdEngine.class);
+    private static final Logger log = LoggerFactory.getLogger(CommandEngine.class);
 
-    private static CmdEngine instance = null;
-
-    private static ConcurrentHashMap<String, AbstractCmd> commandContainer;
+    private static ConcurrentHashMap<String, AbstractCommand> commandContainer;
 
 
-    public static CmdEngine getInstance()
+    public CommandEngine()
     {
-        if (instance == null)
-        {
-                instance = new CmdEngine();
-                commandContainer = new ConcurrentHashMap<String, AbstractCmd>();
-        }
-
-        return instance;
+        EventBusService.subscribe(this);
+        commandContainer = new ConcurrentHashMap<String, AbstractCommand>();
     }
 
-
-    private CmdEngine()
-    {
-        // empty constructor for singleton
-    }
 
     /**
      * Execute actionName
      *
-     * @param cmd    actionName name
-     * @param args   actionName args
+     * @param command    command name
+     * @param args   command args
      * @param client client entity
      */
-    public void executeCmd(String cmd, String args, AbstractClient client)
+    public void executeCommand(String command, String args, AbstractClient client)
     {
-        log.debug("Cmd : " + cmd + " | args : " + args + " | client : " + client);
+        log.debug("Command : [ " + command + " ] executed with args [ " + args + " ] " +
+                  "by client :[ " + client.getNick() + " ]");
 
         String commandExecutionResult = null;
-        AbstractCmd cmdExecutor = commandContainer.get(cmd);
+        AbstractCommand cmdExecutor = commandContainer.get(command);
 
         if (cmdExecutor == null)
         {
@@ -86,11 +77,11 @@ public class CmdEngine
         {
             try
             {
-                commandExecutionResult = cmdExecutor.execute(cmd, args, client);
+                commandExecutionResult = cmdExecutor.execute(command, args, client);
             }
             catch (Exception e)
             {
-                CmdLogger.log(cmdExecutor, args, client, e.toString());
+                CommandLogger.log(cmdExecutor, args, client, e.toString());
                 return;
             }
         }
@@ -100,7 +91,7 @@ public class CmdEngine
             commandExecutionResult = "Client don\'t have anough rights!";
         }
 
-        CmdLogger.log(cmdExecutor, args, client, commandExecutionResult);
+        CommandLogger.log(cmdExecutor, args, client, commandExecutionResult);
     }
 
 
@@ -134,10 +125,10 @@ public class CmdEngine
      * Other arguments actionName, for example - the actionName arguments, description, syntax,
      * and activity logging, passed class-handler or a script ..
      *
-     * @param name     name of actionName
-     * @param executor object
+     * @param name     name of command
+     * @param command object
      */
-    public void registerCommand(String name, AbstractCmd executor)
+    public void registerCommand(String name, AbstractCommand command)
     {
         if (name == null || name.isEmpty())
         {
@@ -146,23 +137,24 @@ public class CmdEngine
         }
 
         CmdListDAO cmdListDAO = new CmdListDAOImpl();
-        CmdListPOJO command = cmdListDAO.getCommand(name);
+        CmdListPOJO commandPojo = cmdListDAO.getCommand(name);
 
-        if (command == null)
+        if (commandPojo == null)
         {
-            command = new CmdListPOJO();
-            command.setCommandName(name);
+            commandPojo = new CmdListPOJO();
+            commandPojo.setCommandName(name);
+            cmdListDAO.addCommand(commandPojo);
         }
 
-        executor.setCmdName(name);
-        executor.setCmdArgs(command.getCommandArgs());
-        executor.setCmdDescription(command.getCommandDescription());
-        executor.setCmdSyntax(command.getCommandSyntax());
-        executor.setEnabled(command.isEnabled());
-        executor.setCmdWeight(command.getCommandWeight());
-        executor.setLogs(command.isLogs());
+        command.setCmdName(name);
+        command.setCmdArgs(commandPojo.getCommandArgs());
+        command.setCmdDescription(commandPojo.getCommandDescription());
+        command.setCmdSyntax(commandPojo.getCommandSyntax());
+        command.setEnabled(commandPojo.isEnabled());
+        command.setCmdWeight(commandPojo.getCommandWeight());
+        command.setLogs(commandPojo.isLogs());
 
-        commandContainer.put(name, executor);
+        commandContainer.put(name, command);
 
         log.debug("Command \'" + name + "\' was successfully registred.");
     }
@@ -200,7 +192,7 @@ public class CmdEngine
      */
     public void disableCommand(String name)
     {
-        AbstractCmd command = null;
+        AbstractCommand command = null;
 
         try
         {
@@ -229,4 +221,17 @@ public class CmdEngine
         }
     }
 
+
+    @EventHandler
+    public void handleUserCommandEvent(UserCommandEvent event)
+    {
+        if (!commandExists(event.getCommand()))
+        {
+             // say to client command doesn't exist
+            event.getClient().sendPrivateMessageFromHub("Command not found!");
+            return;
+        }
+
+        this.executeCommand(event.getCommand(), event.getArgs(), event.getClient());
+    }
 }

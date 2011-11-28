@@ -1,7 +1,7 @@
 /*
-* RestartHandler.java
+* ShutdownHandler.java
 *
-* Created on 31 october 2011, 16:12
+* Created on 31 october 2011, 15:25
 *
 * Copyright (C) 2011 Alexey 'lh' Antonov
 *
@@ -9,12 +9,12 @@
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
 * of the License, or any later version.
-*
+
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*
+
 * You should have received a copy of the GNU General Public License
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -30,17 +30,16 @@ import org.slf4j.Marker;
 import ru.sincore.Broadcast;
 import ru.sincore.Main;
 import ru.sincore.client.AbstractClient;
-import ru.sincore.cmd.AbstractCmd;
-import ru.sincore.cmd.CmdUtils;
-import ru.sincore.i18n.Messages;
+import ru.sincore.cmd.AbstractCommand;
+import ru.sincore.cmd.CommandUtils;
 
 /**
  * @author Alexey 'lh' Antonov
  * @since 2011-10-31
  */
-public class RestartHandler extends AbstractCmd
+public class ShutdownCommand extends AbstractCommand
 {
-    private static final Logger log = LoggerFactory.getLogger(RestartHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(ShutdownCommand.class);
     private String marker = Marker.ANY_NON_NULL_MARKER;
 
     private AbstractClient  client;
@@ -65,7 +64,7 @@ public class RestartHandler extends AbstractCmd
         longOpts[0] = new LongOpt("timeout", LongOpt.REQUIRED_ARGUMENT, null, 't');
         longOpts[1] = new LongOpt("message", LongOpt.REQUIRED_ARGUMENT, null, 'm');
 
-        String[] argArray = CmdUtils.strArgToArray(args);
+        String[] argArray = CommandUtils.strArgToArray(args);
 
         Getopt getopt = new Getopt(cmd, argArray, "t:m:", longOpts);
 
@@ -89,13 +88,13 @@ public class RestartHandler extends AbstractCmd
             }
         }
 
-        restartHub();
+        shutdownHub();
 
-        return "Hub restarted.";
+        return null;
     }
 
 
-    private void restartHub()
+    private void shutdownHub()
     {
         if (this.message != null)
         {
@@ -111,13 +110,19 @@ public class RestartHandler extends AbstractCmd
             // ignored
         }
 
-        Main.restart();
+        Main.exit();
     }
 
 
     private void showHelp()
     {
-        client.sendPrivateMessageFromHub((Messages.get("core.commands.restart.help_text",
-                                (String) client.getExtendedField("LC"))));
+        StringBuilder result = new StringBuilder();
+
+        result.append("\nShutdown hub.\n");
+        result.append("Usage: !shutdown [--timeout <timeout>] [--message <message>]\n");
+        result.append("\tWhere <timeout> - Timeout befor hub shutdown (in sec).\n");
+        result.append("\t\t<message> - Message, which will be sent to all clients from hub.\n");
+
+        client.sendPrivateMessageFromHub(result.toString());
     }
 }

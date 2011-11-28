@@ -22,22 +22,22 @@ package ru.sincore.cmd.handlers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.sincore.client.AbstractClient;
-import ru.sincore.cmd.AbstractCmd;
+import ru.sincore.cmd.AbstractCommand;
 import ru.sincore.db.dao.CmdListDAOImpl;
 import ru.sincore.db.pojo.CmdListPOJO;
 
 /**
  *  Get, format and send available actionName list.
  */
-public class HelpHandler extends AbstractCmd
+public class HelpCommand extends AbstractCommand
 {
-	private static final Logger log = LoggerFactory.getLogger(HelpHandler.class);
+	private static final Logger log = LoggerFactory.getLogger(HelpCommand.class);
 
 	private AbstractClient client 	= null;
 	private String args 	= "";
 	private String cmd		= "";
 
-	public HelpHandler()
+	public HelpCommand()
 	{
 		this.setCmdWeight(0);
 	}
@@ -48,9 +48,6 @@ public class HelpHandler extends AbstractCmd
 		this.client = client;
 		this.args   = args;
 		this.cmd	= cmd;
-
-        log.debug("Command : [ " + cmd + " ] execute, args [ " + args + " ], " +
-                  "from client :" + client.getNick());
 
         getCmdList();
 
@@ -68,7 +65,7 @@ public class HelpHandler extends AbstractCmd
 
 		for(CmdListPOJO entry : cmdList.getCommandList())
 		{
-            if (!entry.isEnabled())
+            if (!entry.isEnabled() || (client.getWeight() < entry.getCommandWeight()))
             {
                 continue;
             }
@@ -83,13 +80,11 @@ public class HelpHandler extends AbstractCmd
 			{
 				cmdRow.append(" [");
 				cmdRow.append(entry.getCommandWeight());
-				cmdRow.append("]\n");
+				cmdRow.append("]");
 			}
 
-			if (client.getWeight() >= entry.getCommandWeight())
-			{
-				complexCmdList.append(cmdRow.toString());
-			}
+            cmdRow.append("\n");
+       		complexCmdList.append(cmdRow.toString());
 		}
 
 		client.sendPrivateMessageFromHub(complexCmdList.toString());

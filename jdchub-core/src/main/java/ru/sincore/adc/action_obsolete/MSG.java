@@ -22,6 +22,7 @@
 
 package ru.sincore.adc.action_obsolete;
 
+import com.adamtaft.eb.EventBusService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.sincore.Broadcast;
@@ -33,9 +34,9 @@ import ru.sincore.adc.Context;
 import ru.sincore.adc.MessageType;
 import ru.sincore.adc.State;
 import ru.sincore.client.AbstractClient;
-import ru.sincore.cmd.CmdEngine;
 import ru.sincore.db.dao.ChatLogDAO;
 import ru.sincore.db.dao.ChatLogDAOImpl;
+import ru.sincore.events.UserCommandEvent;
 import ru.sincore.i18n.Messages;
 import ru.sincore.util.AdcUtils;
 import ru.sincore.util.Constants;
@@ -117,30 +118,31 @@ public class MSG extends Action
      */
     private boolean parseAndExecuteCommandInMessage()
     {
+        ConfigurationManager configurationManager = ConfigurationManager.instance();
+
         String normalMessage = AdcUtils.fromAdcString(message);
-        if (normalMessage.startsWith(ConfigurationManager.instance().getString(ConfigurationManager.OP_COMMAND_PREFIX)) ||
-            normalMessage.startsWith(ConfigurationManager.instance().getString(ConfigurationManager.USER_COMMAND_PREFIX)))
+        if (normalMessage.startsWith(configurationManager.getString(ConfigurationManager.OP_COMMAND_PREFIX)) ||
+            normalMessage.startsWith(configurationManager.getString(ConfigurationManager.USER_COMMAND_PREFIX)))
         {
-            StringTokenizer commandTokenizer = new StringTokenizer(normalMessage, " ");
-
-            CmdEngine cmd = CmdEngine.getInstance();
-            String command = commandTokenizer.nextToken().substring(1);
-            if (!cmd.commandExists(command))
+            if (normalMessage.startsWith(configurationManager.getString(ConfigurationManager.OP_COMMAND_PREFIX)) &&
+                    (fromClient.getWeight() < configurationManager.getInt(ConfigurationManager.CLIENT_WEIGHT_REGISTRED) + 1))
             {
-                 // say to client actionName doesn't exist
-                fromClient.sendPrivateMessageFromHub("Command not found!");
-
-                // return result like actionName was executed
-                // that needed to don't broadcast message
+                fromClient.sendPrivateMessageFromHub("You don\'t have anough rights to use Op commands.");
                 return true;
             }
 
-            // actionName params is a message string without leading actionName name and whitespace
+            StringTokenizer commandTokenizer = new StringTokenizer(normalMessage, " ");
+
+            // get command from user message
+            String command = commandTokenizer.nextToken().substring(1);
+
+            // command params is a message string without leading command name and whitespace
             String commandParams = "";
             if (command.length() != normalMessage.length())
                 commandParams = normalMessage.substring(command.length() + 1);
 
-            cmd.executeCmd(command, commandParams.trim(), fromClient);
+            // publish event about user command coming
+            EventBusService.publish(new UserCommandEvent(command, commandParams.trim(), fromClient));
 
             return true;
         }
