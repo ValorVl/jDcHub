@@ -141,6 +141,7 @@ public class MSGHandler extends AbstractActionHandler<MSG>
     private void sendMessageToClient()
             throws STAException, CommandException
     {
+        targetClient = ClientManager.getInstance().getClientBySID(action.getTargetSID());
         targetClient.sendRawCommand(action.getRawCommand());
         if (action.getMessageType() == MessageType.E)
         {
