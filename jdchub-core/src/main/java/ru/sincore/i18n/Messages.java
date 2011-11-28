@@ -106,12 +106,16 @@ public class Messages
     public static final String INVALID_WEIGHT         = "core.commands.invalid_weight";
     public static final String WEIGHT_REQUIRED        = "core.commands.weight_required";
     public static final String NICK_REQUIRED          = "core.commands.nick_required";
+    public static final String PASSWORDS_NOT_EQUAL    = "core.commands.passwords_not_equal";
+    public static final String REGISTER_BEFOR_CHANGE_PASSWORD = "core.commands.register_befor_change_password";
+    public static final String PASSWORD_CHANGED       = "core.commands.passrowd_changed";
 
     public static final String TIME_FORMAT            = "core.time_format";
     public static final String TIME_PERIOD_FORMAT     = "core.time_period_format";
 
     private static Map<String, ResourceBundle> resourcesMap =
                                                     new ConcurrentHashMap<String, ResourceBundle>();
+
 
     // Empty constructor
     private Messages()

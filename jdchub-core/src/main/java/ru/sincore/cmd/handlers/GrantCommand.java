@@ -41,9 +41,6 @@ import ru.sincore.i18n.Messages;
  */
 public class GrantCommand extends AbstractCommand
 {
-    private static final Logger log = LoggerFactory.getLogger(GrantCommand.class);
-    private String marker = Marker.ANY_NON_NULL_MARKER;
-
     private AbstractClient  client;
     private String          cmd;
     private String          args;

@@ -469,6 +469,12 @@ public class ClientInfo
     }
 
 
+    public boolean isOp()
+    {
+        return getWeight() > ConfigurationManager.instance().getInt(ConfigurationManager.CLIENT_WEIGHT_REGISTRED);
+    }
+
+
     public void setWeight(int weight)
     {
         this.weight = weight;

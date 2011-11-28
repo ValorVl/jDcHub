@@ -36,9 +36,6 @@ import ru.sincore.util.ClientUtils;
  */
 public class InfoCommand extends AbstractCommand
 {
-    private static final Logger log = LoggerFactory.getLogger(InfoCommand.class);
-    private String marker = Marker.ANY_NON_NULL_MARKER;
-
     private AbstractClient  client;
     private String          cmd;
     private String          args;

@@ -160,6 +160,7 @@ public class HubServer
         commandEngine.registerCommand("restart",    new RestartCommand());
         commandEngine.registerCommand("shutdown",   new ShutdownCommand());
         commandEngine.registerCommand("broadcast",  new BroadcastCommand());
+        commandEngine.registerCommand("changepass", new ChangePassCommand());
     }
 
 
