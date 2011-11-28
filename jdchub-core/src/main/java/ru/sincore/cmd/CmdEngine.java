@@ -59,10 +59,10 @@ public class CmdEngine
     }
 
     /**
-     * Execute command
+     * Execute actionName
      *
-     * @param cmd    command name
-     * @param args   command args
+     * @param cmd    actionName name
+     * @param args   actionName args
      * @param client client entity
      */
     public void executeCmd(String cmd, String args, AbstractClient client)
@@ -105,7 +105,7 @@ public class CmdEngine
 
 
     /**
-     * Clear command container
+     * Clear actionName container
      */
     public synchronized void removeAllCommands()
     {
@@ -114,11 +114,11 @@ public class CmdEngine
 
 
     /**
-     * Method check command exists in command container
+     * Method check actionName exists in actionName container
      *
-     * @param command command name
+     * @param command actionName name
      *
-     * @return true if and only if command exist, false otherwise.
+     * @return true if and only if actionName exist, false otherwise.
      */
     public boolean commandExists(String command)
     {
@@ -127,14 +127,14 @@ public class CmdEngine
 
 
     /**
-     * Class at runtime registers a new command hub.
+     * Class at runtime registers a new actionName hub.
      * <p/>
      * It is understood that all the arguments of the method is valid and is in no need of validation.
      * <p/>
-     * Other arguments command, for example - the command arguments, description, syntax,
+     * Other arguments actionName, for example - the actionName arguments, description, syntax,
      * and activity logging, passed class-handler or a script ..
      *
-     * @param name     name of command
+     * @param name     name of actionName
      * @param executor object
      */
     public void registerCommand(String name, AbstractCmd executor)
@@ -169,11 +169,11 @@ public class CmdEngine
 
 
     /**
-     * Remove command from command container and db
+     * Remove actionName from actionName container and db
      *
-     * @param name command name
+     * @param name actionName name
      *
-     * @return true if command was successfully unregistred
+     * @return true if actionName was successfully unregistred
      */
     public boolean unregisterCommand(String name)
     {
@@ -196,7 +196,7 @@ public class CmdEngine
     /**
      * Command will be still registred, but disabled
      *
-     * @param name command name
+     * @param name actionName name
      */
     public void disableCommand(String name)
     {

@@ -1,4 +1,4 @@
-package ru.sincore.adc.action;
+package ru.sincore.adc.action_obsolete;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.slf4j.Logger;
@@ -398,7 +398,7 @@ public class INF extends Action
                     {
                         new STAError(fromClient,
                                      Constants.STA_SEVERITY_RECOVERABLE,
-                                     Messages.CANT_CHANGE_CID);
+                                     Messages.CANT_CHANGE_CID).send();
                         return;
                     }
 
@@ -406,7 +406,7 @@ public class INF extends Action
                     {
                         new STAError(fromClient,
                                      Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_CID_TAKEN,
-                                     "CID already taken by another user. Please generate new CID in your client.");
+                                     "CID already taken by another user. Please generate new CID in your client.").send();
                         return;
                     }
 
@@ -880,7 +880,7 @@ public class INF extends Action
     {
         StringTokenizer tokenizer = new StringTokenizer(rawCommand, " ");
 
-        // pass first 5 symbols: message type, command name and whitespace
+        // pass first 5 symbols: message type, actionName name and whitespace
         tokenizer.nextToken();
 
         // parse header

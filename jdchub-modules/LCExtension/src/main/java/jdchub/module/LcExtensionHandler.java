@@ -1,8 +1,10 @@
 package jdchub.module;
 
-import java.util.StringTokenizer;
-
-import ru.sincore.signals.InfCommandPreprocessSignal;
+import ru.sincore.Exceptions.CommandException;
+import ru.sincore.Exceptions.STAException;
+import ru.sincore.adc.Flags;
+import ru.sincore.adc.action.actions.INF;
+import ru.sincore.signals.InfAdcActionSignal;
 import ru.sincore.signalservice.SignalHandler;
 
 /**
@@ -16,28 +18,32 @@ import ru.sincore.signalservice.SignalHandler;
 public class LcExtensionHandler
 {
     @SignalHandler
-    public void handleRawInfCommand(InfCommandPreprocessSignal data)
+    public void handleRawInfCommand(InfAdcActionSignal data)
     {
-        StringTokenizer tokenizer = new StringTokenizer(data.getRawCommand(), " ");
-        tokenizer.nextToken(); // skip 'BINF'
-        tokenizer.nextToken(); // skip SID
-
+        INF action = data.getAction();
         System.out.println("Signal handled: " + data.getClass().getName());
 
-        while (tokenizer.hasMoreElements())
+        try
         {
-            String token = tokenizer.nextToken();
-            if (token.startsWith("LC"))
+            if (action.isFlagSet(Flags.LOCALE))
             {
-                String locale = token.substring(2);
+                String locale = action.getFlagValue(Flags.LOCALE);
 
                 // Country and Language tokens can be delimeted by '-' or '_' chars
                 // move all variants simple to underscore delimiter ('_')
                 // ru_RU and ru-RU ==> ru_RU
                 // en_US and en-US ==> en_US
                 locale = locale.replace('-', '_');
-                data.getClient().setExtendedField("LC", locale);
+                data.getClient().setExtendedField(Flags.LOCALE, locale);
             }
+        }
+        catch (CommandException e)
+        {
+            e.printStackTrace();
+        }
+        catch (STAException e)
+        {
+            e.printStackTrace();
         }
     }
 }

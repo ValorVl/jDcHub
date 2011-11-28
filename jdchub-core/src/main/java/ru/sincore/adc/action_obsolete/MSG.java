@@ -20,7 +20,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package ru.sincore.adc.action;
+package ru.sincore.adc.action_obsolete;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,7 +90,7 @@ public class MSG extends Action
      * A chat message.
      *
      * @param messageType message type
-     * @param context current command context
+     * @param context current actionName context
      * @param client client to send message or from message was recieved
      * @param rawCommand message text, additional flags
      */
@@ -111,9 +111,9 @@ public class MSG extends Action
 
 
     /**
-     * Checking message is command. If it is, execute it.
+     * Checking message is actionName. If it is, execute it.
      *
-     * @return true if it is command, false instead.
+     * @return true if it is actionName, false instead.
      */
     private boolean parseAndExecuteCommandInMessage()
     {
@@ -127,15 +127,15 @@ public class MSG extends Action
             String command = commandTokenizer.nextToken().substring(1);
             if (!cmd.commandExists(command))
             {
-                 // say to client command doesn't exist
+                 // say to client actionName doesn't exist
                 fromClient.sendPrivateMessageFromHub("Command not found!");
 
-                // return result like command was executed
+                // return result like actionName was executed
                 // that needed to don't broadcast message
                 return true;
             }
 
-            // command params is a message string without leading command name and whitespace
+            // actionName params is a message string without leading actionName name and whitespace
             String commandParams = "";
             if (command.length() != normalMessage.length())
                 commandParams = normalMessage.substring(command.length() + 1);
@@ -277,7 +277,7 @@ public class MSG extends Action
     {
         StringTokenizer tokenizer = new StringTokenizer(rawCommand, " ");
 
-        // pass first 5 symbols: message type, command name and whitespace
+        // pass first 5 symbols: message type, actionName name and whitespace
         tokenizer.nextToken();
 
         // parse header
@@ -293,7 +293,7 @@ public class MSG extends Action
                 parseMessage(tokenizer);
                 // get flags and parse it
                 parseFlags(tokenizer);
-                // try to find command in message and execute it
+                // try to find actionName in message and execute it
                 if (parseAndExecuteCommandInMessage())
                     break;
 

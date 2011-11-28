@@ -1,4 +1,4 @@
-package ru.sincore.adc.action;
+package ru.sincore.adc.action_obsolete;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,7 +81,7 @@ public class PAS extends Action
             throws STAException
     {
         StringTokenizer tokenizer = new StringTokenizer(rawCommand, " ");
-        tokenizer.nextToken(); // Skip command prefix (HPAS)
+        tokenizer.nextToken(); // Skip actionName prefix (HPAS)
 
         String receivedPassword = tokenizer.nextToken();
         String clientPassword   = fromClient.getPassword();

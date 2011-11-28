@@ -20,7 +20,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package ru.sincore.adc.action;
+package ru.sincore.adc.action_obsolete;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,7 +69,7 @@ public class SCH extends MSG
     {
         StringTokenizer tokenizer = new StringTokenizer(rawCommand, " ");
 
-        // pass first 5 symbols: message type, command name and whitespace
+        // pass first 5 symbols: message type, actionName name and whitespace
         tokenizer.nextToken();
 
         // parse header

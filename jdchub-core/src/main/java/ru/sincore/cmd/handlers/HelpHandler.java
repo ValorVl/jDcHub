@@ -27,7 +27,7 @@ import ru.sincore.db.dao.CmdListDAOImpl;
 import ru.sincore.db.pojo.CmdListPOJO;
 
 /**
- *  Get, format and send available command list.
+ *  Get, format and send available actionName list.
  */
 public class HelpHandler extends AbstractCmd
 {
@@ -63,7 +63,7 @@ public class HelpHandler extends AbstractCmd
 
 		StringBuilder complexCmdList = new StringBuilder();
 		complexCmdList.append('\n');
-		complexCmdList.append("command - description [weight]\n");
+		complexCmdList.append("actionName - description [weight]\n");
         complexCmdList.append('\n');
 
 		for(CmdListPOJO entry : cmdList.getCommandList())

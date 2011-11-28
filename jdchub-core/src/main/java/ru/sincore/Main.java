@@ -154,7 +154,7 @@ public class Main
 
     /**
      * jDcHub entry point
-     * @param args the command line arguments (Not used)
+     * @param args the actionName line arguments (Not used)
      */
     public static void main(String[] args)
     {

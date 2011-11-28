@@ -1,7 +1,7 @@
 /*
- * CTM.java
+ * RCM.java
  *
- * Created on 30 september 2011, 15:00
+ * Created on 05 october 2011, 11:09
  *
  * Copyright (C) 2011 Alexey 'lh' Antonov
  *
@@ -20,7 +20,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package ru.sincore.adc.action;
+package ru.sincore.adc.action_obsolete;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,44 +39,76 @@ import java.util.StringTokenizer;
 
 /**
  * @author Alexey 'lh' Antonov
- * @since 2011-09-30
+ * @since 2011-10-05
  */
-public class CTM extends Action
+public class RCM extends Action
 {
-    private final static Logger log = LoggerFactory.getLogger(CTM.class);
+    private static final Logger log = LoggerFactory.getLogger(RCM.class);
 
-    private String  clientProtocol;
-    private Integer clientPort;
-    private String  clientToken;
+    private String clientProtocol;
+    private String clientToken;
 
 
-    CTM(MessageType messageType, int context, AbstractClient fromClient, AbstractClient toClient)
+    public RCM(MessageType messageType, int context, AbstractClient client, String rawCommand)
+            throws CommandException, STAException
     {
-        super(messageType, context, fromClient, toClient);
+        super(messageType,
+              context,
+              (context == Context.T ? client : null),
+              (context == Context.F ? null : client));
 
         this.availableContexts = Context.F | Context.T;
         this.availableStates = State.NORMAL;
-    }
 
-    public CTM(MessageType messageType, int context, AbstractClient client, String rawCommand)
-            throws CommandException, STAException
-    {
-        this(messageType,
-             context,
-             (context == Context.T ? client : null),
-             (context == Context.F ? null : client));
         this.rawCommand = rawCommand;
         parse(rawCommand);
     }
 
 
-    private void parseCTM(StringTokenizer tokenizer)
+    @Override
+    protected void parseIncoming()
+            throws STAException
+    {
+        StringTokenizer tokenizer = new StringTokenizer(rawCommand, " ");
+
+        // pass first 5 symbols: message type, actionName name and whitespace
+        tokenizer.nextToken();
+
+        // parse header
+        switch (messageType)
+        {
+            case INVALID_MESSAGE_TYPE:
+                break;
+
+            case B:
+                break;
+
+            case C:
+            case I:
+            case H:
+                break;
+
+            case E:
+            case D:
+                parseRCM(tokenizer);
+                break;
+
+            case F:
+                break;
+
+            case U:
+                break;
+        }
+    }
+
+
+    private void parseRCM(StringTokenizer tokenizer)
             throws STAException
     {
         if (!fromClient.isActive())
         {
             new STAError(fromClient,
-                         Constants.STA_SEVERITY_RECOVERABLE,
+                         Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
                          Messages.TCP_DISABLED).send();
             return;
         }
@@ -102,8 +134,6 @@ public class CTM extends Action
 
         // get protocol
         clientProtocol = tokenizer.nextToken();
-        // get port
-        clientPort = Integer.parseInt(tokenizer.nextToken());
         // get client token
         clientToken = tokenizer.nextToken();
 
@@ -111,43 +141,6 @@ public class CTM extends Action
         if (messageType == MessageType.E)
         {
             fromClient.sendRawCommand(rawCommand);
-        }
-    }
-
-
-    @Override
-    protected void parseIncoming()
-            throws STAException
-    {
-        StringTokenizer tokenizer = new StringTokenizer(rawCommand, " ");
-
-        // pass first 5 symbols: message type, command name and whitespace
-        tokenizer.nextToken();
-
-        // parse header
-        switch (messageType)
-        {
-            case INVALID_MESSAGE_TYPE:
-                break;
-
-            case B:
-                break;
-
-            case C:
-            case I:
-            case H:
-                break;
-
-            case E:
-            case D:
-                parseCTM(tokenizer);
-                break;
-
-            case F:
-                break;
-
-            case U:
-                break;
         }
     }
 

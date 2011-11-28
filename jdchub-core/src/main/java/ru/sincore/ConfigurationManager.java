@@ -80,7 +80,7 @@ public class ConfigurationManager extends PropertiesConfiguration
     /** Command engine ***************************************************************************/
     public static final String OP_COMMAND_PREFIX          = "core.hub.command.engine.op_prefix";
     public static final String USER_COMMAND_PREFIX        = "core.hub.command.engine.user_prefix";
-    // If true, return command result in private chat
+    // If true, return actionName result in private chat
     public static final String COMMAND_PM_RETURN          = "core.hub.command.pm_return";
     public static final String COMMAND_SAVE_LOG           = "core.hub.save_log";
     public static final String COMMAND_SAVE_LOG_TO_DB     = "core.hub.command.save_log_to_db";
@@ -129,7 +129,7 @@ public class ConfigurationManager extends PropertiesConfiguration
     public static final String REG_CHAT_WEIGHT        = "core.hub.reg_chat_weight";
     public static final String REG_CHAT_SID           = "core.hub.reg_chat_sid";
 
-    // Mark chat or command for registration users only
+    // Mark chat or actionName for registration users only
     public static final String MARK_REGISTRATION_ONLY = "core.hub.mark_registration_only";
 
     // AdcUtils Extensions

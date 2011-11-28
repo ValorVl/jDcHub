@@ -20,7 +20,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package ru.sincore.adc.action;
+package ru.sincore.adc.action_obsolete;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -136,7 +136,7 @@ public abstract class Action
             throws STAException
     {
         int minimalCommandLength = 0;
-        // check to minimal command length
+        // check to minimal actionName length
         // ATTENTION! Magic numbers !!!
         switch (messageType)
         {
@@ -146,20 +146,20 @@ public abstract class Action
             case C:
             case I:
             case H:
-                // message type (1 char) + command (3 chars) = 4
+                // message type (1 char) + actionName (3 chars) = 4
                 minimalCommandLength = 4;
                 break;
 
             case B:
             case F:
-                // message type (1 char) + command (3 chars) +
+                // message type (1 char) + actionName (3 chars) +
                 // separator (1 char) + sid (4 chars) = 9
                 minimalCommandLength = 9;
                 break;
 
             case D:
             case E:
-                // message type (1 char) + command (3 chars) +
+                // message type (1 char) + actionName (3 chars) +
                 // separator (1 char) + sid (4 chars) +
                 // separator (1 char) + sid (4 chars)
                 minimalCommandLength = 14;
@@ -179,9 +179,9 @@ public abstract class Action
     /**
      * Parse additional parameters.
      * For incoming messages that means incoming string without
-     * 5 heading simbols containing message type, command and separator (space).
+     * 5 heading simbols containing message type, actionName and separator (space).
      *
-     * @param rawCommand raw command string
+     * @param rawCommand raw actionName string
      * @return parsing status. True if parameters were parsed, False otherwise
      * @throws CommandException
      * @throws STAException

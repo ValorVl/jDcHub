@@ -21,7 +21,7 @@ public abstract class AbstractCmd
 
 	Boolean validateRights(Integer clientRightWeight)
 	{
-		log.info("Validating user rights to execute command...");
+		log.info("Validating user rights to execute actionName...");
 
 		if(clientRightWeight >= cmdWeight)
 		{

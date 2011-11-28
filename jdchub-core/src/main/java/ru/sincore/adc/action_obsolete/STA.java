@@ -1,4 +1,4 @@
-package ru.sincore.adc.action;
+package ru.sincore.adc.action_obsolete;
 
 import ru.sincore.ClientManager;
 import ru.sincore.Exceptions.CommandException;

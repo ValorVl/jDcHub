@@ -20,7 +20,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package ru.sincore.adc.action;
+package ru.sincore.adc.action_obsolete;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,10 +57,10 @@ public class SID extends Action
 
 
     /**
-     * This command assigns a SID to a user who is currently logging on.
+     * This actionName assigns a SID to a user who is currently logging on.
      *
      * @param messageType message type
-     * @param context current command context
+     * @param context current actionName context
      * @param client client to send sid
      * @param params sid
      */

@@ -27,7 +27,7 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 /**
- *  Class contains command utils methods
+ *  Class contains actionName utils methods
  *
  *  @author Valor
  */

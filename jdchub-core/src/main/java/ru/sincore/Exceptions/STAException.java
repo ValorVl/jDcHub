@@ -5,8 +5,9 @@
  *
  * Created on 17 martie 2007, 11:14
  *
- * DSHub ADC HubSoft
+ * jDcHub
  * Copyright (C) 2007,2008  Eugen Hristev
+ * Copyright (C) 2011  Alexander 'hatred' Drozdov
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -26,11 +27,12 @@
 package ru.sincore.Exceptions;
 
 /**
+ * @author Alexander 'hatred' Drozdov
  * @author Pietricica
  */
 public class STAException extends Exception
 {
-    public int x;
+    private int staCode = -1;
 
 
     public STAException()
@@ -39,10 +41,15 @@ public class STAException extends Exception
     }
 
 
-	public STAException(String bla, int x)
+    public STAException(int staCode, String messageId)
     {
-        super(bla);
-        this.x = x;
+        super(messageId);
+        this.staCode = staCode;
+    }
 
+
+    public int getStaCode()
+    {
+        return this.staCode;
     }
 };

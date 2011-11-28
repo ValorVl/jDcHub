@@ -3,19 +3,19 @@ package ru.sincore.signals;
 import ru.sincore.client.AbstractClient;
 
 /**
- * Signal that emited when raw command handling is called
+ * Signal that emited when raw actionName handling is called
  *
  * @author Alexander 'hatred' Drozdov
  *         <p/>
  *         Date: 19.10.11
  *         Time: 16:26
  */
-public class RawCommandSignal
+public class RawAdcActionSignal
 {
     private AbstractClient client;
     private String rawCommand;
 
-    public RawCommandSignal(AbstractClient client, String rawCommand)
+    public RawAdcActionSignal(AbstractClient client, String rawCommand)
     {
         this.client = client;
         this.rawCommand = rawCommand;

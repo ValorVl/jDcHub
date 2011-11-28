@@ -135,7 +135,7 @@ public class HubServer
 
 
     /**
-     * Initialize command engine with default handlers
+     * Initialize actionName engine with default handlers
      */
     private void initCmdEngine()
     {

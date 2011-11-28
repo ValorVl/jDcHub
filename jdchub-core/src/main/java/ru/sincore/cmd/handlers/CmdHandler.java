@@ -24,7 +24,7 @@ import ru.sincore.client.AbstractClient;
 import ru.sincore.cmd.AbstractCmd;
 
 /**
- *  A class managed command engine.
+ *  A class managed actionName engine.
  *  <br>
  *  Implements function e.g. help,add, del, update, list, redeploy, etc..
  *

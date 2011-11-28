@@ -26,10 +26,7 @@ import org.apache.commons.lang.math.IntRange;
 import ru.sincore.adc.ClientType;
 import ru.sincore.adc.State;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Vector;
+import java.util.*;
 
 /**
   * @author Alexey 'lh' Antonov
@@ -179,17 +176,17 @@ public class ClientInfo
     private String encryptionSalt;
 
     /**
-     * Time when last MSG command was recieved.
+     * Time when last MSG actionName was recieved.
      */
     private long lastMSG = 0L;
 
     /**
-     * Time when last CTM command was recieved.
+     * Time when last CTM actionName was recieved.
      */
     private long lastCTM = 0L;
 
     /**
-     * Time when last INF command was recieved.
+     * Time when last INF actionName was recieved.
      */
     private long lastINF = 0L;
 
@@ -1221,6 +1218,12 @@ public class ClientInfo
         {
             features.add(feature);
         }
+    }
+
+
+    public List<String> getFeatues()
+    {
+        return features;
     }
 
 

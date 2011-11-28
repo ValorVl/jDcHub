@@ -91,7 +91,7 @@ public class InfoHandler extends AbstractCmd
         result.append("\nShows information about client.\n");
         result.append("Usage: +info [<nick>]\n");
         result.append("\tWhere <nick> - client nick.\n");
-        result.append("\tIf use without <nick>, command show info about yourself.\n");
+        result.append("\tIf use without <nick>, actionName show info about yourself.\n");
 
         client.sendPrivateMessageFromHub(result.toString());
     }

@@ -1,4 +1,4 @@
-package ru.sincore.adc.action;
+package ru.sincore.adc.action_obsolete;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,7 +78,7 @@ public class SUP extends Action
 
 		StringTokenizer incomingToken = new StringTokenizer(rawCommand);
 
-        // pass first 5 symbols: message type, command name and whitespace
+        // pass first 5 symbols: message type, actionName name and whitespace
         incomingToken.nextToken();
 
 		while (incomingToken.hasMoreTokens())

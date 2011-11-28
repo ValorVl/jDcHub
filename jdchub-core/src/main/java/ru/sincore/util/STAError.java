@@ -236,7 +236,7 @@ public class STAError
                                       ConfigurationManager.instance()
                                                           .getString(ConfigurationManager.REDIRECT_URL));
             }
-            throw new STAException(rawCommand(), errorCode);
+            throw new STAException(errorCode, rawCommand());
         }
     }
 

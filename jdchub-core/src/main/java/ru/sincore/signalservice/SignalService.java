@@ -199,11 +199,11 @@ public class SignalService
         private final WeakReference<?> handler;
 
 
-        public HandlerInfo(Class<?> eventClass,
+        public HandlerInfo(Class<?> signalClass,
                            Method method,
                            Object handler)
         {
-            this.signalClass = eventClass;
+            this.signalClass = signalClass;
             this.method      = method;
             this.handler     = new WeakReference<Object>(handler);
         }
