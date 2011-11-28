@@ -31,7 +31,6 @@ import ru.sincore.cmd.AbstractCommand;
 import ru.sincore.cmd.CommandUtils;
 import ru.sincore.i18n.Messages;
 
-import java.util.StringTokenizer;
 
 /**
  * @author Alexey 'lh' Antonov

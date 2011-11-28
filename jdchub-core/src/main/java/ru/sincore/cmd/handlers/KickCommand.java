@@ -54,10 +54,11 @@ public class KickCommand extends AbstractCommand
 		LongOpt[] longOpts = new LongOpt[3];
 
 		longOpts[0] = new LongOpt("nick", LongOpt.REQUIRED_ARGUMENT, null, 'n');
+        longOpts[1] = new LongOpt("reason", LongOpt.REQUIRED_ARGUMENT, null, 'r');
 
 		String[] argArray = CommandUtils.strArgToArray(args);
 
-		Getopt getopt = new Getopt(cmd, argArray, "n:", longOpts);
+		Getopt getopt = new Getopt(cmd, argArray, "n:r:", longOpts);
 
         if (argArray.length < 1)
         {
@@ -71,16 +72,16 @@ public class KickCommand extends AbstractCommand
 		{
 			switch (c)
 			{
-				case 0:
+				case 'n':
 					this.nick = getopt.getOptarg();
 					break;
 
-				case ':':
-					sendError("Ohh.. You need an argument for option" + (char) getopt.getOptopt());
-					break;
+                case 'r':
+                    this.reason = getopt.getOptarg();
+                    break;
 
 				case '?':
-					sendError("The option " + (char)getopt.getOptopt() + " is not valid");
+					showHelp();
 					break;
 
 				default:
@@ -88,15 +89,6 @@ public class KickCommand extends AbstractCommand
 					break;
 			}
 		}
-
-		StringBuilder sb = new StringBuilder();
-
-		for (int i = getopt.getOptind(); i < argArray.length; i++)
-		{
-			sb.append(argArray[i]);
-		}
-
-		reason = sb.toString();
 
 		return kick();
 	}
