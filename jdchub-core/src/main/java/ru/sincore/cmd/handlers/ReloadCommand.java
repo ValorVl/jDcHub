@@ -26,6 +26,7 @@ import ru.sincore.Broadcast;
 import ru.sincore.ConfigurationManager;
 import ru.sincore.client.AbstractClient;
 import ru.sincore.cmd.AbstractCommand;
+import ru.sincore.util.MessageUtils;
 
 /**
  * @author Alexey 'lh' Antonov
@@ -39,6 +40,8 @@ public class ReloadCommand extends AbstractCommand
     @Override
     public String execute(String cmd, String args, AbstractClient client)
     {
+        MessageUtils.sendMessageToOpChat(client.getNick() + " called !reload command.");
+
         Broadcast.getInstance().broadcastTextMessage("Hub will be freezed due to configs loading...");
 
         try

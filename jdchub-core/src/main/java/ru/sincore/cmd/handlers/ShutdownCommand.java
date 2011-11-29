@@ -32,6 +32,7 @@ import ru.sincore.Main;
 import ru.sincore.client.AbstractClient;
 import ru.sincore.cmd.AbstractCommand;
 import ru.sincore.cmd.CommandUtils;
+import ru.sincore.util.MessageUtils;
 
 /**
  * @author Alexey 'lh' Antonov
@@ -87,6 +88,8 @@ public class ShutdownCommand extends AbstractCommand
                     break;
             }
         }
+
+        MessageUtils.sendMessageToOpChat(client.getNick() + " called !shutdown command.");
 
         shutdownHub();
 

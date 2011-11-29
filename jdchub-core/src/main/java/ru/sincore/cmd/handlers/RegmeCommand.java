@@ -25,6 +25,7 @@ import ru.sincore.Exceptions.STAException;
 import ru.sincore.client.AbstractClient;
 import ru.sincore.cmd.AbstractCommand;
 import ru.sincore.i18n.Messages;
+import ru.sincore.util.MessageUtils;
 
 import java.util.Date;
 
@@ -36,19 +37,12 @@ import java.util.Date;
  */
 public class RegmeCommand extends AbstractCommand
 {
-
-	private static final Logger log = LoggerFactory.getLogger(RegmeCommand.class);
-
 	private AbstractClient client;
 	private String cmd;
 	private String args;
 
 	private ConfigurationManager configInstance = ConfigurationManager.instance();
 
-	public RegmeCommand()
-	{
-		//
-	}
 
 	@Override
 	public String execute(String cmd, String args, AbstractClient client)
@@ -127,6 +121,10 @@ public class RegmeCommand extends AbstractCommand
         client.sendPrivateMessageFromHub("\n" +
                                          client.getNick() +
                                          " You successfully registered!\nPlease reconnect to hub and enter your password.");
+
+        MessageUtils.sendMessageToOpChat("Client " +
+                                        client.getNick() +
+                                        " was registred");
 
         return "Successfully registred";
     }

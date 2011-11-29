@@ -54,10 +54,7 @@ public class ClientUtils
 									   Date banExpiredDate, String reason)
 	{
 
-		String OpChatSID = configInstance.getString(ConfigurationManager.OP_CHAT_SID);
-
 		Client client = (Client) ClientManager.getInstance().getClientByNick(clientNick);
-		AbstractClient opChat = ClientManager.getInstance().getClientBySID(OpChatSID);
 
 		if (client == null)
 		{
@@ -122,20 +119,40 @@ public class ClientUtils
 			{
 				try
 				{
-					client.storeInfo();
+                    client.storeInfo();
 
 					if (banType == 0)
 					{
 						client.sendPrivateMessageFromHub("You was kicked by >>"+ commandOwner.getNick()+ "<< reason : "+reason);
+                        MessageUtils.sendMessageToOpChat("Client " +
+                                                        client.getNick() +
+                                                        "was kicked by " +
+                                                        commandOwner.getNick() +
+                                                        " with reason : " +
+                                                        reason);
 					}
 					else if (banType == 1)
 					{
-						client.sendPrivateMessageFromHub("You was baned by >>"+ commandOwner.getNick()+ "<< reason : "+reason +
-																 " ban expired date :" + banExpiredDate);
+						client.sendPrivateMessageFromHub("You was banned by >>"+ commandOwner.getNick()+ "<< reason : "+reason +
+																 " ban expires date :" + banExpiredDate);
+                        MessageUtils.sendMessageToOpChat("Client " +
+                                                        client.getNick() +
+                                                        " was banned by " +
+                                                        commandOwner.getNick() +
+                                                        " with reason : " +
+                                                        reason +
+                                                        ". Ban expires at " +
+                                                        banExpiredDate);
 					}
 					else if (banType == 2)
 					{
-						client.sendPrivateMessageFromHub("You was permanently baned by >>"+ commandOwner.getNick()+ "<< reason : "+reason);
+						client.sendPrivateMessageFromHub("You was permanently banned by >>"+ commandOwner.getNick()+ "<< reason : "+reason);
+                        MessageUtils.sendMessageToOpChat("Client " +
+                                                        client.getNick() +
+                                                        " was permanently banned by " +
+                                                        commandOwner.getNick() +
+                                                        " with reason : " +
+                                                        reason);
 					}
 
 					client.removeSession(true);
@@ -144,16 +161,6 @@ public class ClientUtils
 				{
 					log.error(marker,e);
 				}
-
-				StringBuilder sb = new StringBuilder(5);
-                //TODO localize output message
-				sb.append('\n');
-				sb.append(":: Client ");
-				sb.append(clientNick);
-				sb.append('\n');
-				sb.append(new Date());
-
-				opChat.sendPrivateMessageFromHub(sb.toString());
 			}
 		}
 		else
