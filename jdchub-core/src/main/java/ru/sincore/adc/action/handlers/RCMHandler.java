@@ -20,10 +20,6 @@ import ru.sincore.util.STAError;
  */
 public class RCMHandler extends AbstractActionHandler<RCM>
 {
-    public RCMHandler(AbstractClient sourceClient, AbstractClient targetClient, RCM action)
-    {
-        super(sourceClient, targetClient, action);
-    }
 
 
     public RCMHandler(AbstractClient sourceClient, RCM action)
@@ -44,14 +40,14 @@ public class RCMHandler extends AbstractActionHandler<RCM>
         if (action.getMessageType() != MessageType.D &&
             action.getMessageType() != MessageType.E)
         {
-            new STAError(sourceClient,
+            new STAError(client,
                          Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
                          Messages.INCORRECT_MESSAGE_TYPE).send();
             return false;
         }
 
         // looking for client by target sid
-        targetClient = ClientManager.getInstance().getClientBySID(action.getTargetSID());
+        AbstractClient targetClient = ClientManager.getInstance().getClientBySID(action.getTargetSID());
         if (targetClient == null)
         {
             //talking to inexisting client
@@ -78,10 +74,11 @@ public class RCMHandler extends AbstractActionHandler<RCM>
                 return;
             }
 
+            AbstractClient targetClient = ClientManager.getInstance().getClientBySID(action.getTargetSID());
             targetClient.sendRawCommand(action.getRawCommand());
             if (action.getMessageType() == MessageType.E)
             {
-                sourceClient.sendRawCommand(action.getRawCommand());
+                client.sendRawCommand(action.getRawCommand());
             }
         }
         catch (CommandException e)

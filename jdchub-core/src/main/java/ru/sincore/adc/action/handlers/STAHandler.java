@@ -20,12 +20,6 @@ import ru.sincore.util.STAError;
  */
 public class STAHandler extends AbstractActionHandler<STA>
 {
-    public STAHandler(AbstractClient sourceClient,
-                      AbstractClient targetClient,
-                      STA action)
-    {
-        super(sourceClient, targetClient, action);
-    }
 
 
     public STAHandler(AbstractClient sourceClient, STA action)
@@ -44,7 +38,7 @@ public class STAHandler extends AbstractActionHandler<STA>
         }
 
         // TODO: [hatred] is this needed?
-        /*if (!sourceClient.isOverrideSpam())
+        /*if (!client.isOverrideSpam())
         {
             String msg = "STA " + Messages.get(Messages.INVALID_CONTEXT, context, (String)fromClient.getExtendedField("LC"));
             fromClient.sendMessageFromHub(msg);
@@ -53,14 +47,14 @@ public class STAHandler extends AbstractActionHandler<STA>
         if (action.getMessageType() != MessageType.D &&
             action.getMessageType() != MessageType.E)
         {
-            new STAError(sourceClient,
+            new STAError(client,
                          Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
                          Messages.INCORRECT_MESSAGE_TYPE).send();
             return false;
         }
 
         // looking for client by target sid
-        targetClient = ClientManager.getInstance().getClientBySID(action.getTargetSID());
+        AbstractClient targetClient = ClientManager.getInstance().getClientBySID(action.getTargetSID());
         if (targetClient == null)
         {
             //talking to inexisting client
@@ -87,10 +81,11 @@ public class STAHandler extends AbstractActionHandler<STA>
                 return;
             }
 
+            AbstractClient targetClient = ClientManager.getInstance().getClientBySID(action.getTargetSID());
             targetClient.sendRawCommand(action.getRawCommand());
             if (action.getMessageType() == MessageType.E)
             {
-                sourceClient.sendRawCommand(action.getRawCommand());
+                client.sendRawCommand(action.getRawCommand());
             }
         }
         catch (CommandException e)

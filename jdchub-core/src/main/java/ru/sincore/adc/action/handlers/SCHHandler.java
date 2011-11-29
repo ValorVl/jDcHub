@@ -16,12 +16,6 @@ import ru.sincore.client.AbstractClient;
  */
 public class SCHHandler extends AbstractActionHandler<SCH>
 {
-    public SCHHandler(AbstractClient sourceClient,
-                      AbstractClient targetClient,
-                      SCH            action)
-    {
-        super(sourceClient, targetClient, action);
-    }
 
 
     public SCHHandler(AbstractClient sourceClient, SCH action)
@@ -39,13 +33,13 @@ public class SCHHandler extends AbstractActionHandler<SCH>
             switch (action.getMessageType())
             {
                 case B:
-                    Broadcast.getInstance().broadcast(action.getRawCommand(), sourceClient);
+                    Broadcast.getInstance().broadcast(action.getRawCommand(), client);
                     break;
 
                 case F:
                     // send message dependent from features
                     Broadcast.getInstance().featuredBroadcast(action.getRawCommand(),
-                                                              sourceClient,
+                                                              client,
                                                               action.getRequiredFeatureList(),
                                                               action.getExcludedFeatureList());
                     break;

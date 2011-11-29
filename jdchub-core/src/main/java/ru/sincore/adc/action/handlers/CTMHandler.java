@@ -20,12 +20,6 @@ import ru.sincore.util.STAError;
  */
 public class CTMHandler extends AbstractActionHandler<CTM>
 {
-    public CTMHandler(AbstractClient sourceClient,
-                      AbstractClient targetClient,
-                      CTM            action)
-    {
-        super(sourceClient, targetClient, action);
-    }
 
 
     public CTMHandler(AbstractClient sourceClient, CTM action)
@@ -43,9 +37,9 @@ public class CTMHandler extends AbstractActionHandler<CTM>
             return false;
         }
 
-        if (!sourceClient.isActive())
+        if (!client.isActive())
         {
-            new STAError(sourceClient,
+            new STAError(client,
                          Constants.STA_SEVERITY_RECOVERABLE,
                          Messages.TCP_DISABLED).send();
             return false;
@@ -54,7 +48,7 @@ public class CTMHandler extends AbstractActionHandler<CTM>
         if (action.getMessageType() != MessageType.D &&
             action.getMessageType() != MessageType.E)
         {
-            new STAError(sourceClient,
+            new STAError(client,
                          Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
                          Messages.INCORRECT_MESSAGE_TYPE).send();
             return false;
@@ -87,7 +81,7 @@ public class CTMHandler extends AbstractActionHandler<CTM>
             targetClient.sendRawCommand(action.getRawCommand());
             if (action.getMessageType() == MessageType.E)
             {
-                sourceClient.sendRawCommand(action.getRawCommand());
+                client.sendRawCommand(action.getRawCommand());
             }
         }
         catch (CommandException e)

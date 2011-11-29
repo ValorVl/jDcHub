@@ -25,13 +25,6 @@ public class PASHandler extends AbstractActionHandler<PAS>
 {
     private static final Logger log = LoggerFactory.getLogger(PASHandler.class);
 
-    public PASHandler(AbstractClient sourceClient,
-                      AbstractClient targetClient,
-                      PAS            action)
-    {
-        super(sourceClient, targetClient, action);
-    }
-
 
     public PASHandler(AbstractClient sourceClient, PAS action)
     {
@@ -48,9 +41,9 @@ public class PASHandler extends AbstractActionHandler<PAS>
             action.tryParse();
 
             String receivedPassword = action.getPassword();
-            String clientPassword   = sourceClient.getPassword();
+            String clientPassword   = client.getPassword();
             String calculatedPassword;
-            byte[] salt             = Base32.decode(sourceClient.getEncryptionSalt());
+            byte[] salt             = Base32.decode(client.getEncryptionSalt());
 
 
             if (clientPassword == null || clientPassword.equals(""))
@@ -83,8 +76,8 @@ public class PASHandler extends AbstractActionHandler<PAS>
             if (receivedPassword.equals(calculatedPassword))
             {
                 // Password match
-                sourceClient.onLoggedIn();
-                sourceClient.onConnected();
+                client.onLoggedIn();
+                client.onConnected();
             }
             else
             {
@@ -108,7 +101,7 @@ public class PASHandler extends AbstractActionHandler<PAS>
     {
         try
         {
-            new STAError(sourceClient,
+            new STAError(client,
                          Constants.STA_SEVERITY_FATAL + Constants.STA_INVALID_PASSWORD,
                          Messages.LOGIN_ERROR_MESSAGE).send();
         }
@@ -118,8 +111,8 @@ public class PASHandler extends AbstractActionHandler<PAS>
         }
         finally
         {
-            if (sourceClient instanceof Client)
-                ((Client) sourceClient).removeSession(true);
+            if (client instanceof Client)
+                ((Client) client).removeSession(true);
         }
     }
 }

@@ -22,24 +22,16 @@ public abstract class AbstractActionHandler<T extends AbstractAction>
 {
     private final static Logger log = LoggerFactory.getLogger(AbstractActionHandler.class);
 
-    protected AbstractClient sourceClient;
-    protected AbstractClient targetClient;
-    protected T action;
+    protected AbstractClient client;
+    protected T              action;
 
-    public AbstractActionHandler(AbstractClient sourceClient,
-                                 AbstractClient targetClient,
+
+    public AbstractActionHandler(AbstractClient client,
                                  T              action)
     {
-        this.sourceClient = sourceClient;
-        this.targetClient = targetClient;
+        this.client = client;
         this.action       = action;
-    }
 
-
-    public AbstractActionHandler(AbstractClient sourceClient,
-                                 T              action)
-    {
-        this(sourceClient, null, action);
     }
 
 
@@ -48,9 +40,9 @@ public abstract class AbstractActionHandler<T extends AbstractAction>
     {
         action.tryParse();
 
-        if (!action.getSourceSID().equals(sourceClient.getSid()))
+        if (!action.getSourceSID().equals(client.getSid()))
         {
-            new STAError(sourceClient,
+            new STAError(client,
                          Constants.STA_SEVERITY_FATAL + Constants.STA_GENERIC_PROTOCOL_ERROR,
                          Messages.WRONG_SID).send();
             return false;
