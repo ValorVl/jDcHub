@@ -33,6 +33,7 @@ import ru.sincore.client.AbstractClient;
 import ru.sincore.cmd.AbstractCommand;
 import ru.sincore.cmd.CommandUtils;
 import ru.sincore.i18n.Messages;
+import ru.sincore.util.MessageUtils;
 
 /**
  * @author Alexey 'lh' Antonov
@@ -88,6 +89,8 @@ public class RestartCommand extends AbstractCommand
                     break;
             }
         }
+
+        MessageUtils.sendMessageToOpChat(client.getNick() + " called !restart command.");
 
         restartHub();
 

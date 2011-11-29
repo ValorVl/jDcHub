@@ -33,6 +33,7 @@ import ru.sincore.client.AbstractClient;
 import ru.sincore.cmd.AbstractCommand;
 import ru.sincore.cmd.CommandUtils;
 import ru.sincore.i18n.Messages;
+import ru.sincore.util.MessageUtils;
 
 /**
  * Command for manipulation user right weight
@@ -196,9 +197,11 @@ public class GrantCommand extends AbstractCommand
         }
 
         toClient.sendPrivateMessageFromHub(client.getNick() + " grant to you new weight.\nYour new weight is " + toClient.getWeight());
-        ClientManager.getInstance().getClientBySID(ConfigurationManager.instance().getString(
-                ConfigurationManager.OP_CHAT_SID)).sendPrivateMessageFromHub(
-                toClient.getNick() + " get\'s new weight (" + toClient.getWeight() + ") from " + client.getNick());
+        MessageUtils.sendMessageToOpChat(toClient.getNick() +
+                                         " get\'s new weight (" +
+                                         toClient.getWeight() +
+                                         ") from " +
+                                         client.getNick());
 
         return "New weight successfully granted.";
 	}
