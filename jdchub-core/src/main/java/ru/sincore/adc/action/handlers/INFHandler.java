@@ -1,6 +1,7 @@
 package ru.sincore.adc.action.handlers;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
+import org.python.constantine.Constant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.sincore.Broadcast;
@@ -72,6 +73,7 @@ public class INFHandler extends AbstractActionHandler<INF>
 
             if (action.isFlagSet(Flags.CID))
             {
+                log.debug("Client CID: " + action.getCid());
                 if (sourceClient.getState() != State.PROTOCOL)
                 {
                     new STAError(sourceClient,
@@ -80,16 +82,22 @@ public class INFHandler extends AbstractActionHandler<INF>
                     return;
                 }
 
-                if (ClientManager.getInstance().getClientByCID(sourceClient.getCid()) != null)
+                if (ClientManager.getInstance().getClientByCID(action.getCid()) != null)
                 {
                     new STAError(sourceClient,
                                  Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_CID_TAKEN,
-                                 "CID already taken by another user. Please generate new CID in your client.")
-                            .send();
+                                 Messages.CID_TAKEN).send();
                     return;
                 }
 
                 sourceClient.setCid(action.getCid());
+            }
+            else
+            {
+                log.info("CID does not set by client.");
+                new STAError(sourceClient, Constants.STA_SEVERITY_FATAL + Constants.STA_ACCESS_DENIED,
+                             Messages.INVALID_CID).send();
+                return;
             }
 
 
@@ -103,7 +111,7 @@ public class INFHandler extends AbstractActionHandler<INF>
                 {
                     new STAError(sourceClient,
                                  Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_NICK_TAKEN,
-                                 "Nick already taken. Please choose another.").send();
+                                 Messages.NICK_TAKEN).send();
                     return;
                 }
 
