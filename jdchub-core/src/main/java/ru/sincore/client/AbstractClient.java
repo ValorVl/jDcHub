@@ -25,7 +25,9 @@ package ru.sincore.client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.sincore.ConfigurationManager;
+import ru.sincore.Exceptions.CommandException;
 import ru.sincore.Exceptions.STAException;
+import ru.sincore.adc.action.actions.AbstractAction;
 import ru.sincore.util.AdcUtils;
 
 /**
@@ -84,9 +86,27 @@ public abstract class AbstractClient extends ClientInfo
     }
 
 
+    /**
+     * @deprecated use sendAdcAction() instead
+     * @param rawCommand
+     */
+    @Deprecated
     public void sendRawCommand(String rawCommand)
     {
         log.error("Used unimplemented function sendRawCommand!");
+    }
+
+
+    public void sendAdcAction(AbstractAction action)
+    {
+        try
+        {
+            sendRawCommand(action.getRawCommand());
+        }
+        catch (CommandException e)
+        {
+            e.printStackTrace();
+        }
     }
 
 

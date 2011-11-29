@@ -84,7 +84,7 @@ public class INFHandler extends AbstractActionHandler<INF>
 
                 client.setCid(action.getCid());
             }
-            else
+            else if (client.getState() != State.NORMAL)
             {
                 log.info("CID does not set by client.");
                 new STAError(client, Constants.STA_SEVERITY_FATAL + Constants.STA_ACCESS_DENIED,

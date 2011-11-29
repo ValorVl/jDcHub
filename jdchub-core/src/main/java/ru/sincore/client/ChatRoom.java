@@ -26,7 +26,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.sincore.ClientManager;
 import ru.sincore.ConfigurationManager;
+import ru.sincore.Exceptions.CommandException;
 import ru.sincore.Exceptions.STAException;
+import ru.sincore.adc.MessageType;
+import ru.sincore.adc.action.actions.AbstractAction;
+import ru.sincore.adc.action.actions.MSG;
 import ru.sincore.util.AdcUtils;
 import ru.sincore.util.Constants;
 
@@ -41,173 +45,96 @@ public class ChatRoom extends Bot
 {
     private static final Logger log = LoggerFactory.getLogger(ChatRoom.class);
 
-    private String  mySID;
-    private String  targetSID;
-    private String  pmSID;
-    private String  message;
-    private boolean haveME;
-    private boolean isPm = false;
+    @Override
+    public void sendAdcAction(AbstractAction action)
+    {
+        if (action instanceof MSG)
+        {
+            MSG msgAction = (MSG) action;
+            AbstractClient pmSender;
+
+            try
+            {
+                if (msgAction.getMessageType() != MessageType.E)
+                {
+                    log.debug("Chat Room can't process non EMSG messages");
+                    return;
+                }
+
+                // Do not process non-PM messages
+                if (msgAction.getPmSid() == null)
+                {
+                    log.debug("Chat room can't process non-PM messages");
+                    return;
+                }
+
+                pmSender = ClientManager.getInstance().getClientBySID(msgAction.getPmSid());
+                if (pmSender == null)
+                {
+                    throw new RuntimeException("Chat Room can't found PM-send with given SID: " + msgAction.getPmSid());
+                }
+
+                if (pmSender.getWeight() < getWeight())
+                {
+                    MSG lowWeightMsg = new MSG();
+                    lowWeightMsg.setMessageType(MessageType.E);
+                    lowWeightMsg.setSourceSID(getSid());
+                    lowWeightMsg.setTargetSID(pmSender.getSid());
+                    lowWeightMsg.setPmSid(getSid());
+                    lowWeightMsg.setMessage("*** You don't have access to this Chat Room. " +
+                                                 "Your weight is " +
+                                                 pmSender.getWeight() +
+                                                 "." +
+                                                 "Needed weight is " +
+                                                 getWeight());
+
+                    pmSender.sendRawCommand(lowWeightMsg.getRawCommand());
+
+                    return;
+                }
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+                return;
+            }
+
+
+            for (AbstractClient toClient : ClientManager.getInstance().getClients())
+            {
+                log.debug("toClient CID: " + toClient.getSid() + ", toClient Nick: " + toClient.getNick());
+                if ((toClient.getWeight() >= getWeight()) &&
+                    (!toClient.equals(this)) &&
+                    (!toClient.equals(pmSender)) &&
+                    !(toClient instanceof ChatRoom))
+                {
+                    log.debug("--- Send toClient CID: " + toClient.getSid() + ", toClient Nick: " + toClient.getNick());
+                    MSG msg = new MSG();
+                    try
+                    {
+                        msg.setMessageType(MessageType.E);
+                        msg.setSourceSID(pmSender.getSid());
+                        msg.setTargetSID(toClient.getSid());
+                        msg.setPmSid(getSid());
+                        msg.setMessage(msgAction.getMessage());
+
+                        toClient.sendAdcAction(msg);
+
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+
 
     @Override
     public void sendRawCommand(String rawCommand)
     {
-        // TODO: reorganize ADC Action parsing and executing and remove stupid code here (like actionName parsing and composing)
-
-        StringTokenizer tokenizer = new StringTokenizer(rawCommand, " ");
-        String action = tokenizer.nextToken();
-
-        if (!action.equals("EMSG"))
-        {
-            log.debug("Chat Room can't process non EMSG messages");
-            return;
-        }
-
-        AbstractClient pmSender;
-
-        try
-        {
-            parseMySID(tokenizer);
-            parseTargetSID(tokenizer);
-            parseMessage(tokenizer);
-            parseFlags(tokenizer);
-
-            // Do not process non-PM messages
-            if (isPm == false)
-            {
-                log.debug("Chat room can't process non-PM messages");
-                return;
-            }
-
-            pmSender = ClientManager.getInstance().getClientBySID(pmSID);
-            if (pmSender == null)
-            {
-                throw new RuntimeException("Chat Room can't found PM-send with given SID: " + pmSID);
-            }
-
-            if (pmSender.getWeight() < getWeight())
-            {
-                pmSender.sendRawCommand(constructMessage(getSid(),
-                                                         pmSender.getSid(),
-                                                         getSid(),
-                                                         AdcUtils.toAdcString(
-                                                                 "*** You don't have access to this Chat Room. " +
-                                                                 "Your weight is " +
-                                                                 pmSender.getWeight() +
-                                                                 "." +
-                                                                 "Needed weight is " +
-                                                                 getWeight())));
-                return;
-            }
-
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-            return;
-        }
-
-        for (AbstractClient toClient : ClientManager.getInstance().getClients())
-        {
-            if ((toClient.getWeight() >= getWeight()) &&
-                (!toClient.equals(this)) &&
-                (!toClient.equals(pmSender)) &&
-                !(toClient instanceof ChatRoom))
-            {
-                toClient.sendRawCommand(constructMessage(pmSID, toClient.getSid(), getSid(), message));
-            }
-        }
-    }
-
-
-    private String constructMessage(String messageFromSid,
-                                    String messageToSid,
-                                    String chatFromSid,
-                                    String message)
-    {
-        StringBuffer command = new StringBuffer("EMSG ");
-        command.append(messageFromSid);             // Pm message SID (private message from)
-        command.append(' ');
-        command.append(messageToSid);               // Target client SID
-        command.append(' ');
-        if (haveME && message.startsWith("/me "))
-        {
-            message.replaceFirst("\\/me", "");
-        }
-        command.append(message);
-        command.append(' ');
-        command.append("PM" + chatFromSid);         // Bot's SID (private chat from)
-
-        if (haveME)
-        {
-            command.append(' ');
-            command.append("ME1");
-        }
-
-        return command.toString();
-    }
-
-    private void parseMySID(StringTokenizer tokenizer)
-            throws STAException
-    {
-        mySID = tokenizer.nextToken();
-
-        if (mySID.length() != 4)
-            new STAException(Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
-                             "MSG contains wrong my_sid value!"
-            );
-
-    }
-
-
-    private void parseTargetSID(StringTokenizer tokenizer)
-            throws STAException
-    {
-        targetSID = tokenizer.nextToken();
-
-        if (targetSID.length() != 4)
-            new STAException(Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
-                             "MSG contains wrong target_sid value!"
-            );
-
-    }
-
-
-    private void parseMessage(StringTokenizer tokenizer)
-            throws STAException
-    {
-        String messageText = tokenizer.nextToken();
-
-        if (messageText.length() > ConfigurationManager.instance().getInt(ConfigurationManager.MAX_CHAT_MESSAGE_SIZE))
-            throw new STAException(Constants.STA_SEVERITY_RECOVERABLE,
-                                   "MSG Message exceeds maximum length."
-            );
-
-        message = messageText;
-    }
-
-
-
-    private void parseFlags(StringTokenizer tokenizer)
-            throws STAException
-    {
-        while (tokenizer.hasMoreTokens())
-        {
-            String token = tokenizer.nextToken();
-            if (token.startsWith("PM"))
-            {
-                isPm = true;
-                pmSID = token.substring(2);
-                if (pmSID.length() != 4)
-                    new STAException(Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
-                                     "MSG Invalid flag value."
-                    );
-            }
-            else if (token.startsWith("ME"))
-            {
-                if (token.substring(2).equals("1"))
-                    haveME = true;
-            }
-        }
+        sendAdcAction(new MSG(rawCommand));
     }
 
 }
