@@ -68,15 +68,13 @@ public class Command
         handlers.put("STA", new ActionHandlerInfo(STAHandler.class, STA.class, StaAdcActionSignal.class));
         handlers.put("CTM", new ActionHandlerInfo(CTMHandler.class, CTM.class, CtmAdcActionSignal.class));
         handlers.put("RCM", new ActionHandlerInfo(RCMHandler.class, RCM.class, RcmAdcActionSignal.class));
-
-        // Stub, only logging
-        handlers.put("RES", new ActionHandlerInfo(null, null, null));
+        handlers.put("RES", new ActionHandlerInfo(RESHandler.class, RES.class, null));
     }
 
     /**
      * Main actionName handling function.
      * @param client Client from whom actionName was recieved
-     * @param rawCommand      Issued_command of String type actually identifies the given actionName
+     * @param rawCommand    Issued_command of String type actually identifies the given actionName
      *                      state also of type String Identifies tha state in which tha connection is,
      *                      meaning [ accordingly to arne's draft]:
      *                      PROTOCOL (feature support discovery), IDENTIFY (user identification, static checks),

@@ -36,6 +36,7 @@ public class ActionFactory
         parsers.put("SID", SID.class);
         parsers.put("STA", STA.class);
         parsers.put("SUP", SUP.class);
+        parsers.put("RES", RES.class);
     }
 
 

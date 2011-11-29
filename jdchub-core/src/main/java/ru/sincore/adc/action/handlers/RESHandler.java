@@ -4,27 +4,25 @@ import ru.sincore.ClientManager;
 import ru.sincore.Exceptions.CommandException;
 import ru.sincore.Exceptions.STAException;
 import ru.sincore.adc.MessageType;
-import ru.sincore.adc.action.actions.RCM;
+import ru.sincore.adc.action.actions.RES;
 import ru.sincore.client.AbstractClient;
 import ru.sincore.i18n.Messages;
 import ru.sincore.util.Constants;
 import ru.sincore.util.STAError;
 
 /**
- * RCM (reverse connect to me) handler
+ * RES (search result) handling
  *
  * @author Alexander 'hatred' Drozdov
  *         <p/>
- *         Date: 28.11.11
- *         Time: 11:42
+ *         Date: 29.11.11
+ *         Time: 15:08
  */
-public class RCMHandler extends AbstractActionHandler<RCM>
+public class RESHandler extends AbstractActionHandler<RES>
 {
-
-
-    public RCMHandler(AbstractClient sourceClient, RCM action)
+    public RESHandler(AbstractClient client, RES action)
     {
-        super(sourceClient, action);
+        super(client, action);
     }
 
 
@@ -75,16 +73,15 @@ public class RCMHandler extends AbstractActionHandler<RCM>
             }
 
             AbstractClient targetClient = ClientManager.getInstance().getClientBySID(action.getTargetSID());
-            targetClient.sendRawCommand(action.getRawCommand());
+            targetClient.sendAdcAction(action);
             if (action.getMessageType() == MessageType.E)
             {
-                client.sendRawCommand(action.getRawCommand());
+                client.sendAdcAction(action);
             }
         }
         catch (CommandException e)
         {
             e.printStackTrace();
         }
-
     }
 }
