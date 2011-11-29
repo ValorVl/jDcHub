@@ -51,7 +51,7 @@ public class ChatRoom extends Bot
     @Override
     public void sendRawCommand(String rawCommand)
     {
-        // TODO: reorganize ADC Action parsing and executing and remove stupid code here (like command parsing and composing)
+        // TODO: reorganize ADC Action parsing and executing and remove stupid code here (like actionName parsing and composing)
 
         StringTokenizer tokenizer = new StringTokenizer(rawCommand, " ");
         String action = tokenizer.nextToken();
@@ -152,8 +152,9 @@ public class ChatRoom extends Bot
         mySID = tokenizer.nextToken();
 
         if (mySID.length() != 4)
-            new STAException("MSG contains wrong my_sid value!",
-                             Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR);
+            new STAException(Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
+                             "MSG contains wrong my_sid value!"
+            );
 
     }
 
@@ -164,8 +165,9 @@ public class ChatRoom extends Bot
         targetSID = tokenizer.nextToken();
 
         if (targetSID.length() != 4)
-            new STAException("MSG contains wrong target_sid value!",
-                             Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR);
+            new STAException(Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
+                             "MSG contains wrong target_sid value!"
+            );
 
     }
 
@@ -176,8 +178,9 @@ public class ChatRoom extends Bot
         String messageText = tokenizer.nextToken();
 
         if (messageText.length() > ConfigurationManager.instance().getInt(ConfigurationManager.MAX_CHAT_MESSAGE_SIZE))
-            throw new STAException("MSG Message exceeds maximum length.",
-                                   Constants.STA_SEVERITY_RECOVERABLE);
+            throw new STAException(Constants.STA_SEVERITY_RECOVERABLE,
+                                   "MSG Message exceeds maximum length."
+            );
 
         message = messageText;
     }
@@ -195,8 +198,9 @@ public class ChatRoom extends Bot
                 isPm = true;
                 pmSID = token.substring(2);
                 if (pmSID.length() != 4)
-                    new STAException("MSG Invalid flag value.",
-                                     Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR);
+                    new STAException(Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
+                                     "MSG Invalid flag value."
+                    );
             }
             else if (token.startsWith("ME"))
             {

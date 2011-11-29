@@ -27,7 +27,7 @@ import ru.sincore.TigerImpl.Base32;
 import java.util.regex.Pattern;
 
 /**
- * This class is the main storage place for AdcUtils command that hub has to send.
+ * This class is the main storage place for AdcUtils actionName that hub has to send.
  * Also contains functions to modify strings from normal to AdcUtils type and viceversa.
  *
  * @author Pietricica

@@ -1,4 +1,4 @@
-package ru.sincore.adc.action;
+package ru.sincore.adc.action_obsolete;
 
 import org.apache.log4j.PropertyConfigurator;
 import org.testng.annotations.BeforeMethod;

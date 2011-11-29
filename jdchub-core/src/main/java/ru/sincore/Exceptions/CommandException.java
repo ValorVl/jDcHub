@@ -3,8 +3,9 @@
  *
  * Created on 02 decembrie 2007, 12:24
  *
- * DSHub ADC HubSoft
+ * jDcHub
  * Copyright (C) 2007,2008  Eugen Hristev
+ * Copyright (C) 2011  Alexander 'hatred' Drozdov
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -24,6 +25,7 @@
 package ru.sincore.Exceptions;
 
 /**
+ * @author Alexander 'hatred' Drozdov
  * @author Pietricica
  */
 public class CommandException extends Exception
@@ -33,12 +35,8 @@ public class CommandException extends Exception
         super();
     }
 
-
-    ;
-
-
-    public CommandException(String bla)
+    public CommandException(String comment)
     {
-        super(bla);
+        super(comment);
     }
 };

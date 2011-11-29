@@ -107,7 +107,7 @@ public class SessionManager extends IoHandlerAdapter
 
 
     public void messageReceived(IoSession session, Object msg)
-            throws Exception
+            throws Exception, STAException
     {
         String rawMessage = (String) msg;
 		log.debug("Incoming message : "+ rawMessage);
@@ -118,7 +118,7 @@ public class SessionManager extends IoHandlerAdapter
         }
         catch (STAException stex)
         {
-            if (stex.x < 200)
+            if (stex.getStaCode() < 200)
             {
                 return;
             }
@@ -183,14 +183,17 @@ public class SessionManager extends IoHandlerAdapter
         newClient.setSession(session);
         StringTokenizer ST = new StringTokenizer(session.getRemoteAddress().toString(), "/:");
 
-		newClient.setRealIP(ST.nextToken());
+        String realIp = ST.nextToken();
+        log.debug("Client real IP: " + realIp);
+
+		newClient.setRealIP(realIp);
         newClient.setSid(SIDGenerator.generate());
         newClient.setLoggedIn(new Date());
 
         /**
          * Client will be moved from uninitialized to regular map after
          * handshacke will be done.
-         * See {@link ru.sincore.adc.action.INF#parseIncoming()}
+         * See {@link ru.sincore.adc.action_obsolete.INF#parseIncoming()}
          */
         ClientManager.getInstance().addNewClient(newClient);
     }

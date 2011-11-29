@@ -80,7 +80,7 @@ public class ConfigurationManager extends PropertiesConfiguration
     /** Command engine ***************************************************************************/
     public static final String OP_COMMAND_PREFIX          = "core.hub.command.engine.op_prefix";
     public static final String USER_COMMAND_PREFIX        = "core.hub.command.engine.user_prefix";
-    // If true, return command result in private chat
+    // If true, return actionName result in private chat
     public static final String COMMAND_PM_RETURN          = "core.hub.command.pm_return";
     public static final String COMMAND_SAVE_LOG           = "core.hub.save_log";
     public static final String COMMAND_SAVE_LOG_TO_DB     = "core.hub.command.save_log_to_db";
@@ -105,9 +105,6 @@ public class ConfigurationManager extends PropertiesConfiguration
     // Time in millisecond to kick duration
     public static final String KICK_DURATION          = "core.hub.kick_duration";
 
-    // Localisations
-    public static final String HUB_MESSAGES_FILE_DIR  = "core.client.messages.dir";
-
     // Chat settings
     public static final String CHAT_REFRESH           = "core.hub.chat_refresh";
     // History messages line count
@@ -129,7 +126,7 @@ public class ConfigurationManager extends PropertiesConfiguration
     public static final String REG_CHAT_WEIGHT        = "core.hub.reg_chat_weight";
     public static final String REG_CHAT_SID           = "core.hub.reg_chat_sid";
 
-    // Mark chat or command for registration users only
+    // Mark chat or actionName for registration users only
     public static final String MARK_REGISTRATION_ONLY = "core.hub.mark_registration_only";
 
     // AdcUtils Extensions
@@ -139,6 +136,15 @@ public class ConfigurationManager extends PropertiesConfiguration
     public static final String ENABLE_ADCS        = "core.hub.extension.adcs.adcs_enable";
     // Mmm.. maybe it certificate authorisation ? - no forgot add in properties
     public static final String CERT_LOGIN         = "core.hub.extension.certificate_login_enable";
+
+    // Localisations
+    public static final String HUB_MESSAGES_FILE_DIR        = "core.client.messages.dir";
+    // Client weights
+    public static final String CLIENT_WEIGHT_UNREGISTRED    = "core.client.client_type_weights.unregistered";
+    public static final String CLIENT_WEIGHT_REGISTRED      = "core.client.client_type_weights.registered";
+    public static final String CLIENT_WEIGHT_OPERATOR       = "core.client.client_type_weights.operator";
+    public static final String CLIENT_WEIGHT_SUPER_USER     = "core.client.client_type_weights.super_user";
+    public static final String CLIENT_WEIGHT_HUB_OWNER      = "core.client.client_type_weights.hub_owner";
 
 
     // Internal options
