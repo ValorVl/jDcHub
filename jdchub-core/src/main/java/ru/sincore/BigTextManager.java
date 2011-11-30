@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 import ru.sincore.db.dao.BigStaticDataDAO;
 import ru.sincore.db.dao.BigTextDataDAOImpl;
+import ru.sincore.db.pojo.BigTextDataPOJO;
 
 /**
  * This class manages the preparation for sending the customer a very large blocks of text,
@@ -43,6 +44,7 @@ public class BigTextManager
 
     public static final String MOTD     = "MOTD";
     public static final String RULES    = "RULES";
+    public static final String TOPIC    = "TOPIC";
 
 
     /**
@@ -69,6 +71,7 @@ public class BigTextManager
         BigStaticDataDAO bigStaticDataDAO = new BigTextDataDAOImpl();
 
         String text = bigStaticDataDAO.getData(title, locale);
+
         if (text == null || text.isEmpty())
         {
             if (!defaultLocale.equals(locale))
@@ -77,7 +80,7 @@ public class BigTextManager
             }
         }
 
-        if (text == null || text.isEmpty() || locale != null)
+        if ((text == null || text.isEmpty()) && locale != null)
         {
             text = bigStaticDataDAO.getData(title, null);
         }
@@ -90,4 +93,30 @@ public class BigTextManager
 		return text;
 	}
 
+
+    public boolean setText(String title, String text)
+    {
+        return this.setText(title, text, defaultLocale);
+    }
+
+
+    public boolean setText(String title, String text, String locale)
+    {
+        if ((title == null || title.isEmpty() || title.equals("")) ||
+            (text == null || text.isEmpty() || text.equals("")))
+        {
+            return false;
+        }
+
+        if (locale == null || locale.isEmpty() || locale.equals(""))
+        {
+            locale = defaultLocale;
+        }
+
+        BigStaticDataDAO bigStaticDataDAO = new BigTextDataDAOImpl();
+
+        return bigStaticDataDAO.updateData(title, locale, text) ||
+               bigStaticDataDAO.addData(title, locale, text);
+
+    }
 }

@@ -128,6 +128,14 @@ public final class ClientManager
         bot.setCid(configurationManager.getString(ConfigurationManager.SECURITY_CID));
         bot.setNick(configurationManager.getString(ConfigurationManager.HUB_NAME));
         bot.setDescription(configurationManager.getAdcString(ConfigurationManager.HUB_DESCRIPTION));
+
+        // TODO [lh] Remove code duplication
+        // duplicated code placed here: SUPHandler#sendClientInitializationInfo
+        if (!ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_DESCRIPTION).isEmpty())
+        {
+            bot.setDescription(ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_DESCRIPTION));
+        }
+
         bot.setWeight(100);
         bot.setClientType(ClientType.HUB | ClientType.BOT); // Client Type 32 is hub
         bot.setValidated();

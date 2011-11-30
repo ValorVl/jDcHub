@@ -161,6 +161,7 @@ public class HubServer
         commandEngine.registerCommand("shutdown",   new ShutdownCommand());
         commandEngine.registerCommand("broadcast",  new BroadcastCommand());
         commandEngine.registerCommand("changepass", new ChangePassCommand());
+        commandEngine.registerCommand("topic",      new TopicCommand());
     }
 
 
