@@ -2,6 +2,7 @@ package ru.sincore.adc.action.handlers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.sincore.BigTextManager;
 import ru.sincore.ClientManager;
 import ru.sincore.ConfigurationManager;
 import ru.sincore.Exceptions.CommandException;
@@ -92,73 +93,94 @@ public class SUPHandler extends AbstractActionHandler<SUP>
      * @throws CommandException
      */
     private void sendClientInitializationInfo()
-            throws STAException, CommandException, STAException
+            throws CommandException, STAException
     {
-        SUP isup = new SUP();
-        isup.setMessageType(MessageType.I);
+        SUP sup = new SUP();
+        sup.setMessageType(MessageType.I);
         // TODO: [hatred] ask feathures from config and via sync signal or any other way
         // BASE
-        isup.getFeatures().put(Features.BASE,  true);
-        isup.getFeatures().put(Features.BAS0,  true);
-        isup.getFeatures().put(Features.TIGER, true);
-        isup.getFeatures().put(Features.UCM0,  true);
-        isup.getFeatures().put(Features.ADC0,  true);
+        sup.getFeatures().put(Features.BASE,  true);
+        sup.getFeatures().put(Features.BAS0,  true);
+        sup.getFeatures().put(Features.TIGER, true);
+        sup.getFeatures().put(Features.UCM0,  true);
+        sup.getFeatures().put(Features.ADC0,  true);
         // Extended
-        isup.getFeatures().put(Features.PING,  true);
-        isup.getFeatures().put(Features.SEGA,  true);
-        client.sendRawCommand(isup.getRawCommand());
+        sup.getFeatures().put(Features.PING,  true);
+        sup.getFeatures().put(Features.SEGA,  true);
+        client.sendRawCommand(sup.getRawCommand());
 
 
-        SID isid = new SID();
-        isid.setMessageType(MessageType.I);
-        isid.setSourceSID(client.getSid());
-        client.sendRawCommand(isid.getRawCommand());
+        SID sid = new SID();
+        sid.setMessageType(MessageType.I);
+        sid.setSourceSID(client.getSid());
+        client.sendRawCommand(sid.getRawCommand());
 
 
-        INF iinf = new INF();
-        iinf.setMessageType(MessageType.I);
-        iinf.setFlagValue(Flags.CLIENT_TYPE, 32);
-        iinf.setFlagValue(Flags.VERSION ,    ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_VERSION));
-        iinf.setFlagValue(Flags.NICK,        ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_NAME));
+        INF inf = new INF();
+        inf.setMessageType(MessageType.I);
+        inf.setFlagValue(Flags.CLIENT_TYPE, 32);
+        inf.setFlagValue(Flags.VERSION,
+                         ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_VERSION));
+        inf.setFlagValue(Flags.NICK,
+                         ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_NAME));
 
-        if (!ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_DESCRIPTION).isEmpty())
+        BigTextManager bigTextManager = new BigTextManager();
+        // hub description == hub topic
+        String hubDescription = bigTextManager.getText(BigTextManager.TOPIC);
+
+        if (hubDescription != null && !hubDescription.isEmpty() && !hubDescription.equals(""))
         {
-            iinf.setFlagValue(Flags.DESCRIPTION, ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_DESCRIPTION));
+            inf.setFlagValue(Flags.DESCRIPTION,
+                             hubDescription);
         }
+        else if (!ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_DESCRIPTION).isEmpty())
+        {
+            inf.setFlagValue(Flags.DESCRIPTION,
+                             ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_DESCRIPTION));
+        }
+
 
         // Check client flag isPingExtensionSupports, if true, send PING string
         if (client.isFeature(Features.PING))
         {
-            iinf = pingQuery(iinf);
+            inf = pingQuery(inf);
         }
 
-        client.sendRawCommand(iinf.getRawCommand());
+        client.sendRawCommand(inf.getRawCommand());
     }
 
 
     /**
      * Method build PING request string
+     * @param inf
      * @return ping request string
+     * @throws CommandException
+     * @throws STAException
      */
-    private static INF pingQuery(INF iinf)
+    private static INF pingQuery(INF inf)
             throws CommandException, STAException
     {
-        iinf.setFlagValue(Flags.HUB_HOST, ConfigurationManager.instance().getString(ConfigurationManager.HUB_LISTEN));
-        iinf.setFlagValue(Flags.HUB_USERS_ONLINE, ClientManager.getInstance().getClientsCount());
-        iinf.setFlagValue(Flags.HUB_TOTAL_SHARE_SIZE, ClientManager.getInstance().getTotalShare());
-        iinf.setFlagValue(Flags.HUB_TOTAL_SHARED_FILES, ClientManager.getInstance().getTotalFileCount());
-        iinf.setFlagValue(Flags.HUB_MIN_ALLOWED_SHARE_SIZE, 2048 * ConfigurationManager.instance().getLong(ConfigurationManager.MIN_SHARE_SIZE));
-        iinf.setFlagValue(Flags.HUB_MAX_ALLOWED_SHARE_SIZE, 2048 * ConfigurationManager.instance().getLong(ConfigurationManager.MAX_SHARE_SIZE));
-        iinf.setFlagValue(Flags.HUB_MIN_ALLOWED_SLOTS, ConfigurationManager.instance().getInt(ConfigurationManager.MIN_SLOT_COUNT));
-        iinf.setFlagValue(Flags.HUB_MAX_ALLOWED_SLOTS, ConfigurationManager.instance().getInt(ConfigurationManager.MAX_SLOT_COUNT));
-        iinf.setFlagValue(Flags.HUB_MAX_AMOUNT_HUBS_WHERE_NORMAL_USER, ConfigurationManager.instance().getInt(ConfigurationManager.MAX_HUBS_USERS));
-        iinf.setFlagValue(Flags.HUB_MAX_AMOUNT_HUBS_WHERE_REGISTERED_USER, ConfigurationManager.instance().getInt(ConfigurationManager.MAX_HUBS_REGISTERED));
-        iinf.setFlagValue(Flags.HUB_MAX_AMOUNT_HUBS_WHERE_OP, ConfigurationManager.instance().getInt(ConfigurationManager.MAX_OP_IN_HUB));
-        iinf.setFlagValue(Flags.HUB_MAX_ALLOWED_USERS, ConfigurationManager.instance().getInt(ConfigurationManager.MAX_USERS));
+        inf.setFlagValue(Flags.HUB_HOST, ConfigurationManager.instance().getString(ConfigurationManager.HUB_LISTEN));
+        inf.setFlagValue(Flags.HUB_USERS_ONLINE, ClientManager.getInstance().getClientsCount());
+        inf.setFlagValue(Flags.HUB_TOTAL_SHARE_SIZE, ClientManager.getInstance().getTotalShare());
+        inf.setFlagValue(Flags.HUB_TOTAL_SHARED_FILES, ClientManager.getInstance().getTotalFileCount());
+        inf.setFlagValue(Flags.HUB_MIN_ALLOWED_SHARE_SIZE, 1024 * 1024 * ConfigurationManager.instance().getLong(ConfigurationManager.MIN_SHARE_SIZE));
+        inf.setFlagValue(Flags.HUB_MAX_ALLOWED_SHARE_SIZE, 1024 * 1024 * ConfigurationManager.instance().getLong(
+                ConfigurationManager.MAX_SHARE_SIZE));
+        inf.setFlagValue(Flags.HUB_MIN_ALLOWED_SLOTS, ConfigurationManager.instance().getInt(
+                ConfigurationManager.MIN_SLOT_COUNT));
+        inf.setFlagValue(Flags.HUB_MAX_ALLOWED_SLOTS, ConfigurationManager.instance().getInt(
+                ConfigurationManager.MAX_SLOT_COUNT));
+        inf.setFlagValue(Flags.HUB_MAX_AMOUNT_HUBS_WHERE_NORMAL_USER, ConfigurationManager.instance().getInt(
+                ConfigurationManager.MAX_HUBS_USERS));
+        inf.setFlagValue(Flags.HUB_MAX_AMOUNT_HUBS_WHERE_REGISTERED_USER, ConfigurationManager.instance().getInt(
+                ConfigurationManager.MAX_HUBS_REGISTERED));
+        inf.setFlagValue(Flags.HUB_MAX_AMOUNT_HUBS_WHERE_OP, ConfigurationManager.instance().getInt(ConfigurationManager.MAX_OP_IN_HUB));
+        inf.setFlagValue(Flags.HUB_MAX_ALLOWED_USERS, ConfigurationManager.instance().getInt(ConfigurationManager.MAX_USERS));
         // TODO [lh] Remove Main class usage
-        iinf.setFlagValue(Flags.HUB_UPTIME, Main.getUptime());
+        inf.setFlagValue(Flags.HUB_UPTIME, Main.getUptime());
 
-        return iinf;
+        return inf;
     }
 
 
