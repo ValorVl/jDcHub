@@ -24,6 +24,9 @@ package ru.sincore.client;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.sincore.BigTextManager;
+import ru.sincore.ConfigurationManager;
+import ru.sincore.util.AdcUtils;
 
 /**
  * @author Alexey 'lh' Antonov
@@ -49,11 +52,31 @@ public class Bot extends AbstractClient
         {
             if (!getDescription().equals(""))
             {
+                // TODO [lh] Remove code duplication
+                // duplicated code placed here: SUPHandler#sendClientInitializationInfo
+                BigTextManager bigTextManager = new BigTextManager();
+                // hub description == hub topic
+                String hubDescription = bigTextManager.getText(BigTextManager.TOPIC);
+
+                if (hubDescription != null &&
+                    !hubDescription.isEmpty() &&
+                    !hubDescription.equals(""))
+                {
+                    this.setDescription(AdcUtils.toAdcString(hubDescription));
+                }
+                else if (!ConfigurationManager.instance()
+                                              .getAdcString(ConfigurationManager.HUB_DESCRIPTION)
+                                              .isEmpty())
+                {
+                    this.setDescription(ConfigurationManager.instance()
+                                                            .getAdcString(ConfigurationManager.HUB_DESCRIPTION));
+                }
+
+
                 auxstr.append(" DE");
                 auxstr.append(getDescription());
             }
         }
-
 
         return auxstr.toString();
     }
