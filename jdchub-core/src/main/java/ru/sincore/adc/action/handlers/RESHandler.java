@@ -4,27 +4,25 @@ import ru.sincore.ClientManager;
 import ru.sincore.Exceptions.CommandException;
 import ru.sincore.Exceptions.STAException;
 import ru.sincore.adc.MessageType;
-import ru.sincore.adc.action.actions.STA;
+import ru.sincore.adc.action.actions.RES;
 import ru.sincore.client.AbstractClient;
 import ru.sincore.i18n.Messages;
 import ru.sincore.util.Constants;
 import ru.sincore.util.STAError;
 
 /**
- * Class/file description
+ * RES (search result) handling
  *
  * @author Alexander 'hatred' Drozdov
  *         <p/>
- *         Date: 28.11.11
- *         Time: 12:16
+ *         Date: 29.11.11
+ *         Time: 15:08
  */
-public class STAHandler extends AbstractActionHandler<STA>
+public class RESHandler extends AbstractActionHandler<RES>
 {
-
-
-    public STAHandler(AbstractClient sourceClient, STA action)
+    public RESHandler(AbstractClient client, RES action)
     {
-        super(sourceClient, action);
+        super(client, action);
     }
 
 
@@ -36,13 +34,6 @@ public class STAHandler extends AbstractActionHandler<STA>
         {
             return false;
         }
-
-        // TODO: [hatred] is this needed?
-        /*if (!client.isOverrideSpam())
-        {
-            String msg = "STA " + Messages.get(Messages.INVALID_CONTEXT, context, (String)fromClient.getExtendedField("LC"));
-            fromClient.sendMessageFromHub(msg);
-        }*/
 
         if (action.getMessageType() != MessageType.D &&
             action.getMessageType() != MessageType.E)
@@ -82,16 +73,15 @@ public class STAHandler extends AbstractActionHandler<STA>
             }
 
             AbstractClient targetClient = ClientManager.getInstance().getClientBySID(action.getTargetSID());
-            targetClient.sendRawCommand(action.getRawCommand());
+            targetClient.sendAdcAction(action);
             if (action.getMessageType() == MessageType.E)
             {
-                client.sendRawCommand(action.getRawCommand());
+                client.sendAdcAction(action);
             }
         }
         catch (CommandException e)
         {
             e.printStackTrace();
         }
-
     }
 }

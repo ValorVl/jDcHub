@@ -27,12 +27,6 @@ import ru.sincore.util.STAError;
  */
 public class MSGHandler extends AbstractActionHandler<MSG>
 {
-    public MSGHandler(AbstractClient sourceClient,
-                      AbstractClient targetClient,
-                      MSG            action)
-    {
-        super(sourceClient, targetClient, action);
-    }
 
 
     public MSGHandler(AbstractClient sourceClient, MSG action)
@@ -56,7 +50,7 @@ public class MSGHandler extends AbstractActionHandler<MSG>
             switch (action.getMessageType())
             {
                 case B:
-                    Broadcast.getInstance().broadcast(action.getRawCommand(), sourceClient);
+                    Broadcast.getInstance().broadcast(action.getRawCommand(), client);
                     ChatLogDAO chatLog = new ChatLogDAOImpl();
                     chatLog.saveMessage(ClientManager.getInstance().getClientBySID(action.getSourceSID()).getNick(),
                                         AdcUtils.toAdcString(action.getMessage()));
@@ -69,7 +63,7 @@ public class MSGHandler extends AbstractActionHandler<MSG>
                 case F:
                     // send message dependent from features
                     Broadcast.getInstance().featuredBroadcast(action.getRawCommand(),
-                                                              sourceClient,
+                                                              client,
                                                               action.getRequiredFeatureList(),
                                                               action.getExcludedFeatureList());
 
@@ -84,7 +78,7 @@ public class MSGHandler extends AbstractActionHandler<MSG>
         {
             if (staException.getStaCode() > -1)
             {
-                new STAError(sourceClient, staException.getStaCode(), staException.getMessage()).send();
+                new STAError(client, staException.getStaCode(), staException.getMessage()).send();
             }
             else
             {
@@ -112,9 +106,9 @@ public class MSGHandler extends AbstractActionHandler<MSG>
             normalMessage.startsWith(configurationManager.getString(ConfigurationManager.USER_COMMAND_PREFIX)))
         {
             if (normalMessage.startsWith(configurationManager.getString(ConfigurationManager.OP_COMMAND_PREFIX)) &&
-                    (sourceClient.getWeight() < configurationManager.getInt(ConfigurationManager.CLIENT_WEIGHT_REGISTRED) + 1))
+                    (client.getWeight() < configurationManager.getInt(ConfigurationManager.CLIENT_WEIGHT_REGISTRED) + 1))
             {
-                sourceClient.sendPrivateMessageFromHub("You don\'t have anough rights to use Op commands.");
+                client.sendPrivateMessageFromHub("You don\'t have anough rights to use Op commands.");
                 return true;
             }
 
@@ -129,7 +123,7 @@ public class MSGHandler extends AbstractActionHandler<MSG>
                 commandParams = normalMessage.substring(command.length() + 1);
 
             // publish event about user command coming
-            EventBusService.publish(new UserCommandEvent(command, commandParams.trim(), sourceClient));
+            EventBusService.publish(new UserCommandEvent(command, commandParams.trim(), client));
 
             return true;
         }
@@ -141,11 +135,11 @@ public class MSGHandler extends AbstractActionHandler<MSG>
     private void sendMessageToClient()
             throws STAException, CommandException
     {
-        targetClient = ClientManager.getInstance().getClientBySID(action.getTargetSID());
-        targetClient.sendRawCommand(action.getRawCommand());
+        AbstractClient targetClient = ClientManager.getInstance().getClientBySID(action.getTargetSID());
+        targetClient.sendAdcAction(action);
         if (action.getMessageType() == MessageType.E)
         {
-            sourceClient.sendRawCommand(action.getRawCommand());
+            client.sendRawCommand(action.getRawCommand());
         }
     }
 

@@ -35,6 +35,7 @@ import ru.sincore.adc.Features;
 import ru.sincore.adc.Flags;
 import ru.sincore.adc.MessageType;
 import ru.sincore.adc.State;
+import ru.sincore.adc.action.actions.AbstractAction;
 import ru.sincore.adc.action.actions.INF;
 import ru.sincore.db.dao.ChatLogDAO;
 import ru.sincore.db.dao.ChatLogDAOImpl;
@@ -68,21 +69,35 @@ public class Client extends AbstractClient
     private IoSession session;
 
 
-    public void sendPM(AbstractClient fromClient, String rawMessage)
-    {
-        session.write(rawMessage);
-    }
+//    public void sendPM(AbstractClient fromClient, String rawMessage)
+//    {
+//        session.write(rawMessage);
+//    }
+//
+//
+//    public void sendMessage(String rawMessage)
+//    {
+//        session.write(rawMessage);
+//    }
 
-
-    public void sendMessage(String rawMessage)
-    {
-        session.write(rawMessage);
-    }
-
-
+    @Override
     public void sendRawCommand(String rawCommand)
     {
         session.write(rawCommand);
+    }
+
+
+    @Override
+    public void sendAdcAction(AbstractAction action)
+    {
+        try
+        {
+            session.write(action.getRawCommand());
+        }
+        catch (CommandException e)
+        {
+            e.printStackTrace();
+        }
     }
 
 

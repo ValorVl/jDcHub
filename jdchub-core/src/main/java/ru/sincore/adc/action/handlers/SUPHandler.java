@@ -32,14 +32,6 @@ public class SUPHandler extends AbstractActionHandler<SUP>
     private final static Logger log = LoggerFactory.getLogger(SUPHandler.class);
 
 
-    public SUPHandler(AbstractClient sourceClient,
-                      AbstractClient targetClient,
-                      SUP            action)
-    {
-        super(sourceClient, targetClient, action);
-    }
-
-
     public SUPHandler(AbstractClient sourceClient, SUP action)
     {
         super(sourceClient, action);
@@ -57,28 +49,28 @@ public class SUPHandler extends AbstractActionHandler<SUP>
 
             for (String feature : action.getFeatures().keySet())
             {
-                sourceClient.setFeature(feature, action.getFeatures().get(feature));
+                client.setFeature(feature, action.getFeatures().get(feature));
             }
 
             // TODO: check client SID and sid given in Client class...
 
-            if (!sourceClient.isFeature(Features.BAS0) && !sourceClient.isFeature(Features.BASE))
+            if (!client.isFeature(Features.BAS0) && !client.isFeature(Features.BASE))
             {
-                new STAError(sourceClient,
+                new STAError(client,
                              Constants.STA_SEVERITY_FATAL + Constants.STA_GENERIC_PROTOCOL_ERROR,
                              Messages.BASE_FEATURE_NOT_SUPPORTED).send();
             }
 
             // Check support TIGER hash..
-            if (!sourceClient.isFeature(Features.TIGER))
+            if (!client.isFeature(Features.TIGER))
             {
-                new STAError(sourceClient,
+                new STAError(client,
                              Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_NO_HASH_OVERLAP,
                              Messages.HASH_FUNCTION_NOT_SELECTED).send();
             }
 
             // if client in PROTOCOL state, send info about hub to him
-            if (sourceClient.getState() == State.PROTOCOL)
+            if (client.getState() == State.PROTOCOL)
                 sendClientInitializationInfo();
         }
         catch (CommandException e)
@@ -114,13 +106,13 @@ public class SUPHandler extends AbstractActionHandler<SUP>
         // Extended
         isup.getFeatures().put(Features.PING,  true);
         isup.getFeatures().put(Features.SEGA,  true);
-        sourceClient.sendRawCommand(isup.getRawCommand());
+        client.sendRawCommand(isup.getRawCommand());
 
 
         SID isid = new SID();
         isid.setMessageType(MessageType.I);
-        isid.setSourceSID(sourceClient.getSid());
-        sourceClient.sendRawCommand(isid.getRawCommand());
+        isid.setSourceSID(client.getSid());
+        client.sendRawCommand(isid.getRawCommand());
 
 
         INF iinf = new INF();
@@ -135,12 +127,12 @@ public class SUPHandler extends AbstractActionHandler<SUP>
         }
 
         // Check client flag isPingExtensionSupports, if true, send PING string
-        if (sourceClient.isFeature(Features.PING))
+        if (client.isFeature(Features.PING))
         {
             iinf = pingQuery(iinf);
         }
 
-        sourceClient.sendRawCommand(iinf.getRawCommand());
+        client.sendRawCommand(iinf.getRawCommand());
     }
 
 

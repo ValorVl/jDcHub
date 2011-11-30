@@ -37,13 +37,6 @@ public class INFHandler extends AbstractActionHandler<INF>
     private final static Logger log = LoggerFactory.getLogger(INFHandler.class);
     ConfigurationManager configurationManager = ConfigurationManager.instance();
 
-    public INFHandler(AbstractClient sourceClient,
-                      AbstractClient targetClient,
-                      INF            action)
-    {
-        super(sourceClient, targetClient, action);
-    }
-
 
     public INFHandler(AbstractClient sourceClient, INF action)
     {
@@ -61,9 +54,9 @@ public class INFHandler extends AbstractActionHandler<INF>
         {
             action.tryParse();
 
-            if (!sourceClient.getSid().equals(action.getSourceSID()))
+            if (!client.getSid().equals(action.getSourceSID()))
             {
-                new STAError(sourceClient,
+                new STAError(client,
                              Constants.STA_SEVERITY_FATAL + Constants.STA_GENERIC_PROTOCOL_ERROR,
                              Messages.WRONG_SID).send();
                 return;
@@ -72,24 +65,31 @@ public class INFHandler extends AbstractActionHandler<INF>
 
             if (action.isFlagSet(Flags.CID))
             {
-                if (sourceClient.getState() != State.PROTOCOL)
+                log.debug("Client CID: " + action.getCid());
+                if (client.getState() != State.PROTOCOL)
                 {
-                    new STAError(sourceClient,
+                    new STAError(client,
                                  Constants.STA_SEVERITY_RECOVERABLE,
                                  Messages.CANT_CHANGE_CID).send();
                     return;
                 }
 
-                if (ClientManager.getInstance().getClientByCID(sourceClient.getCid()) != null)
+                if (ClientManager.getInstance().getClientByCID(action.getCid()) != null)
                 {
-                    new STAError(sourceClient,
+                    new STAError(client,
                                  Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_CID_TAKEN,
-                                 "CID already taken by another user. Please generate new CID in your client.")
-                            .send();
+                                 Messages.CID_TAKEN).send();
                     return;
                 }
 
-                sourceClient.setCid(action.getCid());
+                client.setCid(action.getCid());
+            }
+            else if (client.getState() != State.NORMAL)
+            {
+                log.info("CID does not set by client.");
+                new STAError(client, Constants.STA_SEVERITY_FATAL + Constants.STA_ACCESS_DENIED,
+                             Messages.INVALID_CID).send();
+                return;
             }
 
 
@@ -97,17 +97,17 @@ public class INFHandler extends AbstractActionHandler<INF>
             if (action.isFlagSet(Flags.NICK))
             {
                 // TODO: nick validation
-                sourceClient.setNick(action.getNick());
+                client.setNick(action.getNick());
 
-                if (ClientManager.getInstance().getClientByNick(sourceClient.getNick()) != null)
+                if (ClientManager.getInstance().getClientByNick(client.getNick()) != null)
                 {
-                    new STAError(sourceClient,
+                    new STAError(client,
                                  Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_NICK_TAKEN,
-                                 "Nick already taken. Please choose another.").send();
+                                 Messages.NICK_TAKEN).send();
                     return;
                 }
 
-                if (sourceClient.getState() != State.PROTOCOL)
+                if (client.getState() != State.PROTOCOL)
                 {
                     // TODO change nick to new nick
                     // save information about it into db
@@ -117,56 +117,56 @@ public class INFHandler extends AbstractActionHandler<INF>
 
             if (action.isFlagSet(Flags.PID))
             {
-                if (sourceClient.getState() != State.PROTOCOL)
+                if (client.getState() != State.PROTOCOL)
                 {
-                    new STAError(sourceClient,
+                    new STAError(client,
                                  Constants.STA_SEVERITY_RECOVERABLE,
                                  Messages.CANT_CHANGE_PID).send();
                     return;
                 }
 
-                sourceClient.setPid(action.getPid());
+                client.setPid(action.getPid());
             }
 
 
             if (action.isFlagSet(Flags.ADDR_IPV4))
             {
                 String ipv4 = action.getFlagValue(Flags.ADDR_IPV4);
-                sourceClient.setIpAddressV4(ipv4);
+                client.setIpAddressV4(ipv4);
 
                 if (ipv4.equals("0.0.0.0") ||
                     ipv4.equals("localhost"))//only if active client
                 {
-                    sourceClient.setIpAddressV4(sourceClient.getRealIP());
-                    action.setFlagValue(Flags.ADDR_IPV4, sourceClient.getRealIP());
+                    client.setIpAddressV4(client.getRealIP());
+                    action.setFlagValue(Flags.ADDR_IPV4, client.getRealIP());
                 }
-                else if (!ipv4.equals(sourceClient.getRealIP()) &&
+                else if (!ipv4.equals(client.getRealIP()) &&
                          !ipv4.equals("") &&
-                         !sourceClient.getRealIP().equals("127.0.0.1"))
+                         !client.getRealIP().equals("127.0.0.1"))
                 {
-                    new STAError(sourceClient,
+                    new STAError(client,
                                  Constants.STA_SEVERITY_FATAL + Constants.STA_INVALID_IP,
                                  Messages.WRONG_IP_ADDRESS,
                                  "I4",
-                                 sourceClient.getRealIP()).send();
+                                 client.getRealIP()).send();
                     return;
                 }
             }
             else
             {
-                sourceClient.setIpAddressV4(sourceClient.getRealIP());
-                action.setFlagValue(Flags.ADDR_IPV4, sourceClient.getRealIP());
+                client.setIpAddressV4(client.getRealIP());
+                action.setFlagValue(Flags.ADDR_IPV4, client.getRealIP());
             }
 
             if (action.isFlagSet(Flags.CLIENT_TYPE))
             {
-                if (sourceClient.isOverrideSpam())
+                if (client.isOverrideSpam())
                 {
-                    sourceClient.setClientType(action.getFlagValue(Flags.CLIENT_TYPE, 0));
+                    client.setClientType(action.getFlagValue(Flags.CLIENT_TYPE, 0));
                 }
                 else
                 {
-                    new STAError(sourceClient,
+                    new STAError(client,
                                  Constants.STA_SEVERITY_FATAL +
                                  Constants.STA_GENERIC_LOGIN_ERROR,
                                  Messages.CT_FIELD_DISALLOWED).send();
@@ -176,116 +176,116 @@ public class INFHandler extends AbstractActionHandler<INF>
 
             if (action.isFlagSet(Flags.ADDR_IPV6))
             {
-                sourceClient.setIpAddressV6(
+                client.setIpAddressV6(
                         action.<String>getFlagValue(Flags.ADDR_IPV6));
             }
 
             if (action.isFlagSet(Flags.UDP_PORT_IPV4))
             {
-                sourceClient.setUdpPortV4(
+                client.setUdpPortV4(
                         action.<String>getFlagValue(Flags.UDP_PORT_IPV4));
             }
 
             if (action.isFlagSet(Flags.UDP_PORT_IPV6))
             {
-                sourceClient.setUdpPortV6(
+                client.setUdpPortV6(
                         action.<String>getFlagValue(Flags.UDP_PORT_IPV6));
             }
 
             if (action.isFlagSet(Flags.SHARE_SIZE))
             {
-                sourceClient.setShareSise(
+                client.setShareSise(
                         action.<Long>getFlagValue(Flags.SHARE_SIZE, 0L));
             }
 
             if (action.isFlagSet(Flags.SHARED_FILES))
             {
-                sourceClient.setSharedFiles(
+                client.setSharedFiles(
                         action.<Long>getFlagValue(Flags.SHARED_FILES, 0L));
             }
 
             if (action.isFlagSet(Flags.VERSION))
             {
-                sourceClient.setClientIdentificationVersion(
+                client.setClientIdentificationVersion(
                         action.<String>getFlagValue(Flags.VERSION, ""));
             }
 
             if (action.isFlagSet(Flags.MAX_UPLOAD_SPEED))
             {
-                sourceClient.setMaxUploadSpeed(
+                client.setMaxUploadSpeed(
                         action.<Long>getFlagValue(Flags.MAX_UPLOAD_SPEED, 0L));
             }
 
             if (action.isFlagSet(Flags.MAX_DOWNLOAD_SPEED))
             {
-                sourceClient.setMaxDownloadSpeed(
+                client.setMaxDownloadSpeed(
                         action.<Long>getFlagValue(Flags.MAX_DOWNLOAD_SPEED, 0L));
             }
 
             if (action.isFlagSet(Flags.OPENED_UPLOAD_SLOTS))
             {
-                sourceClient.setUploadSlotsOpened(
+                client.setUploadSlotsOpened(
                         action.<Integer>getFlagValue(Flags.OPENED_UPLOAD_SLOTS, 0));
             }
 
             if (action.isFlagSet(Flags.AUTOMATIC_SLOT_ALLOCATOR))
             {
-                sourceClient.setAutomaticSlotAllocator(
+                client.setAutomaticSlotAllocator(
                         action.<Long>getFlagValue(Flags.AUTOMATIC_SLOT_ALLOCATOR, 0L));
             }
 
             if (action.isFlagSet(Flags.MIN_AUTOMATIC_SLOTS))
             {
-                sourceClient.setMinAutomaticSlots(
+                client.setMinAutomaticSlots(
                         action.<Long>getFlagValue(Flags.MIN_AUTOMATIC_SLOTS, 0L));
             }
 
             if (action.isFlagSet(Flags.EMAIL))
             {
-                sourceClient.setEmail(
+                client.setEmail(
                         action.<String>getFlagValue(Flags.EMAIL, ""));
             }
 
             if (action.isFlagSet(Flags.DESCRIPTION))
             {
-                sourceClient.setDescription(
+                client.setDescription(
                         action.<String>getFlagValue(Flags.DESCRIPTION, ""));
             }
 
             if (action.isFlagSet(Flags.AMOUNT_HUBS_WHERE_NORMAL_USER))
             {
-                sourceClient.setNumberOfNormalStateHubs(
+                client.setNumberOfNormalStateHubs(
                         action.<Integer>getFlagValue(Flags.AMOUNT_HUBS_WHERE_NORMAL_USER, 0));
             }
 
             if (action.isFlagSet(Flags.AMOUNT_HUBS_WHERE_REGISTERED_USER))
             {
-                sourceClient.setNumberOfHubsWhereRegistred(
+                client.setNumberOfHubsWhereRegistred(
                         action.<Integer>getFlagValue(Flags.AMOUNT_HUBS_WHERE_REGISTERED_USER,
                                                         0));
             }
 
             if (action.isFlagSet(Flags.AMOUNT_HUBS_WHERE_OP_USER))
             {
-                sourceClient.setNumberOfHubsWhereOp(
+                client.setNumberOfHubsWhereOp(
                         action.<Integer>getFlagValue(Flags.AMOUNT_HUBS_WHERE_OP_USER, 0));
             }
 
             if (action.isFlagSet(Flags.TOKEN))
             {
-                sourceClient.setToken(
+                client.setToken(
                         action.<String>getFlagValue(Flags.TOKEN, ""));
             }
 
             if (action.isFlagSet(Flags.AWAY))
             {
-                sourceClient.setAwayStatus(
+                client.setAwayStatus(
                         action.<Integer>getFlagValue(Flags.AWAY, 0));
             }
 
             if (action.isFlagSet(Flags.HIDDEN))
             {
-                sourceClient.setHidden(
+                client.setHidden(
                         action.<Boolean>getFlagValue(Flags.HIDDEN, false));
             }
 
@@ -293,7 +293,7 @@ public class INFHandler extends AbstractActionHandler<INF>
             {
                 for (String feature : action.getFeatures())
                 {
-                    sourceClient.addFeature(feature);
+                    client.addFeature(feature);
                 }
             }
 
@@ -311,14 +311,14 @@ public class INFHandler extends AbstractActionHandler<INF>
             }
 
             // now must check if hub is full...
-            if (sourceClient.getState() ==
+            if (client.getState() ==
                 State.PROTOCOL) //otherwise is already connected, no point in checking this
             {
                 if (configurationManager.getInt(ConfigurationManager.MAX_USERS) <=
                     ClientManager.getInstance().getClientsCount() &&
-                    !sourceClient.isOverrideFull())
+                    !client.isOverrideFull())
                 {
-                    new STAError(sourceClient,
+                    new STAError(client,
                                  Constants.STA_SEVERITY_FATAL + Constants.STA_HUB_FULL,
                                  Messages.HUB_FULL_MESSAGE,
                                  String.valueOf(ClientManager.getInstance()
@@ -334,60 +334,60 @@ public class INFHandler extends AbstractActionHandler<INF>
             }
 
 
-            if (sourceClient.getCid()
+            if (client.getCid()
                             .equals(configurationManager.getString(ConfigurationManager.OP_CHAT_CID)))
             {
-                new STAError(sourceClient,
+                new STAError(client,
                              Constants.STA_SEVERITY_FATAL + Constants.STA_CID_TAKEN,
                              Messages.CID_TAKEN).send();
                 return;
             }
-            if (sourceClient.getCid()
+            if (client.getCid()
                             .equals(configurationManager.getString(ConfigurationManager.SECURITY_CID)))
             {
-                new STAError(sourceClient,
+                new STAError(client,
                              Constants.STA_SEVERITY_FATAL + Constants.STA_CID_TAKEN,
                              Messages.CID_TAKEN).send();
                 return;
             }
-            if (sourceClient.getNick()
+            if (client.getNick()
                             .equalsIgnoreCase(configurationManager.getString(ConfigurationManager.OP_CHAT_NAME)))
             {
-                new STAError(sourceClient,
+                new STAError(client,
                              Constants.STA_SEVERITY_FATAL + Constants.STA_NICK_TAKEN,
                              Messages.NICK_TAKEN).send();
                 return;
             }
-            if (sourceClient.getNick()
+            if (client.getNick()
                             .equalsIgnoreCase(configurationManager.getString(ConfigurationManager.BOT_CHAT_NAME)))
             {
-                new STAError(sourceClient,
+                new STAError(client,
                              Constants.STA_SEVERITY_FATAL + Constants.STA_NICK_TAKEN,
                              Messages.NICK_TAKEN).send();
                 return;
             }
 
-            if (!sourceClient.isFeature(Features.BASE))
+            if (!client.isFeature(Features.BASE))
             {
-                new STAError(sourceClient,
+                new STAError(client,
                              Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_GENERIC_PROTOCOL_ERROR,
                              Messages.VERY_OLD_ADC).send();
             }
 
 
-            if (sourceClient.getState() == State.PROTOCOL && doProtocolStateChecks() == false)
+            if (client.getState() == State.PROTOCOL && doProtocolStateChecks() == false)
             {
                 return;
             }
 
 
-            Broadcast.getInstance().broadcast(action.getRawCommand(), sourceClient);
+            Broadcast.getInstance().broadcast(action.getRawCommand(), client);
         }
         catch (NumberFormatException nfe)
         {
             try
             {
-                new STAError(sourceClient,
+                new STAError(client,
                              Constants.STA_SEVERITY_FATAL + Constants.STA_GENERIC_PROTOCOL_ERROR,
                              Messages.WEIRD_INFO).send();
             }
@@ -412,9 +412,9 @@ public class INFHandler extends AbstractActionHandler<INF>
     private void validateMinimalINF()
             throws STAException
     {
-        if (sourceClient.getCid() == null)
+        if (client.getCid() == null)
         {
-            new STAError(sourceClient,
+            new STAError(client,
                          Constants.STA_SEVERITY_FATAL +
                          Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
                          Messages.MISSING_FIELD,
@@ -422,9 +422,9 @@ public class INFHandler extends AbstractActionHandler<INF>
                          "ID").send();
             return;
         }
-        else if (sourceClient.getCid().equals(""))
+        else if (client.getCid().equals(""))
         {
-            new STAError(sourceClient,
+            new STAError(client,
                          Constants.STA_SEVERITY_FATAL +
                          Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
                          Messages.MISSING_FIELD,
@@ -433,9 +433,9 @@ public class INFHandler extends AbstractActionHandler<INF>
             return;
         }
 
-        if (sourceClient.getPid() == null)
+        if (client.getPid() == null)
         {
-            new STAError(sourceClient,
+            new STAError(client,
                          Constants.STA_SEVERITY_FATAL +
                          Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
                          Messages.MISSING_FIELD,
@@ -443,9 +443,9 @@ public class INFHandler extends AbstractActionHandler<INF>
                          "PD").send();
             return;
         }
-        else if (sourceClient.getPid().equals(""))
+        else if (client.getPid().equals(""))
         {
-            new STAError(sourceClient,
+            new STAError(client,
                          Constants.STA_SEVERITY_FATAL +
                          Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
                          Messages.MISSING_FIELD,
@@ -454,9 +454,9 @@ public class INFHandler extends AbstractActionHandler<INF>
             return;
         }
 
-        if (sourceClient.getNick() == null)
+        if (client.getNick() == null)
         {
-            new STAError(sourceClient,
+            new STAError(client,
                          Constants.STA_SEVERITY_FATAL +
                          Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
                          Messages.MISSING_FIELD,
@@ -464,9 +464,9 @@ public class INFHandler extends AbstractActionHandler<INF>
                          "NI").send();
             return;
         }
-        else if (sourceClient.getNick().equals(""))
+        else if (client.getNick().equals(""))
         {
-            new STAError(sourceClient,
+            new STAError(client,
                          Constants.STA_SEVERITY_FATAL +
                          Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
                          Messages.MISSING_FIELD,
@@ -475,9 +475,9 @@ public class INFHandler extends AbstractActionHandler<INF>
             return;
         }
 
-        if (sourceClient.getNumberOfNormalStateHubs() == null)
+        if (client.getNumberOfNormalStateHubs() == null)
         {
-            new STAError(sourceClient,
+            new STAError(client,
                          Constants.STA_SEVERITY_FATAL +
                          Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
                          Messages.MISSING_FIELD,
@@ -491,7 +491,7 @@ public class INFHandler extends AbstractActionHandler<INF>
             throws STAException
     {
         BanListDAO banList = new BanListDAOImpl();
-        BanListPOJO banInfo = banList.getLastBan(sourceClient.getNick(), sourceClient.getRealIP());
+        BanListPOJO banInfo = banList.getLastBan(client.getNick(), client.getRealIP());
 
         if (banInfo != null)
         {
@@ -502,10 +502,10 @@ public class INFHandler extends AbstractActionHandler<INF>
                 String timeLeftString = DurationFormatUtils.formatDuration(
                         timeLeft,
                         Messages.get(Messages.TIME_PERIOD_FORMAT,
-                                     (String) sourceClient.getExtendedField("LC")),
+                                     (String) client.getExtendedField("LC")),
                         true);
 
-                new STAError(sourceClient,
+                new STAError(client,
                              Constants.STA_SEVERITY_FATAL + Constants.STA_TEMP_BANNED,
                              Messages.BAN_MESSAGE,
                              new Object[]{ banInfo.getOpNick(),
@@ -527,16 +527,16 @@ public class INFHandler extends AbstractActionHandler<INF>
     {
         for (AbstractClient client : ClientManager.getInstance().getClients())
         {
-            if (!client.equals(sourceClient))
+            if (!client.equals(this.client))
             {
                 if (client.isValidated())
                 {
                     if (client.getNick()
                               .toLowerCase()
-                              .equals(sourceClient.getNick().toLowerCase()) &&
-                        !client.getCid().equals(sourceClient.getCid()))
+                              .equals(this.client.getNick().toLowerCase()) &&
+                        !client.getCid().equals(this.client.getCid()))
                     {
-                        new STAError(sourceClient,
+                        new STAError(this.client,
                                      Constants.STA_SEVERITY_FATAL + Constants.STA_NICK_TAKEN,
                                      Messages.NICK_TAKEN).send();
                         return false;
@@ -558,39 +558,39 @@ public class INFHandler extends AbstractActionHandler<INF>
     private boolean isClientInformationValid()
             throws STAException
     {
-        if (!sourceClient.isOverrideSpam())
+        if (!client.isOverrideSpam())
         {
-            if (sourceClient.getEmail() != null)
+            if (client.getEmail() != null)
             {
                 // TODO [lh] validate email
-//                if (!ValidateField(sourceClient.getEM()))
+//                if (!ValidateField(client.getEM()))
 //                {
-//                    new STAError(sourceClient,
-//                                 (sourceClient.getState() == State.PROTOCOL ?
+//                    new STAError(client,
+//                                 (client.getState() == State.PROTOCOL ?
 //                                 Constants.STA_SEVERITY_FATAL : Constants.STA_SEVERITY_RECOVERABLE),
 //                                 "E-mail contains forbidden words.");
 //                    return false;
 //                }
             }
 
-            if (sourceClient.getDescription() != null)
+            if (client.getDescription() != null)
             {
                 // TODO [lh] validate description
-//                if (!ValidateField(sourceClient.getDE()))
+//                if (!ValidateField(client.getDE()))
 //                {
-//                    new STAError(sourceClient,
+//                    new STAError(client,
 //                                 state == State.PROTOCOL ? Constants.STA_SEVERITY_FATAL : Constants.STA_SEVERITY_RECOVERABLE,
 //                                 "Description contains forbidden words");
 //                    return false;
 //                }
             }
 
-            if (sourceClient.getUploadSlotsOpened() != null)
+            if (client.getUploadSlotsOpened() != null)
             {
                 if (configurationManager.getInt(ConfigurationManager.MIN_SLOT_COUNT) != 0 &&
-                    sourceClient.getUploadSlotsOpened() == 0)
+                    client.getUploadSlotsOpened() == 0)
                 {
-                    new STAError(sourceClient,
+                    new STAError(client,
                                  Constants.STA_SEVERITY_FATAL +
                                  Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
                                  Messages.TOO_FEW_SLOTS,
@@ -602,20 +602,20 @@ public class INFHandler extends AbstractActionHandler<INF>
             }
             //TODO : add without tag allow ?
             //checking all:
-            if (sourceClient.getNick() != null)
+            if (client.getNick() != null)
             {
-                if (isNickValidated(sourceClient) == false)
+                if (isNickValidated(client) == false)
                 {
                     return false;
                 }
             }
 
-            if (sourceClient.getDescription() != null)
+            if (client.getDescription() != null)
             {
-                if (sourceClient.getDescription().length() >
+                if (client.getDescription().length() >
                     configurationManager.getInt(ConfigurationManager.MAX_DESCRIPTION_CHAR_COUNT))
                 {
-                    new STAError(sourceClient,
+                    new STAError(client,
                                  Constants.STA_SEVERITY_FATAL +
                                  Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
                                  Messages.TOO_LARGE_DESCRIPTION,
@@ -626,12 +626,12 @@ public class INFHandler extends AbstractActionHandler<INF>
                 }
             }
 
-            if (sourceClient.getEmail() != null)
+            if (client.getEmail() != null)
             {
-                if (sourceClient.getEmail().length() >
+                if (client.getEmail().length() >
                     configurationManager.getInt(ConfigurationManager.MAX_EMAIL_CHAR_COUNT))
                 {
-                    new STAError(sourceClient,
+                    new STAError(client,
                                  Constants.STA_SEVERITY_FATAL +
                                  Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
                                  Messages.TOO_LARGE_MAIL,
@@ -644,12 +644,12 @@ public class INFHandler extends AbstractActionHandler<INF>
 
             // TODO [lh] is MAX_SHARE_SIZE needed?
             // TODO [lh] how to set an unlimited share size?
-            if (sourceClient.getShareSise() != null)
+            if (client.getShareSise() != null)
             {
-                if (sourceClient.getShareSise() >
+                if (client.getShareSise() >
                     configurationManager.getLong(ConfigurationManager.MAX_SHARE_SIZE))
                 {
-                    new STAError(sourceClient,
+                    new STAError(client,
                                  Constants.STA_SEVERITY_FATAL +
                                  Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
                                  Messages.TOO_LARGE_SHARE,
@@ -659,10 +659,10 @@ public class INFHandler extends AbstractActionHandler<INF>
                     return false;
                 }
 
-                if (sourceClient.getShareSise() <
+                if (client.getShareSise() <
                     configurationManager.getLong(ConfigurationManager.MIN_SHARE_SIZE))
                 {
-                    new STAError(sourceClient,
+                    new STAError(client,
                                  Constants.STA_SEVERITY_FATAL +
                                  Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
                                  Messages.TOO_SMALL_SHARE,
@@ -673,12 +673,12 @@ public class INFHandler extends AbstractActionHandler<INF>
                 }
             }
 
-            if (sourceClient.getUploadSlotsOpened() != null)
+            if (client.getUploadSlotsOpened() != null)
             {
-                if (sourceClient.getUploadSlotsOpened() <
+                if (client.getUploadSlotsOpened() <
                     configurationManager.getInt(ConfigurationManager.MIN_SLOT_COUNT))
                 {
-                    new STAError(sourceClient,
+                    new STAError(client,
                                  Constants.STA_SEVERITY_FATAL +
                                  Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
                                  Messages.TOO_FEW_SLOTS,
@@ -688,10 +688,10 @@ public class INFHandler extends AbstractActionHandler<INF>
                     return false;
                 }
 
-                if (sourceClient.getUploadSlotsOpened() >
+                if (client.getUploadSlotsOpened() >
                     configurationManager.getInt(ConfigurationManager.MAX_SLOT_COUNT))
                 {
-                    new STAError(sourceClient,
+                    new STAError(client,
                                  Constants.STA_SEVERITY_FATAL +
                                  Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
                                  Messages.TOO_MANY_SLOTS,
@@ -702,12 +702,12 @@ public class INFHandler extends AbstractActionHandler<INF>
                 }
             }
 
-            if (sourceClient.getNumberOfNormalStateHubs() != null)
+            if (client.getNumberOfNormalStateHubs() != null)
             {
-                if (sourceClient.getNumberOfNormalStateHubs() >
+                if (client.getNumberOfNormalStateHubs() >
                     configurationManager.getInt(ConfigurationManager.MAX_HUBS_USERS))
                 {
-                    new STAError(sourceClient,
+                    new STAError(client,
                                  Constants.STA_SEVERITY_FATAL +
                                  Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
                                  Messages.TOO_MANY_HUBS_OPEN,
@@ -718,12 +718,12 @@ public class INFHandler extends AbstractActionHandler<INF>
                 }
             }
 
-            if (sourceClient.getNumberOfHubsWhereOp() != null)
+            if (client.getNumberOfHubsWhereOp() != null)
             {
-                if (sourceClient.getNumberOfHubsWhereOp() >
+                if (client.getNumberOfHubsWhereOp() >
                     configurationManager.getInt(ConfigurationManager.MAX_OP_IN_HUB))
                 {
-                    new STAError(sourceClient,
+                    new STAError(client,
                                  Constants.STA_SEVERITY_FATAL +
                                  Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
                                  Messages.OPERATOR_ON_MANY_HUBS,
@@ -734,12 +734,12 @@ public class INFHandler extends AbstractActionHandler<INF>
                 }
             }
 
-            if (sourceClient.getNumberOfHubsWhereRegistred() != null)
+            if (client.getNumberOfHubsWhereRegistred() != null)
             {
-                if (sourceClient.getNumberOfHubsWhereRegistred() >
+                if (client.getNumberOfHubsWhereRegistred() >
                     configurationManager.getInt(ConfigurationManager.MAX_HUBS_REGISTERED))
                 {
-                    new STAError(sourceClient,
+                    new STAError(client,
                                  Constants.STA_SEVERITY_FATAL +
                                  Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
                                  Messages.REGISTERED_ON_MANY_HUBS,
@@ -759,7 +759,7 @@ public class INFHandler extends AbstractActionHandler<INF>
             throws STAException
     {
         // TODO [lh] Replace by normal nick validation
-        if (sourceClient.getNick().length() >
+        if (this.client.getNick().length() >
             configurationManager.getInt(ConfigurationManager.MAX_NICK_SIZE))
         {
             new STAError(client,
@@ -770,7 +770,7 @@ public class INFHandler extends AbstractActionHandler<INF>
             return false;
         }
 
-        if (sourceClient.getNick().length() <
+        if (this.client.getNick().length() <
             configurationManager.getInt(ConfigurationManager.MIN_NICK_SIZE))
         {
             new STAError(client,
@@ -794,27 +794,27 @@ public class INFHandler extends AbstractActionHandler<INF>
 
             myTiger.engineReset();
             myTiger.init();
-            byte[] bytepid = Base32.decode(sourceClient.getPid());
+            byte[] bytepid = Base32.decode(client.getPid());
 
 
             myTiger.engineUpdate(bytepid, 0, bytepid.length);
 
             byte[] finalTiger = myTiger.engineDigest();
-            if (!Base32.encode(finalTiger).equals(sourceClient.getCid()))
+            if (!Base32.encode(finalTiger).equals(client.getCid()))
             {
-                new STAError(sourceClient,
+                new STAError(client,
                              Constants.STA_SEVERITY_FATAL + Constants.STA_GENERIC_LOGIN_ERROR,
                              Messages.INVALID_CID).send();
                 return false;
             }
-            if (sourceClient.getPid().length() != 39)
+            if (client.getPid().length() != 39)
             {
                 throw new IllegalArgumentException();
             }
         }
         catch (IllegalArgumentException iae)
         {
-            new STAError(sourceClient,
+            new STAError(client,
                          Constants.STA_SEVERITY_FATAL + Constants.STA_INVALID_PID,
                          Messages.INVALID_PID).send();
             return false;
@@ -828,40 +828,40 @@ public class INFHandler extends AbstractActionHandler<INF>
 
         /*------------ok now must see if the client is registered...---------------*/
 
-        if (!sourceClient.loadInfo())
+        if (!client.loadInfo())
         {
             // info about  client not found
             // store info to db about new client
-            //sourceClient.storeInfo();
+            //client.storeInfo();
         }
 
-        if (sourceClient.isRegistred())
+        if (client.isRegistred())
         {
-            if (sourceClient.getPassword().equals(""))//no pass defined ( yet)
+            if (client.getPassword().equals(""))//no pass defined ( yet)
             {
-                new STAError(sourceClient,
+                new STAError(client,
                              Constants.STA_SEVERITY_SUCCESS,
                              Messages.EMPTY_PASSWORD).send();
-                sourceClient.onLoggedIn();
+                client.onLoggedIn();
             }
             else
             {
                 // check client for registration (Moscow city style : do you have the passport?)
-                new STAError(sourceClient,
+                new STAError(client,
                              Constants.STA_SEVERITY_SUCCESS,
                              Messages.PASSWORD_REQUIRED).send();
 
                 /* creates some hash for the GPA random data*/
-                sourceClient.setEncryptionSalt(Base32.encode(generateSalt()));
+                client.setEncryptionSalt(Base32.encode(generateSalt()));
 
                 GPA igpa = new GPA();
                 igpa.setMessageType(MessageType.I);
-                igpa.setPassword(sourceClient.getEncryptionSalt());
+                igpa.setPassword(client.getEncryptionSalt());
 
-                sourceClient.sendRawCommand(igpa.getRawCommand());
+                client.sendRawCommand(igpa.getRawCommand());
 
                 // set client state VARIFY
-                sourceClient.setState(State.VERIFY);
+                client.setState(State.VERIFY);
                 return true;
             }
         }
@@ -870,17 +870,17 @@ public class INFHandler extends AbstractActionHandler<INF>
             // TODO [lh] add new client registration code here
             if (configurationManager.getBoolean(ConfigurationManager.MARK_REGISTRATION_ONLY))
             {
-                new STAError(sourceClient,
+                new STAError(client,
                              Constants.STA_SEVERITY_FATAL + Constants.STA_REG_ONLY,
                              Messages.REGISTERED_ONLY);
                 return false;
             }
 
-            sourceClient.setValidated();
-            sourceClient.setState(State.NORMAL);
+            client.setValidated();
+            client.setState(State.NORMAL);
         }
 
-        sourceClient.onConnected();
+        client.onConnected();
 
         return true;
     }
