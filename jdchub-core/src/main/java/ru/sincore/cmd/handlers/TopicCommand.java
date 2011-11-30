@@ -23,10 +23,17 @@
 package ru.sincore.cmd.handlers;
 
 import ru.sincore.BigTextManager;
+import ru.sincore.Broadcast;
+import ru.sincore.ClientManager;
 import ru.sincore.ConfigurationManager;
+import ru.sincore.Exceptions.STAException;
+import ru.sincore.adc.Flags;
+import ru.sincore.adc.MessageType;
+import ru.sincore.adc.action.actions.INF;
 import ru.sincore.client.AbstractClient;
 import ru.sincore.cmd.AbstractCommand;
 import ru.sincore.i18n.Messages;
+import ru.sincore.util.AdcUtils;
 import ru.sincore.util.ClientUtils;
 import ru.sincore.util.MessageUtils;
 
@@ -50,6 +57,32 @@ public class TopicCommand extends AbstractCommand
         if (bigTextManager.setText(BigTextManager.TOPIC, args))
         {
             MessageUtils.sendMessageToOpChat("New topic set by " + client.getNick() + " : " + args);
+
+            // send new description of hub bot to all clients
+            try
+            {
+                // get hub bot sid
+                String botSID = ConfigurationManager.instance()
+                                                     .getString(ConfigurationManager.HUB_SID);
+                // create hub bot inf message with description field only
+                INF inf = new INF();
+                // set message type to broadcast
+                inf.setMessageType(MessageType.B);
+                // set hub bot sid
+                inf.setSourceSID(botSID);
+                // set new hub bot description
+                inf.setFlagValue(Flags.DESCRIPTION, AdcUtils.toAdcString(args));
+
+                // broadcast new inf
+                Broadcast.getInstance()
+                         .broadcast(inf.getRawCommand(),
+                                    ClientManager.getInstance().getClientBySID(botSID));
+            }
+            catch (Exception ex)
+            {
+                //ignore
+            }
+
             return "New topic set.";
         }
         else
