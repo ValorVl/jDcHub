@@ -24,8 +24,10 @@ public class ConfigurationManager extends PropertiesConfiguration
 {
     private static final Logger log = LoggerFactory.getLogger(ConfigurationManager.class);
 
+    private            String hubConfigDir = "./etc";
+
     // TODO: try more fine method to point config file
-    public static final String HUB_CONFIG = "./etc/hub.properties";
+    public static final String HUB_CONFIG = "hub.properties";
 
     /*
      *  Config keys constants
@@ -163,6 +165,17 @@ public class ConfigurationManager extends PropertiesConfiguration
     /*
     * Ctors
     */
+    private ConfigurationManager(String configDir)
+    {
+        this.hubConfigDir = configDir;
+        if (!loadConfigs())
+        {
+            log.error("Fatal error! Can\'t load configs. Hub doesn't started.");
+            System.exit(0);
+        }
+    }
+
+
     private ConfigurationManager()
     {
         if (!loadConfigs())
@@ -183,6 +196,16 @@ public class ConfigurationManager extends PropertiesConfiguration
     }
 
 
+    public static synchronized ConfigurationManager instance(String configDir)
+    {
+        if (instance == null)
+        {
+            instance = new ConfigurationManager(configDir);
+        }
+        return instance;
+    }
+
+
     public String getAdcString(String key)
     {
         return AdcUtils.toAdcString(super.getString(key));
@@ -196,7 +219,7 @@ public class ConfigurationManager extends PropertiesConfiguration
 
         try
         {
-            hubPropertiesFile = new File(HUB_CONFIG);
+            hubPropertiesFile = new File(hubConfigDir + "/" + HUB_CONFIG);
             fileInput = new FileInputStream(hubPropertiesFile);
             reader = new InputStreamReader(fileInput);
 
@@ -210,6 +233,19 @@ public class ConfigurationManager extends PropertiesConfiguration
 
         return true;
     }
+
+
+    public String getHubConfigDir()
+    {
+        return hubConfigDir;
+    }
+
+
+    public void setHubConfigDir(String configDir)
+    {
+        this.hubConfigDir = configDir;
+    }
+
 
     public synchronized void load(java.io.Reader in)
             throws org.apache.commons.configuration.ConfigurationException
@@ -498,7 +534,7 @@ public class ConfigurationManager extends PropertiesConfiguration
 
         if (!this.containsKey(HUB_MESSAGES_FILE_DIR))
         {
-            this.setProperty(HUB_MESSAGES_FILE_DIR, "./etc/clientmessages");
+            this.setProperty(HUB_MESSAGES_FILE_DIR, hubConfigDir + "/clientmessages");
         }
 
         if (!this.containsKey(CHAT_REFRESH))

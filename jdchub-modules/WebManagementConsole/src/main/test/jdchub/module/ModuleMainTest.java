@@ -29,6 +29,7 @@ import java.net.URLClassLoader;
 
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import ru.sincore.ConfigurationManager;
 
 /**
  * @author Alexey 'lh' Antonov
@@ -49,7 +50,7 @@ public class ModuleMainTest
         Class clazz = URLClassLoader.class;
         Method method = clazz.getDeclaredMethod("addURL", new Class[]{URL.class});
         method.setAccessible(true);
-        method.invoke(classLoader, new Object[] {new File("./etc/").toURI().toURL()});
+        method.invoke(classLoader, new Object[] {new File(ConfigurationManager.instance().getHubConfigDir()).toURI().toURL()});
 
         moduleMain = new ModuleMain();
     }
