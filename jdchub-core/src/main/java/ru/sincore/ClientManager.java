@@ -339,6 +339,10 @@ public final class ClientManager
             {
                 log.error("Exception in total file count calculation : " + ae);
             }
+            catch (NullPointerException ex)
+            {
+                log.debug("Client " + client.getNick() + " doesn\'t shared files.");
+            }
         }
         return ret;
     }

@@ -17,7 +17,6 @@ import ru.sincore.adc.State;
 import ru.sincore.adc.action.actions.GPA;
 import ru.sincore.adc.action.actions.INF;
 import ru.sincore.client.AbstractClient;
-import ru.sincore.client.Client;
 import ru.sincore.db.dao.BanListDAO;
 import ru.sincore.db.dao.BanListDAOImpl;
 import ru.sincore.db.pojo.BanListPOJO;
@@ -311,7 +310,7 @@ public class INFHandler extends AbstractActionHandler<INF>
             }
             catch (STAException ex)
             {
-                client.setMustBeDisconnected();
+                client.disconnect();
                 return;
             }
 

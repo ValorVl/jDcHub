@@ -1207,7 +1207,7 @@ public class ClientInfo
     }
 
 
-    public void setMustBeDisconnected()
+    public void disconnect()
     {
         setMustBeDisconnected(true);
     }

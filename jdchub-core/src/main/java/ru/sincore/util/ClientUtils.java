@@ -189,7 +189,7 @@ public class ClientUtils
         }
 
         //disconnect session
-        client.setMustBeDisconnected();
+        client.disconnect();
 
         return true;
     }

@@ -49,6 +49,7 @@ public class ConfigurationManager extends PropertiesConfiguration
     public static final String HUB_DEFAULT_LOCALE = "core.hub.default_locale";
 
     public static final String MAX_USERS                  = "core.hub.max_users";
+    public static final String MAX_KEEP_ALIVE_TIMEOUT     = "core.hub.max_keep_alive_timeout";
     public static final String USER_INITIAL_CAPACITY      = "core.hub.user_initial_capacity";
     public static final String USER_LOAD_FACTOR           = "core.hub.user_load_factor";
     public static final String USER_CONNECTION_BUFFER_INITIAL_SIZE = "core.hub.user_connection_buffer_initial_size";
@@ -63,7 +64,8 @@ public class ConfigurationManager extends PropertiesConfiguration
     public static final String MAX_EMAIL_CHAR_COUNT       = "core.hub.max_email_char_count";
     public static final String MAX_DESCRIPTION_CHAR_COUNT = "core.hub.max_description_char_count";
 	public static final String MIN_PASSWORD_LEN           = "core.hub.min_password_len";
-            // Maximum description char count
+
+             // Maximum description char count
     public static final String MAX_OP_IN_HUB              = "core.hub.max_op_in_chat";
             // Maximum OP in chat (needed ?)
     // Maximum available char count in chat messages received.

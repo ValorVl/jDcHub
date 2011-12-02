@@ -8,7 +8,6 @@ import ru.sincore.TigerImpl.Base32;
 import ru.sincore.TigerImpl.Tiger;
 import ru.sincore.adc.action.actions.PAS;
 import ru.sincore.client.AbstractClient;
-import ru.sincore.client.Client;
 import ru.sincore.i18n.Messages;
 import ru.sincore.util.Constants;
 import ru.sincore.util.STAError;
@@ -111,7 +110,7 @@ public class PASHandler extends AbstractActionHandler<PAS>
         }
         finally
         {
-                client.setMustBeDisconnected();
+                client.disconnect();
         }
     }
 }
