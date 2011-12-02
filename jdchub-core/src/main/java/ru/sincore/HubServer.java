@@ -162,6 +162,7 @@ public class HubServer
         commandEngine.registerCommand("broadcast",  new BroadcastCommand());
         commandEngine.registerCommand("changepass", new ChangePassCommand());
         commandEngine.registerCommand("topic",      new TopicCommand());
+        commandEngine.registerCommand("ban",        new BanCommand());
     }
 
 

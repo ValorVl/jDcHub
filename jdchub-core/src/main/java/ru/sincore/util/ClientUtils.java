@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 import ru.sincore.ClientManager;
+import ru.sincore.Exceptions.STAException;
 import ru.sincore.client.AbstractClient;
 import ru.sincore.client.Client;
 import ru.sincore.db.dao.BanListDAOImpl;
@@ -176,7 +177,19 @@ public class ClientUtils
                 break;
         }
 
-        client.removeSession(true);
+        try
+        {
+            new STAError(client,
+                         Constants.STA_SEVERITY_FATAL + Constants.STA_GENERIC_KICK_DISCONNECT_BAN,
+                         Messages.GENERIC_KICK_DISCONNECT_BAN).send();
+        }
+        catch (STAException e)
+        {
+            // ignore
+        }
+
+        //disconnect session
+        client.setMustBeDisconnected();
 
         return true;
     }

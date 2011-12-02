@@ -101,12 +101,21 @@ public class Client extends AbstractClient
     }
 
 
+    @Override
     public void setSession(IoSession session)
     {
         this.session = session;
     }
 
 
+    @Override
+    public IoSession getSession()
+    {
+        return this.session;
+    }
+
+
+    @Override
     public void removeSession(boolean immediately)
     {
         session.close(immediately);
@@ -122,6 +131,11 @@ public class Client extends AbstractClient
      */
     public void storeInfo() throws STAException
     {
+        if (this.getState() != State.NORMAL)
+        {
+            return;
+        }
+
         ClientListDAO clientListDAO = new ClientListDAOImpl();
 
         ClientListPOJO clientInfo = clientListDAO.getClientByNick(this.getNick());
@@ -245,7 +259,7 @@ public class Client extends AbstractClient
     {
         BigTextManager bigTextManager = new BigTextManager();
         this.sendMessageFromHub(
-                AdcUtils.fromAdcString(
+                AdcUtils.fromAdcString("\n" +
                         bigTextManager.getText(
                                 BigTextManager.MOTD,
                                 (String)getExtendedField("LC"))));

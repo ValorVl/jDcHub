@@ -5,3 +5,5 @@ Original project placed at http://www.death-squad.ro/dshub
 Original source code placed at http://sourceforge.net/projects/dshub/
 
 ADC protocol specification http://adc.sourceforge.net/
+
+Use -Djdchub.config.directory=/path/to/etc/dir/ option to change config directory.

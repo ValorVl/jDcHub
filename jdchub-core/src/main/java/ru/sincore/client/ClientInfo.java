@@ -23,6 +23,7 @@
 package ru.sincore.client;
 
 import org.apache.commons.lang.math.IntRange;
+import org.apache.mina.core.session.IoSession;
 import ru.sincore.ConfigurationManager;
 import ru.sincore.adc.ClientType;
 import ru.sincore.adc.State;
@@ -397,6 +398,8 @@ public class ClientInfo
     private String lastMessageText = "";
 
     private String inQueueSearch = null;
+
+    private boolean mustBeDisconnected = false;
 
     private HashMap<String, Object> extentedFields = new HashMap<String, Object>();
 
@@ -1204,6 +1207,23 @@ public class ClientInfo
     }
 
 
+    public void setMustBeDisconnected()
+    {
+        setMustBeDisconnected(true);
+    }
+
+
+    public void setMustBeDisconnected(boolean mustBeDisconnected)
+    {
+        this.mustBeDisconnected = mustBeDisconnected;
+    }
+
+    public boolean isMustBeDisconnected()
+    {
+        return this.mustBeDisconnected;
+    }
+
+
     public Object getExtendedField(String fieldName)
     {
         if (isExtendedFieldExists(fieldName))
@@ -1292,4 +1312,9 @@ public class ClientInfo
     {
         return null;
     }
+
+
+    public void setSession(IoSession session) {}
+    public IoSession getSession() {return null;}
+    public void removeSession(boolean immediately) {}
 }

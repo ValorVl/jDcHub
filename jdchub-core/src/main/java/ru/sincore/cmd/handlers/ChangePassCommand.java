@@ -157,7 +157,7 @@ public class ChangePassCommand extends AbstractCommand
                                                                       newPassword,
                                                                       (String)clientToChangePassword
                                                                               .getExtendedField("LC")));
-        ((Client)clientToChangePassword).removeSession(true);
+        clientToChangePassword.setMustBeDisconnected();
 
         MessageUtils.sendMessageToOpChat(clientToChangePassword.getNick() + " changed password.");
         return result;

@@ -111,8 +111,7 @@ public class PASHandler extends AbstractActionHandler<PAS>
         }
         finally
         {
-            if (client instanceof Client)
-                ((Client) client).removeSession(true);
+                client.setMustBeDisconnected();
         }
     }
 }

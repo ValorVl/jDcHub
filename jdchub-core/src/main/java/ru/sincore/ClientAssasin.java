@@ -54,27 +54,54 @@ public class ClientAssasin extends Thread
     }
 
 
+    /**
+     * Disconnect clients which must be disconnected
+     * @param client
+     * @return
+     */
+    private boolean disconnectClient(AbstractClient client)
+    {
+        if (client.isMustBeDisconnected())
+        {
+            client.removeSession(true);
+            return true;
+        }
+
+        return false;
+    }
+
     @Override
     public void run()
     {
         while (doRun)
         {
-            if (ClientManager.getInstance().getClientsCount() == 0)
+            try
             {
-                try
-                {
-                    this.sleep(1000);
-                }
-                catch (InterruptedException ex)
-                {
-                    // ignored
-                }
-                continue;
+                this.sleep(1000);
             }
+            catch (InterruptedException ex)
+            {
+                // ignored
+            }
+
+
+            for (AbstractClient client : ClientManager.getInstance().getUninitializedClients())
+            {
+                if (disconnectClient(client))
+                {
+                    continue;
+                }
+            }
+
 
             for (AbstractClient client : ClientManager.getInstance().getClients())
             {
                 long currentTime = System.currentTimeMillis();
+
+                if (disconnectClient(client))
+                {
+                    continue;
+                }
 
                 if (((client.getInQueueSearch() != null))
                     && (client.isValidated()))
@@ -101,15 +128,6 @@ public class ClientAssasin extends Thread
                     }
                 }
             }
-
-            try
-            {
-                this.sleep(5000);
-            }
-            catch (Exception e)
-            {
-            }
-
         }
     }
 

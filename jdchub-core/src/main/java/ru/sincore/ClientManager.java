@@ -232,6 +232,12 @@ public final class ClientManager
     }
 
 
+    public Collection<AbstractClient> getUninitializedClients()
+    {
+        return uninitializedClients.values();
+    }
+
+
     public AbstractClient getClientByCID(String cid)
     {
         String sid = sidByCID.get(cid);

@@ -67,4 +67,7 @@ public final class Constants
 
 	//Other const block
 	public static final String EMPTY_STR 						= "";
+
+    // Session atributes
+    public static final String SESSION_ATTRIBUTE_CLIENT         = "client";
 }

@@ -38,6 +38,7 @@ import ru.sincore.client.Client;
 import ru.sincore.i18n.Messages;
 import ru.sincore.signals.ClientQuitSignal;
 import ru.sincore.signalservice.Signal;
+import ru.sincore.util.Constants;
 import ru.sincore.util.STAError;
 
 import java.util.Date;
@@ -70,7 +71,7 @@ public class SessionManager extends IoHandlerAdapter
     public void exceptionCaught(IoSession session, Throwable t)
             throws Exception
     {
-        AbstractClient client = (AbstractClient) session.getAttribute("client");
+        AbstractClient client = (AbstractClient) session.getAttribute(Constants.SESSION_ATTRIBUTE_CLIENT);
         try
         {
             if (t instanceof java.io.IOException)
@@ -114,7 +115,7 @@ public class SessionManager extends IoHandlerAdapter
 
         try
         {
-            Command.handle((Client) (session.getAttribute("client")), rawMessage);
+            Command.handle((Client) (session.getAttribute(Constants.SESSION_ATTRIBUTE_CLIENT)), rawMessage);
         }
         catch (STAException stex)
         {
@@ -148,8 +149,8 @@ public class SessionManager extends IoHandlerAdapter
             throws Exception
     {
         log.debug("Session closed.");
-        Client currentClient = (Client)(session.getAttribute("client"));
-        session.removeAttribute("client");
+        Client currentClient = (Client)(session.getAttribute(Constants.SESSION_ATTRIBUTE_CLIENT));
+        session.removeAttribute(Constants.SESSION_ATTRIBUTE_CLIENT);
         ClientManager.getInstance().removeClient(currentClient);
 
         // broadcast client quited message
@@ -178,7 +179,7 @@ public class SessionManager extends IoHandlerAdapter
     {
 		Client newClient = new Client();
 
-        session.setAttribute("client", newClient);
+        session.setAttribute(Constants.SESSION_ATTRIBUTE_CLIENT, newClient);
 
         newClient.setSession(session);
         StringTokenizer ST = new StringTokenizer(session.getRemoteAddress().toString(), "/:");

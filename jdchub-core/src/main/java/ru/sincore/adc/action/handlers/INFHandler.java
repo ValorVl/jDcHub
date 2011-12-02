@@ -17,6 +17,7 @@ import ru.sincore.adc.State;
 import ru.sincore.adc.action.actions.GPA;
 import ru.sincore.adc.action.actions.INF;
 import ru.sincore.client.AbstractClient;
+import ru.sincore.client.Client;
 import ru.sincore.db.dao.BanListDAO;
 import ru.sincore.db.dao.BanListDAOImpl;
 import ru.sincore.db.pojo.BanListPOJO;
@@ -97,15 +98,16 @@ public class INFHandler extends AbstractActionHandler<INF>
             if (action.isFlagSet(Flags.NICK))
             {
                 // TODO: nick validation
-                client.setNick(action.getNick());
 
-                if (ClientManager.getInstance().getClientByNick(client.getNick()) != null)
+                if (ClientManager.getInstance().getClientByNick(action.getNick()) != null)
                 {
                     new STAError(client,
                                  Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_NICK_TAKEN,
                                  Messages.NICK_TAKEN).send();
                     return;
                 }
+
+                client.setNick(action.getNick());
 
                 if (client.getState() != State.PROTOCOL)
                 {
@@ -301,8 +303,17 @@ public class INFHandler extends AbstractActionHandler<INF>
             // Minimal validation
             validateMinimalINF();
 
+
             // Check for ban:
-            isBanned();
+            try
+            {
+                isBanned();
+            }
+            catch (STAException ex)
+            {
+                client.setMustBeDisconnected();
+                return;
+            }
 
             // Check nick availability
             if (!isNickAvail())
@@ -311,8 +322,8 @@ public class INFHandler extends AbstractActionHandler<INF>
             }
 
             // now must check if hub is full...
-            if (client.getState() ==
-                State.PROTOCOL) //otherwise is already connected, no point in checking this
+            //otherwise is already connected, no point in checking this
+            if (client.getState() == State.PROTOCOL)
             {
                 if (configurationManager.getInt(ConfigurationManager.MAX_USERS) <=
                     ClientManager.getInstance().getClientsCount() &&
@@ -495,6 +506,16 @@ public class INFHandler extends AbstractActionHandler<INF>
 
         if (banInfo != null)
         {
+            if (banInfo.getBanType() == Constants.BAN_PERMANENT)
+            {
+                new STAError(client,
+                             Constants.STA_SEVERITY_FATAL + Constants.STA_PERMANENTLY_BANNED,
+                             Messages.PERM_BAN_MESSAGE,
+                             new Object[]{banInfo.getOpNick(),
+                                          banInfo.getReason()}).send();
+                return true;
+            }
+
             long timeLeft = banInfo.getDateStop().getTime() - System.currentTimeMillis();
 
             if (timeLeft > 0)
