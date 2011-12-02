@@ -329,6 +329,11 @@ public class ConfigurationManager extends PropertiesConfiguration
             this.setProperty(HUB_PORT, 411);
         }
 
+        if (!this.containsKey(MAX_KEEP_ALIVE_TIMEOUT))
+        {
+            this.setProperty(MAX_KEEP_ALIVE_TIMEOUT, 600);
+        }
+
         if (!this.containsKey(BIG_FILE_STORAGE))
         {
             this.setProperty(BIG_FILE_STORAGE, 0);
