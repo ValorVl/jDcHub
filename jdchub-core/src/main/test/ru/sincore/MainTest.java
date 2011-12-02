@@ -21,7 +21,7 @@ public class MainTest
     public void setUp()
             throws Exception
     {
-        PropertyConfigurator.configure("./etc/log4j.properties");
+        PropertyConfigurator.configure(ConfigurationManager.instance().getHubConfigDir() + "/log4j.properties");
     }
 
 

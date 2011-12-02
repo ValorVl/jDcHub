@@ -44,6 +44,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 import java.util.Date;
+import javax.net.ssl.SSLContext;
 
 
 /**
@@ -94,7 +95,6 @@ public class HubServer
         NioSocketAcceptor nsa = new NioSocketAcceptor();
         acceptor = nsa;
         nsa.setReuseAddress(true);
-
 
         acceptor.getFilterChain().addLast("logger", new LoggingFilter());
         TextLineCodecFactory myx = new TextLineCodecFactory(Charset.forName("UTF-8"), "\n", "\n");

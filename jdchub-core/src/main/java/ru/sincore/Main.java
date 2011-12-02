@@ -48,8 +48,14 @@ public class Main
 
     private static void init()
     {
-        PropertyConfigurator.configure("./etc/log4j.properties");
-        ConfigurationManager.instance();
+        String configDirectory = System.getProperty("jdchub.config.directory");
+        if (configDirectory == null)
+        {
+            configDirectory = "./etc";
+        }
+
+        PropertyConfigurator.configure(configDirectory + "/log4j.properties");
+        ConfigurationManager.instance(configDirectory);
         HibernateUtils.getSessionFactory();
     }
 

@@ -27,7 +27,7 @@ public class Messages
 
     // define server message var
     private static final String SERVER_MESSAGE_RESOURCE  = "servermessages";
-    private static final String SERVER_MESSAGE_DIRECTORY = "./etc/messages/";
+    private static final String SERVER_MESSAGE_DIRECTORY = "messages/";
 
     // Server messages
     public static final String SERVER_MESSAGE_STUB    = "core.server.message.stub";
@@ -251,7 +251,8 @@ public class Messages
             loc = new Locale(localeElements[0], localeElements[1]);
         }
 
-        File           serverMessagesDirectory = new File(SERVER_MESSAGE_DIRECTORY);
+        File           serverMessagesDirectory = new File(ConfigurationManager.instance()
+                                                          .getHubConfigDir() + "/" + SERVER_MESSAGE_DIRECTORY);
         File           clientMessagesDirectory = new File(ConfigurationManager.instance()
                                                           .getString(ConfigurationManager.HUB_MESSAGES_FILE_DIR));
 

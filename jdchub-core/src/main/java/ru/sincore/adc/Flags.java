@@ -29,6 +29,13 @@ package ru.sincore.adc;
 public class Flags
 {
     //
+    // Common flags
+    //
+    public static final String TIGER_HASH               = "TR";
+    public static final String TOKEN                    = "TO";
+    public static final String SLOTS                    = "SL";
+
+    //
     // INF flags
     //
     public static final String NICK                     = "NI";
@@ -43,7 +50,7 @@ public class Flags
     public static final String VERSION                  = "VE";
     public static final String MAX_UPLOAD_SPEED         = "US";
     public static final String MAX_DOWNLOAD_SPEED       = "DS";
-    public static final String OPENED_UPLOAD_SLOTS = "SL";
+    public static final String OPENED_UPLOAD_SLOTS      = SLOTS;
     public static final String AUTOMATIC_SLOT_ALLOCATOR = "AS";
     public static final String MIN_AUTOMATIC_SLOTS = "AM";
     public static final String EMAIL                    = "EM";
@@ -51,7 +58,6 @@ public class Flags
     public static final String AMOUNT_HUBS_WHERE_NORMAL_USER = "HN";
     public static final String AMOUNT_HUBS_WHERE_REGISTERED_USER = "HR";
     public static final String AMOUNT_HUBS_WHERE_OP_USER = "HO";
-    public static final String TOKEN                    = "TO";
     public static final String CLIENT_TYPE              = "CT";
     public static final String AWAY                     = "AW";
     public static final String FEATURES                 = "SU";
@@ -91,9 +97,17 @@ public class Flags
     public static final String SCH_LESS_THAN = "LE";
     public static final String SCH_GREATER_THAN = "GR";
     public static final String SCH_EXACT_SIZE = "EQ";
-    //public static final String SCH_TOKEN      = TOKEN;
     public static final String SCH_FILE_TYPE = "TY";
     // SEGA extension
     public static final String SCH_SEGA_GROUP = "GR";
     public static final String SCH_SEGA_EXCLUDE = "RX";
+
+
+    //
+    // RES flags
+    //
+    public static final String RES_FULL_FILENAME = "FN";
+    public static final String RES_SIZE          = "SI";
+    public static final String RES_SLOTS         = SLOTS;
+    public static final String RES_TOKEN         = TOKEN;
 }

@@ -107,12 +107,13 @@ public class ModulesManager
             List<File> jarFiles = new ArrayList<File>();
 
             // Try load dependecies
-            /*
+
             File libDirectory = new File(moduleJar.getAbsolutePath() + "/lib/");
             if (libDirectory.exists() && libDirectory.isDirectory())
             {
                 fillClassPath(libDirectory, jarFiles);
 
+/*
                 if (!jarFiles.isEmpty())
                 {
                     URLClassLoader classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
@@ -129,8 +130,9 @@ public class ModulesManager
 
                     jarFiles.clear();
                 }
+*/
             }
-            */
+
 
             // Add etc (config dir) to class-path
             File etcDirectory = new File(moduleJar.getAbsolutePath() + "/etc/");
