@@ -87,10 +87,11 @@ public class Command
     public static void handle(AbstractClient client, String rawCommand)
             throws CommandException, STAException
     {
+        client.setLastKeepAlive(System.currentTimeMillis());
+
         // Empty keep alive message from client
         if (rawCommand.equals(""))
         {
-            client.setLastKeepAlive(System.currentTimeMillis());
             return;
         }
 
