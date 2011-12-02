@@ -194,7 +194,7 @@ public class INFHandler extends AbstractActionHandler<INF>
 
             if (action.isFlagSet(Flags.SHARE_SIZE))
             {
-                client.setShareSise(
+                client.setShareSize(
                         action.<Long>getFlagValue(Flags.SHARE_SIZE, 0L));
             }
 
@@ -644,9 +644,9 @@ public class INFHandler extends AbstractActionHandler<INF>
 
             // TODO [lh] is MAX_SHARE_SIZE needed?
             // TODO [lh] how to set an unlimited share size?
-            if (client.getShareSise() != null)
+            if (client.getShareSize() != null)
             {
-                if (client.getShareSise() >
+                if (client.getShareSize() >
                     configurationManager.getLong(ConfigurationManager.MAX_SHARE_SIZE))
                 {
                     new STAError(client,
@@ -659,7 +659,7 @@ public class INFHandler extends AbstractActionHandler<INF>
                     return false;
                 }
 
-                if (client.getShareSise() <
+                if (client.getShareSize() <
                     configurationManager.getLong(ConfigurationManager.MIN_SHARE_SIZE))
                 {
                     new STAError(client,
