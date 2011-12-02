@@ -246,7 +246,7 @@ public class ClientInfo
      * SS field
      * Share size in bytes, integer.
      */
-    private Long shareSise;
+    private Long shareSize;
 
     /**
      * SF field.
@@ -887,15 +887,15 @@ public class ClientInfo
     }
 
 
-    public Long getShareSise()
+    public Long getShareSize()
     {
-        return shareSise;
+        return shareSize;
     }
 
 
-    public void setShareSise(Long shareSise)
+    public void setShareSize(Long shareSize)
     {
-        this.shareSise = shareSise;
+        this.shareSize = shareSize;
     }
 
 

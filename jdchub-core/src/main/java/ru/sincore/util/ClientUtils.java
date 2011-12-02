@@ -23,8 +23,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 import ru.sincore.ClientManager;
-import ru.sincore.ConfigurationManager;
-import ru.sincore.Exceptions.STAException;
 import ru.sincore.client.AbstractClient;
 import ru.sincore.client.Client;
 import ru.sincore.db.dao.BanListDAOImpl;
@@ -42,7 +40,6 @@ public class ClientUtils
 {
 	private static final Logger log = LoggerFactory.getLogger(ClientUtils.class);
 	private static String marker = Marker.ANY_NON_NULL_MARKER;
-	private static ConfigurationManager configInstance = ConfigurationManager.instance();
 
 	/**
 	 * Method for kick fucking user! Kick this ban on 5 minutes.
@@ -50,16 +47,19 @@ public class ClientUtils
 	 * @param clientNick kicked client
 	 * @param reason reason kicked
 	 */
-	public static void kickOrBanClient(AbstractClient commandOwner,String clientNick,int banType,
-									   Date banExpiredDate, String reason)
+	public static boolean kickOrBanClient(AbstractClient commandOwner,
+                                       String clientNick,
+                                       int banType,
+									   Date banExpiredDate,
+                                       String reason)
 	{
 
 		Client client = (Client) ClientManager.getInstance().getClientByNick(clientNick);
 
 		if (client == null)
 		{
-			commandOwner.sendPrivateMessageFromHub("Client :"+clientNick+" offline now. Can not be kicked or baned!");
-			return;
+			commandOwner.sendPrivateMessageFromHub("Client :" + clientNick + " offline now. Can not be kicked or baned!");
+			return false;
 		}
 
 		boolean isKickable = client.isKickable();
@@ -74,100 +74,113 @@ public class ClientUtils
 		Calendar calendar = new GregorianCalendar();
 
 		calendar.setTime(startBanDate);
-		calendar.add(Calendar.MINUTE,5);
+		calendar.add(Calendar.MINUTE, 5);
 
         if (kickOwnerWeight <= clientWeight)
         {
-            commandOwner.sendPrivateMessageFromHub("Your weight "+ kickOwnerWeight +" weight of the client you are " +
-                    "trying to kick or ban a "+ clientWeight +" Kick or ban clients with bigger weight of yours is unacceptable!");
-            return;
+            commandOwner.sendPrivateMessageFromHub("Your weight - " +
+                                                   kickOwnerWeight +
+                                                   " weight of the client you are " +
+                                                   "trying to kick or ban - " +
+                                                   clientWeight +
+                                                   ". Kick or ban clients with bigger weight than yours is unacceptable!");
+            return false;
         }
 
-		if (isKickable)
+		if (!isKickable)
 		{
-			kickedClient.setIp(client.getIpAddressV4());
-			kickedClient.setBanType(banType);
-			kickedClient.setDateStart(startBanDate);
+            commandOwner.sendPrivateMessageFromHub("Client with nick \'" + clientNick + "\' can not be kicked!");
+            return false;
+        }
 
-			if (banType == 0)
-			{
-				kickedClient.setDateStop(calendar.getTime());
-			}
-			else
-			{
-				kickedClient.setDateStop(banExpiredDate);
-			}
+        kickedClient.setIp(client.getRealIP());
+        kickedClient.setBanType(banType);
+        kickedClient.setDateStart(startBanDate);
 
-			kickedClient.setEmail(client.getEmail());
-			kickedClient.setHostName("Feature not implemented yet");
-			kickedClient.setNick(client.getNick());
-			kickedClient.setOpNick(commandOwner.getNick());
-			kickedClient.setShareSize(client.getShareSise());
+        if (banType == Constants.KICK)
+        {
+            kickedClient.setDateStop(calendar.getTime());
+        }
+        else
+        {
+            kickedClient.setDateStop(banExpiredDate);
+        }
 
-			if (reason != null)
-			{
-				kickedClient.setReason(reason);
-			}
-			else
-			{
-				kickedClient.setReason("No\\sreason");
-			}
+        kickedClient.setEmail(client.getEmail());
+        kickedClient.setHostName("Feature not implemented yet");
+        kickedClient.setNick(client.getNick());
+        kickedClient.setOpNick(commandOwner.getNick());
+        kickedClient.setShareSize(client.getShareSize());
 
-			boolean kickProcedure = banListDAO.addBan(kickedClient);
+        if (reason != null)
+        {
+            kickedClient.setReason(reason);
+        }
+        else
+        {
+            kickedClient.setReason("No\\sreason");
+        }
 
-			if (kickProcedure)
-			{
-				try
-				{
-                    client.storeInfo();
+        boolean kickProcedure = banListDAO.addBan(kickedClient);
 
-					if (banType == 0)
-					{
-						client.sendPrivateMessageFromHub("You was kicked by >>"+ commandOwner.getNick()+ "<< reason : "+reason);
-                        MessageUtils.sendMessageToOpChat("Client " +
-                                                        client.getNick() +
-                                                        "was kicked by " +
-                                                        commandOwner.getNick() +
-                                                        " with reason : " +
-                                                        reason);
-					}
-					else if (banType == 1)
-					{
-						client.sendPrivateMessageFromHub("You was banned by >>"+ commandOwner.getNick()+ "<< reason : "+reason +
-																 " ban expires date :" + banExpiredDate);
-                        MessageUtils.sendMessageToOpChat("Client " +
-                                                        client.getNick() +
-                                                        " was banned by " +
-                                                        commandOwner.getNick() +
-                                                        " with reason : " +
-                                                        reason +
-                                                        ". Ban expires at " +
-                                                        banExpiredDate);
-					}
-					else if (banType == 2)
-					{
-						client.sendPrivateMessageFromHub("You was permanently banned by >>"+ commandOwner.getNick()+ "<< reason : "+reason);
-                        MessageUtils.sendMessageToOpChat("Client " +
-                                                        client.getNick() +
-                                                        " was permanently banned by " +
-                                                        commandOwner.getNick() +
-                                                        " with reason : " +
-                                                        reason);
-					}
+        if (!kickProcedure)
+        {
+            commandOwner.sendPrivateMessageFromHub("Client " +
+                                                   clientNick +
+                                                   " doesn\'t have dropped, can not be kicked!");
+            return false;
+        }
+        switch (banType)
+        {
+            case Constants.KICK:
+                client.sendPrivateMessageFromHub("You was kicked by >>" +
+                                                 commandOwner.getNick() +
+                                                 "<< reason : " +
+                                                 reason);
+                MessageUtils.sendMessageToOpChat("Client " +
+                                                 client.getNick() +
+                                                 "was kicked by " +
+                                                 commandOwner.getNick() +
+                                                 " with reason : " +
+                                                 reason);
+                break;
 
-					client.removeSession(true);
+            case Constants.BAN_TEMPORARY:
+                client.sendPrivateMessageFromHub("You was banned by >>" +
+                                                 commandOwner.getNick() +
+                                                 "<< reason : " +
+                                                 reason +
+                                                 " ban expires date :" +
+                                                 banExpiredDate);
+                MessageUtils.sendMessageToOpChat("Client " +
+                                                 client.getNick() +
+                                                 " was banned by " +
+                                                 commandOwner.getNick() +
+                                                 " with reason : " +
+                                                 reason +
+                                                 ". Ban expires at " +
+                                                 banExpiredDate);
+                break;
 
-				} catch (STAException e)
-				{
-					log.error(marker,e);
-				}
-			}
-		}
-		else
-		{
-			commandOwner.sendPrivateMessageFromHub("Client "+clientNick+" doesn\'t have dropped, can not be kicked!");
-		}
-	}
+            case Constants.BAN_PERMANENT:
+                client.sendPrivateMessageFromHub("You was permanently banned by >>" +
+                                                 commandOwner.getNick() +
+                                                 "<< reason : " +
+                                                 reason);
+                MessageUtils.sendMessageToOpChat("Client " +
+                                                 client.getNick() +
+                                                 " was permanently banned by " +
+                                                 commandOwner.getNick() +
+                                                 " with reason : " +
+                                                 reason);
+                break;
+        }
+
+        client.removeSession(true);
+
+        return true;
+    }
+
 
     /**
      * The method showing formated client statistic information

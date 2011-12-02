@@ -147,7 +147,7 @@ public class Client extends AbstractClient
         }
 
         clientInfo.setSharedFilesCount(this.getSharedFiles());
-        clientInfo.setShareSize(this.getShareSise());
+        clientInfo.setShareSize(this.getShareSize());
         clientInfo.setWeight(this.getWeight());
         clientInfo.setLastNick(this.getLastNick());
 
@@ -390,9 +390,9 @@ public class Client extends AbstractClient
                 binf.setFlagValue(Flags.SHARED_FILES, getSharedFiles());
             }
 
-            if (getShareSise() != null)
+            if (getShareSize() != null)
             {
-                binf.setFlagValue(Flags.SHARE_SIZE, getShareSise());
+                binf.setFlagValue(Flags.SHARE_SIZE, getShareSize());
             }
 
             if (getUploadSlotsOpened() != null)

@@ -21,9 +21,6 @@ package ru.sincore.cmd.handlers;
 
 import gnu.getopt.Getopt;
 import gnu.getopt.LongOpt;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Marker;
 import ru.sincore.client.AbstractClient;
 import ru.sincore.cmd.AbstractCommand;
 import ru.sincore.cmd.CommandUtils;
@@ -31,9 +28,6 @@ import ru.sincore.util.ClientUtils;
 
 public class KickCommand extends AbstractCommand
 {
-	private static final Logger log = LoggerFactory.getLogger(KickCommand.class);
-	private String marker = Marker.ANY_NON_NULL_MARKER;
-
 	private AbstractClient client;
 	private String cmd;
 	private String args;

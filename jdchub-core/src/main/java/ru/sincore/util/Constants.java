@@ -29,9 +29,6 @@ package ru.sincore.util;
  */
 public final class Constants
 {
-    // Hub base functionality SUP string
-    public static final String HUB_BASE_SUP_STRING = "ADBASE ADTIGR ADUCM0 ADADC0";
-
     // STA Severity codes block
     public static final int STA_SEVERITY_SUCCESS                = 0;
     public static final int STA_SEVERITY_RECOVERABLE            = 100;
@@ -62,6 +59,11 @@ public final class Constants
     public static final int STA_REQUIRED_FEATURE_MISSING       	= 45;
     public static final int STA_INVALID_IP                     	= 46;
     public static final int STA_NO_HASH_OVERLAP                	= 47;
+
+    // Ban types
+    public static final int KICK                                = 0;
+    public static final int BAN_TEMPORARY                       = 1;
+    public static final int BAN_PERMANENT                       = 2;
 
 	//Other const block
 	public static final String EMPTY_STR 						= "";

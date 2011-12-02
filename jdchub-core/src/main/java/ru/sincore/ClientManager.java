@@ -305,11 +305,15 @@ public final class ClientManager
         {
             try
             {
-                ret += client.getShareSise();
+                ret += client.getShareSize();
             }
             catch (ArithmeticException ae)
             {
                 log.error("Exception in total share size calculation : " + ae);
+            }
+            catch (NullPointerException ex)
+            {
+                log.debug("Client " + client.getNick() + " doesn\'t have share.");
             }
         }
         return ret;
