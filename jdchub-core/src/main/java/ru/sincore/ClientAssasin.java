@@ -67,9 +67,12 @@ public class ClientAssasin extends Thread
             return true;
         }
 
-        if ((System.currentTimeMillis() - client.getLastKeepAlive()) >
-            ConfigurationManager.instance().getLong(ConfigurationManager.MAX_KEEP_ALIVE_TIMEOUT)*1000 // from sec to ms
-            )
+        if (ConfigurationManager.instance()
+                                .getBoolean(ConfigurationManager.DISCONNECT_BY_TIMEOUT) &&
+            ((System.currentTimeMillis() - client.getLastKeepAlive()) >
+             ConfigurationManager.instance().getLong(ConfigurationManager.MAX_KEEP_ALIVE_TIMEOUT) *
+             1000) // from sec to ms
+           )
         {
             client.removeSession(true);
             return true;
