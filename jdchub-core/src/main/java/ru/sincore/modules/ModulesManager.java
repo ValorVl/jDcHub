@@ -221,31 +221,7 @@ public class ModulesManager
 
             return true;
         }
-        catch (ClassNotFoundException e)
-        {
-            e.printStackTrace();
-        }
-        catch (MalformedURLException e)
-        {
-            e.printStackTrace();
-        }
-        catch (InstantiationException e)
-        {
-            e.printStackTrace();
-        }
-        catch (IllegalAccessException e)
-        {
-            e.printStackTrace();
-        }
-        catch (NoSuchMethodException e)
-        {
-            e.printStackTrace();
-        }
-        catch (InvocationTargetException e)
-        {
-            e.printStackTrace();
-        }
-        catch (InterruptedException e)
+        catch (Throwable e)
         {
             e.printStackTrace();
         }
@@ -284,45 +260,56 @@ public class ModulesManager
 
     public boolean unloadModule(String moduleName)
     {
-        if (!modules.containsKey(moduleName))
+        boolean   returnResult = false;
+        Throwable throwable    = null;
+
+        try
         {
-            return false;
-        }
-
-        log.info("Unload module: " + moduleName);
-
-        boolean returnResult = true;
-        ModuleInfo moduleInfo = modules.get(moduleName);
-
-        Object eventHandler = moduleInfo.getModuleInstance().getEventHandler();
-        Object signalHandler = moduleInfo.getModuleInstance().getSignalHandler();
-
-        if (moduleInfo.isEnabled())
-        {
-            returnResult = moduleInfo.getModuleInstance().deinit();
-        }
-
-        if (returnResult)
-        {
-            // Stop module thread
-            moduleInfo.getModuleInstance().stop();
-        }
-
-        if (returnResult)
-        {
-            if (eventHandler != null)
+            if (!modules.containsKey(moduleName))
             {
-                EventBusService.unsubscribe(eventHandler);
+                return false;
             }
 
-            if (signalHandler != null)
+            log.info("Unload module: " + moduleName);
+
+            ModuleInfo moduleInfo = modules.get(moduleName);
+
+            Object eventHandler = moduleInfo.getModuleInstance().getEventHandler();
+            Object signalHandler = moduleInfo.getModuleInstance().getSignalHandler();
+
+            if (moduleInfo.isEnabled())
             {
-                Signal.removeHandler(signalHandler);
+                returnResult = moduleInfo.getModuleInstance().deinit();
+            }
+
+            if (returnResult)
+            {
+                // Stop module thread
+                moduleInfo.getModuleInstance().stop();
+            }
+
+            if (returnResult)
+            {
+                if (eventHandler != null)
+                {
+                    EventBusService.unsubscribe(eventHandler);
+                }
+
+                if (signalHandler != null)
+                {
+                    Signal.removeHandler(signalHandler);
+                }
             }
         }
-        else
+        catch (Throwable e)
         {
-            log.error("Can't unload module: " + moduleName);
+            e.printStackTrace();
+            throwable = e;
+        }
+
+        if (!returnResult)
+        {
+            log.error("Can't unload module: " + moduleName + ", throwable: " + throwable);
         }
 
         return returnResult;
