@@ -18,7 +18,8 @@ PROPERTIES=
 
 start()
 {
-    ${JAVA_HOME}/bin/java $PROPERTIES -cp "${CLASSPATH}" -jar ./jdchub-core*.jar > /dev/null 2>&1 &
+    jar=`ls jdchub-core-*.jar | grep -v -- '-javadoc.jar' | tail -n 1`
+    ${JAVA_HOME}/bin/java $PROPERTIES -cp "${CLASSPATH}" -jar "./$jar" > /dev/null 2>&1 &
 }
 
 stop()
