@@ -373,6 +373,11 @@ public class ClientInfo
     private boolean overrideShare = false;
 
     /**
+     * Ban by share flag
+     */
+    private boolean bannedByShare = false;
+    
+    /**
      * Is client able to override spam
      */
     private boolean overrideSpam = false;
@@ -899,6 +904,18 @@ public class ClientInfo
     public void setShareSize(Long shareSize)
     {
         this.shareSize = shareSize;
+
+        this.setBannedByShare(false);
+
+        if (!this.isOverrideShare())
+        {
+            if (shareSize <
+                ConfigurationManager.instance()
+                                    .getLong(ConfigurationManager.BAN_BY_SHARE_MIN_SHARE))
+            {
+                this.setBannedByShare(true);
+            }
+        }
     }
 
 
@@ -1127,6 +1144,18 @@ public class ClientInfo
     public void setOverrideShare(boolean overrideShare)
     {
         this.overrideShare = overrideShare;
+    }
+
+
+    public boolean isBannedByShare()
+    {
+        return bannedByShare;
+    }
+
+
+    public void setBannedByShare(boolean bannedByShare)
+    {
+        this.bannedByShare = bannedByShare;
     }
 
 

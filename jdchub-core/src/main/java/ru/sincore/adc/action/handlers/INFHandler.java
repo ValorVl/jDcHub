@@ -56,11 +56,29 @@ public class INFHandler extends AbstractActionHandler<INF>
 
             if (!client.getSid().equals(action.getSourceSID()))
             {
+                log.debug("SID " +
+                         client.getSid() +
+                         " not equal to " +
+                         action.getSourceSID());
+
                 new STAError(client,
                              Constants.STA_SEVERITY_FATAL + Constants.STA_GENERIC_PROTOCOL_ERROR,
                              Messages.WRONG_SID).send();
                 return;
 
+            }
+
+            if (action.isFlagSet(Flags.PID))
+            {
+                if (client.getState() != State.PROTOCOL)
+                {
+                    new STAError(client,
+                                 Constants.STA_SEVERITY_RECOVERABLE,
+                                 Messages.CANT_CHANGE_PID).send();
+                    return;
+                }
+
+                client.setPid(action.getPid());
             }
 
             if (action.isFlagSet(Flags.CID))
@@ -76,6 +94,13 @@ public class INFHandler extends AbstractActionHandler<INF>
 
                 if (ClientManager.getInstance().getClientByCID(action.getCid()) != null)
                 {
+                    log.debug("CID " +
+                              action.getCid() +
+                              " already taken by client " +
+                             ClientManager.getInstance().getClientByCID(action.getCid()).getNick() +
+                             " with SID " +
+                             ClientManager.getInstance().getClientByCID(action.getCid()).getSid());
+
                     new STAError(client,
                                  Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_CID_TAKEN,
                                  Messages.CID_TAKEN).send();
@@ -108,6 +133,12 @@ public class INFHandler extends AbstractActionHandler<INF>
 
                 client.setNick(action.getNick());
 
+                if (!validateNick())
+                {
+                    return;
+                }
+
+
                 if (client.getState() != State.PROTOCOL)
                 {
                     // TODO change nick to new nick
@@ -115,19 +146,8 @@ public class INFHandler extends AbstractActionHandler<INF>
                 }
             }
 
-
-            if (action.isFlagSet(Flags.PID))
-            {
-                if (client.getState() != State.PROTOCOL)
-                {
-                    new STAError(client,
-                                 Constants.STA_SEVERITY_RECOVERABLE,
-                                 Messages.CANT_CHANGE_PID).send();
-                    return;
-                }
-
-                client.setPid(action.getPid());
-            }
+            // load info about newly connected client
+            client.loadInfo();
 
 
             if (action.isFlagSet(Flags.ADDR_IPV4))
@@ -263,7 +283,7 @@ public class INFHandler extends AbstractActionHandler<INF>
             {
                 client.setNumberOfHubsWhereRegistred(
                         action.<Integer>getFlagValue(Flags.AMOUNT_HUBS_WHERE_REGISTERED_USER,
-                                                        0));
+                                                     0));
             }
 
             if (action.isFlagSet(Flags.AMOUNT_HUBS_WHERE_OP_USER))
@@ -314,12 +334,6 @@ public class INFHandler extends AbstractActionHandler<INF>
                 return;
             }
 
-            // Check nick availability
-            if (!isNickAvail())
-            {
-                return;
-            }
-
             // now must check if hub is full...
             //otherwise is already connected, no point in checking this
             if (client.getState() == State.PROTOCOL)
@@ -343,39 +357,6 @@ public class INFHandler extends AbstractActionHandler<INF>
                 return;
             }
 
-
-            if (client.getCid()
-                            .equals(configurationManager.getString(ConfigurationManager.OP_CHAT_CID)))
-            {
-                new STAError(client,
-                             Constants.STA_SEVERITY_FATAL + Constants.STA_CID_TAKEN,
-                             Messages.CID_TAKEN).send();
-                return;
-            }
-            if (client.getCid()
-                            .equals(configurationManager.getString(ConfigurationManager.SECURITY_CID)))
-            {
-                new STAError(client,
-                             Constants.STA_SEVERITY_FATAL + Constants.STA_CID_TAKEN,
-                             Messages.CID_TAKEN).send();
-                return;
-            }
-            if (client.getNick()
-                            .equalsIgnoreCase(configurationManager.getString(ConfigurationManager.OP_CHAT_NAME)))
-            {
-                new STAError(client,
-                             Constants.STA_SEVERITY_FATAL + Constants.STA_NICK_TAKEN,
-                             Messages.NICK_TAKEN).send();
-                return;
-            }
-            if (client.getNick()
-                            .equalsIgnoreCase(configurationManager.getString(ConfigurationManager.BOT_CHAT_NAME)))
-            {
-                new STAError(client,
-                             Constants.STA_SEVERITY_FATAL + Constants.STA_NICK_TAKEN,
-                             Messages.NICK_TAKEN).send();
-                return;
-            }
 
             if (!client.isFeature(Features.BASE))
             {
@@ -416,6 +397,61 @@ public class INFHandler extends AbstractActionHandler<INF>
             e.printStackTrace();
         }
 
+    }
+
+
+    /**
+     * Nick validation method
+     * @return valid nick (true) or not (false)
+     * @throws STAException
+     */
+    private boolean validateNick()
+            throws STAException
+    {
+        if (client.getNick() == null)
+        {
+            new STAError(client,
+                         Constants.STA_SEVERITY_FATAL +
+                         Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
+                         Messages.MISSING_FIELD,
+                         "FM",
+                         "NI").send();
+            return false;
+        }
+        else if (client.getNick().equals(""))
+        {
+            new STAError(client,
+                         Constants.STA_SEVERITY_FATAL +
+                         Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
+                         Messages.MISSING_FIELD,
+                         "FM",
+                         "NI").send();
+            return false;
+        }
+
+        if (client.getNick().length() >
+            configurationManager.getInt(ConfigurationManager.MAX_NICK_SIZE))
+        {
+            new STAError(client,
+                         Constants.STA_SEVERITY_FATAL + Constants.STA_NICK_INVALID,
+                         Messages.NICK_TOO_LARGE,
+                         "FB",
+                         "NI").send();
+            return false;
+        }
+
+        if (client.getNick().length() <
+            configurationManager.getInt(ConfigurationManager.MIN_NICK_SIZE))
+        {
+            new STAError(client,
+                         Constants.STA_SEVERITY_FATAL + Constants.STA_NICK_INVALID,
+                         Messages.NICK_TOO_SMALL,
+                         "FB",
+                         "NI").send();
+            return false;
+        }
+
+        return true;
     }
 
 
@@ -461,27 +497,6 @@ public class INFHandler extends AbstractActionHandler<INF>
                          Messages.MISSING_FIELD,
                          "FM",
                          "PD").send();
-            return;
-        }
-
-        if (client.getNick() == null)
-        {
-            new STAError(client,
-                         Constants.STA_SEVERITY_FATAL +
-                         Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
-                         Messages.MISSING_FIELD,
-                         "FM",
-                         "NI").send();
-            return;
-        }
-        else if (client.getNick().equals(""))
-        {
-            new STAError(client,
-                         Constants.STA_SEVERITY_FATAL +
-                         Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
-                         Messages.MISSING_FIELD,
-                         "FM",
-                         "NI").send();
             return;
         }
 
@@ -542,39 +557,6 @@ public class INFHandler extends AbstractActionHandler<INF>
     }
 
 
-    private boolean isNickAvail()
-            throws STAException
-    {
-        for (AbstractClient client : ClientManager.getInstance().getClients())
-        {
-            if (!client.equals(this.client))
-            {
-                if (client.isValidated())
-                {
-                    if (client.getNick()
-                              .toLowerCase()
-                              .equals(this.client.getNick().toLowerCase()) &&
-                        !client.getCid().equals(this.client.getCid()))
-                    {
-                        new STAError(this.client,
-                                     Constants.STA_SEVERITY_FATAL + Constants.STA_NICK_TAKEN,
-                                     Messages.NICK_TAKEN).send();
-                        return false;
-                    }
-                }
-                /* if(state.equals ("PROTOCOL"))
-                if(SessionManager.users.containsKey(handler.ID) || temp.handler.ID.equals(handler.ID))//&& temp.handler.CIDsecure)
-                {
-                    new STAError(handler,Constants.STA_SEVERITY_FATAL+Constants.STA_CID_TAKEN,"CID taken. Please go to Settings and pick new PID.");
-                    return false;
-                }*/
-            }
-        }
-
-        return true;
-    }
-
-
     private boolean isClientInformationValid()
             throws STAException
     {
@@ -620,15 +602,6 @@ public class INFHandler extends AbstractActionHandler<INF>
                     return false;
                 }
             }
-            //TODO : add without tag allow ?
-            //checking all:
-            if (client.getNick() != null)
-            {
-                if (isNickValidated(client) == false)
-                {
-                    return false;
-                }
-            }
 
             if (client.getDescription() != null)
             {
@@ -666,8 +639,9 @@ public class INFHandler extends AbstractActionHandler<INF>
             // TODO [lh] how to set an unlimited share size?
             if (client.getShareSize() != null)
             {
-                if (client.getShareSize() >
-                    configurationManager.getLong(ConfigurationManager.MAX_SHARE_SIZE))
+                if ((configurationManager.getLong(ConfigurationManager.MAX_SHARE_SIZE) != 0) &&
+                    (client.getShareSize() >
+                     configurationManager.getLong(ConfigurationManager.MAX_SHARE_SIZE)))
                 {
                     new STAError(client,
                                  Constants.STA_SEVERITY_FATAL +
@@ -775,36 +749,6 @@ public class INFHandler extends AbstractActionHandler<INF>
     }
 
 
-    private boolean isNickValidated(AbstractClient client)
-            throws STAException
-    {
-        // TODO [lh] Replace by normal nick validation
-        if (this.client.getNick().length() >
-            configurationManager.getInt(ConfigurationManager.MAX_NICK_SIZE))
-        {
-            new STAError(client,
-                         Constants.STA_SEVERITY_FATAL + Constants.STA_NICK_INVALID,
-                         Messages.NICK_TOO_LARGE,
-                         "FB",
-                         "NI").send();
-            return false;
-        }
-
-        if (this.client.getNick().length() <
-            configurationManager.getInt(ConfigurationManager.MIN_NICK_SIZE))
-        {
-            new STAError(client,
-                         Constants.STA_SEVERITY_FATAL + Constants.STA_NICK_INVALID,
-                         Messages.NICK_TOO_SMALL,
-                         "FB",
-                         "NI").send();
-            return false;
-        }
-
-        return true;
-    }
-
-
     private boolean doProtocolStateChecks()
             throws STAException, CommandException, STAException
     {
@@ -847,13 +791,6 @@ public class INFHandler extends AbstractActionHandler<INF>
 
 
         /*------------ok now must see if the client is registered...---------------*/
-
-        if (!client.loadInfo())
-        {
-            // info about  client not found
-            // store info to db about new client
-            //client.storeInfo();
-        }
 
         if (client.isRegistred())
         {

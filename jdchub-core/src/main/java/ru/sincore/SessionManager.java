@@ -113,6 +113,8 @@ public class SessionManager extends IoHandlerAdapter
         String rawMessage = (String) msg;
 		log.debug("Incoming message : "+ rawMessage);
 
+        ((Client) session.getAttribute(Constants.SESSION_ATTRIBUTE_CLIENT)).setLastKeepAlive(System.currentTimeMillis());
+
         try
         {
             Command.handle((Client) (session.getAttribute(Constants.SESSION_ATTRIBUTE_CLIENT)), rawMessage);
@@ -141,7 +143,7 @@ public class SessionManager extends IoHandlerAdapter
     public void sessionIdle(IoSession session, IdleStatus status)
             throws Exception
     {
-        //ok, we're in idle
+        ((Client)session.getAttribute(Constants.SESSION_ATTRIBUTE_CLIENT)).setLastKeepAlive(System.currentTimeMillis());
     }
 
 

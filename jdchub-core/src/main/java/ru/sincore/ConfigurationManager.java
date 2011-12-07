@@ -58,6 +58,7 @@ public class ConfigurationManager extends PropertiesConfiguration
     public static final String MAX_HUBS_REGISTERED        = "core.hub.max_hubs_registered";
     public static final String MAX_SHARE_SIZE             = "core.hub.max_share_size";
     public static final String MIN_SHARE_SIZE             = "core.hub.min_share_size";
+    public static final String BAN_BY_SHARE_MIN_SHARE     = "core.hub.ban_by_share.min_share_size";
     public static final String MAX_NICK_SIZE              = "core.hub.max_nick_size";
     public static final String MIN_NICK_SIZE              = "core.hub.min_nick_size";
     public static final String MIN_SLOT_COUNT             = "core.hub.min_slot_count";
@@ -328,6 +329,11 @@ public class ConfigurationManager extends PropertiesConfiguration
         if (!this.containsKey(HUB_PORT))
         {
             this.setProperty(HUB_PORT, 411);
+        }
+
+        if (!this.containsKey(DISCONNECT_BY_TIMEOUT))
+        {
+            this.setProperty(DISCONNECT_BY_TIMEOUT, false);
         }
 
         if (!this.containsKey(MAX_KEEP_ALIVE_TIMEOUT))
