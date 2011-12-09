@@ -120,11 +120,11 @@ public class RegmeCommand extends AbstractCommand
 
         client.sendPrivateMessageFromHub("\n" +
                                          client.getNick() +
-                                         " You successfully registered!\nPlease reconnect to hub and enter your password.");
+                                         " You was successfully registered!\nPlease reconnect to hub and enter your password.");
 
         MessageUtils.sendMessageToOpChat("Client " +
                                         client.getNick() +
-                                        " was registred");
+                                        " now registred");
 
         return "Successfully registred";
     }
