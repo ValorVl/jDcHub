@@ -43,8 +43,8 @@ public class ClientUtils
 	private static String marker = Marker.ANY_NON_NULL_MARKER;
 
 	/**
-	 * Method for kick fucking user! Kick this ban on 5 minutes.
-	 * @param commandOwner Nickname OP who kicked
+	 * Method for kick fucking user! Kick is the same as ban for 5 mins.
+	 * @param commandOwner Op nickname which want to ban user
 	 * @param clientNick kicked client
 	 * @param reason reason kicked
 	 */

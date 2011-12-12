@@ -1,7 +1,7 @@
 /*
-* ReplaceHandler.java
+* KickProcessor.java
 *
-* Created on 08 12 2011, 11:55
+* Created on 12 12 2011, 13:27
 *
 * Copyright (C) 2011 Alexey 'lh' Antonov
 *
@@ -24,35 +24,32 @@ package ru.sincore.pipeline.processor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.sincore.ClientManager;
+import ru.sincore.ConfigurationManager;
 import ru.sincore.adc.action.actions.MSG;
+import ru.sincore.client.AbstractClient;
+import ru.sincore.i18n.Messages;
 import ru.sincore.pipeline.Processor;
+import ru.sincore.util.ClientUtils;
+import ru.sincore.util.Constants;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Replaces substring matching by pattern to replaceString.
- *
  * @author Alexey 'lh' Antonov
- * @since 2011-12-08
+ * @since 2011-12-12
  */
-public class ReplaceProcessor implements Processor<MSG>
+public class KickProcessor implements Processor<MSG>
 {
-    private static final Logger log = LoggerFactory.getLogger(ReplaceProcessor.class);
-
+    private static final Logger log = LoggerFactory.getLogger(KickProcessor.class);
+    
     private Pattern pattern;
-    private String  replaceString;
-    
 
-    public ReplaceProcessor()
-    {
-    }
-    
     
     @Override
     public void setMatcher(Object matcher)
     {
-        // case insensitive pattern
         this.pattern = Pattern.compile((String) matcher, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
     }
 
@@ -60,20 +57,20 @@ public class ReplaceProcessor implements Processor<MSG>
     @Override
     public void setParameter(String parameter)
     {
-        this.replaceString = parameter;
+        // ignore this method call
     }
 
 
     @Override
     public void process(MSG object)
     {
-        if (pattern == null || replaceString == null)
+        if (pattern == null)
         {
             log.debug("Matcher or parameter have not been set.");
             return;
         }
-
-        String message = null;
+        
+        String message;
 
         try
         {
@@ -86,18 +83,47 @@ public class ReplaceProcessor implements Processor<MSG>
             return;
         }
 
-
         Matcher matcher = pattern.matcher(message.subSequence(0, message.length()));
-        message = matcher.replaceAll(replaceString);
 
-        try
+        if (matcher.matches())
         {
-            object.setMessage(message);
+            AbstractClient sourceClient = null;
+
+            try
+            {
+                sourceClient = ClientManager.getInstance().getClientBySID(object.getSourceSID());
+            }
+            catch (Exception e)
+            {
+                log.debug(e.toString());
+                return;
+            }
+
+
+            try
+            {
+                ClientUtils.kickOrBanClient(
+                        ClientManager.getInstance().getClientBySID(ConfigurationManager.instance().getString(ConfigurationManager.HUB_SID)),
+                        sourceClient.getNick(),
+                        Constants.KICK,
+                        null,
+                        "Kicked by Word filter for usage forbidden word");
+            }
+            catch (Exception e)
+            {
+                log.debug(e.toString());
+                return;
+            }
+
+            try
+            {
+                object.setMessage(Messages.get(Messages.FORBIDDEN_WORD_USAGE, sourceClient, (String)sourceClient.getExtendedField("LC")));
+            }
+            catch (Exception e)
+            {
+                log.debug(e.toString());
+            }
         }
-        catch (Exception e)
-        {
-            log.debug(e.toString());
-        }
+
     }
-
 }

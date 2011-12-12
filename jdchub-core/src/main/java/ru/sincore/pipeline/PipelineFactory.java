@@ -28,6 +28,7 @@ import ru.sincore.adc.action.actions.MSG;
 import ru.sincore.db.dao.PipelineRulesDAO;
 import ru.sincore.db.dao.PipelineRulesDAOImpl;
 import ru.sincore.db.pojo.PipelineRulesPOJO;
+import ru.sincore.pipeline.processor.KickProcessor;
 import ru.sincore.pipeline.processor.ReplaceProcessor;
 
 import java.lang.reflect.Constructor;
@@ -89,6 +90,7 @@ public class PipelineFactory
 
         registerProcessor("replace", ReplaceProcessor.class);
         registerProcessor("remove",  ReplaceProcessor.class);
+        registerProcessor("kick",    KickProcessor.class);
     }
 
 

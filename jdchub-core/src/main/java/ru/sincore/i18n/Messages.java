@@ -116,8 +116,12 @@ public class Messages
     public static final String TIME_FORMAT            = "core.time_format";
     public static final String TIME_PERIOD_FORMAT     = "core.time_period_format";
 
+    public static final String FORBIDDEN_WORD_USAGE   = "core.wordfilter.forbidden_word_usage";
+
+
     private static Map<String, ResourceBundle> resourcesMap =
                                                     new ConcurrentHashMap<String, ResourceBundle>();
+
 
 
     // Empty constructor

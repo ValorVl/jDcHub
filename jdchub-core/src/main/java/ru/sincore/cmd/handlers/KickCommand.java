@@ -25,6 +25,7 @@ import ru.sincore.client.AbstractClient;
 import ru.sincore.cmd.AbstractCommand;
 import ru.sincore.cmd.CommandUtils;
 import ru.sincore.util.ClientUtils;
+import ru.sincore.util.Constants;
 
 public class KickCommand extends AbstractCommand
 {
@@ -96,7 +97,7 @@ public class KickCommand extends AbstractCommand
             return null;
 		}
 
-        ClientUtils.kickOrBanClient(client, nick, 0, null, reason);
+        ClientUtils.kickOrBanClient(client, nick, Constants.KICK, null, reason);
         sendError("nick " + nick + " reason " + reason);
 
         return "Client was kicked";
