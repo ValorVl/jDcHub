@@ -84,7 +84,7 @@ public class PipelineFactory
     }
     
     
-    public static void registerProcessors()
+    private static void registerProcessors()
     {
         log.info("Start registering processors...");
 
@@ -94,7 +94,7 @@ public class PipelineFactory
     }
 
 
-    public static void registerPipelines()
+    private static void registerPipelines()
     {
         log.info("Start registering pipelines...");
 
@@ -139,5 +139,20 @@ public class PipelineFactory
 
         registerProcessors();
         registerPipelines();
+    }
+
+
+    public static void reInitialize()
+    {
+        synchronized (processors)
+        {
+            synchronized (pipelines)
+            {
+                processors.clear();
+                pipelines.clear();
+            }
+        }
+
+        initialize();
     }
 }
