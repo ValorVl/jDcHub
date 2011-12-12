@@ -22,9 +22,12 @@
 
 package ru.sincore.pipeline.processor;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.sincore.adc.action.actions.MSG;
 import ru.sincore.pipeline.Processor;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -35,6 +38,8 @@ import java.util.regex.Pattern;
  */
 public class ReplaceProcessor implements Processor<MSG>
 {
+    private static final Logger log = LoggerFactory.getLogger(ReplaceProcessor.class);
+
     private Pattern pattern;
     private String  replaceString;
     
@@ -47,7 +52,8 @@ public class ReplaceProcessor implements Processor<MSG>
     @Override
     public void setMatcher(Object matcher)
     {
-        this.pattern = Pattern.compile((String) matcher);
+        // case insensitive pattern
+        this.pattern = Pattern.compile((String) matcher, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
     }
 
 
@@ -61,6 +67,39 @@ public class ReplaceProcessor implements Processor<MSG>
     @Override
     public void process(MSG object)
     {
+        String message = null;
+
+        try
+        {
+            message = object.getMessage();
+        }
+        catch (Exception e)
+        {
+            // done processing if we can't get message
+            log.debug(e.toString());
+            return;
+        }
+
+
+        try
+        {
+            Matcher matcher = pattern.matcher(message.subSequence(0, message.length()));
+            message = matcher.replaceAll(replaceString);
+        }
+        catch (Exception ex)
+        {
+            log.debug(ex.toString());
+        }
+
+
+        try
+        {
+            object.setMessage(message);
+        }
+        catch (Exception e)
+        {
+            log.debug(e.toString());
+        }
     }
 
 }

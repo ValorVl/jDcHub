@@ -122,7 +122,8 @@ public class PipelineFactory
             }
         }
     }
-    
+
+
     /**
      * Initialize pipeline factory:
      * <ul>

@@ -39,9 +39,9 @@ public class Pipeline <T>
 {
     private final static Logger log = LoggerFactory.getLogger(Pipeline.class);
 
-    protected HashMap<String, Processor<T>> processors;
-    
-    
+    protected HashMap<String, Processor<T>> processors = new HashMap<String, Processor<T>>();
+
+
     public void process(T object)
     {
         for (Processor<T> handler : this.getProcessors())
