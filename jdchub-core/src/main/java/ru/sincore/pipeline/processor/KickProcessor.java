@@ -107,7 +107,7 @@ public class KickProcessor implements Processor<MSG>
                         sourceClient.getNick(),
                         Constants.KICK,
                         null,
-                        "Kicked by Word filter for usage forbidden word");
+                        Messages.get(Messages.FORBIDDEN_WORD_USAGE_KICK_REASON, sourceClient, (String)sourceClient.getExtendedField("LC")));
             }
             catch (Exception e)
             {

@@ -117,11 +117,11 @@ public class Messages
     public static final String TIME_PERIOD_FORMAT     = "core.time_period_format";
 
     public static final String FORBIDDEN_WORD_USAGE   = "core.wordfilter.forbidden_word_usage";
+    public static final String FORBIDDEN_WORD_USAGE_KICK_REASON = "core.wordfilter.forbidden_word_usage_kick_reason";
 
 
     private static Map<String, ResourceBundle> resourcesMap =
                                                     new ConcurrentHashMap<String, ResourceBundle>();
-
 
 
     // Empty constructor

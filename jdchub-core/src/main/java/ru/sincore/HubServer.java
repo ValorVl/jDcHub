@@ -39,12 +39,12 @@ import ru.sincore.cmd.handlers.*;
 import ru.sincore.events.HubShutdownEvent;
 import ru.sincore.events.HubStartupEvent;
 import ru.sincore.modules.ModulesManager;
+import ru.sincore.pipeline.PipelineFactory;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 import java.util.Date;
-import javax.net.ssl.SSLContext;
 
 
 /**
@@ -79,8 +79,13 @@ public class HubServer
      */
     private void init()
     {
+        // initialize command engine
         initCommandEngine();
 
+        // initialize (or reinitialize) pipeline factory (fileter message for forbidden words)
+        PipelineFactory.initialize();
+
+        // initialize module manager and modules
         ModulesManager.instance().loadModules();
 
         try

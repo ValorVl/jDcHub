@@ -152,7 +152,9 @@ public class ConfigurationManager extends PropertiesConfiguration
     public static final String CLIENT_WEIGHT_SUPER_USER     = "core.client.client_type_weights.super_user";
     public static final String CLIENT_WEIGHT_HUB_OWNER      = "core.client.client_type_weights.hub_owner";
 
-
+    public static final String USE_WORD_FILTER              = "core.word_filter.use";
+    public static final String USE_WORD_FILTER_IN_PM        = "core.word_filter.use_in_pm";
+    
     // Internal options
     public static final String OP_CHAT_CID  = "internal.op_chat_cid";
     public static final String VIP_CHAT_CID = "internal.vip_chat_cid";
@@ -644,6 +646,16 @@ public class ConfigurationManager extends PropertiesConfiguration
         if (!this.containsKey(CERT_LOGIN))
         {
             this.setProperty(CERT_LOGIN, false);
+        }
+
+        if (!this.containsKey(USE_WORD_FILTER))
+        {
+            this.setProperty(USE_WORD_FILTER, true);
+        }
+
+        if (!this.containsKey(USE_WORD_FILTER_IN_PM))
+        {
+            this.setProperty(USE_WORD_FILTER_IN_PM, true);
         }
     }
 }

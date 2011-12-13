@@ -3,6 +3,8 @@ package ru.sincore.adc.action.handlers;
 import java.util.StringTokenizer;
 
 import com.adamtaft.eb.EventBusService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.sincore.Broadcast;
 import ru.sincore.ClientManager;
 import ru.sincore.ConfigurationManager;
@@ -14,6 +16,8 @@ import ru.sincore.client.AbstractClient;
 import ru.sincore.db.dao.ChatLogDAO;
 import ru.sincore.db.dao.ChatLogDAOImpl;
 import ru.sincore.events.UserCommandEvent;
+import ru.sincore.pipeline.Pipeline;
+import ru.sincore.pipeline.PipelineFactory;
 import ru.sincore.util.AdcUtils;
 import ru.sincore.util.STAError;
 
@@ -27,7 +31,7 @@ import ru.sincore.util.STAError;
  */
 public class MSGHandler extends AbstractActionHandler<MSG>
 {
-
+    private static final Logger log = LoggerFactory.getLogger(MSGHandler.class);
 
     public MSGHandler(AbstractClient sourceClient, MSG action)
     {
@@ -47,9 +51,15 @@ public class MSGHandler extends AbstractActionHandler<MSG>
             if (parseAndExecuteCommandInMessage())
                 return;
 
+            Pipeline<MSG> pipeline = PipelineFactory.getPipeline("MSG");
+
             switch (action.getMessageType())
             {
                 case B:
+                    if (ConfigurationManager.instance().getBoolean(ConfigurationManager.USE_WORD_FILTER))
+                    {
+                        pipeline.process(action);
+                    }
                     Broadcast.getInstance().broadcast(action.getRawCommand(), client);
                     ChatLogDAO chatLog = new ChatLogDAOImpl();
                     chatLog.saveMessage(ClientManager.getInstance().getClientBySID(action.getSourceSID()).getNick(),
@@ -58,10 +68,19 @@ public class MSGHandler extends AbstractActionHandler<MSG>
                     break;
                 case D:
                 case E:
+                    if (ConfigurationManager.instance().getBoolean(ConfigurationManager.USE_WORD_FILTER) &&
+                        ConfigurationManager.instance().getBoolean(ConfigurationManager.USE_WORD_FILTER_IN_PM))
+                    {
+                        pipeline.process(action);
+                    }
                     sendMessageToClient();
                     break;
                 case F:
                     // send message dependent from features
+                    if (ConfigurationManager.instance().getBoolean(ConfigurationManager.USE_WORD_FILTER))
+                    {
+                        pipeline.process(action);
+                    }
                     Broadcast.getInstance().featuredBroadcast(action.getRawCommand(),
                                                               client,
                                                               action.getRequiredFeatureList(),
@@ -72,7 +91,7 @@ public class MSGHandler extends AbstractActionHandler<MSG>
         }
         catch (CommandException e)
         {
-            e.printStackTrace();
+            log.debug(e.toString());
         }
         catch (STAException staException)
         {

@@ -29,6 +29,7 @@ import ru.sincore.db.dao.PipelineRulesDAO;
 import ru.sincore.db.dao.PipelineRulesDAOImpl;
 import ru.sincore.db.pojo.PipelineRulesPOJO;
 import ru.sincore.pipeline.processor.KickProcessor;
+import ru.sincore.pipeline.processor.RemoveProcessor;
 import ru.sincore.pipeline.processor.ReplaceProcessor;
 
 import java.lang.reflect.Constructor;
@@ -49,12 +50,15 @@ public class PipelineFactory
     private static ConcurrentHashMap<String, Pipeline>  pipelines;
     private static ConcurrentHashMap<String, Class>     processors;
 
+    private static boolean initialized;
+
 
     /**
      * Block for static initialization.
      */
     static
     {
+        initialized = false;
         pipelines  = new ConcurrentHashMap<String, Pipeline>();
         processors = new ConcurrentHashMap<String, Class>();
     }
@@ -89,14 +93,14 @@ public class PipelineFactory
         log.info("Start registering processors...");
 
         registerProcessor("replace", ReplaceProcessor.class);
-        registerProcessor("remove",  ReplaceProcessor.class);
+        registerProcessor("remove",  RemoveProcessor.class);
         registerProcessor("kick",    KickProcessor.class);
     }
 
 
-    private static void registerPipelines()
+    private static void registerPipelineMSG()
     {
-        log.info("Start registering pipelines...");
+        log.info("Start registering MSG pipeline");
 
         Pipeline<MSG> msgPipeline = new Pipeline<MSG>();
         PipelineRulesDAO pipelineRulesDAO = new PipelineRulesDAOImpl("MSG");
@@ -120,9 +124,19 @@ public class PipelineFactory
             }
             catch (Exception ex)
             {
-                log.debug("");
+                log.debug(ex.toString());
             }
         }
+
+        pipelines.put("MSG", msgPipeline);
+    }
+
+
+    private static void registerPipelines()
+    {
+        log.info("Start registering pipelines...");
+
+        registerPipelineMSG();
     }
 
 
@@ -135,24 +149,22 @@ public class PipelineFactory
      */
     public static void initialize()
     {
-        log.info("Start initializing PipelineFactory...");
+        if (initialized)
+        {
+            log.info("Start reinitializing PipelineFactory...");
+
+            initialized = false;
+
+            processors.clear();
+            pipelines.clear();
+        }
+        else
+        {
+            log.info("Start initializing PipelineFactory...");
+        }
 
         registerProcessors();
         registerPipelines();
-    }
-
-
-    public static void reInitialize()
-    {
-        synchronized (processors)
-        {
-            synchronized (pipelines)
-            {
-                processors.clear();
-                pipelines.clear();
-            }
-        }
-
-        initialize();
+        initialized = true;
     }
 }
