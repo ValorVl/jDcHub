@@ -101,6 +101,18 @@ public class INFHandler extends AbstractActionHandler<INF>
                              " with SID " +
                              ClientManager.getInstance().getClientByCID(action.getCid()).getSid());
 
+                    // disconnect previously connected client
+                    // (for example it may be zombie client which waiting 2 hours for tcp_connection_timeout)
+                    if (ConfigurationManager.instance().getBoolean(ConfigurationManager.DISCONNECT_ONLINE_WITH_SAME_CID))
+                    {
+                        AbstractClient previouseClient = ClientManager.getInstance().getClientByCID(
+                                action.getCid());
+                        previouseClient.sendPrivateMessageFromHub(Messages.get(Messages.DISCONNECT_BY_CID_TAKEN,
+                                                                               previouseClient.getExtendedField(
+                                                                                       "LC")));
+                        previouseClient.disconnect();
+                    }
+
                     new STAError(client,
                                  Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_CID_TAKEN,
                                  Messages.CID_TAKEN).send();

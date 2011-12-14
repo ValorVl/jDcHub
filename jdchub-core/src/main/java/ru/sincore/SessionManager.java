@@ -76,6 +76,7 @@ public class SessionManager extends IoHandlerAdapter
         {
             if (t instanceof java.io.IOException)
             {
+                log.debug(t.getMessage());
                 return;
             }
             String throwableMessage = t.getMessage();

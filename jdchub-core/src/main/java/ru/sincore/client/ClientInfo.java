@@ -416,6 +416,11 @@ public class ClientInfo
      */
     private Vector<String> features = new Vector<String>();
 
+    /**
+     * This field contains additional stats about user for internal hub usage.
+     */
+    private HashMap<String, Object> additionalStats = new HashMap<String, Object>();
+
 
 //************************************ Functions ***************************************************
 
@@ -1340,6 +1345,18 @@ public class ClientInfo
     public String getINF()
     {
         return null;
+    }
+
+
+    public Object getAdditionalStat(String name)
+    {
+        return additionalStats.get(name);
+    }
+
+
+    public Object setAdditionalStat(String name, Object value)
+    {
+        return this.additionalStats.put(name, value);
     }
 
 

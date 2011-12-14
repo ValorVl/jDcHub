@@ -49,6 +49,7 @@ public class ConfigurationManager extends PropertiesConfiguration
     public static final String HUB_DEFAULT_LOCALE = "core.hub.default_locale";
 
     public static final String MAX_USERS                  = "core.hub.max_users";
+    public static final String DISCONNECT_ONLINE_WITH_SAME_CID = "core.hub.disconnect_online_with_same_cid";
     public static final String DISCONNECT_BY_TIMEOUT      = "core.hub.disconnect_by_timeout";
     public static final String MAX_KEEP_ALIVE_TIMEOUT     = "core.hub.max_keep_alive_timeout";
     public static final String USER_INITIAL_CAPACITY      = "core.hub.user_initial_capacity";
