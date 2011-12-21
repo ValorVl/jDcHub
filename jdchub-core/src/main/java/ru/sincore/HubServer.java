@@ -40,6 +40,7 @@ import ru.sincore.events.HubShutdownEvent;
 import ru.sincore.events.HubStartupEvent;
 import ru.sincore.modules.ModulesManager;
 import ru.sincore.pipeline.PipelineFactory;
+import ru.sincore.script.ScriptEngine;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -59,12 +60,13 @@ import java.util.Date;
  */
 public class HubServer
 {
-    private static final Logger        log    = LoggerFactory.getLogger(HubServer.class);
-    private final        String        marker = Marker.ANY_MARKER;
+    private static final Logger         log    = LoggerFactory.getLogger(HubServer.class);
+    private final        String         marker = Marker.ANY_MARKER;
 
-    private              ClientAssasin assasin;
-    private              IoAcceptor    acceptor;
-    private              CommandEngine commandEngine;
+    private              ClientAssasin  assasin = null;
+    private              IoAcceptor     acceptor = null;
+    private              CommandEngine  commandEngine = null;
+    private              ScriptEngine   scriptEngine = null;
     /**
      * Creates a new instance of HubServer
      */
@@ -87,6 +89,9 @@ public class HubServer
 
         // initialize module manager and modules
         ModulesManager.instance().loadModules();
+
+        initScriptEngine();
+        scriptEngine.start();
 
         try
         {
@@ -139,12 +144,26 @@ public class HubServer
     }
 
 
+    private void initScriptEngine()
+    {
+        log.info("Initializing CommandEngine...");
+
+        if (scriptEngine != null)
+        {
+            scriptEngine.stopEngines();
+        }
+
+        scriptEngine = new ScriptEngine();
+        scriptEngine.initialize();
+    }
+
+
     /**
      * Initialize actionName engine with default handlers
      */
     private void initCommandEngine()
     {
-        log.debug("Initializing CommandEngine...");
+        log.info("Initializing CommandEngine...");
 
         if (commandEngine != null)
         {

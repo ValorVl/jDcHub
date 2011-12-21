@@ -155,7 +155,12 @@ public class ConfigurationManager extends PropertiesConfiguration
 
     public static final String USE_WORD_FILTER              = "core.word_filter.use";
     public static final String USE_WORD_FILTER_IN_PM        = "core.word_filter.use_in_pm";
-    
+
+    public static final String SCRIPTS_LOCATION                 = "core.hub.scripts.directory";
+    public static final String NUMBER_OF_SCRIPTS_INTERPRETERS   = "core.hub.scripts.interpreter.instances";
+    public static final String PYTHON_HOME                      = "core.hub.scripts.python_home";
+
+
     // Internal options
     public static final String OP_CHAT_CID  = "internal.op_chat_cid";
     public static final String VIP_CHAT_CID = "internal.vip_chat_cid";
