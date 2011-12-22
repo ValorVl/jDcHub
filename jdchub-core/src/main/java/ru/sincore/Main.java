@@ -158,6 +158,12 @@ public class Main
     }
 
 
+    public static HubServer getServer()
+    {
+        return server;
+    }
+
+
     /**
      * jDcHub entry point
      * @param args the actionName line arguments (Not used)

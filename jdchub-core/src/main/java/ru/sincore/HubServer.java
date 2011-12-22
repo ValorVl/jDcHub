@@ -154,7 +154,7 @@ public class HubServer
         }
 
         scriptEngine = new ScriptEngine();
-        scriptEngine.initialize();
+        scriptEngine.initialize(commandEngine);
     }
 
 
@@ -199,5 +199,17 @@ public class HubServer
         acceptor.unbind();
 
         EventBusService.publish(new HubShutdownEvent());
+    }
+
+
+    public CommandEngine getCommandEngine()
+    {
+        return commandEngine;
+    }
+
+
+    public ScriptEngine getScriptEngine()
+    {
+        return scriptEngine;
     }
 }

@@ -26,6 +26,8 @@ import org.python.core.PySystemState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.sincore.ConfigurationManager;
+import ru.sincore.Main;
+import ru.sincore.cmd.CommandEngine;
 import ru.sincore.script.executor.PyScriptExecutor;
 
 import java.io.File;
@@ -53,13 +55,31 @@ public class ScriptEngine extends Thread
     {
         
     }
-    
-    
+
+
     public void initialize()
     {
+        this.initialize(null);
+    }
+
+
+    public void initialize(CommandEngine commandEngine)
+    {
+        if (this.engines != null)
+        {
+            // already initialized
+            return;
+        }
+
         engines = new ConcurrentHashMap<String, ScriptExecutionPool>();
 
         initializePythonScriptEngine();
+
+        // registering script engine management command
+        if (commandEngine != null)
+        {
+            commandEngine.registerCommand("script", new ScriptCommandHandler(this));
+        }
     }
 
 
@@ -79,29 +99,54 @@ public class ScriptEngine extends Thread
     }
 
 
+    public void addTask(ScriptTask task)
+    {
+        ScriptExecutionPool executor = this.engines.get(task.getEngineType());
+
+        if (executor == null)
+        {
+            log.debug("Engine for script \'" + task.getScriptName() + "\' not found!");
+            return;
+        }
+
+        executor.execute(task);
+    }
+
+
     @Override
     public void run()
     {
-        // execute all python scripts
-        File scriptDirectory = new File(ConfigurationManager.instance().getString(ConfigurationManager.SCRIPTS_LOCATION) + "/py/");
-
-        ScriptExecutionPool engine = engines.get("py");
-
-        for (File script : scriptDirectory.listFiles())
+        if (engines == null)
         {
-            log.info("Adding task for python script \'" + script.getName() + "\'");
+            log.error("Engine not initialized.");
+            return;
+        }
 
-            ScriptTask task = new ScriptTask();
-
-            task.setScriptName(script.getName());
-
-            try
+        // execute all scripts
+        File scriptDirectory = new File(ConfigurationManager.instance()
+                                                            .getString(ConfigurationManager.SCRIPTS_LOCATION));
+        for (File enginesDir : scriptDirectory.listFiles())
+        {
+            if (!enginesDir.isDirectory())
             {
-                engine.execute(task);
+                continue;
             }
-            catch (Exception e)
+
+            for (File script : enginesDir.listFiles())
             {
-                log.error(e.toString());
+                if (script.isDirectory())
+                {
+                    // skipping directories
+                    continue;
+                }
+
+                ScriptTask task = new ScriptTask();
+                task.setEngineType(enginesDir.getName());
+                task.setScriptName(script.getName());
+
+                // TODO [lh] put code to load args and variables from db
+
+                this.addTask(task);
             }
         }
     }
@@ -115,5 +160,17 @@ public class ScriptEngine extends Thread
         }
 
         engines.clear();
+    }
+
+    public void restart()
+    {
+        if (this.engines == null)
+        {
+            return;
+        }
+
+        stopEngines();
+        initialize();
+        start();
     }
 }

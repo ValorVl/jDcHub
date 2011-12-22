@@ -37,6 +37,7 @@ import java.util.Map;
 public class ScriptTask
 {
     private String scriptName;
+    private String engineType;
     private List args;
     private Map<String, Object> localVariables;
     
@@ -57,8 +58,20 @@ public class ScriptTask
     {
         this.scriptName = name;
     }
-    
-    
+
+
+    public String getEngineType()
+    {
+        return engineType;
+    }
+
+
+    public void setEngineType(String engineType)
+    {
+        this.engineType = engineType;
+    }
+
+
     public List getArgs()
     {
         return this.args;
