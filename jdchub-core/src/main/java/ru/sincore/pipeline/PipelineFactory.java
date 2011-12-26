@@ -86,6 +86,27 @@ public class PipelineFactory
     {
         pipelines.put(name, pipeline);
     }
+
+
+    public static Processor createProcessor(String processorName)
+    {
+        Processor processor = null;
+        try
+        {
+            Constructor
+                    processorConstructor = processors.get(processorName).getConstructor();
+
+            processorConstructor.setAccessible(true);
+
+            processor = (Processor) processorConstructor.newInstance();
+        }
+        catch (Exception ex)
+        {
+            log.debug(ex.toString());
+        }
+
+        return processor;
+    }
     
     
     private static void registerProcessors()

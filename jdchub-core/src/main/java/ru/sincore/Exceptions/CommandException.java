@@ -39,4 +39,4 @@ public class CommandException extends Exception
     {
         super(comment);
     }
-};
+}
