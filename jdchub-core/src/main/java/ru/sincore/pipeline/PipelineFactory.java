@@ -141,7 +141,7 @@ public class PipelineFactory
                 processor.setMatcher(rules.getMatcher());
                 processor.setParameter(rules.getParam());
 
-                msgPipeline.addProcessor(rules.getProcessor(), processor);
+                msgPipeline.addProcessor(processor);
             }
             catch (Exception ex)
             {

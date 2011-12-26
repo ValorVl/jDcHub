@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Vector;
 
 /**
  * Process incoming object by applying all processors to some object.<p/>
@@ -39,7 +40,7 @@ public class Pipeline <T>
 {
     private final static Logger log = LoggerFactory.getLogger(Pipeline.class);
 
-    protected HashMap<String, Processor<T>> processors = new HashMap<String, Processor<T>>();
+    protected Vector<Processor<T>> processors = new Vector<Processor<T>>();
 
 
     public void process(T object)
@@ -51,32 +52,20 @@ public class Pipeline <T>
     }
     
     
-    public void addProcessor(String processorName, Processor processor)
+    public void addProcessor(Processor processor)
     {
-        if (processorName == null || processorName.isEmpty() || processorName.equals(""))
-        {
-            log.debug("Invalid handlerHame parameter in Pipeline#addHandler !");
-            return;
-        }
-
         if (processor == null)
         {
             log.debug("Invalid processor parameter in Pipeline#addHandler !");
             return;
         }
 
-        processors.put(processorName, processor);
+        processors.add(processor);
     }
 
 
-    public Processor<T> getProcessor(String processorName)
+    public Vector<Processor<T>> getProcessors()
     {
-        return processors.get(processorName);
-    }
-
-
-    public Collection<Processor<T>> getProcessors()
-    {
-        return processors.values();
+        return processors;
     }
 }
