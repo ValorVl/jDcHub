@@ -89,9 +89,6 @@ public class ScriptEngine extends Thread
         int numberOfThreads = ConfigurationManager.instance().getInt(ConfigurationManager.NUMBER_OF_SCRIPTS_INTERPRETERS);
 
         Properties properties = PySystemState.getBaseProperties();
-        properties.setProperty("python.home",
-                               ConfigurationManager.instance()
-                                                   .getString(ConfigurationManager.PYTHON_HOME));
 
         PySystemState.initialize(properties, null, null);
         
