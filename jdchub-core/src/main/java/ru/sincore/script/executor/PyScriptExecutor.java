@@ -48,7 +48,8 @@ public class PyScriptExecutor extends ScriptExecutor
     {
         super(taskQueue, scriptsPath);
 
-        this.state = new PySystemState();
+        this.state = Py.getSystemState();
+        this.state.path.insert(0, new PyString(scriptsPath));
         this.interpreter = new PythonInterpreter(null, state);
     }
     
