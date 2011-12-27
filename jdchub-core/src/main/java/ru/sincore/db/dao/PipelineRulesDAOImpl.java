@@ -62,7 +62,7 @@ public class PipelineRulesDAOImpl implements PipelineRulesDAO
             pojo.setMatcher(pattern);
             pojo.setProcessor(processor);
             pojo.setParam(param);
-            
+
             session.save(pojo);
 
             tx.commit();
@@ -104,7 +104,7 @@ public class PipelineRulesDAOImpl implements PipelineRulesDAO
 
 
     @Override
-    public boolean deleteRule(String pattern, String processor, String param)
+    public boolean deleteRule(Long id)
     {
         Session session = HibernateUtils.getSessionFactory().openSession();
         Transaction tx = session.getTransaction();
@@ -113,48 +113,14 @@ public class PipelineRulesDAOImpl implements PipelineRulesDAO
         {
             tx.begin();
 
-            Query request = session.createQuery(
-                    "from PipelineRulesPOJO where matcher=:pattern and processor=:processor and param=:param")
-                   .setParameter("pattern", pattern)
-                   .setParameter("processor", processor)
-                   .setParameter("param", param);
+            PipelineRulesPOJO pojo = new PipelineRulesPOJO();
 
-            PipelineRulesPOJO pojo = (PipelineRulesPOJO) request.uniqueResult();
+			pojo.setId(id);
 
             if (pojo != null)
             {
                 session.delete(pojo);
             }
-
-            tx.commit();
-        }
-        catch (Exception ex)
-        {
-            log.error(ex.toString());
-            tx.rollback();
-            return false;
-        }
-
-        return true;
-    }
-
-
-    @Override
-    public boolean deleteRule(PipelineRulesPOJO pojo)
-    {
-        Session session = HibernateUtils.getSessionFactory().openSession();
-        Transaction tx = session.getTransaction();
-
-        if (pojo == null)
-        {
-            return false;
-        }
-
-        try
-        {
-            tx.begin();
-
-            session.delete(pojo);
 
             tx.commit();
         }

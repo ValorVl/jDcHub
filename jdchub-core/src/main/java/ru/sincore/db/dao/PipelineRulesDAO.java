@@ -29,8 +29,7 @@ public interface PipelineRulesDAO
 {
     public boolean addRule(String pattern, String processor, String param);
     public boolean updateRule(PipelineRulesPOJO pojo);
-    public boolean deleteRule(String pattern, String processor, String param);
-    public boolean deleteRule(PipelineRulesPOJO pojo);
+    public boolean deleteRule(Long id);
     public List<PipelineRulesPOJO> getRules();
     public List<String> getPipelines();
 }
