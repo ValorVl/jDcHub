@@ -191,7 +191,7 @@ public class SessionManager extends IoHandlerAdapter
         log.debug("Client real IP: " + realIp);
 
 		newClient.setRealIP(realIp);
-        newClient.setSid(SIDGenerator.generate());
+        newClient.setSid(SIDGenerator.generateUnique());
         newClient.setLoggedIn(new Date());
 
         /**

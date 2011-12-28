@@ -158,7 +158,6 @@ public class ConfigurationManager extends PropertiesConfiguration
 
     public static final String SCRIPTS_LOCATION                 = "core.hub.scripts.directory";
     public static final String NUMBER_OF_SCRIPTS_INTERPRETERS   = "core.hub.scripts.interpreter.instances";
-    public static final String PYTHON_HOME                      = "core.hub.scripts.python_home";
 
 
     // Internal options

@@ -48,18 +48,24 @@ public class SIDGenerator
     public static String generate()
     {
         byte[] sid = new byte[3];
-        String tempSID = null;
 
+        // Generate new bytes for SID
+        random.nextBytes(sid);
+
+        return Base32.encode(sid).substring(0, 4);
+    }
+
+
+    public static String generateUnique()
+    {
+        String tempSID = null;
         boolean newSIDGenerated = false;
 
         while (!newSIDGenerated)
         {
             newSIDGenerated = true;
 
-            // Generate new bytes for SID
-            random.nextBytes(sid);
-
-            tempSID = Base32.encode(sid).substring(0, 4);
+            tempSID = generate();
 
             // if sid not unique, regenerate sid
             if (ClientManager.getInstance().getClientBySID(tempSID) != null)
@@ -67,5 +73,6 @@ public class SIDGenerator
         }
 
         return tempSID;
+
     }
 }
