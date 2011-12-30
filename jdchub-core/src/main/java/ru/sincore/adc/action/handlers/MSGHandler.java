@@ -15,10 +15,12 @@ import ru.sincore.adc.action.actions.MSG;
 import ru.sincore.client.AbstractClient;
 import ru.sincore.db.dao.ChatLogDAO;
 import ru.sincore.db.dao.ChatLogDAOImpl;
+import ru.sincore.events.SameMessageFloodDetectedSignal;
 import ru.sincore.events.UserCommandEvent;
 import ru.sincore.i18n.Messages;
 import ru.sincore.pipeline.Pipeline;
 import ru.sincore.pipeline.PipelineFactory;
+import ru.sincore.signalservice.Signal;
 import ru.sincore.util.AdcUtils;
 import ru.sincore.util.MessageUtils;
 import ru.sincore.util.STAError;
@@ -45,6 +47,8 @@ public class MSGHandler extends AbstractActionHandler<MSG>
     public void handle()
             throws STAException
     {
+
+        // detect chat message flood
         if (this.getMessageRecieveTime() - client.getLastMSG() <
                 ConfigurationManager.instance().getLong(ConfigurationManager.CHAT_MESSAGE_INTERVAL))
         {
@@ -56,17 +60,23 @@ public class MSGHandler extends AbstractActionHandler<MSG>
 
         try
         {
+            // detect same chat message flood
             if (client.getLastRawMSG().equals(action.getRawCommand()) &&
                     (this.getMessageRecieveTime() - client.getLastMSG() <
                     ConfigurationManager.instance().getLong(ConfigurationManager.CHAT_SAME_MESSAGE_SPAM_INTERVAL)))
             {
                 client.sendPrivateMessageFromHub(Messages.get(Messages.SAME_MESSAGE_FLOOD,
                                                               client.getExtendedField("LC")));
+
                 MessageUtils.sendMessageToOpChat(Messages.get(Messages.SAME_MESSAGE_FLOOD_DETECTED,
                                                               new String[]
                                                               {
                                                                       client.getNick()
                                                               }));
+
+                // emit signal about same message flood detection
+                Signal.emit(new SameMessageFloodDetectedSignal(client, action.getRawCommand()));
+
                 return;
             }
 
@@ -77,6 +87,7 @@ public class MSGHandler extends AbstractActionHandler<MSG>
             // ignore
         }
 
+        // save message timestamp
         client.setLastMSG(this.getMessageRecieveTime());
 
         try
