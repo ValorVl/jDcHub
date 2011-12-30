@@ -171,7 +171,7 @@ public class Client extends AbstractClient
         clientInfo.setOverrideFull(this.isOverrideFull());
         clientInfo.setKickable(this.isKickable());
         clientInfo.setRenameable(this.isRenameable());
-        clientInfo.setLastMessage(this.getLastMessageText());
+        clientInfo.setLastMessage(this.getLastRawMSG());
         clientInfo.setLoginCount(this.getLoginCount());
         clientInfo.setTimeOnline(this.getTimeOnline());
         clientInfo.setLastLogIn(this.getLoggedIn());
@@ -210,7 +210,7 @@ public class Client extends AbstractClient
         this.setOverrideFull(clientInfo.getOverrideFull());
         this.setKickable(clientInfo.getKickable());
         this.setRenameable(clientInfo.getRenameable());
-        this.setLastMessageText(clientInfo.getLastMessage());
+        this.setLastRawMSG(clientInfo.getLastMessage());
         this.setLoginCount(clientInfo.getLoginCount() + 1);
         this.setTimeOnline(clientInfo.getTimeOnline());
         this.setMaximumTimeOnline(clientInfo.getMaximumTimeOnline());

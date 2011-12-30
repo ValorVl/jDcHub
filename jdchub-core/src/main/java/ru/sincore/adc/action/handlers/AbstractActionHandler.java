@@ -24,6 +24,7 @@ public abstract class AbstractActionHandler<T extends AbstractAction>
 
     protected AbstractClient client;
     protected T              action;
+    protected long           messageRecieveTime = System.currentTimeMillis();
 
 
     public AbstractActionHandler(AbstractClient client,
@@ -31,7 +32,6 @@ public abstract class AbstractActionHandler<T extends AbstractAction>
     {
         this.client = client;
         this.action       = action;
-
     }
 
 
@@ -50,6 +50,19 @@ public abstract class AbstractActionHandler<T extends AbstractAction>
 
         return true;
     }
+
+
+    public long getMessageRecieveTime()
+    {
+        return messageRecieveTime;
+    }
+
+
+    public void setMessageRecieveTime(long messageRecieveTime)
+    {
+        this.messageRecieveTime = messageRecieveTime;
+    }
+
 
     public abstract void handle()
             throws STAException;
