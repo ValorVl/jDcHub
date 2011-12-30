@@ -120,6 +120,10 @@ public class Messages
     public static final String FORBIDDEN_WORD_USAGE   = "core.wordfilter.forbidden_word_usage";
     public static final String FORBIDDEN_WORD_USAGE_KICK_REASON = "core.wordfilter.forbidden_word_usage_kick_reason";
 
+    public static final String TOO_FAST_CHATTING      = "core.hub.chat.too_fast_chatting";
+    public static final String SAME_MESSAGE_FLOOD     = "core.hub.chat.same_message_flood";
+    public static final String SAME_MESSAGE_FLOOD_DETECTED = "core.hub.chat.same_message_flood_detected";
+
 
     private static Map<String, ResourceBundle> resourcesMap =
                                                     new ConcurrentHashMap<String, ResourceBundle>();

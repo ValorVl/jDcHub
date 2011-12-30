@@ -400,7 +400,7 @@ public class ClientInfo
     /**
      * Last said message
      */
-    private String lastMessageText = "";
+    private String lastRawMSG = "";
 
     private String inQueueSearch = null;
 
@@ -1212,15 +1212,15 @@ public class ClientInfo
     }
 
 
-    public String getLastMessageText()
+    public String getLastRawMSG()
     {
-        return lastMessageText;
+        return lastRawMSG;
     }
 
 
-    public void setLastMessageText(String lastMessageText)
+    public void setLastRawMSG(String lastRawMSG)
     {
-        this.lastMessageText = lastMessageText;
+        this.lastRawMSG = lastRawMSG;
     }
 
 
