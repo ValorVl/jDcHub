@@ -82,6 +82,14 @@ class PythonBot(AbstractClient):
         t.start()
         return
 
+    def removeSession(self, immediately):
+        # construct IQUI message
+        ClientManager.getInstance().removeClient(self);
+
+        # broadcast bot quited message
+        Broadcast.getInstance().broadcast("IQUI " + self.getSid(), self);
+
+
 
 # main function
 if __name__ == "__main__":
@@ -92,8 +100,9 @@ if __name__ == "__main__":
     bot.setEmail("lh@podryad.tv")
     bot.setWeight(10)
     bot.setClientType(ClientType.BOT)
-    bot.setValidated();
+    bot.setValidated()
     bot.setActive(True)
+    bot.setMustBeDisconnected(False)
 
     ClientManager.getInstance().addClient(bot)
     Broadcast.getInstance().broadcast(bot.getINF(), bot);

@@ -55,7 +55,7 @@ public class ClientUtils
                                        String reason)
 	{
 
-		Client client = (Client) ClientManager.getInstance().getClientByNick(clientNick);
+		AbstractClient client = ClientManager.getInstance().getClientByNick(clientNick);
 
 		if (client == null)
 		{
