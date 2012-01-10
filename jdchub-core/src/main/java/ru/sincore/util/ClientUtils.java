@@ -46,7 +46,10 @@ public class ClientUtils
 	 * Method for kick fucking user! Kick is the same as ban for 5 mins.
 	 * @param commandOwner Op nickname which want to ban user
 	 * @param clientNick kicked client
-	 * @param reason reason kicked
+	 * @param banType type of ban: kick, temp ban, perm ban
+     * @param banExpiredDate ban expires date
+     * @param reason reason kicked
+     * @return status - was client kicked
 	 */
 	public static boolean kickOrBanClient(AbstractClient commandOwner,
                                        String clientNick,

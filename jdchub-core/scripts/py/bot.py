@@ -26,19 +26,12 @@ class PythonBot(AbstractClient):
         self.rss = "http://korobka.tv/rss.xml"
         self.lastFeedTitle = "first_last_feed_title"
 
-    # Default bot INF constructor
-    def getINF(self):
-        return "BINF " + self.getSid() + \
-         " ID" + self.getCid() + \
-         " NI" + self.getNick() + \
-         " DE" + self.getDescription() + \
-         " CT" + str(self.getClientType()) + \
-         " EM" + self.getEmail()
 
     # this method give a reaction to incoming actions
     # like messages (MSG class), searchs (SCH class) etc
     def sendAdcAction(self, action):
         return
+
 
     def sendMessageToChat(self, message):
         outgoingMessage = MSG()
@@ -66,6 +59,7 @@ class PythonBot(AbstractClient):
             self.sendMessageToChat(u"Кто-то жаждит бор!")
         return
 
+
     # get's rss feed from site and send updates to chat
     def getRss(self):
         # get rss feed
@@ -82,10 +76,10 @@ class PythonBot(AbstractClient):
         t.start()
         return
 
+
     def removeSession(self, immediately):
         # construct IQUI message
         ClientManager.getInstance().removeClient(self);
-
         # broadcast bot quited message
         Broadcast.getInstance().broadcast("IQUI " + self.getSid(), self);
 
@@ -97,7 +91,7 @@ if __name__ == "__main__":
     bot.setSid("PBOT")
     bot.setCid(CIDGenerator.generate())
     bot.setDescription(AdcUtils.toAdcString(u"Я могу много чего, спроси меня"))
-    bot.setEmail("lh@podryad.tv")
+    bot.setEmail(u"lh@podryad.tv")
     bot.setWeight(10)
     bot.setClientType(ClientType.BOT)
     bot.setValidated()
