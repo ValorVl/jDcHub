@@ -114,6 +114,9 @@ public class ConfigurationManager extends PropertiesConfiguration
 
     // Chat settings
     public static final String CHAT_REFRESH           = "core.hub.chat_refresh";
+    public static final String CHAT_MESSAGE_INTERVAL  = "core.hub.chat.message_interval";
+    public static final String CHAT_SAME_MESSAGE_SPAM_INTERVAL = "core.hub.chat.same_message_spam_interval";
+
     // History messages line count
     public static final String LAST_MESSAGES_COUNT    = "last.messages.count";
     public static final String OP_CHAT_NAME           = "core.hub.op_chat_name";
@@ -158,7 +161,6 @@ public class ConfigurationManager extends PropertiesConfiguration
 
     public static final String SCRIPTS_LOCATION                 = "core.hub.scripts.directory";
     public static final String NUMBER_OF_SCRIPTS_INTERPRETERS   = "core.hub.scripts.interpreter.instances";
-    public static final String PYTHON_HOME                      = "core.hub.scripts.python_home";
 
 
     // Internal options

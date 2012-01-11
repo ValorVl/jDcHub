@@ -25,8 +25,13 @@ package ru.sincore.client;
 import org.apache.commons.lang.math.IntRange;
 import org.apache.mina.core.session.IoSession;
 import ru.sincore.ConfigurationManager;
+import ru.sincore.Exceptions.CommandException;
+import ru.sincore.Exceptions.STAException;
 import ru.sincore.adc.ClientType;
+import ru.sincore.adc.Flags;
+import ru.sincore.adc.MessageType;
 import ru.sincore.adc.State;
+import ru.sincore.adc.action.actions.INF;
 
 import java.util.*;
 
@@ -400,7 +405,7 @@ public class ClientInfo
     /**
      * Last said message
      */
-    private String lastMessageText = "";
+    private String lastRawMSG = "";
 
     private String inQueueSearch = null;
 
@@ -1212,15 +1217,15 @@ public class ClientInfo
     }
 
 
-    public String getLastMessageText()
+    public String getLastRawMSG()
     {
-        return lastMessageText;
+        return lastRawMSG;
     }
 
 
-    public void setLastMessageText(String lastMessageText)
+    public void setLastRawMSG(String lastRawMSG)
     {
-        this.lastMessageText = lastMessageText;
+        this.lastRawMSG = lastRawMSG;
     }
 
 
@@ -1342,12 +1347,6 @@ public class ClientInfo
     }
 
 
-    public String getINF()
-    {
-        return null;
-    }
-
-
     public Object getAdditionalStat(String name)
     {
         return additionalStats.get(name);
@@ -1357,6 +1356,145 @@ public class ClientInfo
     public Object setAdditionalStat(String name, Object value)
     {
         return this.additionalStats.put(name, value);
+    }
+
+
+    public String getINF()
+    {
+
+        INF binf = new INF();
+
+        try
+        {
+            binf.setMessageType(MessageType.B);
+            binf.setSourceSID(getSid());
+            binf.setCid(getCid());
+            binf.setNick(getNick());
+
+            //these were mandatory fields.. now adding the extra...
+            if (getIpAddressV4() != null && !getIpAddressV4().equals(""))
+            {
+                binf.setFlagValue(Flags.ADDR_IPV4, getIpAddressV4());
+            }
+
+            if (getMinAutomaticSlots() != null)
+            {
+                binf.setFlagValue(Flags.MIN_AUTOMATIC_SLOTS, getMinAutomaticSlots());
+            }
+
+            if (getAutomaticSlotAllocator() != null)
+            {
+                binf.setFlagValue(Flags.AUTOMATIC_SLOT_ALLOCATOR, getAutomaticSlotAllocator());
+            }
+
+            if (getAwayStatus() != null)
+            {
+                binf.setFlagValue(Flags.AWAY, getAwayStatus());
+            }
+
+            if (getDescription() != null && !getDescription().equals(""))
+            {
+                binf.setFlagValue(Flags.DESCRIPTION, getDescription());
+            }
+
+            if (getMaxDownloadSpeed() != null)
+            {
+                binf.setFlagValue(Flags.MAX_DOWNLOAD_SPEED, getMaxDownloadSpeed());
+            }
+
+            if (getEmail() != null && !getEmail().equals(""))
+            {
+                binf.setFlagValue(Flags.EMAIL, getEmail());
+            }
+
+            if (isHidden() != false)
+            {
+                // TODO should change.. only for ops :)
+                binf.setFlagValue(Flags.HIDDEN, true);
+            }
+
+            if (getNumberOfNormalStateHubs() != null)
+            {
+                binf.setFlagValue(Flags.AMOUNT_HUBS_WHERE_NORMAL_USER, getNumberOfNormalStateHubs());
+            }
+
+            if (getNumberOfHubsWhereOp() != null)
+            {
+                binf.setFlagValue(Flags.AMOUNT_HUBS_WHERE_OP_USER, getNumberOfHubsWhereOp());
+            }
+
+            if (getNumberOfHubsWhereRegistred() != null)
+            {
+                binf.setFlagValue(Flags.AMOUNT_HUBS_WHERE_REGISTERED_USER, getNumberOfHubsWhereRegistred());
+            }
+
+            if (isHubItself() != false)
+            {
+                binf.setFlagValue(Flags.HUB_ITSELF, true);
+            }
+
+            if (getClientType() != 0) // TODO should change.. more working here
+            {
+                binf.setFlagValue(Flags.CLIENT_TYPE, getClientType());
+            }
+
+            if (getSharedFiles() != null)
+            {
+                binf.setFlagValue(Flags.SHARED_FILES, getSharedFiles());
+            }
+
+            if (getShareSize() != null)
+            {
+                binf.setFlagValue(Flags.SHARE_SIZE, getShareSize());
+            }
+
+            if (getUploadSlotsOpened() != null)
+            {
+                binf.setFlagValue(Flags.OPENED_UPLOAD_SLOTS, getUploadSlotsOpened());
+            }
+
+            if (getFeatues().size() > 0)
+            {
+                binf.setFeatures(getFeatues());
+            }
+
+            if (getToken() != null && !getToken().equals(""))
+            {
+                binf.setFlagValue(Flags.TOKEN, getToken());
+            }
+
+            if (getUdpPortV4() != null && !getUdpPortV4().equals(""))
+            {
+                binf.setFlagValue(Flags.UDP_PORT_IPV4, getUdpPortV4());
+            }
+
+            if (getUdpPortV6() != null && !getUdpPortV6().equals(""))
+            {
+                binf.setFlagValue(Flags.UDP_PORT_IPV6, getUdpPortV6());
+            }
+
+            if (getClientIdentificationVersion() != null && !getClientIdentificationVersion().equals(""))
+            {
+                binf.setFlagValue(Flags.VERSION, getClientIdentificationVersion());
+            }
+
+            if (getMaxUploadSpeed() != null && getMaxUploadSpeed() != 0)
+            {
+                binf.setFlagValue(Flags.MAX_UPLOAD_SPEED, getMaxUploadSpeed());
+            }
+
+            return binf.getRawCommand();
+        }
+        catch (CommandException e)
+        {
+            e.printStackTrace();
+        }
+        catch (STAException e)
+        {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
 
