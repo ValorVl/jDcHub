@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="adm:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="adm-0.0.1-SNAPSHOT.war">
+      <element id="artifact" artifact-name="adm:war exploded" />
+      <element id="library" level="project" name="Maven: antlr:antlr:2.7.6" />
+    </root>
+  </artifact>
+</component>

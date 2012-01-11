@@ -4,18 +4,19 @@
 <hibernate-configuration>
  <session-factory>
   <!-- SQLite settings -->
+  <!--
   <property name="hibernate.connection.driver_class">org.sqlite.JDBC</property>
   <property name="hibernate.connection.url">jdbc:sqlite:./jdchub.db</property>
   <property name="hibernate.dialect">ru.sincore.db.SQLiteDialect</property>
-
+  -->
   <!-- MySQL settings -->
-  <!--
-  <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+
+  <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>                                                                                      =
   <property name="hibernate.connection.username">valor</property>
   <property name="hibernate.connection.password">Satana666</property>
   <property name="hibernate.connection.url">jdbc:mysql://10.10.10.129/jdchub?characterEncoding=UTF-8</property>
   <property name="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</property>
-  -->
+
 
   <!-- Common settings -->
   <property name="hibernate.c3p0.acquire_increment">1</property>

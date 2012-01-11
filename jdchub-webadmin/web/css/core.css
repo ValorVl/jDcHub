@@ -1,0 +1,181 @@
+@charset "UTF-8";
+
+body{
+    margin: 0px;
+    padding: 0px;
+    font-family: sans-serif,serif;
+    font-style: normal;
+    font-size: 12pt;
+    color: white;
+    background-color: black;
+
+}
+
+.head {
+    height: 100px;
+    background-image: url("/images/logo.jpg");
+    background-position: left;
+    background-repeat: no-repeat;
+    border-bottom: 1px solid silver;
+    padding-left: 400px;
+    padding-top: 10px;
+}
+
+select {
+    border: 1px solid gray;
+    height: 20px;
+}
+
+.menu {
+    background-color: blue;
+    border-top: 1px solid gray;
+    border-bottom: 1px solid gray;
+}
+
+.content {
+    width: 1000px;
+    margin: 0 auto;
+}
+
+ul#menu
+{
+	margin:0;
+	padding:0;
+	list-style-type:none;
+	width:auto;
+	position:relative;
+	display:block;
+	height:30px;
+	font-size:12px;
+	font-weight:bold;
+	background:transparent url(/images/nav_bg.png) repeat-x top left;
+	font-family:Arial, Helvetica, sans-serif;
+	border-bottom:1px solid #000000;
+	border-top:1px solid #000000;
+}
+
+ul#menu li
+{
+	display:block;
+	float:left;
+	margin:0;
+	padding:0;
+}
+
+ul#menu li a
+{
+	display:block;
+	float:left;
+	color:#999999;
+	text-decoration:none;
+	font-weight:bold;
+	padding:8px 20px 0 20px;
+}
+
+ul#menu li a:hover
+{
+	color:#FFFFFF;
+	height:22px;
+	background:transparent url(/images/nav_bg.png) 0px -30px no-repeat;
+}
+
+
+ul#menu li a.current
+{
+	display:inline;
+	height:22px;
+	background:transparent url(/images/nav_bg.png) 0px -30px no-repeat;
+	float:left;
+	margin:0;
+}
+
+.main-desc {
+    margin-top: 10px;
+    margin-left: 10px;
+    border-bottom: gray solid 1px;
+    width: 100%;
+    text-align: left;
+}
+
+#info tr td {
+    padding: 5px;
+}
+
+.s-head {
+    font-size: 15pt;
+    font-weight: bold;
+    padding-left: 5px;
+}
+
+.hm-menu {
+    font-size: 10pt;
+    text-decoration: none;
+    color: white;
+}
+
+.mod-list{
+    text-align: left;
+}
+
+.mod-list select {
+    margin: 3px;
+}
+
+#m-t-head tr td {
+    background-color: blue;
+    color: #FFFFFF;
+    border: #999999 solid 1px;
+    font-size: 12px;
+    padding: 3px;
+}
+
+#m-t-body tr td {
+    font-size: 12px;
+    padding: 3px;
+}
+
+#m-t-body tr td input {
+    vertical-align: middle;
+}
+
+.control-t tr td {
+    font-size: 12pt;
+    padding: 4px;
+}
+
+.control-t tr td input {
+    width: 90px;
+}
+
+#mess {
+    background: #000000;
+    border: 0px;
+    color: #999999;
+    font-size: 12pt;
+    font-weight: bold;
+}
+
+.auth-block {
+    padding-top: 300px;
+    text-align: left;
+}
+
+.auth-block table tr td {
+    padding: 5px;
+}
+
+.auth-block input {
+    border: 1px solid #999999;
+    padding: 3px;
+    width: 200px;
+}
+
+#mess {
+    color: red;
+    font-weight: bold;
+}
+
+.fail-page {
+    padding-top: 300px;
+    text-align: center;
+}
