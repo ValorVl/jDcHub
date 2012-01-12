@@ -131,9 +131,15 @@ public class ScriptEngine extends Thread
 
             for (File script : enginesDir.listFiles())
             {
+                // skipping directories
                 if (script.isDirectory())
                 {
-                    // skipping directories
+                    continue;
+                }
+
+                // skip files with wrong extentions
+                if (!script.getName().endsWith("." + enginesDir.getName()))
+                {
                     continue;
                 }
 
