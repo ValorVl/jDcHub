@@ -1,12 +1,14 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>adm</artifactId>
-    <groupId>ru.sincore.adm</groupId>
+
+    <artifactId>jdchub-webadmin</artifactId>
+    <groupId>ru.sincore.jdchub.modules.webadmin</groupId>
     <version>0.0.1-SNAPSHOT</version>
 
-    <name>adm</name>
-    <description></description>
+    <name>jDcHub WebAdmin</name>
+    <description>jDcHub web administration console</description>
     <packaging>war</packaging>
 
     <distributionManagement>
@@ -18,53 +20,55 @@
     </distributionManagement>
 
     <build>
+        <finalName>admin.war</finalName>
         <plugins>
-  		<plugin>
-  			<groupId>org.apache.maven.plugins</groupId>
-  			<artifactId>maven-war-plugin</artifactId>
-  			<version>2.1.1</version>
-			<configuration>
-				<webResources>
-					<resource>
-						<directory>${basedir}/web</directory>
-					</resource>
-				</webResources>
-				<warSourceDirectory>web</warSourceDirectory>
-				<warSourceExcludes>${basedir}/WEB-INF/lib/*.jar</warSourceExcludes>
-				<webXml>${basedir}/WEB-INF/web.xml</webXml>
-				<archiveClasses>false</archiveClasses>
-				<archive>
-					<manifest>
-						<addClasspath>true</addClasspath>
-						<classpathPrefix />
-					</manifest>
-					<manifestEntries>
-							<url>${project.url}</url>
-							<Implementation-Build>${buildNumber}</Implementation-Build>
-							<Implementation-Title>${project.name}</Implementation-Title>
-							<Implementation-Vendor>sincore</Implementation-Vendor>
-							<Implementation-Version>${project.version}</Implementation-Version>
-							<Built-By>${user.name}</Built-By>
-							<Built-OS>${os.name}</Built-OS>
-							<Build-Date>${timestamp}</Build-Date>
-							<SCM>${buildNumber}</SCM>
-					</manifestEntries>
-				</archive>
-			</configuration>
-  		</plugin>
-  		<plugin>
-  			<groupId>org.apache.maven.plugins</groupId>
-  			<artifactId>maven-compiler-plugin</artifactId>
-  			<version>2.3.2</version>
-  			<configuration>
-  				<compilerVersion>1.6</compilerVersion>
-  				<fork>true</fork>
-  				<verbose>true</verbose>
-  				<encoding>UTF-8</encoding>
-  			</configuration>
-  		</plugin>
-
-     </plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.1.1</version>
+                <configuration>
+                    <webResources>
+                        <resource>
+                            <directory>${basedir}/web</directory>
+                        </resource>
+                    </webResources>
+                    <warSourceDirectory>web</warSourceDirectory>
+                    <warSourceExcludes>${basedir}/WEB-INF/lib/*.jar</warSourceExcludes>
+                    <webXml>${basedir}/WEB-INF/web.xml</webXml>
+                    <archiveClasses>false</archiveClasses>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix/>
+                        </manifest>
+                        <manifestEntries>
+                            <url>${project.url}</url>
+                            <Implementation-Title>${project.name}</Implementation-Title>
+                            <Implementation-Vendor>sincore</Implementation-Vendor>
+                            <Implementation-Version>${project.version}</Implementation-Version>
+                            <Built-By>${user.name}</Built-By>
+                            <Built-OS>${os.name}</Built-OS>
+                            <!--
+                            <Implementation-Build>${buildNumber}</Implementation-Build>
+                            <Build-Date>${timestamp}</Build-Date>
+                            <SCM>${buildNumber}</SCM>
+                            -->
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <compilerVersion>1.6</compilerVersion>
+                    <fork>true</fork>
+                    <verbose>true</verbose>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 
     <dependencies>

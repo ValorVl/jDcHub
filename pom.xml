@@ -64,6 +64,7 @@
     <modules>
         <module>jdchub-core</module>
         <module>jdchub-modules</module>
+        <module>jdchub-webadmin</module>
 
         <!-- distribution module MUST be last module in modules set -->
         <module>distribution</module>
