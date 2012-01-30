@@ -23,7 +23,7 @@
 
     BigTextDataDAOImpl bigText = new BigTextDataDAOImpl();
     String motd = AdcUtils.fromAdcString(bigText.getData("MOTD", configInstance.getString(ConfigurationManager.HUB_DEFAULT_LOCALE)));
-    List<String> list = bigText.getLocales();
+    List<String> list = bigText.getLocales("MOTD");
 
 %>
 <html>

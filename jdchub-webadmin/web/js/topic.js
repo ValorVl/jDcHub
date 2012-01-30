@@ -26,7 +26,7 @@ $(document).ready(
             $.ajax({
                        type: "POST",
                        url: "../btHandler",
-                       data: { body: $("#out").val(), locale: $("#l").val(),action:"update",rsrc:"tipic" },
+                       data: { body: $("#out").val(), locale: $("#l").val(),action:"update",rsrc:"topic" },
                        success: function(body,locale) {
                           $("#message").html("<h3>Success!</h3>").show()
                           $("#message").fadeOut(3000)

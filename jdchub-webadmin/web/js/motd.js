@@ -29,7 +29,7 @@ $(document).ready(
                           $.ajax({
                              type:"POST",
                              url:"../btHandler",
-                             data:{ mbody:$("#out").val(), locale:$("#l").val(),action:"update",rsrc:"motd" },
+                             data:{ body:$("#out").val(), locale:$("#l").val(),action:"update",rsrc:"motd" },
                              success:function (body, locale)
                              {
                                  $("#message").html("<h3>Success!</h3>").show()

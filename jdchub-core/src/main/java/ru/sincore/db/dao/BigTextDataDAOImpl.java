@@ -4,6 +4,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +17,7 @@ import java.util.List;
  * @author Valor
  * @author Alexey 'lh' Antonov
  */
-public class BigTextDataDAOImpl implements BigStaticDataDAO
+public class BigTextDataDAOImpl implements BigTextDataDAO
 {
     private static final Logger log = LoggerFactory.getLogger(BigTextDataDAOImpl.class);
 
@@ -201,6 +202,34 @@ public class BigTextDataDAOImpl implements BigStaticDataDAO
             Query request = session.createQuery("from BigTextDataPOJO order by title,locale");
 
             result = (List<BigTextDataPOJO>) request.list();
+
+            tx.commit();
+        }
+        catch (Exception ex)
+        {
+            log.error(ex.toString());
+            tx.rollback();
+        }
+
+        return result;
+    }
+
+
+    public List<String> getLocales(String title)
+    {
+        Session session = HibernateUtils.getSessionFactory().openSession();
+        Transaction tx 	= session.getTransaction();
+
+        List<String> result = null;
+        try
+        {
+            tx.begin();
+
+            Criteria criteria = session.createCriteria(BigTextDataPOJO.class);
+            criteria.add(Restrictions.eq("title", title));
+            criteria.setProjection(Projections.distinct(Projections.property("locale")));
+
+            result = criteria.list();
 
             tx.commit();
         }

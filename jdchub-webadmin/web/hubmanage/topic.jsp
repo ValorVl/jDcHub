@@ -21,7 +21,7 @@
     BigTextDataDAOImpl textDataDAO = new BigTextDataDAOImpl();
 
     String topic = AdcUtils.fromAdcString(textDataDAO.getData("TOPIC", configInstance.getString(ConfigurationManager.HUB_DEFAULT_LOCALE)));
-    List<String> list = textDataDAO.getLocales();
+    List<String> list = textDataDAO.getLocales("TOPIC");
 
 %>
 <html>

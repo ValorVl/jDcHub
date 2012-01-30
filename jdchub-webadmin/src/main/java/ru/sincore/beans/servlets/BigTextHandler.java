@@ -34,7 +34,7 @@ public class BigTextHandler extends HttpServlet
 
 			if (action.equals("update"))
 			{
-				String messageBody = request.getParameter("mbody");
+				String messageBody = request.getParameter("body");
 				String selectedLocale = request.getParameter("locale");
 				
 				if (actionSrc.equals("motd"))

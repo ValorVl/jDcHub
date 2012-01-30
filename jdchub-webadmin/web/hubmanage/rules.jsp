@@ -21,7 +21,7 @@
     BigTextDataDAOImpl textDataDAO = new BigTextDataDAOImpl();
 
     String rules = AdcUtils.fromAdcString(textDataDAO.getData("RULES", configInstance.getString(ConfigurationManager.HUB_DEFAULT_LOCALE)));
-    List<String> list = textDataDAO.getLocales();
+    List<String> list = textDataDAO.getLocales("RULES");
 
 %>
 <html>
