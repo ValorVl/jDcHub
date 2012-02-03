@@ -27,10 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.sincore.adc.ClientType;
 import ru.sincore.adc.State;
-import ru.sincore.client.AbstractClient;
-import ru.sincore.client.Bot;
-import ru.sincore.client.ChatRoom;
-import ru.sincore.client.Client;
+import ru.sincore.client.*;
 
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
@@ -123,25 +120,7 @@ public final class ClientManager
     private void addBots()
     {
         // Create new Hub Bot
-        Bot bot = new Bot();
-        bot.setSid(configurationManager.getString(ConfigurationManager.HUB_SID));
-        bot.setCid(configurationManager.getString(ConfigurationManager.SECURITY_CID));
-        bot.setNick(configurationManager.getString(ConfigurationManager.HUB_NAME));
-        bot.setDescription(configurationManager.getAdcString(ConfigurationManager.HUB_DESCRIPTION));
-
-        // TODO [lh] Remove code duplication
-        // duplicated code placed here: SUPHandler#sendClientInitializationInfo
-        if (!ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_DESCRIPTION).isEmpty())
-        {
-            bot.setDescription(ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_DESCRIPTION));
-        }
-
-        bot.setWeight(100);
-        bot.setClientType(ClientType.HUB | ClientType.BOT); // Client Type 32 is hub
-        bot.setValidated();
-
-        // load info about bot from db
-        bot.loadInfo();
+        Bot bot = new HubBot();
 
         // add bot to client list
         addClient(bot);

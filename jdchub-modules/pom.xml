@@ -20,6 +20,7 @@
     <modules>
         <module>LCExtension</module>
         <module>WebManagementConsole</module>
+        <module>ChatBot</module>
     </modules>
 
 
@@ -30,11 +31,13 @@
        distribution project builds AFTER that one...
   -->
   <dependencies>
+      <!-- This dependency duplicates in modules
     <dependency>
       <groupId>ru.sincore.jdchub</groupId>
       <artifactId>jdchub-core</artifactId>
       <version>0.3.0-SNAPSHOT</version>
     </dependency>
+    -->
   </dependencies>
 
   <build>

@@ -24,9 +24,8 @@ package ru.sincore.client;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.sincore.BigTextManager;
-import ru.sincore.ConfigurationManager;
-import ru.sincore.util.AdcUtils;
+import ru.sincore.Broadcast;
+import ru.sincore.ClientManager;
 
 /**
  * @author Alexey 'lh' Antonov
@@ -38,46 +37,11 @@ public class Bot extends AbstractClient
 
 
     @Override
-    public String getINF()
+    public void removeSession(boolean immediately)
     {
-        StringBuilder auxstr = new StringBuilder();
-
-        auxstr.append("BINF " + getSid() + " ID" + getCid() + " NI" + getNick());
-        if (getClientType() != 0) // TODO should change.. more working here
-        {
-            auxstr.append(" CT");
-            auxstr.append(getClientType());
-        }
-        if (getDescription() != null)
-        {
-            if (!getDescription().equals(""))
-            {
-                // TODO [lh] Remove code duplication
-                // duplicated code placed here: SUPHandler#sendClientInitializationInfo
-                BigTextManager bigTextManager = new BigTextManager();
-                // hub description == hub topic
-                String hubDescription = bigTextManager.getText(BigTextManager.TOPIC);
-
-                if (hubDescription != null &&
-                    !hubDescription.isEmpty() &&
-                    !hubDescription.equals(""))
-                {
-                    this.setDescription(hubDescription);
-                }
-                else if (!ConfigurationManager.instance()
-                                              .getAdcString(ConfigurationManager.HUB_DESCRIPTION)
-                                              .isEmpty())
-                {
-                    this.setDescription(ConfigurationManager.instance()
-                                                            .getAdcString(ConfigurationManager.HUB_DESCRIPTION));
-                }
-
-
-                auxstr.append(" DE");
-                auxstr.append(getDescription());
-            }
-        }
-
-        return auxstr.toString();
+        // construct IQUI message
+        ClientManager.getInstance().removeClient(this);
+        // broadcast bot quited message
+        Broadcast.getInstance().broadcast("IQUI " + this.getSid(), this);
     }
 }

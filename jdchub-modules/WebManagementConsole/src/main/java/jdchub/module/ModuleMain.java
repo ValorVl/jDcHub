@@ -23,6 +23,8 @@
 package jdchub.module;
 
 import org.eclipse.jetty.server.Server;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.sincore.modules.Module;
 import org.eclipse.jetty.xml.XmlConfiguration;
 
@@ -32,6 +34,8 @@ import org.eclipse.jetty.xml.XmlConfiguration;
  */
 public class ModuleMain extends Module
 {
+    private static final Logger log = LoggerFactory.getLogger(ModuleMain.class);
+
     private final String moduleName = "WebManagementConsole";
     private final String moduleVersion = "0.1.0";
 
@@ -57,7 +61,7 @@ public class ModuleMain extends Module
             return false;
         }
 
-        System.out.println("Module " + moduleName + " inited");
+        log.info("Module " + moduleName + " inited");
 
         return server.isRunning();
     }
@@ -71,7 +75,7 @@ public class ModuleMain extends Module
             return false;
         }
 
-        System.out.println("Jetty server state: " + server.getState());
+        log.info("Jetty server state: " + server.getState());
 
         try
         {
@@ -86,7 +90,7 @@ public class ModuleMain extends Module
 
         if (server.isStopped())
         {
-            System.out.println("Module " + moduleName + " deinited");
+            log.info("Module " + moduleName + " deinited");
             return true;
         }
 
