@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/adm.iml" filepath="$PROJECT_DIR$/adm.iml" />
+      <module fileurl="file://$PROJECT_DIR$/jdchub-webadmin.iml" filepath="$PROJECT_DIR$/jdchub-webadmin.iml" />
     </modules>
   </component>
 </project>
