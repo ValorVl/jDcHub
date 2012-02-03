@@ -19,6 +19,18 @@
         </repository>
     </distributionManagement>
 
+    <properties>
+        <resteasy-version>2.3.1.GA</resteasy-version>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>jboss</id>
+            <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+        </repository>
+    </repositories>
+
+
     <build>
         <finalName>admin.war</finalName>
         <plugins>
@@ -72,12 +84,56 @@
     </build>
 
     <dependencies>
+        <!-- =================================================================================== -->
+        <!-- RESTEasy                                                                            -->
+        <!-- =================================================================================== -->
+        <!-- core library -->
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jaxrs</artifactId>
+            <version>${resteasy-version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>slf4j-simple</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+            </exclusions>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>jaxrs-api</artifactId>
+            <version>${resteasy-version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jaxb-provider</artifactId>
+            <version>${resteasy-version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jackson-provider</artifactId>
+            <version>${resteasy-version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+
         <dependency>
             <groupId>ru.sincore.jdchub</groupId>
             <artifactId>jdchub-core</artifactId>
             <version>0.3.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>ru.sincore.jdchub.modules.directory-jar</groupId>
+            <artifactId>WebManagementConsole</artifactId>
+            <version>0.3.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.mortbay.jetty</groupId>
             <artifactId>servlet-api</artifactId>
@@ -89,5 +145,6 @@
             <artifactId>antlr</artifactId>
             <version>2.7.6</version>
         </dependency>
+
     </dependencies>
 </project>
