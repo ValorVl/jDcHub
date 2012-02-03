@@ -11,7 +11,7 @@
   -->
   <!-- MySQL settings -->
 
-  <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>                                                                                      =
+  <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
   <property name="hibernate.connection.username">valor</property>
   <property name="hibernate.connection.password">Satana666</property>
   <property name="hibernate.connection.url">jdbc:mysql://10.10.10.129/jdchub?characterEncoding=UTF-8</property>
@@ -48,6 +48,7 @@
      <mapping class="ru.sincore.db.pojo.RolesAssociationPOJO"/>
      <mapping class="ru.sincore.db.pojo.ModuleListPOJO"/>
      <mapping class="ru.sincore.db.pojo.PipelineRulesPOJO"/>
+     <mapping class="ru.sincore.db.pojo.ScriptInfoPOJO"/>
 
  </session-factory>
 </hibernate-configuration>

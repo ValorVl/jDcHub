@@ -25,22 +25,25 @@ public class BanListDAOImpl implements BanListDAO
 		Session session = HibernateUtils.getSessionFactory().openSession();
 		Transaction tx = session.getTransaction();
 
-		try{
-
+		try
+        {
 			tx.begin();
 
 			session.save(ban);
 
 			tx.commit();
 
-		}catch (Exception ex)
+            log.debug("[ADD] Ban to user \'" + ban.getNick() + "\' stored to db.");
+
+            return true;
+		}
+        catch (Exception ex)
 		{
 			tx.rollback();
 			log.error(ex);
-			return false;
 		}
 
-		return true;
+        return false;
 	}
 
 	/**

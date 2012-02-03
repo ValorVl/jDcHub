@@ -1,9 +1,9 @@
 /*
-* ModuleListDAOImpl.java
+* ScriptInfoDAOImpl.java
 *
-* Created on 21 11 2011, 15:06
+* Created on 03 02 2012, 10:20
 *
-* Copyright (C) 2011 Alexey 'lh' Antonov
+* Copyright (C) 2012 Alexey 'lh' Antonov
 *
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
@@ -22,27 +22,29 @@
 
 package ru.sincore.db.dao;
 
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.sincore.db.HibernateUtils;
-import ru.sincore.db.pojo.ModuleListPOJO;
+import ru.sincore.db.pojo.ScriptInfoPOJO;
 
 import java.util.List;
 
 /**
  * @author Alexey 'lh' Antonov
- * @since 2011-11-21
+ * @since 2012-02-03
  */
-public class ModuleListDAOImpl implements ModuleListDAO
+public class ScriptInfoDAOImpl implements ScriptInfoDAO
 {
     private static final Logger log = LoggerFactory.getLogger(ModuleListDAOImpl.class);
 
 
     @Override
-    public boolean addModule(ModuleListPOJO module)
+    public boolean addScriptInfo(ScriptInfoPOJO script)
     {
         Session session = HibernateUtils.getSessionFactory().openSession();
         Transaction tx = session.getTransaction();
@@ -50,10 +52,10 @@ public class ModuleListDAOImpl implements ModuleListDAO
         try
         {
             tx.begin();
-            session.save(module);
+            session.save(script);
             tx.commit();
 
-            log.debug("[ADD] Module " + module.getName() + " stored to db.");
+            log.debug("[ADD] Info about script \'" + script.getName() + "\' stored to db.");
 
             return true;
         }
@@ -68,7 +70,7 @@ public class ModuleListDAOImpl implements ModuleListDAO
 
 
     @Override
-    public boolean addModule(String name, boolean enabled)
+    public boolean addScriptInfo(String name)
     {
         Session session = HibernateUtils.getSessionFactory().openSession();
         Transaction tx = session.getTransaction();
@@ -76,16 +78,15 @@ public class ModuleListDAOImpl implements ModuleListDAO
         try
         {
             tx.begin();
-
-            ModuleListPOJO pojo = new ModuleListPOJO();
-
-            pojo.setName(name);
-            pojo.setEnabled(enabled);
-
-            session.save(pojo);
+            
+            ScriptInfoPOJO script = new ScriptInfoPOJO();
+            script.setName(name);
+            
+            session.save(script);
+            
             tx.commit();
 
-            log.debug("[ADD] Module " + name + " stored to db.");
+            log.debug("[ADD] Info about script \'" + script.getName() + "\' stored to db.");
 
             return true;
         }
@@ -100,7 +101,7 @@ public class ModuleListDAOImpl implements ModuleListDAO
 
 
     @Override
-    public boolean updateModule(ModuleListPOJO module)
+    public boolean updateScriptInfo(ScriptInfoPOJO script)
     {
         Session session = HibernateUtils.getSessionFactory().openSession();
         Transaction tx = session.getTransaction();
@@ -108,10 +109,10 @@ public class ModuleListDAOImpl implements ModuleListDAO
         try
         {
             tx.begin();
-            session.update(module);
+            session.save(script);
             tx.commit();
 
-            log.debug("[UPDATE] Module " + module.getName() + " updated");
+            log.debug("[UPDATE] Info about script \'" + script.getName() + "\' updated.");
 
             return true;
         }
@@ -126,7 +127,7 @@ public class ModuleListDAOImpl implements ModuleListDAO
 
 
     @Override
-    public boolean deleteModule(String name)
+    public boolean deleteScriptInfo(String name)
     {
         Session session = HibernateUtils.getSessionFactory().openSession();
         Transaction tx = session.getTransaction();
@@ -135,13 +136,12 @@ public class ModuleListDAOImpl implements ModuleListDAO
         {
             tx.begin();
 
-            Query query = session.createQuery("delete from ModuleListPOJO where name = :name").setParameter("name", name);
-
+            Query query = session.createQuery("delete from ScriptInfoPOJO where name = :name").setParameter("name", name);
             query.executeUpdate();
 
             tx.commit();
 
-            log.debug("[DELETE] Module " + name + " removed from db.");
+            log.debug("[DELETE] Info about script \'" + name + "\' deleted.");
 
             return true;
         }
@@ -156,7 +156,7 @@ public class ModuleListDAOImpl implements ModuleListDAO
 
 
     @Override
-    public List<ModuleListPOJO> getModuleList()
+    public List<ScriptInfoPOJO> getScriptInfoList()
     {
         Session session = HibernateUtils.getSessionFactory().openSession();
         Transaction tx = session.getTransaction();
@@ -165,9 +165,9 @@ public class ModuleListDAOImpl implements ModuleListDAO
         {
             tx.begin();
 
-            Query query = session.createQuery("from ModuleListPOJO ");
+            Query query = session.createQuery("from ScriptInfoPOJO ");
 
-            List<ModuleListPOJO> result = query.list();
+            List<ScriptInfoPOJO> result = query.list();
 
             tx.commit();
 
@@ -184,7 +184,7 @@ public class ModuleListDAOImpl implements ModuleListDAO
 
 
     @Override
-    public ModuleListPOJO getModule(String name)
+    public ScriptInfoPOJO getScriptInfo(String name)
     {
         Session session = HibernateUtils.getSessionFactory().openSession();
         Transaction tx = session.getTransaction();
@@ -193,14 +193,14 @@ public class ModuleListDAOImpl implements ModuleListDAO
         {
             tx.begin();
 
-            Query query = session.createQuery("from ModuleListPOJO where name =:name")
-                                 .setParameter("name", name);
+            Criteria criteria = session.createCriteria(ScriptInfoPOJO.class);
+            criteria.add(Restrictions.eq("name", name));
 
-            ModuleListPOJO result = (ModuleListPOJO) query.uniqueResult();
+            ScriptInfoPOJO script = (ScriptInfoPOJO) criteria.uniqueResult();
 
             tx.commit();
 
-            return result;
+            return script;
         }
         catch (Exception e)
         {

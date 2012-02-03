@@ -26,8 +26,10 @@ import org.python.core.PySystemState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.sincore.ConfigurationManager;
-import ru.sincore.Main;
 import ru.sincore.cmd.CommandEngine;
+import ru.sincore.db.dao.ScriptInfoDAO;
+import ru.sincore.db.dao.ScriptInfoDAOImpl;
+import ru.sincore.db.pojo.ScriptInfoPOJO;
 import ru.sincore.script.executor.PyScriptExecutor;
 
 import java.io.File;
@@ -143,13 +145,24 @@ public class ScriptEngine extends Thread
                     continue;
                 }
 
-                ScriptTask task = new ScriptTask();
-                task.setEngineType(enginesDir.getName());
-                task.setScriptName(script.getName());
+                ScriptInfoDAO scriptInfoDAO = new ScriptInfoDAOImpl();
+                ScriptInfoPOJO scriptInfoPOJO = scriptInfoDAO.getScriptInfo(script.getName());
 
-                // TODO [lh] put code to load args and variables from db
+                if (scriptInfoPOJO == null)
+                {
+                    scriptInfoPOJO = new ScriptInfoPOJO();
+                    scriptInfoPOJO.setName(script.getName());
 
-                this.addTask(task);
+                    scriptInfoDAO.addScriptInfo(scriptInfoPOJO);
+                }
+
+                if (scriptInfoPOJO.isEnabled())
+                {
+                    ScriptTask task = new ScriptTask();
+                    task.setEngineType(enginesDir.getName());
+                    task.setScriptName(script.getName());
+                    this.addTask(task);
+                }
             }
         }
     }
