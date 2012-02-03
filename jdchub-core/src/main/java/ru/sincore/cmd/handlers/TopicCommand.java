@@ -54,7 +54,7 @@ public class TopicCommand extends AbstractCommand
         }
 
         BigTextManager bigTextManager = new BigTextManager();
-        if (bigTextManager.setText(BigTextManager.TOPIC, args))
+        if (bigTextManager.setText(BigTextManager.TOPIC, AdcUtils.toAdcString(args)))
         {
             MessageUtils.sendMessageToOpChat("New topic set by " + client.getNick() + " : " + args);
 

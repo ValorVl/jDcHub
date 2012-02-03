@@ -76,6 +76,7 @@ public class SessionManager extends IoHandlerAdapter
         {
             if (t instanceof java.io.IOException)
             {
+                log.debug(t.getMessage());
                 return;
             }
             String throwableMessage = t.getMessage();
@@ -113,6 +114,8 @@ public class SessionManager extends IoHandlerAdapter
         String rawMessage = (String) msg;
 		log.debug("Incoming message : "+ rawMessage);
 
+        ((Client) session.getAttribute(Constants.SESSION_ATTRIBUTE_CLIENT)).setLastKeepAlive(System.currentTimeMillis());
+
         try
         {
             Command.handle((Client) (session.getAttribute(Constants.SESSION_ATTRIBUTE_CLIENT)), rawMessage);
@@ -141,7 +144,7 @@ public class SessionManager extends IoHandlerAdapter
     public void sessionIdle(IoSession session, IdleStatus status)
             throws Exception
     {
-        //ok, we're in idle
+        ((Client)session.getAttribute(Constants.SESSION_ATTRIBUTE_CLIENT)).setLastKeepAlive(System.currentTimeMillis());
     }
 
 
@@ -188,7 +191,7 @@ public class SessionManager extends IoHandlerAdapter
         log.debug("Client real IP: " + realIp);
 
 		newClient.setRealIP(realIp);
-        newClient.setSid(SIDGenerator.generate());
+        newClient.setSid(SIDGenerator.generateUnique());
         newClient.setLoggedIn(new Date());
 
         /**

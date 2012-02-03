@@ -23,6 +23,7 @@
 
 package ru.sincore;
 
+import ru.sincore.adc.ClientType;
 import ru.sincore.client.AbstractClient;
 
 /**
@@ -61,17 +62,21 @@ public class ClientAssasin extends Thread
      */
     private boolean disconnectClient(AbstractClient client)
     {
+        // remove clients that must be disconnected
         if (client.isMustBeDisconnected())
         {
             client.removeSession(true);
             return true;
         }
 
+        // remove clients wich have long keep alive timeout
         if (ConfigurationManager.instance()
                                 .getBoolean(ConfigurationManager.DISCONNECT_BY_TIMEOUT) &&
             ((System.currentTimeMillis() - client.getLastKeepAlive()) >
              ConfigurationManager.instance().getLong(ConfigurationManager.MAX_KEEP_ALIVE_TIMEOUT) *
              1000) // from sec to ms
+            &&
+            ((client.getClientType() & ClientType.BOT) != ClientType.BOT) // don't remove bots
            )
         {
             client.removeSession(true);
@@ -100,6 +105,7 @@ public class ClientAssasin extends Thread
             {
                 if (disconnectClient(client))
                 {
+                    // do something with just disconnected clients
                     continue;
                 }
             }

@@ -64,6 +64,7 @@ public class Messages
     public static final String VERY_OLD_ADC           = "core.protocol.very_old_adc";
     public static final String NICK_TAKEN             = "core.protocol.nick_taken";
     public static final String CID_TAKEN              = "core.protocol.cid_taken";
+    public static final String DISCONNECT_BY_CID_TAKEN = "core.protocol.disconnect_by_cid_taken";
     public static final String WEIRD_INFO             = "core.protocol.weird_info";
     public static final String CT_FIELD_DISALLOWED    = "core.protocol.ct_field_disallowed";
     public static final String CANT_CHANGE_PID        = "core.protocol.cant_change_pid";
@@ -115,6 +116,14 @@ public class Messages
 
     public static final String TIME_FORMAT            = "core.time_format";
     public static final String TIME_PERIOD_FORMAT     = "core.time_period_format";
+
+    public static final String FORBIDDEN_WORD_USAGE   = "core.wordfilter.forbidden_word_usage";
+    public static final String FORBIDDEN_WORD_USAGE_KICK_REASON = "core.wordfilter.forbidden_word_usage_kick_reason";
+
+    public static final String TOO_FAST_CHATTING      = "core.hub.chat.too_fast_chatting";
+    public static final String SAME_MESSAGE_FLOOD     = "core.hub.chat.same_message_flood";
+    public static final String SAME_MESSAGE_FLOOD_DETECTED = "core.hub.chat.same_message_flood_detected";
+
 
     private static Map<String, ResourceBundle> resourcesMap =
                                                     new ConcurrentHashMap<String, ResourceBundle>();

@@ -1,6 +1,7 @@
 package ru.sincore.adc.action.handlers;
 
 import ru.sincore.ClientManager;
+import ru.sincore.ConfigurationManager;
 import ru.sincore.Exceptions.CommandException;
 import ru.sincore.Exceptions.STAException;
 import ru.sincore.adc.MessageType;
@@ -8,6 +9,7 @@ import ru.sincore.adc.action.actions.RCM;
 import ru.sincore.client.AbstractClient;
 import ru.sincore.i18n.Messages;
 import ru.sincore.util.Constants;
+import ru.sincore.util.MessageUtils;
 import ru.sincore.util.STAError;
 
 /**
@@ -69,6 +71,23 @@ public class RCMHandler extends AbstractActionHandler<RCM>
     {
         try
         {
+            if (client.isBannedByShare())
+            {
+                MessageUtils.sendMessageToOpChat(client.getNick() +
+                                                 " was banned for share < " +
+                                                 ConfigurationManager.instance()
+                                                                     .getLong(ConfigurationManager.BAN_BY_SHARE_MIN_SHARE) +
+                                                 " [client IP=\'" +
+                                                 client.getRealIP() +
+                                                 "\']");
+
+                client.sendPrivateMessageFromHub("You was banned for share < " +
+                                                 ConfigurationManager.instance()
+                                                                     .getLong(ConfigurationManager.BAN_BY_SHARE_MIN_SHARE));
+
+                return;
+            }
+
             if (!validate())
             {
                 return;

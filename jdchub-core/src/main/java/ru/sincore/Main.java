@@ -23,8 +23,9 @@ package ru.sincore;
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.sincore.db.HibernateUtils;
 import ru.sincore.i18n.Messages;
 
@@ -38,13 +39,11 @@ import ru.sincore.i18n.Messages;
  */
 public class Main
 {
-    private static final Logger    log         = Logger.getLogger(Main.class);
+    private static final Logger log         = LoggerFactory.getLogger(Main.class);
 
     private static       HubServer server;
     private static       long      startupTime = System.currentTimeMillis();
 
-    // TODO: [hatred] remove it
-    public static       String    myPath;
 
     private static void init()
     {
@@ -155,6 +154,12 @@ public class Main
     static public long getStartTime()
     {
         return startupTime;
+    }
+
+
+    public static HubServer getServer()
+    {
+        return server;
     }
 
 

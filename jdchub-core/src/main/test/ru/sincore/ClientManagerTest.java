@@ -17,7 +17,7 @@ public class ClientManagerTest
             throws Exception
     {
         AbstractClient client = new Client();
-        client.setSid(SIDGenerator.generate());
+        client.setSid(SIDGenerator.generateUnique());
         client.setNick("TestNick");
         client.setCid(CIDGenerator.generate());
 

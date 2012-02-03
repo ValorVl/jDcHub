@@ -123,11 +123,4 @@ public abstract class AbstractClient extends ClientInfo
     {
         log.error("Used unimplemented function storeInfo!");
     }
-
-
-    public String getINF()
-    {
-        log.error("Used unimplemented function getINF!");
-        return null;
-    }
 }

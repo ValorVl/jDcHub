@@ -1,10 +1,12 @@
 package ru.sincore.adc.action.handlers;
 
 import ru.sincore.Broadcast;
+import ru.sincore.ConfigurationManager;
 import ru.sincore.Exceptions.CommandException;
 import ru.sincore.Exceptions.STAException;
 import ru.sincore.adc.action.actions.SCH;
 import ru.sincore.client.AbstractClient;
+import ru.sincore.util.MessageUtils;
 
 /**
  * SCH (search) action handler
@@ -30,6 +32,23 @@ public class SCHHandler extends AbstractActionHandler<SCH>
     {
         try
         {
+            if (client.isBannedByShare())
+            {
+                MessageUtils.sendMessageToOpChat(client.getNick() +
+                                                 " was banned for share < " +
+                                                 ConfigurationManager.instance()
+                                                                     .getLong(ConfigurationManager.BAN_BY_SHARE_MIN_SHARE) +
+                                                 " [client IP=\'" +
+                                                 client.getRealIP() +
+                                                 "\']");
+
+                client.sendPrivateMessageFromHub("You was banned for share < " +
+                                                 ConfigurationManager.instance()
+                                                                     .getLong(ConfigurationManager.BAN_BY_SHARE_MIN_SHARE));
+
+                return;
+            }
+
             switch (action.getMessageType())
             {
                 case B:

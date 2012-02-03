@@ -3,6 +3,8 @@ package ru.sincore.adc.action.handlers;
 import java.util.StringTokenizer;
 
 import com.adamtaft.eb.EventBusService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.sincore.Broadcast;
 import ru.sincore.ClientManager;
 import ru.sincore.ConfigurationManager;
@@ -13,8 +15,14 @@ import ru.sincore.adc.action.actions.MSG;
 import ru.sincore.client.AbstractClient;
 import ru.sincore.db.dao.ChatLogDAO;
 import ru.sincore.db.dao.ChatLogDAOImpl;
+import ru.sincore.events.SameMessageFloodDetectedSignal;
 import ru.sincore.events.UserCommandEvent;
+import ru.sincore.i18n.Messages;
+import ru.sincore.pipeline.Pipeline;
+import ru.sincore.pipeline.PipelineFactory;
+import ru.sincore.signalservice.Signal;
 import ru.sincore.util.AdcUtils;
+import ru.sincore.util.MessageUtils;
 import ru.sincore.util.STAError;
 
 /**
@@ -27,7 +35,7 @@ import ru.sincore.util.STAError;
  */
 public class MSGHandler extends AbstractActionHandler<MSG>
 {
-
+    private static final Logger log = LoggerFactory.getLogger(MSGHandler.class);
 
     public MSGHandler(AbstractClient sourceClient, MSG action)
     {
@@ -39,6 +47,49 @@ public class MSGHandler extends AbstractActionHandler<MSG>
     public void handle()
             throws STAException
     {
+
+        // detect chat message flood
+        if (this.getMessageRecieveTime() - client.getLastMSG() <
+                ConfigurationManager.instance().getLong(ConfigurationManager.CHAT_MESSAGE_INTERVAL))
+        {
+            client.sendPrivateMessageFromHub(Messages.get(Messages.TOO_FAST_CHATTING,
+                                                          client.getExtendedField("LC")));
+            return;
+        }
+
+
+        try
+        {
+            // detect same chat message flood
+            if (client.getLastRawMSG().equals(action.getRawCommand()) &&
+                    (this.getMessageRecieveTime() - client.getLastMSG() <
+                    ConfigurationManager.instance().getLong(ConfigurationManager.CHAT_SAME_MESSAGE_SPAM_INTERVAL)))
+            {
+                client.sendPrivateMessageFromHub(Messages.get(Messages.SAME_MESSAGE_FLOOD,
+                                                              client.getExtendedField("LC")));
+
+                MessageUtils.sendMessageToOpChat(Messages.get(Messages.SAME_MESSAGE_FLOOD_DETECTED,
+                                                              new String[]
+                                                              {
+                                                                      client.getNick()
+                                                              }));
+
+                // emit signal about same message flood detection
+                Signal.emit(new SameMessageFloodDetectedSignal(client, action.getRawCommand()));
+
+                return;
+            }
+
+            client.setLastRawMSG(action.getRawCommand());
+        }
+        catch (CommandException e)
+        {
+            // ignore
+        }
+
+        // save message timestamp
+        client.setLastMSG(this.getMessageRecieveTime());
+
         try
         {
             action.tryParse();
@@ -47,9 +98,15 @@ public class MSGHandler extends AbstractActionHandler<MSG>
             if (parseAndExecuteCommandInMessage())
                 return;
 
+            Pipeline<MSG> pipeline = PipelineFactory.getPipeline("MSG");
+
             switch (action.getMessageType())
             {
                 case B:
+                    if (ConfigurationManager.instance().getBoolean(ConfigurationManager.USE_WORD_FILTER))
+                    {
+                        pipeline.process(action);
+                    }
                     Broadcast.getInstance().broadcast(action.getRawCommand(), client);
                     ChatLogDAO chatLog = new ChatLogDAOImpl();
                     chatLog.saveMessage(ClientManager.getInstance().getClientBySID(action.getSourceSID()).getNick(),
@@ -58,10 +115,19 @@ public class MSGHandler extends AbstractActionHandler<MSG>
                     break;
                 case D:
                 case E:
+                    if (ConfigurationManager.instance().getBoolean(ConfigurationManager.USE_WORD_FILTER) &&
+                        ConfigurationManager.instance().getBoolean(ConfigurationManager.USE_WORD_FILTER_IN_PM))
+                    {
+                        pipeline.process(action);
+                    }
                     sendMessageToClient();
                     break;
                 case F:
                     // send message dependent from features
+                    if (ConfigurationManager.instance().getBoolean(ConfigurationManager.USE_WORD_FILTER))
+                    {
+                        pipeline.process(action);
+                    }
                     Broadcast.getInstance().featuredBroadcast(action.getRawCommand(),
                                                               client,
                                                               action.getRequiredFeatureList(),
@@ -72,7 +138,7 @@ public class MSGHandler extends AbstractActionHandler<MSG>
         }
         catch (CommandException e)
         {
-            e.printStackTrace();
+            log.debug(e.toString());
         }
         catch (STAException staException)
         {

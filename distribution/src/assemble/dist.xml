@@ -151,6 +151,29 @@
       </sources>
     </moduleSet>
 
+      <moduleSet>
+          <useAllReactorProjects>true</useAllReactorProjects>
+
+          <includes>
+              <include>ru.sincore.jdchub.modules.webadmin:jdchub-webadmin</include>
+          </includes>
+
+          <sources>
+              <includeModuleDirectory>false</includeModuleDirectory>
+              <excludeSubModuleDirectories>false</excludeSubModuleDirectories>
+
+              <fileSets>
+                  <fileSet>
+                      <directory>${project.build.directory}/admin.war</directory>
+                      <!--
+                      <directory>${project.artifactId}-${project.version}</directory>
+                      -->
+                      <outputDirectory>/modules/WebManagementConsole.jar/webapps/admin.war</outputDirectory>
+                  </fileSet>
+              </fileSets>
+          </sources>
+      </moduleSet>
+
   </moduleSets>
 </assembly>
 

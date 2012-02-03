@@ -62,7 +62,7 @@ public class Bot extends AbstractClient
                     !hubDescription.isEmpty() &&
                     !hubDescription.equals(""))
                 {
-                    this.setDescription(AdcUtils.toAdcString(hubDescription));
+                    this.setDescription(hubDescription);
                 }
                 else if (!ConfigurationManager.instance()
                                               .getAdcString(ConfigurationManager.HUB_DESCRIPTION)

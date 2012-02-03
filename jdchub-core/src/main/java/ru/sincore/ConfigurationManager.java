@@ -49,6 +49,7 @@ public class ConfigurationManager extends PropertiesConfiguration
     public static final String HUB_DEFAULT_LOCALE = "core.hub.default_locale";
 
     public static final String MAX_USERS                  = "core.hub.max_users";
+    public static final String DISCONNECT_ONLINE_WITH_SAME_CID = "core.hub.disconnect_online_with_same_cid";
     public static final String DISCONNECT_BY_TIMEOUT      = "core.hub.disconnect_by_timeout";
     public static final String MAX_KEEP_ALIVE_TIMEOUT     = "core.hub.max_keep_alive_timeout";
     public static final String USER_INITIAL_CAPACITY      = "core.hub.user_initial_capacity";
@@ -58,6 +59,7 @@ public class ConfigurationManager extends PropertiesConfiguration
     public static final String MAX_HUBS_REGISTERED        = "core.hub.max_hubs_registered";
     public static final String MAX_SHARE_SIZE             = "core.hub.max_share_size";
     public static final String MIN_SHARE_SIZE             = "core.hub.min_share_size";
+    public static final String BAN_BY_SHARE_MIN_SHARE     = "core.hub.ban_by_share.min_share_size";
     public static final String MAX_NICK_SIZE              = "core.hub.max_nick_size";
     public static final String MIN_NICK_SIZE              = "core.hub.min_nick_size";
     public static final String MIN_SLOT_COUNT             = "core.hub.min_slot_count";
@@ -112,6 +114,9 @@ public class ConfigurationManager extends PropertiesConfiguration
 
     // Chat settings
     public static final String CHAT_REFRESH           = "core.hub.chat_refresh";
+    public static final String CHAT_MESSAGE_INTERVAL  = "core.hub.chat.message_interval";
+    public static final String CHAT_SAME_MESSAGE_SPAM_INTERVAL = "core.hub.chat.same_message_spam_interval";
+
     // History messages line count
     public static final String LAST_MESSAGES_COUNT    = "last.messages.count";
     public static final String OP_CHAT_NAME           = "core.hub.op_chat_name";
@@ -150,6 +155,12 @@ public class ConfigurationManager extends PropertiesConfiguration
     public static final String CLIENT_WEIGHT_OPERATOR       = "core.client.client_type_weights.operator";
     public static final String CLIENT_WEIGHT_SUPER_USER     = "core.client.client_type_weights.super_user";
     public static final String CLIENT_WEIGHT_HUB_OWNER      = "core.client.client_type_weights.hub_owner";
+
+    public static final String USE_WORD_FILTER              = "core.word_filter.use";
+    public static final String USE_WORD_FILTER_IN_PM        = "core.word_filter.use_in_pm";
+
+    public static final String SCRIPTS_LOCATION                 = "core.hub.scripts.directory";
+    public static final String NUMBER_OF_SCRIPTS_INTERPRETERS   = "core.hub.scripts.interpreter.instances";
 
 
     // Internal options
@@ -328,6 +339,11 @@ public class ConfigurationManager extends PropertiesConfiguration
         if (!this.containsKey(HUB_PORT))
         {
             this.setProperty(HUB_PORT, 411);
+        }
+
+        if (!this.containsKey(DISCONNECT_BY_TIMEOUT))
+        {
+            this.setProperty(DISCONNECT_BY_TIMEOUT, false);
         }
 
         if (!this.containsKey(MAX_KEEP_ALIVE_TIMEOUT))
@@ -638,6 +654,16 @@ public class ConfigurationManager extends PropertiesConfiguration
         if (!this.containsKey(CERT_LOGIN))
         {
             this.setProperty(CERT_LOGIN, false);
+        }
+
+        if (!this.containsKey(USE_WORD_FILTER))
+        {
+            this.setProperty(USE_WORD_FILTER, true);
+        }
+
+        if (!this.containsKey(USE_WORD_FILTER_IN_PM))
+        {
+            this.setProperty(USE_WORD_FILTER_IN_PM, true);
         }
     }
 }

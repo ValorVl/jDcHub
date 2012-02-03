@@ -3,6 +3,7 @@ package ru.sincore.db.dao;
 import org.apache.log4j.PropertyConfigurator;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import ru.sincore.ConfigurationManager;
 import ru.sincore.db.pojo.ClientListPOJO;
 
 import java.util.List;
