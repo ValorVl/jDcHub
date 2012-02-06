@@ -22,17 +22,35 @@
 
 package jdchub.module;
 
+import jdchub.module.tasks.RssFeeder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ru.sincore.Command;
 import ru.sincore.TigerImpl.CIDGenerator;
 import ru.sincore.adc.ClientType;
-import ru.sincore.client.AbstractClient;
+import ru.sincore.adc.MessageType;
+import ru.sincore.adc.action.actions.MSG;
+import ru.sincore.client.Bot;
 import ru.sincore.util.AdcUtils;
 
+import java.util.Timer;
+
 /**
+ * Main chat bot class.
+ *
  * @author Alexey 'lh' Antonov
  * @since 2012-02-03
  */
-public class ChatBot extends AbstractClient
+public class ChatBot extends Bot
 {
+    private static final Logger log = LoggerFactory.getLogger(ChatBot.class);
+
+    //http://korobka.tv/rss.xml
+    //http://korobka.tv/rss-magnet.xml
+    private static final String rssURL = "http://korobka.tv/rss-magnet.xml";
+    private Timer timer;
+
+    
     public ChatBot()
     {
         this.setNick("ChatBot");
@@ -47,4 +65,32 @@ public class ChatBot extends AbstractClient
         this.setMustBeDisconnected(false);
     }
 
+
+    public void sendMessage(String message)
+    {
+        try
+        {
+            MSG outgoingMessage = new MSG();
+            outgoingMessage.setMessage(message);
+            outgoingMessage.setMessageType(MessageType.B);
+            outgoingMessage.setSourceSID(this.getSid());
+            
+            // send outgoing message
+            //Broadcast.getInstance().broadcast(outgoingMessage.getRawCommand(), this);
+            Command.handle(this, outgoingMessage.getRawCommand());
+        }
+        catch (Exception ex)
+        {
+            log.error(ex.toString());
+        }
+    }
+
+
+    public void start()
+    {
+        timer = new Timer(true);
+
+
+        timer.schedule(new RssFeeder(this, rssURL), 1000, 5000);
+    }
 }

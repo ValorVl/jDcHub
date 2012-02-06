@@ -30,7 +30,7 @@ import ru.sincore.modules.Module;
 /**
  * Chat bot.
  * Features:
- *     none
+ *     Send RSS feed to main chat
  *
  * @author Alexey 'lh' Antonov
  * @since 2012-02-03
@@ -50,6 +50,8 @@ public class ModuleMain extends Module
         bot = new ChatBot();
 
         ClientManager.getInstance().addClient(bot);
+
+        bot.start();
 
         log.info("Module " + moduleName + " inited");
         return true;
