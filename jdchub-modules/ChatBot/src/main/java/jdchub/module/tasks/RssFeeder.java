@@ -37,6 +37,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimerTask;
 
 /**
@@ -94,9 +95,7 @@ public class RssFeeder extends TimerTask
             expr = xpath.compile("/rss/channel/item[1]/link");
             String link = (String) expr.evaluate(doc, XPathConstants.STRING);
 
-            // TODO [lh] temporary fix. Fix after rss feed fix will be done.
-            //SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z");
-            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.US);
 
             expr = xpath.compile("/rss/channel/item[1]/pubDate");
             Date pubDate = dateFormat.parse((String) expr.evaluate(doc, XPathConstants.STRING));
