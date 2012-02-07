@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 import ru.sincore.ClientManager;
 import ru.sincore.Exceptions.STAException;
+import ru.sincore.Main;
 import ru.sincore.client.AbstractClient;
 import ru.sincore.client.Client;
 import ru.sincore.db.dao.BanListDAOImpl;
@@ -253,5 +254,43 @@ public class ClientUtils
                                  },
                                  (String)client.getExtendedField("LC"));
         }
-   }
+    }
+
+    
+    private static String checkTimeAndBuildString(Long time, String timeFormat, String timeName)
+    {
+        String timeFormated = DurationFormatUtils.formatDuration(time,
+                                                  timeFormat,
+                                                  true);
+
+        if (!timeFormated.equals("00"))
+        {
+            return timeFormated + timeName + " ";
+        }
+        
+        return "";
+    }
+    
+    
+    public static String getHubInfo(AbstractClient client)
+    {
+        long uptimeInLong = System.currentTimeMillis() - Main.getStartTime();
+
+        StringBuilder uptimeMessage = new StringBuilder();
+        
+        uptimeMessage.append(checkTimeAndBuildString(uptimeInLong, "MM", "months"));
+
+        uptimeMessage.append(checkTimeAndBuildString(uptimeInLong, "dd", "days"));
+
+        uptimeMessage.append(checkTimeAndBuildString(uptimeInLong, "HH", "hours"));
+
+        uptimeMessage.append(checkTimeAndBuildString(uptimeInLong, "mm", "minutes"));
+
+        uptimeMessage.append(checkTimeAndBuildString(uptimeInLong, "ss", "seconds"));
+
+        return Messages.get(Messages.HUB_INFO_MESSAGE,
+                            uptimeMessage.toString(),
+                            (String) client.getExtendedField("LC"));
+
+    }
 }

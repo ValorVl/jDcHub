@@ -93,7 +93,7 @@ public class ChatBot extends Bot
 
 
         timer.schedule(new RssFeeder(this, rssURL), 1000, 5000);
-        timer.schedule(new ClientCountSaver(), 10*60*1000, 60*60*1000);
-        timer.schedule(new ClientCountSaver(), 10*60*1000, 60*60*1000);
+        timer.schedule(new ClientCountSaver(), 60*1000, 60*1000);
+        timer.schedule(new ClientCountSaver(), 60*1000, 60*1000);
     }
 }

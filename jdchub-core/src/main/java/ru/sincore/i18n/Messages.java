@@ -42,6 +42,7 @@ public class Messages
     public static final String CID_NOT_BANNED         = "core.server.message.cid_not_banned";
     public static final String USER_REGISTERED        = "core.server.message.user_registered";
     public static final String DONE                   = "core.server.message.done";
+    public static final String HUB_INFO_MESSAGE       = "core.server.message.hub_info";
 
 
     // Client messages

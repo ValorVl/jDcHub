@@ -242,6 +242,8 @@ public class Client extends AbstractClient
             this.sendRawCommand("ICMD Test CT1 TTTest");
         }
 
+        sendMessageFromHub(ClientUtils.getHubInfo(this));
+
         // send MOTD
         this.sendMOTD();
 
