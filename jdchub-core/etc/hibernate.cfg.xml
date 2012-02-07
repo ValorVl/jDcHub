@@ -49,6 +49,8 @@
      <mapping class="ru.sincore.db.pojo.ModuleListPOJO"/>
      <mapping class="ru.sincore.db.pojo.PipelineRulesPOJO"/>
      <mapping class="ru.sincore.db.pojo.ScriptInfoPOJO"/>
+     <mapping class="ru.sincore.db.pojo.ClientCountPOJO"/>
+     <mapping class="ru.sincore.db.pojo.ShareSizePOJO"/>
 
  </session-factory>
 </hibernate-configuration>
