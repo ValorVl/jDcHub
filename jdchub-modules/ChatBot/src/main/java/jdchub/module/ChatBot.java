@@ -24,6 +24,7 @@ package jdchub.module;
 
 import jdchub.module.tasks.ClientCountSaver;
 import jdchub.module.tasks.RssFeeder;
+import jdchub.module.tasks.ShareSizeSaver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.sincore.Command;
@@ -94,6 +95,6 @@ public class ChatBot extends Bot
 
         timer.schedule(new RssFeeder(this, rssURL), 1000, 5000);
         timer.schedule(new ClientCountSaver(), 60*1000, 60*1000);
-        timer.schedule(new ClientCountSaver(), 60*1000, 60*1000);
+        timer.schedule(new ShareSizeSaver(), 60*1000, 60*1000);
     }
 }

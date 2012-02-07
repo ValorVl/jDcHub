@@ -94,7 +94,9 @@ public class RssFeeder extends TimerTask
             expr = xpath.compile("/rss/channel/item[1]/link");
             String link = (String) expr.evaluate(doc, XPathConstants.STRING);
 
-            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z");
+            // TODO [lh] temporary fix. Fix after rss feed fix will be done.
+            //SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss");
 
             expr = xpath.compile("/rss/channel/item[1]/pubDate");
             Date pubDate = dateFormat.parse((String) expr.evaluate(doc, XPathConstants.STRING));
