@@ -254,6 +254,14 @@ public class Client extends AbstractClient
 
         // send N last messages from main chat
         this.sendNLastMessages();
+
+        this.setAdditionalClientStats();
+    }
+
+
+    private void setAdditionalClientStats()
+    {
+        this.setAdditionalStat(Constants.BANNED_BY_SHARE_MESSAGE_SENT, new Boolean(false));
     }
 
 

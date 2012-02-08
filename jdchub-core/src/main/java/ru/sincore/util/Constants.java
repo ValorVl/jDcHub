@@ -70,4 +70,7 @@ public final class Constants
 
     // Session atributes
     public static final String SESSION_ATTRIBUTE_CLIENT         = "client";
+    
+    // ClientInfo additional stats
+    public static final String BANNED_BY_SHARE_MESSAGE_SENT     = "banned_by_share_message_sent";
 }

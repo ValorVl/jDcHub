@@ -29,6 +29,8 @@ import ru.sincore.Exceptions.CommandException;
 import ru.sincore.Exceptions.STAException;
 import ru.sincore.adc.action.actions.AbstractAction;
 import ru.sincore.util.AdcUtils;
+import ru.sincore.util.Constants;
+import ru.sincore.util.MessageUtils;
 
 /**
  * @author Alexey 'lh' Antonov
@@ -37,6 +39,35 @@ import ru.sincore.util.AdcUtils;
 public abstract class AbstractClient extends ClientInfo
 {
     private static final Logger log = LoggerFactory.getLogger(AbstractClient.class);
+
+
+    public boolean checkBannedByShare()
+    {
+        if (this.isBannedByShare())
+        {
+            // don't send same banned by share message to op chat
+            if (! ((Boolean) this.getAdditionalStat(Constants.BANNED_BY_SHARE_MESSAGE_SENT)))
+            {
+                MessageUtils.sendMessageToOpChat(this.getNick() +
+                                                 " was banned for share < " +
+                                                 ConfigurationManager.instance()
+                                                                     .getLong(ConfigurationManager.BAN_BY_SHARE_MIN_SHARE) +
+                                                 " [client IP=\'" +
+                                                 this.getRealIP() +
+                                                 "\']");
+
+                this.setAdditionalStat(Constants.BANNED_BY_SHARE_MESSAGE_SENT, new Boolean(true));
+            }
+
+            this.sendPrivateMessageFromHub("You was banned for share < " +
+                                           ConfigurationManager.instance()
+                                                               .getLong(ConfigurationManager.BAN_BY_SHARE_MIN_SHARE));
+
+            return true;
+        }
+
+        return false;
+    }
 
 
     public void sendPrivateMessageFromHub(String message)

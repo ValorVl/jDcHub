@@ -71,20 +71,8 @@ public class RCMHandler extends AbstractActionHandler<RCM>
     {
         try
         {
-            if (client.isBannedByShare())
+            if (client.checkBannedByShare())
             {
-                MessageUtils.sendMessageToOpChat(client.getNick() +
-                                                 " was banned for share < " +
-                                                 ConfigurationManager.instance()
-                                                                     .getLong(ConfigurationManager.BAN_BY_SHARE_MIN_SHARE) +
-                                                 " [client IP=\'" +
-                                                 client.getRealIP() +
-                                                 "\']");
-
-                client.sendPrivateMessageFromHub("You was banned for share < " +
-                                                 ConfigurationManager.instance()
-                                                                     .getLong(ConfigurationManager.BAN_BY_SHARE_MIN_SHARE));
-
                 return;
             }
 
