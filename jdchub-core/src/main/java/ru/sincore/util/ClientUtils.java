@@ -257,39 +257,16 @@ public class ClientUtils
     }
 
     
-    private static String checkTimeAndBuildString(Long time, String timeFormat, String timeName)
-    {
-        String timeFormated = DurationFormatUtils.formatDuration(time,
-                                                  timeFormat,
-                                                  true);
-
-        if (!timeFormated.equals("00"))
-        {
-            return timeFormated + timeName + " ";
-        }
-        
-        return "";
-    }
-    
-    
     public static String getHubInfo(AbstractClient client)
     {
         long uptimeInLong = System.currentTimeMillis() - Main.getStartTime();
 
-        StringBuilder uptimeMessage = new StringBuilder();
-        
-        uptimeMessage.append(checkTimeAndBuildString(uptimeInLong, "MM", "months"));
-
-        uptimeMessage.append(checkTimeAndBuildString(uptimeInLong, "dd", "days"));
-
-        uptimeMessage.append(checkTimeAndBuildString(uptimeInLong, "HH", "hours"));
-
-        uptimeMessage.append(checkTimeAndBuildString(uptimeInLong, "mm", "minutes"));
-
-        uptimeMessage.append(checkTimeAndBuildString(uptimeInLong, "ss", "seconds"));
+        String timeFormated = DurationFormatUtils.formatDuration(uptimeInLong,
+                                                                 "MM-dd HH:mm:ss",
+                                                                 true);
 
         return Messages.get(Messages.HUB_INFO_MESSAGE,
-                            uptimeMessage.toString(),
+                            timeFormated,
                             (String) client.getExtendedField("LC"));
 
     }
