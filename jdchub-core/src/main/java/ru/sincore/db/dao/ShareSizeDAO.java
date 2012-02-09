@@ -35,4 +35,5 @@ public interface ShareSizeDAO
 {
     boolean add(Long shareSize);
     List<ShareSizePOJO> getShareSizeInDateRange(Date start, Date end);
+    Long getMaxShareSize();
 }

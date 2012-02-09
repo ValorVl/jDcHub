@@ -26,6 +26,7 @@ import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,14 +80,14 @@ public class ClientCountDAOImpl implements ClientCountDAO
         Transaction tx = session.getTransaction();
 
         List<ClientCountPOJO> result = null;
-        
+
         try
         {
             tx.begin();
 
             Criteria criteria = session.createCriteria(ClientCountPOJO.class);
             criteria.add(Restrictions.between("timestamp", start, end));
-            
+
             result = (List<ClientCountPOJO>) criteria.list();
             
             tx.commit();
@@ -96,6 +97,36 @@ public class ClientCountDAOImpl implements ClientCountDAO
             log.error(e.toString());
             tx.rollback();
             return null;
+        }
+        
+        return result;
+    }
+
+
+    @Override
+    public Long getMaxCount()
+    {
+        Session session = HibernateUtils.getSessionFactory().openSession();
+        Transaction tx = session.getTransaction();
+
+        Long result;
+
+        try
+        {
+            tx.begin();
+
+            Criteria criteria = session.createCriteria(ClientCountPOJO.class);
+            criteria.setProjection(Projections.max("count"));
+            
+            result = (Long) criteria.uniqueResult();
+            
+            tx.commit();
+        }
+        catch (HibernateException e)
+        {
+            tx.rollback();
+            log.error(e.toString());
+            return 0L;
         }
         
         return result;

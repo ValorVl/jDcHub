@@ -26,6 +26,7 @@ import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,6 +97,36 @@ public class ShareSizeDAOImpl implements ShareSizeDAO
             log.error(e.toString());
             tx.rollback();
             return null;
+        }
+
+        return result;
+    }
+
+
+    @Override
+    public Long getMaxShareSize()
+    {
+        Session session = HibernateUtils.getSessionFactory().openSession();
+        Transaction tx = session.getTransaction();
+
+        Long result;
+
+        try
+        {
+            tx.begin();
+
+            Criteria criteria = session.createCriteria(ShareSizePOJO.class);
+            criteria.setProjection(Projections.max("shareSize"));
+
+            result = (Long) criteria.uniqueResult();
+
+            tx.commit();
+        }
+        catch (HibernateException e)
+        {
+            tx.rollback();
+            log.error(e.toString());
+            return 0L;
         }
 
         return result;

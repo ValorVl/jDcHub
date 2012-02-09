@@ -28,6 +28,9 @@ import ru.sincore.Main;
 import ru.sincore.client.AbstractClient;
 import ru.sincore.client.Client;
 import ru.sincore.db.dao.BanListDAOImpl;
+import ru.sincore.db.dao.ClientCountDAO;
+import ru.sincore.db.dao.ClientCountDAOImpl;
+import ru.sincore.db.dao.ShareSizeDAOImpl;
 import ru.sincore.db.pojo.BanListPOJO;
 import ru.sincore.i18n.Messages;
 
@@ -256,7 +259,27 @@ public class ClientUtils
         }
     }
 
-    
+
+    /**
+     * Converts byte size into human readable format.
+     * Code found here : <a href="http://stackoverflow.com/a/3758880/157466">http://stackoverflow.com/a/3758880/157466</a>
+     * @param bytes bytes count
+     * @param si like MiB or MB
+     * @return formatted string
+     */
+    public static String humanReadableByteCount(long bytes, boolean si)
+    {
+        int unit = si ? 1000 : 1024;
+        if (bytes < unit)
+        {
+            return bytes + " B";
+        }
+        int exp = (int) (Math.log(bytes) / Math.log(unit));
+        String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "i");
+        return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
+    }
+
+
     public static String getHubInfo(AbstractClient client)
     {
         long uptimeInLong = System.currentTimeMillis() - Main.getStartTime();
@@ -265,9 +288,19 @@ public class ClientUtils
                                                                  "MM-dd HH:mm:ss",
                                                                  true);
 
+        Long maxClientCount = (new ClientCountDAOImpl()).getMaxCount();
+        Long maxShareSize = (new ShareSizeDAOImpl()).getMaxShareSize();
+        String formattedMaxShareSize = humanReadableByteCount(maxShareSize, false);
+        
         return Messages.get(Messages.HUB_INFO_MESSAGE,
-                            timeFormated,
-                            (String) client.getExtendedField("LC"));
+                            new Object[]
+                            {
+                                    timeFormated,
+                                    maxClientCount,
+                                    formattedMaxShareSize
+                            },
+                            (String) client.getExtendedField("LC")
+                           );
 
     }
 }

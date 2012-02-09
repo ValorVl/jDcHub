@@ -35,4 +35,5 @@ public interface ClientCountDAO
 {
     boolean addEntry(Long count);
     List<ClientCountPOJO> getEntriesInDateRange(Date start, Date end);
+    Long getMaxCount();
 }
