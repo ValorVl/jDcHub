@@ -28,6 +28,7 @@ import jdchub.module.tasks.ShareSizeSaver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.sincore.Command;
+import ru.sincore.ConfigurationManager;
 import ru.sincore.TigerImpl.CIDGenerator;
 import ru.sincore.adc.ClientType;
 import ru.sincore.adc.MessageType;
@@ -53,11 +54,11 @@ public class ChatBot extends Bot
 
     public ChatBot()
     {
-        this.setNick("ChatBot");
+        this.setNick(ConfigurationManager.instance().getString("bot_nick"));
         this.setSid("PBOT");
         this.setCid(CIDGenerator.generate());
-        this.setDescription(AdcUtils.toAdcString("Я могу много чего, спроси меня"));
-        this.setEmail("lh@podryad.tv");
+        this.setDescription(AdcUtils.toAdcString(ConfigurationManager.instance().getString("bot_description")));
+        this.setEmail(ConfigurationManager.instance().getString("bot_email"));
         this.setWeight(10);
         this.setClientType(ClientType.BOT);
         this.setValidated();
@@ -92,8 +93,12 @@ public class ChatBot extends Bot
     {
         timer = new Timer(true);
 
-        timer.schedule(new ClientCountSaver(), 60*1000, 60*1000);
-        timer.schedule(new ShareSizeSaver(), 60*1000, 60*1000);
+        timer.schedule(new ClientCountSaver(),
+                       ConfigurationManager.instance().getLong("client_count_delay"),
+                       ConfigurationManager.instance().getLong("client_count_repeat_time"));
+        timer.schedule(new ShareSizeSaver(),
+                       ConfigurationManager.instance().getLong("share_size_count_delay"),
+                       ConfigurationManager.instance().getLong("share_size_count_repeat_time"));
     }
 
 
