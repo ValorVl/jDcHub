@@ -192,7 +192,7 @@ public class ModulesManager
             {
                 ConfigurationManager.instance()
                                     .load(ConfigurationManager.instance().getHubConfigDir() +
-                                          "modules/" +
+                                          "/modules/" +
                                           moduleInstance.getName() +
                                           "/" +
                                           moduleInstance.getName() +
