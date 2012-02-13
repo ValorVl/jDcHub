@@ -21,6 +21,7 @@
         <module>LCExtension</module>
         <module>WebManagementConsole</module>
         <module>ChatBot</module>
+        <module>FEED</module>
     </modules>
 
 

@@ -47,12 +47,10 @@ public class ChatBot extends Bot
 {
     private static final Logger log = LoggerFactory.getLogger(ChatBot.class);
 
-    //http://korobka.tv/rss.xml
-    //http://korobka.tv/rss-magnet.xml
-    private static final String rssURL = "http://korobka.tv/rss-magnet.xml";
     private Timer timer;
+    private RssFeeder rssFeeder = null;
 
-    
+
     public ChatBot()
     {
         this.setNick("ChatBot");
@@ -65,6 +63,8 @@ public class ChatBot extends Bot
         this.setValidated();
         this.setActive(true);
         this.setMustBeDisconnected(false);
+
+        rssFeeder = new RssFeeder(this);
     }
 
 
@@ -92,9 +92,19 @@ public class ChatBot extends Bot
     {
         timer = new Timer(true);
 
-
-        timer.schedule(new RssFeeder(this, rssURL), 1000, 5000);
         timer.schedule(new ClientCountSaver(), 60*1000, 60*1000);
         timer.schedule(new ShareSizeSaver(), 60*1000, 60*1000);
+    }
+
+
+    public Timer getTimer()
+    {
+        return timer;
+    }
+
+
+    public Object getEventHandler()
+    {
+        return rssFeeder;
     }
 }

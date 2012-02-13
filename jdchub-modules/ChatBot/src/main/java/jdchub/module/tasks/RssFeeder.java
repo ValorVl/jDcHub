@@ -22,110 +22,51 @@
 
 package jdchub.module.tasks;
 
+import com.adamtaft.eb.EventHandler;
 import jdchub.module.ChatBot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathFactory;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import java.util.TimerTask;
+import ru.sincore.events.NewRssFeedEvent;
 
 /**
- * Rss feeder (works with RSS feed only, Atom not supported yet)
+ * Handles newRssFeedEvent and send message to chat.
  *
  * @author Alexey 'lh' Antonov
  * @since 2012-02-03
  */
-public class RssFeeder extends TimerTask
+public class RssFeeder
 {
     private static final Logger log = LoggerFactory.getLogger(RssFeeder.class); 
     
     private ChatBot parent = null;
     
-    private URL feedURL = null;
-    private String lastFeedTitle = null;
-
-    public RssFeeder(ChatBot parent, String feedURL)
+    public RssFeeder(ChatBot parent)
     {
         this.parent = parent;
-
-        try
-        {
-            this.feedURL = new URL(feedURL);
-        }
-        catch (MalformedURLException e)
-        {
-            this.feedURL = null;
-            log.error("Invalid feed URL : \'" + feedURL + "\'\n" + e.toString());
-        }
     }
 
 
-    @Override
-    public void run()
+    @EventHandler
+    public void handleRssFeedPostEvent(NewRssFeedEvent newRssFeedEvent)
     {
-        try
+        log.debug("NewRssFeedEvent handled.");
+
+        StringBuilder message = new StringBuilder();
+
+        message.append(newRssFeedEvent.getPostName());
+
+        if (newRssFeedEvent.getPublishTime() == newRssFeedEvent.getEditTime())
         {
-            DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
-            domFactory.setNamespaceAware(true); // never forget this!
-            DocumentBuilder builder = domFactory.newDocumentBuilder();
-            Document doc = builder.parse(feedURL.openStream());
-
-            XPathFactory factory = XPathFactory.newInstance();
-            XPath xpath = factory.newXPath();
-
-            XPathExpression expr = xpath.compile("/rss/channel/item[1]/title");
-            String title = (String) expr.evaluate(doc, XPathConstants.STRING);
-
-            if (title.equals(lastFeedTitle))
-            {
-                return;
-            }
-
-            expr = xpath.compile("/rss/channel/item[1]/link");
-            String link = (String) expr.evaluate(doc, XPathConstants.STRING);
-
-            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.US);
-
-            expr = xpath.compile("/rss/channel/item[1]/pubDate");
-            Date pubDate = dateFormat.parse((String) expr.evaluate(doc, XPathConstants.STRING));
-
-            expr = xpath.compile("/rss/channel/item[1]/editDate");
-            Date editDate = dateFormat.parse((String) expr.evaluate(doc, XPathConstants.STRING));
-
-
-            StringBuilder message = new StringBuilder();
-            message.append(title);
-
-            if (pubDate.equals(editDate))
-            {
-                message.append(" [New]");
-            }
-            else
-            {
-                message.append(" [Update]");
-            }
-
-            message.append('\n');
-            message.append(link);
-
-            parent.sendMessage(message.toString());
-
-            lastFeedTitle = title;
+            message.append(" [New]");
         }
-        catch (Exception e)
+        else
         {
-            log.error(e.toString());
+            message.append(" [Update]");
         }
+
+        message.append('\n');
+        message.append(newRssFeedEvent.getLink());
+
+        parent.sendMessage(message.toString());
     }
 }

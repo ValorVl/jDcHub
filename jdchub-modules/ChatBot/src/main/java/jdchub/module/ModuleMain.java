@@ -61,6 +61,8 @@ public class ModuleMain extends Module
     @Override
     public boolean deinit()
     {
+        bot.getTimer().cancel();
+
         bot.setMustBeDisconnected(true);
         bot = null;
 
@@ -80,5 +82,12 @@ public class ModuleMain extends Module
     public String getVersion()
     {
         return moduleVersion;
+    }
+
+
+    @Override
+    public Object getEventHandler()
+    {
+        return bot.getEventHandler();
     }
 }

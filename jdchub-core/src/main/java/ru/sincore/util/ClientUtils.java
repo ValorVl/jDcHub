@@ -282,9 +282,7 @@ public class ClientUtils
 
     public static String getHubInfo(AbstractClient client)
     {
-        long uptimeInLong = System.currentTimeMillis() - Main.getStartTime();
-
-        String timeFormated = DurationFormatUtils.formatDuration(uptimeInLong,
+        String timeFormated = DurationFormatUtils.formatDuration(Main.getUptime(),
                                                                  "MM-dd HH:mm:ss",
                                                                  true);
 

@@ -4,6 +4,7 @@ import com.adamtaft.eb.EventBusService;
 import org.apache.mina.util.CopyOnWriteMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.sincore.ConfigurationManager;
 import ru.sincore.db.dao.ModuleListDAO;
 import ru.sincore.db.dao.ModuleListDAOImpl;
 import ru.sincore.db.pojo.ModuleListPOJO;
@@ -187,6 +188,19 @@ public class ModulesManager
                 return false;
             }
 
+            try
+            {
+                ConfigurationManager.instance()
+                                    .load(ConfigurationManager.instance().getHubConfigDir() +
+                                          "modules/" +
+                                          moduleInstance.getName() +
+                                          "/" +
+                                          moduleInstance.getName() +
+                                          ".properties"
+                                         );
+            }
+            catch (Exception e) { /* ignore */ }
+
             Thread moduleThread = new Thread(moduleInstance);
 
             // Wait for module initialization
@@ -223,7 +237,7 @@ public class ModulesManager
         }
         catch (Throwable e)
         {
-            e.printStackTrace();
+            log.error("Error while module " + moduleJar.getName() + " loads: \n" + e.getMessage());
         }
 
         return false;

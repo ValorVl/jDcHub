@@ -115,4 +115,17 @@ public class SUP extends AbstractAction
         tryParse();
         this.features = features;
     }
+
+
+    /**
+     * Add feature to feature list.
+     *
+     * @param featureName Feature name must be four uppercase letters.
+     * @param featureStatus Supported (true) or not supported (false) status.
+     */
+    public void addFeature(String featureName, Boolean featureStatus)
+    {
+        this.features.put(featureName, featureStatus);
+        this.isParsed = true;
+    }
 }

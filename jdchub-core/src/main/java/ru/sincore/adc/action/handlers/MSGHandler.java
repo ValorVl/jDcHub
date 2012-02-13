@@ -15,7 +15,7 @@ import ru.sincore.adc.action.actions.MSG;
 import ru.sincore.client.AbstractClient;
 import ru.sincore.db.dao.ChatLogDAO;
 import ru.sincore.db.dao.ChatLogDAOImpl;
-import ru.sincore.events.SameMessageFloodDetectedSignal;
+import ru.sincore.signals.SameMessageFloodDetectedSignal;
 import ru.sincore.events.UserCommandEvent;
 import ru.sincore.i18n.Messages;
 import ru.sincore.pipeline.Pipeline;

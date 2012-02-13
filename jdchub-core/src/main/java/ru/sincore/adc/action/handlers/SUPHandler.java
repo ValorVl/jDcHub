@@ -2,12 +2,9 @@ package ru.sincore.adc.action.handlers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.sincore.BigTextManager;
-import ru.sincore.ClientManager;
-import ru.sincore.ConfigurationManager;
+import ru.sincore.*;
 import ru.sincore.Exceptions.CommandException;
 import ru.sincore.Exceptions.STAException;
-import ru.sincore.Main;
 import ru.sincore.adc.Features;
 import ru.sincore.adc.Flags;
 import ru.sincore.adc.MessageType;
@@ -95,20 +92,7 @@ public class SUPHandler extends AbstractActionHandler<SUP>
     private void sendClientInitializationInfo()
             throws CommandException, STAException
     {
-        SUP sup = new SUP();
-        sup.setMessageType(MessageType.I);
-        // TODO: [hatred] ask feathures from config and via sync signal or any other way
-        // BASE
-        sup.getFeatures().put(Features.BASE,  true);
-        sup.getFeatures().put(Features.BAS0,  true);
-        sup.getFeatures().put(Features.TIGER, true);
-        sup.getFeatures().put(Features.UCM0,  true);
-        sup.getFeatures().put(Features.ADC0,  true);
-        // Extended
-        sup.getFeatures().put(Features.PING,  true);
-        sup.getFeatures().put(Features.SEGA,  true);
-        client.sendRawCommand(sup.getRawCommand());
-
+        client.sendRawCommand(Main.getServer().getSup().getRawCommand());
 
         SID sid = new SID();
         sid.setMessageType(MessageType.I);

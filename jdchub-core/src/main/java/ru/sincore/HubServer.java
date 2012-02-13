@@ -25,6 +25,7 @@ package ru.sincore;
 
 
 import com.adamtaft.eb.EventBusService;
+import com.adamtaft.eb.EventHandler;
 import org.apache.mina.core.service.IoAcceptor;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
@@ -34,8 +35,13 @@ import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
+import ru.sincore.adc.Features;
+import ru.sincore.adc.MessageType;
+import ru.sincore.adc.action.actions.SUP;
 import ru.sincore.cmd.CommandEngine;
 import ru.sincore.cmd.handlers.*;
+import ru.sincore.events.AdcExtNoMoreSupportedEvent;
+import ru.sincore.events.AdcExtSupportedEvent;
 import ru.sincore.events.HubShutdownEvent;
 import ru.sincore.events.HubStartupEvent;
 import ru.sincore.modules.ModulesManager;
@@ -63,6 +69,7 @@ public class HubServer
     private static final Logger         log    = LoggerFactory.getLogger(HubServer.class);
     private final        String         marker = Marker.ANY_MARKER;
 
+    private              SUP            sup;
     private              ClientAssasin  assasin = null;
     private              IoAcceptor     acceptor = null;
     private              CommandEngine  commandEngine = null;
@@ -81,6 +88,8 @@ public class HubServer
      */
     private void init()
     {
+        initHubFeatureList();
+
         // initialize command engine
         initCommandEngine();
 
@@ -120,17 +129,17 @@ public class HubServer
         acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 50);
         acceptor.setHandler(new SessionManager());
 
-		try
-		{
+        try
+        {
             int hubPort = ConfigurationManager.instance().getInt(ConfigurationManager.HUB_PORT);
-			acceptor.bind(new InetSocketAddress(hubPort));
+            acceptor.bind(new InetSocketAddress(hubPort));
             log.info("Hub successfully binded on port : " + hubPort);
-		}
+        }
         catch (IOException e)
-		{
-			log.error(marker,e);
-			shutdown();
-		}
+        {
+            log.error(marker, e);
+            shutdown();
+        }
 
 
         Date d = new Date(Main.getStartTime());
@@ -140,7 +149,32 @@ public class HubServer
         // Publish startup event
         EventBusService.publish(new HubStartupEvent());
 
-        assasin = new ClientAssasin();//temporary removed
+        assasin = new ClientAssasin();
+    }
+
+
+    private void initHubFeatureList()
+    {
+        log.info("Initializing HubFeatureList...");
+        sup = new SUP();
+        try
+        {
+            sup.setMessageType(MessageType.I);
+            sup.getFeatures().put(Features.BASE,  true);
+            sup.getFeatures().put(Features.BAS0,  true);
+            sup.getFeatures().put(Features.TIGER, true);
+            sup.getFeatures().put(Features.UCM0,  true);
+            sup.getFeatures().put(Features.ADC0,  true);
+            // Extended
+            sup.getFeatures().put(Features.PING,  true);
+            sup.getFeatures().put(Features.SEGA,  true);
+        }
+        catch (Exception e)
+        {
+            log.error("Can\'t init hub SUP field.\n" + e.toString());
+        }
+
+        EventBusService.subscribe(this);
     }
 
 
@@ -202,6 +236,12 @@ public class HubServer
     }
 
 
+    public SUP getSup()
+    {
+        return sup;
+    }
+
+
     public CommandEngine getCommandEngine()
     {
         return commandEngine;
@@ -211,5 +251,50 @@ public class HubServer
     public ScriptEngine getScriptEngine()
     {
         return scriptEngine;
+    }
+    
+    
+    @EventHandler
+    public void handleAdcExtSupportedEvent(AdcExtSupportedEvent event)
+    {
+        if (sup == null)
+        {
+            return;
+        }
+
+        try
+        {
+            sup.getFeatures().put(event.getExtensionName(), true);
+        }
+        catch (Exception e)
+        {
+            log.error(e.toString());
+        }
+
+        log.info("ADC extension ADDED : " + event.getExtensionName());
+    }
+
+
+    @EventHandler
+    public void handleAdcExtNoMoreSupportedEvent(AdcExtNoMoreSupportedEvent event)
+    {
+        if (sup == null)
+        {
+            return;
+        }
+
+        try
+        {
+            sup.getFeatures().remove(event.getExtensionName());
+        }
+        catch (Exception e)
+        {
+            log.error(e.toString());
+        }
+
+        //TODO [lh] Add code with extension remove SUP (BSUP HUB_SID RMFEED)
+
+
+        log.info("ADC extension REMOVED : " + event.getExtensionName());
     }
 }
