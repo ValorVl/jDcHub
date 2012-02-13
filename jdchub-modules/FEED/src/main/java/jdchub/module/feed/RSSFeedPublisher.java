@@ -58,7 +58,7 @@ public class RSSFeedPublisher
         {
             fstream =
                     new FileInputStream(ConfigurationManager.instance().getHubConfigDir() +
-                                        "modules/FEED/" +
+                                        "/modules/FEED/" +
                                         ConfigurationManager.instance()
                                                             .getString("file_with_feeds_urls"));
             in = new DataInputStream(fstream);

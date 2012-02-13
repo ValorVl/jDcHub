@@ -50,7 +50,7 @@ public class Main
         String configDirectory = System.getProperty("jdchub.config.directory");
         if (configDirectory == null)
         {
-            configDirectory = "./etc";
+            configDirectory = System.getProperty("user.dir") + "/etc";
         }
 
         PropertyConfigurator.configure(configDirectory + "/log4j.properties");
