@@ -30,13 +30,14 @@ public class SCHHandler extends AbstractActionHandler<SCH>
     public void handle()
             throws STAException
     {
+        if (client.checkBannedByShare() || client.checkNoSearch())
+        {
+            return;
+        }
+
+
         try
         {
-            if (client.checkBannedByShare())
-            {
-                return;
-            }
-
             switch (action.getMessageType())
             {
                 case B:

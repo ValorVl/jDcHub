@@ -221,6 +221,9 @@ public class HubServer
         commandEngine.registerCommand("changepass", new ChangePassCommand());
         commandEngine.registerCommand("topic",      new TopicCommand());
         commandEngine.registerCommand("ban",        new BanCommand());
+        commandEngine.registerCommand("gag",        new GagCommand());
+        commandEngine.registerCommand("nosearch",   new NoSearchCommand());
+        commandEngine.registerCommand("noctm",      new NoCtmCommand());
     }
 
 

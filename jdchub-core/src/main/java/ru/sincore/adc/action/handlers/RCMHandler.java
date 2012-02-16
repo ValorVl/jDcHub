@@ -69,13 +69,14 @@ public class RCMHandler extends AbstractActionHandler<RCM>
     public void handle()
             throws STAException
     {
+        if (client.checkBannedByShare() || client.checkNoTransfer())
+        {
+            return;
+        }
+
+
         try
         {
-            if (client.checkBannedByShare())
-            {
-                return;
-            }
-
             if (!validate())
             {
                 return;

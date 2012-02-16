@@ -47,6 +47,11 @@ public class MSGHandler extends AbstractActionHandler<MSG>
     public void handle()
             throws STAException
     {
+        if (client.checkMute())
+        {
+            return;
+        }
+
 
         // detect chat message flood
         if (this.getMessageRecieveTime() - client.getLastMSG() <

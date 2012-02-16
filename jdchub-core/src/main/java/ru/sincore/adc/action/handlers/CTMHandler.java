@@ -66,7 +66,7 @@ public class CTMHandler extends AbstractActionHandler<CTM>
     {
         try
         {
-            if (client.checkBannedByShare())
+            if (client.checkBannedByShare() || client.checkNoTransfer())
             {
                 return;
             }

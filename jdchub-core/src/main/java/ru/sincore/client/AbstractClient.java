@@ -70,6 +70,24 @@ public abstract class AbstractClient extends ClientInfo
     }
 
 
+    public boolean checkMute()
+    {
+        return this.isMute();
+    }
+
+
+    public boolean checkNoTransfer()
+    {
+        return this.isNoTransfer();
+    }
+
+
+    public boolean checkNoSearch()
+    {
+        return this.isNoSearch();
+    }
+
+
     public void sendPrivateMessageFromHub(String message)
     {
         this.sendRawCommand("EMSG " +

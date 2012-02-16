@@ -394,6 +394,21 @@ public class ClientInfo
     private boolean overrideFull = false;
 
     /**
+     * Is client stands in mute mode (can't send MSG action).
+     */
+    private boolean mute = false;
+
+    /**
+     * Can user upload and download files? (enables/disables CTM, RCM actions).
+     */
+    private boolean noTransfer = false;
+
+    /**
+     * Can user make search? (enables/disables SCH action).
+     */
+    private boolean noSearch = false;
+
+    /**
      * Is client kickable
      */
     private boolean kickable = true;
@@ -1167,6 +1182,42 @@ public class ClientInfo
     public void setBannedByShare(boolean bannedByShare)
     {
         this.bannedByShare = bannedByShare;
+    }
+
+
+    public boolean isMute()
+    {
+        return mute;
+    }
+
+
+    public void setMute(boolean mute)
+    {
+        this.mute = mute;
+    }
+
+
+    public boolean isNoTransfer()
+    {
+        return noTransfer;
+    }
+
+
+    public void setNoTransfer(boolean noTransfer)
+    {
+        this.noTransfer = noTransfer;
+    }
+
+
+    public boolean isNoSearch()
+    {
+        return noSearch;
+    }
+
+
+    public void setNoSearch(boolean noSearch)
+    {
+        this.noSearch = noSearch;
     }
 
 
