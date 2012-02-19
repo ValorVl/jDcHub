@@ -25,7 +25,7 @@ package ru.sincore.cmd.handlers;
 import ru.sincore.ClientManager;
 import ru.sincore.client.AbstractClient;
 import ru.sincore.cmd.AbstractCommand;
-import ru.sincore.util.MessageUtils;
+import ru.sincore.util.ClientUtils;
 
 /**
  * @author Alexey 'lh' Antonov
@@ -69,14 +69,14 @@ public class NoCtmCommand extends AbstractCommand
             if (clientAbout.isNoTransfer())
             {
                 clientAbout.setNoTransfer(false);
-                MessageUtils.sendMessageToOpChat("Client with nick \'" +
+                ClientUtils.sendMessageToOpChat("Client with nick \'" +
                                                  client.getNick() +
                                                  "\' now can connect to other users.");
             }
             else
             {
                 clientAbout.setNoTransfer(true);
-                MessageUtils.sendMessageToOpChat("Client with nick \'" +
+                ClientUtils.sendMessageToOpChat("Client with nick \'" +
                                                  client.getNick() +
                                                  "\' now can\'t connect to other users");
             }

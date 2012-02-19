@@ -30,7 +30,7 @@ import ru.sincore.cmd.CommandUtils;
 import ru.sincore.db.dao.ClientListDAO;
 import ru.sincore.db.dao.ClientListDAOImpl;
 import ru.sincore.i18n.Messages;
-import ru.sincore.util.MessageUtils;
+import ru.sincore.util.ClientUtils;
 
 /**
  * @author Alexey 'lh' Antonov
@@ -119,7 +119,7 @@ public class DeleteUserCommand extends AbstractCommand
             return result;
         }
 
-        MessageUtils.sendMessageToOpChat("Client " + nick + " was deleted by " + client.getNick());
+        ClientUtils.sendMessageToOpChat("Client " + nick + " was deleted by " + client.getNick());
 
         return "Successfully deleted.";
     }

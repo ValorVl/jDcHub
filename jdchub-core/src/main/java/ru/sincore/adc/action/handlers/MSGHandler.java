@@ -22,7 +22,7 @@ import ru.sincore.pipeline.Pipeline;
 import ru.sincore.pipeline.PipelineFactory;
 import ru.sincore.signalservice.Signal;
 import ru.sincore.util.AdcUtils;
-import ru.sincore.util.MessageUtils;
+import ru.sincore.util.ClientUtils;
 import ru.sincore.util.STAError;
 
 /**
@@ -73,7 +73,7 @@ public class MSGHandler extends AbstractActionHandler<MSG>
                 client.sendPrivateMessageFromHub(Messages.get(Messages.SAME_MESSAGE_FLOOD,
                                                               client.getExtendedField("LC")));
 
-                MessageUtils.sendMessageToOpChat(Messages.get(Messages.SAME_MESSAGE_FLOOD_DETECTED,
+                ClientUtils.sendMessageToOpChat(Messages.get(Messages.SAME_MESSAGE_FLOOD_DETECTED,
                                                               new String[]
                                                               {
                                                                       client.getNick()

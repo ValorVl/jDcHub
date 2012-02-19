@@ -6,7 +6,7 @@ import ru.sincore.Exceptions.CommandException;
 import ru.sincore.Exceptions.STAException;
 import ru.sincore.adc.action.actions.SCH;
 import ru.sincore.client.AbstractClient;
-import ru.sincore.util.MessageUtils;
+import ru.sincore.util.ClientUtils;
 
 /**
  * SCH (search) action handler

@@ -26,7 +26,7 @@ import ru.sincore.ClientManager;
 import ru.sincore.client.AbstractClient;
 import ru.sincore.cmd.AbstractCommand;
 import ru.sincore.util.ClientUtils;
-import ru.sincore.util.MessageUtils;
+import ru.sincore.util.ClientUtils;
 
 /**
  * @author Alexey 'lh' Antonov
@@ -70,14 +70,14 @@ public class GagCommand extends AbstractCommand
             if (clientAbout.isMute())
             {
                 clientAbout.setMute(false);
-                MessageUtils.sendMessageToOpChat("Client with nick \'" +
+                ClientUtils.sendMessageToOpChat("Client with nick \'" +
                                                  client.getNick() +
                                                  "\' have been ungaged! (Now can use CHAT functions)");
             }
             else
             {
                 clientAbout.setMute(true);
-                MessageUtils.sendMessageToOpChat("Client with nick \'" +
+                ClientUtils.sendMessageToOpChat("Client with nick \'" +
                                                  client.getNick() +
                                                  "\' have been gaged! (Now can\'t use CHAT functions)");
             }

@@ -25,7 +25,7 @@ import ru.sincore.Exceptions.STAException;
 import ru.sincore.client.AbstractClient;
 import ru.sincore.cmd.AbstractCommand;
 import ru.sincore.i18n.Messages;
-import ru.sincore.util.MessageUtils;
+import ru.sincore.util.ClientUtils;
 
 import java.util.Date;
 
@@ -122,7 +122,7 @@ public class RegmeCommand extends AbstractCommand
                                          client.getNick() +
                                          " You was successfully registered!\nPlease reconnect to hub and enter your password.");
 
-        MessageUtils.sendMessageToOpChat("Client " +
+        ClientUtils.sendMessageToOpChat("Client " +
                                         client.getNick() +
                                         " now registred");
 

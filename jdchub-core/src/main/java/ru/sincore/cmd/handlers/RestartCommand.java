@@ -33,7 +33,7 @@ import ru.sincore.client.AbstractClient;
 import ru.sincore.cmd.AbstractCommand;
 import ru.sincore.cmd.CommandUtils;
 import ru.sincore.i18n.Messages;
-import ru.sincore.util.MessageUtils;
+import ru.sincore.util.ClientUtils;
 
 /**
  * @author Alexey 'lh' Antonov
@@ -90,7 +90,7 @@ public class RestartCommand extends AbstractCommand
             }
         }
 
-        MessageUtils.sendMessageToOpChat(client.getNick() + " called !restart command.");
+        ClientUtils.sendMessageToOpChat(client.getNick() + " called !restart command.");
 
         restartHub();
 

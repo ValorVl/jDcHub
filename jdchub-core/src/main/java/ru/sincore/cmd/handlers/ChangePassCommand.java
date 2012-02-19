@@ -29,7 +29,7 @@ import ru.sincore.client.AbstractClient;
 import ru.sincore.cmd.AbstractCommand;
 import ru.sincore.cmd.CommandUtils;
 import ru.sincore.i18n.Messages;
-import ru.sincore.util.MessageUtils;
+import ru.sincore.util.ClientUtils;
 
 
 /**
@@ -158,7 +158,7 @@ public class ChangePassCommand extends AbstractCommand
                                                                               .getExtendedField("LC")));
         clientToChangePassword.disconnect();
 
-        MessageUtils.sendMessageToOpChat(clientToChangePassword.getNick() + " changed password.");
+        ClientUtils.sendMessageToOpChat(clientToChangePassword.getNick() + " changed password.");
         return result;
     }
 

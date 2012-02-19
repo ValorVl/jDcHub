@@ -27,7 +27,7 @@ import ru.sincore.ConfigurationManager;
 import ru.sincore.client.AbstractClient;
 import ru.sincore.cmd.AbstractCommand;
 import ru.sincore.cmd.CommandUtils;
-import ru.sincore.util.MessageUtils;
+import ru.sincore.util.ClientUtils;
 
 import java.io.File;
 
@@ -124,7 +124,7 @@ public class ScriptCommandHandler extends AbstractCommand
 
     private void restartScriptEngine()
     {
-        MessageUtils.sendMessageToOpChat("Script engine will be restarted!");
+        ClientUtils.sendMessageToOpChat("Script engine will be restarted!");
 
         this.engine.restart();
     }

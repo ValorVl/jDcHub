@@ -35,7 +35,7 @@ import ru.sincore.cmd.AbstractCommand;
 import ru.sincore.i18n.Messages;
 import ru.sincore.util.AdcUtils;
 import ru.sincore.util.ClientUtils;
-import ru.sincore.util.MessageUtils;
+import ru.sincore.util.ClientUtils;
 
 /**
  * @author Alexey 'lh' Antonov
@@ -56,7 +56,7 @@ public class TopicCommand extends AbstractCommand
         BigTextManager bigTextManager = new BigTextManager();
         if (bigTextManager.setText(BigTextManager.TOPIC, AdcUtils.toAdcString(args)))
         {
-            MessageUtils.sendMessageToOpChat("New topic set by " + client.getNick() + " : " + args);
+            ClientUtils.sendMessageToOpChat("New topic set by " + client.getNick() + " : " + args);
 
             // send new description of hub bot to all clients
             try

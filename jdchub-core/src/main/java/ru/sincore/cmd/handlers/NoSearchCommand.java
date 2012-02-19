@@ -25,7 +25,7 @@ package ru.sincore.cmd.handlers;
 import ru.sincore.ClientManager;
 import ru.sincore.client.AbstractClient;
 import ru.sincore.cmd.AbstractCommand;
-import ru.sincore.util.MessageUtils;
+import ru.sincore.util.ClientUtils;
 
 /**
  * @author Alexey 'lh' Antonov
@@ -69,14 +69,14 @@ public class NoSearchCommand extends AbstractCommand
             if (clientAbout.isNoSearch())
             {
                 clientAbout.setNoSearch(false);
-                MessageUtils.sendMessageToOpChat("Client with nick \'" +
+                ClientUtils.sendMessageToOpChat("Client with nick \'" +
                                                  client.getNick() +
                                                  "\' now can use SEARCH functions");
             }
             else
             {
                 clientAbout.setNoSearch(true);
-                MessageUtils.sendMessageToOpChat("Client with nick \'" +
+                ClientUtils.sendMessageToOpChat("Client with nick \'" +
                                                  client.getNick() +
                                                  "\' now can\'t use SEARCH functions");
             }

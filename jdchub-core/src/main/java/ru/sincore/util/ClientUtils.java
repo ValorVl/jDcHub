@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 import ru.sincore.ClientManager;
+import ru.sincore.ConfigurationManager;
 import ru.sincore.Exceptions.STAException;
 import ru.sincore.Main;
 import ru.sincore.client.AbstractClient;
@@ -145,7 +146,7 @@ public class ClientUtils
                                                  commandOwner.getNick() +
                                                  "<< reason : " +
                                                  reason);
-                MessageUtils.sendMessageToOpChat("Client " +
+                sendMessageToOpChat("Client " +
                                                  client.getNick() +
                                                  "was kicked by " +
                                                  commandOwner.getNick() +
@@ -160,7 +161,7 @@ public class ClientUtils
                                                  reason +
                                                  " ban expires date :" +
                                                  banExpiredDate);
-                MessageUtils.sendMessageToOpChat("Client " +
+                sendMessageToOpChat("Client " +
                                                  client.getNick() +
                                                  " was banned by " +
                                                  commandOwner.getNick() +
@@ -175,7 +176,7 @@ public class ClientUtils
                                                  commandOwner.getNick() +
                                                  "<< reason : " +
                                                  reason);
-                MessageUtils.sendMessageToOpChat("Client " +
+                sendMessageToOpChat("Client " +
                                                  client.getNick() +
                                                  " was permanently banned by " +
                                                  commandOwner.getNick() +
@@ -199,6 +200,17 @@ public class ClientUtils
         client.disconnect();
 
         return true;
+    }
+
+
+    public static void sendMessageToOpChat(String message)
+    {
+        ConfigurationManager configurationManager = ConfigurationManager.instance();
+        ClientManager.getInstance()
+                     .getClientBySID(
+                             configurationManager.getString(ConfigurationManager.OP_CHAT_SID)
+                                    )
+                     .sendPrivateMessageFromHub(message);
     }
 
 

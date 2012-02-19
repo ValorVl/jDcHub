@@ -9,7 +9,7 @@ import ru.sincore.adc.action.actions.CTM;
 import ru.sincore.client.AbstractClient;
 import ru.sincore.i18n.Messages;
 import ru.sincore.util.Constants;
-import ru.sincore.util.MessageUtils;
+import ru.sincore.util.ClientUtils;
 import ru.sincore.util.STAError;
 
 /**
