@@ -1,4 +1,4 @@
-package ru.sincore.beans.rest.pojo;
+package ru.sincore.beans.rest.data;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
