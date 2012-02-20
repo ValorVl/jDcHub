@@ -68,6 +68,8 @@ public class Command
         handlers.put("STA", new ActionHandlerInfo(STAHandler.class, STA.class, StaAdcActionSignal.class));
         handlers.put("CTM", new ActionHandlerInfo(CTMHandler.class, CTM.class, CtmAdcActionSignal.class));
         handlers.put("RCM", new ActionHandlerInfo(RCMHandler.class, RCM.class, RcmAdcActionSignal.class));
+        handlers.put("ZON", new ActionHandlerInfo(ZONHandler.class, ZON.class, ZonAdcActionSignal.class));
+        handlers.put("ZOF", new ActionHandlerInfo(ZOFHandler.class, ZOF.class, ZofAdcActionSignal.class));
         handlers.put("RES", new ActionHandlerInfo(RESHandler.class, RES.class, null));
     }
 

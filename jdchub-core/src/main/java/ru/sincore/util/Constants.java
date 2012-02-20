@@ -71,6 +71,10 @@ public final class Constants
     // Session atributes
     public static final String SESSION_ATTRIBUTE_CLIENT         = "client";
     
+    public static final String LOGGER_FILTER                    = "logger";
+    public static final String ZLIB_FILTER                      = "zlib";
+    public static final String CODEC_FILTER                     = "codec";
+    
     // ClientInfo additional stats
     public static final String BANNED_BY_SHARE_MESSAGE_SENT     = "banned_by_share_message_sent";
 }

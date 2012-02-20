@@ -47,6 +47,7 @@ import ru.sincore.events.HubStartupEvent;
 import ru.sincore.modules.ModulesManager;
 import ru.sincore.pipeline.PipelineFactory;
 import ru.sincore.script.ScriptEngine;
+import ru.sincore.util.Constants;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -115,11 +116,11 @@ public class HubServer
         acceptor = nsa;
         nsa.setReuseAddress(true);
 
-        acceptor.getFilterChain().addLast("logger", new LoggingFilter());
+        acceptor.getFilterChain().addLast(Constants.LOGGER_FILTER, new LoggingFilter());
         TextLineCodecFactory myx = new TextLineCodecFactory(Charset.forName("UTF-8"), "\n", "\n");
         myx.setDecoderMaxLineLength(64 * 1024);
         myx.setEncoderMaxLineLength(64 * 1024);
-        acceptor.getFilterChain().addLast("codec", new ProtocolCodecFilter(myx));
+        acceptor.getFilterChain().addLast(Constants.CODEC_FILTER, new ProtocolCodecFilter(myx));
 
         // TODO Uncomment this when it will be added to config file
         //acceptor.getSessionConfig().setReadBufferSize(64 * 1024);
@@ -168,6 +169,8 @@ public class HubServer
             // Extended
             sup.getFeatures().put(Features.PING,  true);
             sup.getFeatures().put(Features.SEGA,  true);
+            // Test feature
+            sup.getFeatures().put(Features.ZLIF,  true);
         }
         catch (Exception e)
         {

@@ -1,5 +1,7 @@
 package ru.sincore.adc.action.handlers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.sincore.ClientManager;
 import ru.sincore.ConfigurationManager;
 import ru.sincore.Exceptions.CommandException;
@@ -22,7 +24,7 @@ import ru.sincore.util.STAError;
  */
 public class RCMHandler extends AbstractActionHandler<RCM>
 {
-
+    private static final Logger log = LoggerFactory.getLogger(RCMHandler.class);
 
     public RCMHandler(AbstractClient sourceClient, RCM action)
     {
@@ -91,7 +93,7 @@ public class RCMHandler extends AbstractActionHandler<RCM>
         }
         catch (CommandException e)
         {
-            e.printStackTrace();
+            log.error(e.toString());
         }
 
     }

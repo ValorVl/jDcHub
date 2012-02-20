@@ -1,5 +1,7 @@
 package ru.sincore.adc.action.handlers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.sincore.Broadcast;
 import ru.sincore.ConfigurationManager;
 import ru.sincore.Exceptions.CommandException;
@@ -18,6 +20,7 @@ import ru.sincore.util.ClientUtils;
  */
 public class SCHHandler extends AbstractActionHandler<SCH>
 {
+    private static final Logger log = LoggerFactory.getLogger(SCHHandler.class);
 
 
     public SCHHandler(AbstractClient sourceClient, SCH action)
@@ -55,7 +58,7 @@ public class SCHHandler extends AbstractActionHandler<SCH>
         }
         catch (CommandException e)
         {
-            e.printStackTrace();
+            log.error(e.toString());
         }
     }
 }

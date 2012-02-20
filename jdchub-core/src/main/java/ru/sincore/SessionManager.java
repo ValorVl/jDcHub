@@ -138,6 +138,7 @@ public class SessionManager extends IoHandlerAdapter
     public void messageSent(IoSession session, Object message)
             throws Exception
     {
+        //session.getFilterChain().
         log.debug("Outgoing message from hub : \'" + message.toString() + "\'");
     }
 

@@ -23,6 +23,7 @@
 package ru.sincore.client;
 
 import org.apache.mina.core.session.IoSession;
+import org.apache.mina.filter.compression.CompressionFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.sincore.BigTextManager;
@@ -37,6 +38,7 @@ import ru.sincore.adc.MessageType;
 import ru.sincore.adc.State;
 import ru.sincore.adc.action.actions.AbstractAction;
 import ru.sincore.adc.action.actions.INF;
+import ru.sincore.adc.action.actions.ZON;
 import ru.sincore.db.dao.ChatLogDAO;
 import ru.sincore.db.dao.ChatLogDAOImpl;
 import ru.sincore.db.dao.ClientListDAO;
@@ -44,6 +46,8 @@ import ru.sincore.db.dao.ClientListDAOImpl;
 import ru.sincore.db.pojo.ChatLogPOJO;
 import ru.sincore.db.pojo.ClientListPOJO;
 import ru.sincore.i18n.Messages;
+import ru.sincore.signals.ZonAdcActionSignal;
+import ru.sincore.signalservice.Signal;
 import ru.sincore.util.AdcUtils;
 import ru.sincore.util.ClientUtils;
 import ru.sincore.util.Constants;
@@ -242,6 +246,11 @@ public class Client extends AbstractClient
             this.sendRawCommand("ICMD Test CT1 TTTest");
         }
 
+        if (isFeature(Features.ZLIF))
+        {
+            this.enableCompression();
+        }
+        
         sendMessageFromHub(ClientUtils.getHubInfo(this));
 
         // send MOTD
@@ -256,6 +265,17 @@ public class Client extends AbstractClient
         this.sendNLastMessages();
 
         this.setAdditionalClientStats();
+    }
+
+
+    private void enableCompression()
+    {
+        this.sendRawCommand("IZON");
+        session.getFilterChain().addFirst(Constants.ZLIB_FILTER,
+                                          new CompressionFilter(false,
+                                                                true,
+                                                                CompressionFilter.COMPRESSION_DEFAULT));
+        Signal.emit(new ZonAdcActionSignal(this, new ZON()));
     }
 
 

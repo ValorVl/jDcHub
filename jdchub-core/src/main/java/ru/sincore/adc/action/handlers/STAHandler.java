@@ -1,5 +1,7 @@
 package ru.sincore.adc.action.handlers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.sincore.ClientManager;
 import ru.sincore.Exceptions.CommandException;
 import ru.sincore.Exceptions.STAException;
@@ -20,6 +22,7 @@ import ru.sincore.util.STAError;
  */
 public class STAHandler extends AbstractActionHandler<STA>
 {
+    private static final Logger log = LoggerFactory.getLogger(STAHandler.class);
 
 
     public STAHandler(AbstractClient sourceClient, STA action)
@@ -90,7 +93,7 @@ public class STAHandler extends AbstractActionHandler<STA>
         }
         catch (CommandException e)
         {
-            e.printStackTrace();
+            log.error(e.toString());
         }
 
     }

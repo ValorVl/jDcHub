@@ -86,11 +86,11 @@ public class PASHandler extends AbstractActionHandler<PAS>
         }
         catch (CommandException e)
         {
-            e.printStackTrace();
+            log.error(e.toString());
         }
         catch (STAException e)
         {
-            e.printStackTrace();
+            log.error(e.toString());
         }
     }
 
@@ -110,7 +110,7 @@ public class PASHandler extends AbstractActionHandler<PAS>
         }
         finally
         {
-                client.disconnect();
+            client.disconnect();
         }
     }
 }

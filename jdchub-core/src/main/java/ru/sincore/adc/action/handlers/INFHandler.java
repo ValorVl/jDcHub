@@ -396,17 +396,17 @@ public class INFHandler extends AbstractActionHandler<INF>
             }
             catch (STAException e)
             {
-                e.printStackTrace();
+                log.error(e.toString());
             }
             return;
         }
         catch (CommandException e)
         {
-            e.printStackTrace();
+            log.error(e.toString());
         }
         catch (STAException e)
         {
-            e.printStackTrace();
+            log.error(e.toString());
         }
 
     }
@@ -797,7 +797,7 @@ public class INFHandler extends AbstractActionHandler<INF>
         }
         catch (Exception e)
         {
-            System.out.println(e);
+            log.error(e.toString());
             return false;
         }
 
