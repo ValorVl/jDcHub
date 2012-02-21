@@ -135,7 +135,7 @@ public class RSSFeeder extends TimerTask
             rssFeedEvent.setFeedDescription(feedDescription);
 
             // TODO [lh] change to normal author name parsing (Error #208)
-            rssFeedEvent.setAuthorName(getRssPostField(doc, xpath, "dc:creator"));
+            rssFeedEvent.setAuthorName(getRssPostField(doc, xpath, "author"));
             rssFeedEvent.setPostName(getRssPostField(doc, xpath, "title"));
             rssFeedEvent.setPostDescription(getRssPostField(doc, xpath, "description"));
             rssFeedEvent.setLink(getRssPostField(doc, xpath, "link"));
