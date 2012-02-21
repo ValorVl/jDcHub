@@ -165,21 +165,27 @@ public class Broadcast
 
             if (featured)
             {
-                for (String feature : requiredFeatures)
+                if (requiredFeatures != null)
                 {
-                    if (!toClient.isFeature(feature))
+                    for (String feature : requiredFeatures)
                     {
-                        doSend = false;
-                        break;
+                        if (!toClient.isFeature(feature))
+                        {
+                            doSend = false;
+                            break;
+                        }
                     }
                 }
 
-                for (String feature : excludedFeatures)
+                if (excludedFeatures != null)
                 {
-                    if (toClient.isFeature(feature))
+                    for (String feature : excludedFeatures)
                     {
-                        doSend = false;
-                        break;
+                        if (toClient.isFeature(feature))
+                        {
+                            doSend = false;
+                            break;
+                        }
                     }
                 }
             }

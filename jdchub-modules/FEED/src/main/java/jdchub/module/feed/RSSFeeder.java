@@ -39,9 +39,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import java.util.TimerTask;
+import java.util.*;
 
 /**
  * Rss feeder (works with RSS feed only, Atom not supported yet)
@@ -171,8 +169,14 @@ public class RSSFeeder extends TimerTask
         message.append(AdcUtils.toAdcString(this.feedDescription));
         message.append(" ");
 
-        Broadcast.getInstance().broadcast(message.toString(), ClientManager.getInstance().getClientBySID(
-                ConfigurationManager.instance().getString(ConfigurationManager.HUB_SID)));
+        List<String> features = new LinkedList<String>();
+        features.add("FEED");
+
+        Broadcast.getInstance().featuredBroadcast(message.toString(),
+                                                  ClientManager.getInstance().getClientBySID(
+                                                          ConfigurationManager.instance().getString(ConfigurationManager.HUB_SID)),
+                                                  features,
+                                                  null);
     }
 
 
@@ -211,8 +215,14 @@ public class RSSFeeder extends TimerTask
         message.append(AdcUtils.toAdcString(rssFeedEvent.getAuthorName()));
         message.append(" ");
 
-        Broadcast.getInstance().broadcast(message.toString(), ClientManager.getInstance().getClientBySID(
-                ConfigurationManager.instance().getString(ConfigurationManager.HUB_SID)));
+        List<String> features = new LinkedList<String>();
+        features.add("FEED");
+
+        Broadcast.getInstance().featuredBroadcast(message.toString(),
+                                                  ClientManager.getInstance().getClientBySID(
+                                                          ConfigurationManager.instance().getString(ConfigurationManager.HUB_SID)),
+                                                  features,
+                                                  null);
     }
 
 
@@ -242,8 +252,7 @@ public class RSSFeeder extends TimerTask
 
             EventBusService.publish(rssFeedEvent);
 
-            // TODO [lh] send rss only to users who supports FEED extension
-            //sendNewRssPostMessage(rssFeedEvent);
+            sendNewRssPostMessage(rssFeedEvent);
         }
         catch (Exception e)
         {
