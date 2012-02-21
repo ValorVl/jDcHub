@@ -182,7 +182,7 @@ public class RSSFeeder extends TimerTask
     {
         StringBuilder message = new StringBuilder();
 
-        message.append("BRSS");
+        message.append("IRSS");
         message.append(" ");
         message.append(AdcUtils.toAdcString(this.feedURL.toString()));
         message.append(" ");
