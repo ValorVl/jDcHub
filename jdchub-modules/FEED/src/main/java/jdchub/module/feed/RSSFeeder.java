@@ -134,7 +134,6 @@ public class RSSFeeder extends TimerTask
             rssFeedEvent.setFeedName(feedName);
             rssFeedEvent.setFeedDescription(feedDescription);
 
-            // TODO [lh] change to normal author name parsing (Error #208)
             rssFeedEvent.setAuthorName(getRssPostField(doc, xpath, "author"));
             rssFeedEvent.setPostName(getRssPostField(doc, xpath, "title"));
             rssFeedEvent.setPostDescription(getRssPostField(doc, xpath, "description"));
@@ -243,7 +242,8 @@ public class RSSFeeder extends TimerTask
 
             EventBusService.publish(rssFeedEvent);
 
-            sendNewRssPostMessage(rssFeedEvent);
+            // TODO [lh] send rss only to users who supports FEED extension
+            //sendNewRssPostMessage(rssFeedEvent);
         }
         catch (Exception e)
         {
