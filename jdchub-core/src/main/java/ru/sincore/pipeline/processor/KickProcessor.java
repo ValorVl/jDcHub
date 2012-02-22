@@ -87,7 +87,7 @@ public class KickProcessor implements Processor<MSG>
 
         if (matcher.matches())
         {
-            AbstractClient sourceClient = null;
+            AbstractClient sourceClient;
 
             try
             {
@@ -103,7 +103,7 @@ public class KickProcessor implements Processor<MSG>
             try
             {
                 ClientUtils.kickOrBanClient(
-                        ClientManager.getInstance().getClientBySID(ConfigurationManager.instance().getString(ConfigurationManager.HUB_SID)),
+                        ClientManager.getInstance().getClientBySID(ConfigurationManager.getInstance().getString(ConfigurationManager.HUB_SID)),
                         sourceClient.getNick(),
                         Constants.KICK,
                         null,

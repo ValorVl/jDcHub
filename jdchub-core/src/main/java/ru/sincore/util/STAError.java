@@ -228,12 +228,12 @@ public class STAError
         client.sendRawCommand(rawCommand());
         if (errorCode >= 200)
         {
-            if (!ConfigurationManager.instance().getString(ConfigurationManager.REDIRECT_URL).isEmpty())
+            if (!ConfigurationManager.getInstance().getString(ConfigurationManager.REDIRECT_URL).isEmpty())
             {
                 client.sendRawCommand("IQUI " +
                                       client.getSid() +
                                       " RD" +
-                                      ConfigurationManager.instance()
+                                      ConfigurationManager.getInstance()
                                                           .getString(ConfigurationManager.REDIRECT_URL));
             }
             throw new STAException(errorCode, rawCommand());

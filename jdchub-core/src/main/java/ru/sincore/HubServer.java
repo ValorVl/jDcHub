@@ -75,6 +75,8 @@ public class HubServer
     private              IoAcceptor     acceptor = null;
     private              CommandEngine  commandEngine = null;
     private              ScriptEngine   scriptEngine = null;
+
+
     /**
      * Creates a new instance of HubServer
      */
@@ -132,7 +134,7 @@ public class HubServer
 
         try
         {
-            int hubPort = ConfigurationManager.instance().getInt(ConfigurationManager.HUB_PORT);
+            int hubPort = ConfigurationManager.getInstance().getInt(ConfigurationManager.HUB_PORT);
             acceptor.bind(new InetSocketAddress(hubPort));
             log.info("Hub successfully binded on port : " + hubPort);
         }

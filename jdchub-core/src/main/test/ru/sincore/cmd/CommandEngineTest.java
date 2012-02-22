@@ -4,12 +4,10 @@ import org.apache.log4j.PropertyConfigurator;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import ru.sincore.ConfigurationManager;
-import ru.sincore.cmd.CommandEngine;
 import ru.sincore.cmd.handlers.AboutCommand;
 import ru.sincore.cmd.handlers.HelpCommand;
 import ru.sincore.cmd.handlers.InfoCommand;
 import ru.sincore.cmd.handlers.RegmeCommand;
-import ru.sincore.cmd.handlers.InfoCommand;
 import ru.sincore.cmd.handlers.KickCommand;
 import ru.sincore.cmd.handlers.GrantCommand;
 import ru.sincore.cmd.handlers.ReloadCommand;
@@ -26,7 +24,7 @@ public class CommandEngineTest
 	@BeforeMethod
 	public void setUp() throws Exception
 	{
-		PropertyConfigurator.configure(ConfigurationManager.instance().getHubConfigDir() +
+		PropertyConfigurator.configure(ConfigurationManager.getInstance().getHubConfigDir() +
                                        "/log4j.properties");
 		engine = new CommandEngine();
 

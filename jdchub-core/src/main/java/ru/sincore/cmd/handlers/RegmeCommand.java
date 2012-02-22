@@ -18,8 +18,6 @@ package ru.sincore.cmd.handlers;
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ru.sincore.ConfigurationManager;
 import ru.sincore.Exceptions.STAException;
 import ru.sincore.client.AbstractClient;
@@ -41,7 +39,7 @@ public class RegmeCommand extends AbstractCommand
 	private String cmd;
 	private String args;
 
-	private ConfigurationManager configInstance = ConfigurationManager.instance();
+	private ConfigurationManager configInstance = ConfigurationManager.getInstance();
 
 
 	@Override

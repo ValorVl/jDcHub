@@ -37,7 +37,7 @@ public class ModulesManager
 
     private String modulesDirectory = "./modules";
 
-    // Manager instance
+    // Manager nstance
     private static ModulesManager manager = new ModulesManager();
 
     //
@@ -88,7 +88,7 @@ public class ModulesManager
             InvocationTargetException,
             InterruptedException
     {
-        Module instance = null;
+        Module instance;
 
         // Detect parent class loader
         ClassLoader parentClassLoader = ModulesManager.class.getClassLoader();
@@ -190,8 +190,8 @@ public class ModulesManager
 
             try
             {
-                ConfigurationManager.instance()
-                                    .load(ConfigurationManager.instance().getHubConfigDir() +
+                ConfigurationManager.getInstance()
+                                    .load(ConfigurationManager.getInstance().getHubConfigDir() +
                                           "/modules/" +
                                           moduleInstance.getName() +
                                           "/" +
@@ -363,7 +363,7 @@ public class ModulesManager
             return false;
         }
 
-        boolean returnResult = true;
+        boolean returnResult;
 
         if (isEnabled)
         {

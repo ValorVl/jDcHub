@@ -32,7 +32,6 @@ import ru.sincore.adc.Flags;
 import ru.sincore.adc.MessageType;
 import ru.sincore.adc.State;
 import ru.sincore.adc.action.actions.INF;
-import ru.sincore.util.Constants;
 
 import java.util.*;
 
@@ -502,7 +501,7 @@ public class ClientInfo
 
     public boolean isOp()
     {
-        return getWeight() > ConfigurationManager.instance().getInt(ConfigurationManager.CLIENT_WEIGHT_REGISTRED);
+        return getWeight() > ConfigurationManager.getInstance().getInt(ConfigurationManager.CLIENT_WEIGHT_REGISTRED);
     }
 
 
@@ -616,7 +615,7 @@ public class ClientInfo
 
     public void setClientTypeByWeight(int clientType)
     {
-        ConfigurationManager configurationManager =  ConfigurationManager.instance();
+        ConfigurationManager configurationManager =  ConfigurationManager.getInstance();
 
         ArrayList<IntRange> clientTypeRanges = new ArrayList<IntRange>(5);
         // add unregistred users range
@@ -936,7 +935,7 @@ public class ClientInfo
         if (!this.isOverrideShare())
         {
             if (shareSize <
-                ConfigurationManager.instance()
+                ConfigurationManager.getInstance()
                                     .getLong(ConfigurationManager.BAN_BY_SHARE_MIN_SHARE))
             {
                 this.setBannedByShare(true);

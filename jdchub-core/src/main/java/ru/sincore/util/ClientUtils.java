@@ -22,10 +22,13 @@ import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
+import ru.sincore.Broadcast;
 import ru.sincore.ClientManager;
 import ru.sincore.ConfigurationManager;
 import ru.sincore.Exceptions.STAException;
 import ru.sincore.Main;
+import ru.sincore.adc.MessageType;
+import ru.sincore.adc.action.actions.MSG;
 import ru.sincore.client.AbstractClient;
 import ru.sincore.db.dao.BanListDAOImpl;
 import ru.sincore.db.dao.ClientCountDAOImpl;
@@ -201,9 +204,36 @@ public class ClientUtils
     }
 
 
+    /**
+     * Construct MSG and broadcast it as hub bot' message.
+     *
+     * @param message Text message
+     */
+    public static void broadcastTextMessageFromHub(String message)
+    {
+        try
+        {
+            AbstractClient hubBot = ClientManager.getInstance()
+                                                 .getClientBySID(ConfigurationManager.getInstance()
+                                                                                     .getString(
+                                                                                             ConfigurationManager.HUB_SID));
+            MSG outgoingMessage = new MSG();
+            outgoingMessage.setMessage(message);
+            outgoingMessage.setMessageType(MessageType.B);
+            outgoingMessage.setSourceSID(hubBot.getSid());
+            // send outgoing message
+            Broadcast.getInstance().broadcast(outgoingMessage.getRawCommand(), hubBot);
+        }
+        catch (Exception e)
+        {
+            log.error(e.toString());
+        }
+    }
+    
+    
     public static void sendMessageToOpChat(String message)
     {
-        ConfigurationManager configurationManager = ConfigurationManager.instance();
+        ConfigurationManager configurationManager = ConfigurationManager.getInstance();
         ClientManager.getInstance()
                      .getClientBySID(
                              configurationManager.getString(ConfigurationManager.OP_CHAT_SID)

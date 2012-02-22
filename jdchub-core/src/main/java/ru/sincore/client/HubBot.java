@@ -34,16 +34,18 @@ public class HubBot extends Bot
 {
     public HubBot()
     {
-        this.setSid(ConfigurationManager.instance().getString(ConfigurationManager.HUB_SID));
-        this.setCid(ConfigurationManager.instance().getString(ConfigurationManager.SECURITY_CID));
-        this.setNick(ConfigurationManager.instance().getString(ConfigurationManager.HUB_NAME));
-        this.setDescription(ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_DESCRIPTION));
+        ConfigurationManager configurationManager = ConfigurationManager.getInstance();
+
+        this.setSid(configurationManager.getString(ConfigurationManager.HUB_SID));
+        this.setCid(configurationManager.getString(ConfigurationManager.SECURITY_CID));
+        this.setNick(configurationManager.getString(ConfigurationManager.HUB_NAME));
+        this.setDescription(configurationManager.getAdcString(ConfigurationManager.HUB_DESCRIPTION));
 
         // TODO [lh] Remove code duplication
         // duplicated code placed here: SUPHandler#sendClientInitializationInfo
-        if (!ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_DESCRIPTION).isEmpty())
+        if (!configurationManager.getAdcString(ConfigurationManager.HUB_DESCRIPTION).isEmpty())
         {
-            this.setDescription(ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_DESCRIPTION));
+            this.setDescription(configurationManager.getAdcString(ConfigurationManager.HUB_DESCRIPTION));
         }
 
         this.setWeight(100);
@@ -60,6 +62,8 @@ public class HubBot extends Bot
     @Override
     public String getINF()
     {
+        ConfigurationManager configurationManager = ConfigurationManager.getInstance();
+
         BigTextManager bigTextManager = new BigTextManager();
         // hub description == hub topic
         String hubDescription = bigTextManager.getText(BigTextManager.TOPIC);
@@ -70,12 +74,10 @@ public class HubBot extends Bot
         {
             this.setDescription(hubDescription);
         }
-        else if (!ConfigurationManager.instance()
-                                      .getAdcString(ConfigurationManager.HUB_DESCRIPTION)
+        else if (!configurationManager.getAdcString(ConfigurationManager.HUB_DESCRIPTION)
                                       .isEmpty())
         {
-            this.setDescription(ConfigurationManager.instance()
-                                                    .getAdcString(ConfigurationManager.HUB_DESCRIPTION));
+            this.setDescription(configurationManager.getAdcString(ConfigurationManager.HUB_DESCRIPTION));
         }
 
 

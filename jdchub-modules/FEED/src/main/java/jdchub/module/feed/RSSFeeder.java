@@ -35,7 +35,6 @@ import ru.sincore.util.AdcUtils;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.*;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -81,7 +80,7 @@ public class RSSFeeder extends TimerTask
      */
     private long convertLocaleSensitiveDateToLong(String dateString)
     {
-        Date date = null;
+        Date date;
         
         try
         {
@@ -174,7 +173,7 @@ public class RSSFeeder extends TimerTask
 
         Broadcast.getInstance().featuredBroadcast(message.toString(),
                                                   ClientManager.getInstance().getClientBySID(
-                                                          ConfigurationManager.instance().getString(ConfigurationManager.HUB_SID)),
+                                                          ConfigurationManager.getInstance().getString(ConfigurationManager.HUB_SID)),
                                                   features,
                                                   null);
     }
@@ -220,7 +219,8 @@ public class RSSFeeder extends TimerTask
 
         Broadcast.getInstance().featuredBroadcast(message.toString(),
                                                   ClientManager.getInstance().getClientBySID(
-                                                          ConfigurationManager.instance().getString(ConfigurationManager.HUB_SID)),
+                                                          ConfigurationManager.getInstance().getString(
+                                                                  ConfigurationManager.HUB_SID)),
                                                   features,
                                                   null);
     }

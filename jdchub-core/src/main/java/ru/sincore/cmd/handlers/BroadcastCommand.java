@@ -22,9 +22,9 @@
 
 package ru.sincore.cmd.handlers;
 
-import ru.sincore.Broadcast;
 import ru.sincore.client.AbstractClient;
 import ru.sincore.cmd.AbstractCommand;
+import ru.sincore.util.ClientUtils;
 
 /**
  * @author Alexey 'lh' Antonov
@@ -45,7 +45,7 @@ public class BroadcastCommand extends AbstractCommand
             return null;
         }
 
-        Broadcast.getInstance().broadcastTextMessage(args);
+        ClientUtils.broadcastTextMessageFromHub(args);
 
         return null;
     }

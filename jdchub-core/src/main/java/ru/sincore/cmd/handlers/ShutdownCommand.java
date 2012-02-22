@@ -27,7 +27,6 @@ import gnu.getopt.LongOpt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
-import ru.sincore.Broadcast;
 import ru.sincore.Main;
 import ru.sincore.client.AbstractClient;
 import ru.sincore.cmd.AbstractCommand;
@@ -101,7 +100,7 @@ public class ShutdownCommand extends AbstractCommand
     {
         if (this.message != null)
         {
-            Broadcast.getInstance().broadcastTextMessage(message);
+            ClientUtils.broadcastTextMessageFromHub(message);
         }
 
         try

@@ -22,7 +22,6 @@
 
 package ru.sincore.cmd.handlers;
 
-import ru.sincore.Broadcast;
 import ru.sincore.ConfigurationManager;
 import ru.sincore.client.AbstractClient;
 import ru.sincore.cmd.AbstractCommand;
@@ -42,7 +41,7 @@ public class ReloadCommand extends AbstractCommand
     {
         ClientUtils.sendMessageToOpChat(client.getNick() + " called !reload command.");
 
-        Broadcast.getInstance().broadcastTextMessage("Hub will be freezed due to configs loading...");
+        ClientUtils.broadcastTextMessageFromHub("Hub will be freezed due to configs loading...");
 
         try
         {
@@ -53,8 +52,8 @@ public class ReloadCommand extends AbstractCommand
             // ignored
         }
 
-        String result = null;
-        if (ConfigurationManager.instance().loadConfigs())
+        String result;
+        if (ConfigurationManager.getInstance().loadConfigs())
         {
             result = "Configs reloaded.";
             client.sendPrivateMessageFromHub(result);

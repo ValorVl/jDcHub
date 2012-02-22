@@ -54,7 +54,7 @@ public final class ClientManager
     private static volatile Strategy strategy = new CreateAndReturnStrategy();
     private static ClientManager instance;
 
-    private ConfigurationManager configurationManager = ConfigurationManager.instance();
+    private ConfigurationManager configurationManager = ConfigurationManager.getInstance();
 
 
     private static interface Strategy
@@ -99,16 +99,16 @@ public final class ClientManager
     private ClientManager()
     {
         int initialCapacity =
-                ConfigurationManager.instance().getInt(ConfigurationManager.USER_INITIAL_CAPACITY);
+                configurationManager.getInt(ConfigurationManager.USER_INITIAL_CAPACITY);
         float loadFactor =
-                ConfigurationManager.instance().getFloat(ConfigurationManager.USER_LOAD_FACTOR);
+                configurationManager.getFloat(ConfigurationManager.USER_LOAD_FACTOR);
 
         clientsBySID = new ConcurrentHashMap<String, AbstractClient>(initialCapacity, loadFactor);
         sidByNick = new ConcurrentHashMap<String, String>(initialCapacity, loadFactor);
         sidByCID = new ConcurrentHashMap<String, String>(initialCapacity, loadFactor);
 
         uninitializedClients = new ConcurrentHashMap<String, AbstractClient>(
-                ConfigurationManager.instance()
+                ConfigurationManager.getInstance()
                                     .getInt(ConfigurationManager.USER_CONNECTION_BUFFER_INITIAL_SIZE),
                 loadFactor);
 

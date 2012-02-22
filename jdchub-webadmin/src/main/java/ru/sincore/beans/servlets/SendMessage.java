@@ -3,6 +3,7 @@ package ru.sincore.beans.servlets;
 import ru.sincore.Broadcast;
 import ru.sincore.ClientManager;
 import ru.sincore.client.AbstractClient;
+import ru.sincore.util.ClientUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -29,7 +30,7 @@ public class SendMessage extends HttpServlet
 
 			if (mType.equals("b"))
 			{
-				broadcast.broadcast(message);
+				ClientUtils.broadcastTextMessageFromHub(message);
 				out.print("Message successful delivered");
 			}else if (mType.equals("p"))
 			{

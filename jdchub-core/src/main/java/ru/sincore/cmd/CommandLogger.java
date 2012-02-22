@@ -37,11 +37,13 @@ public class CommandLogger
 
 	public static void log(AbstractCommand cmd, String args, AbstractClient client, String commandResult)
     {
-        if (ConfigurationManager.instance().getBoolean(ConfigurationManager.COMMAND_SAVE_LOG))
+        ConfigurationManager configurationManager = ConfigurationManager.getInstance();
+
+        if (configurationManager.getBoolean(ConfigurationManager.COMMAND_SAVE_LOG))
         {
             if (cmd.isLogs())
             {
-                if (ConfigurationManager.instance().getBoolean(ConfigurationManager.COMMAND_SAVE_LOG_TO_DB))
+                if (configurationManager.getBoolean(ConfigurationManager.COMMAND_SAVE_LOG_TO_DB))
                 {
                     CmdLogDAOImpl cmdLog = new CmdLogDAOImpl();
                     cmdLog.putLog(cmd.getCmdName(), args, client.getNick(), commandResult);

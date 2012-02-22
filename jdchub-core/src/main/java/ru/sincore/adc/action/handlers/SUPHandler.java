@@ -28,6 +28,7 @@ import ru.sincore.util.STAError;
 public class SUPHandler extends AbstractActionHandler<SUP>
 {
     private final static Logger log = LoggerFactory.getLogger(SUPHandler.class);
+    private ConfigurationManager configurationManager = ConfigurationManager.getInstance();
 
 
     public SUPHandler(AbstractClient sourceClient, SUP action)
@@ -104,9 +105,9 @@ public class SUPHandler extends AbstractActionHandler<SUP>
         inf.setMessageType(MessageType.I);
         inf.setFlagValue(Flags.CLIENT_TYPE, 32);
         inf.setFlagValue(Flags.VERSION,
-                         ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_VERSION));
+                         configurationManager.getAdcString(ConfigurationManager.HUB_VERSION));
         inf.setFlagValue(Flags.NICK,
-                         ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_NAME));
+                         configurationManager.getAdcString(ConfigurationManager.HUB_NAME));
 
         BigTextManager bigTextManager = new BigTextManager();
         // hub description == hub topic
@@ -117,10 +118,10 @@ public class SUPHandler extends AbstractActionHandler<SUP>
             inf.setFlagValue(Flags.DESCRIPTION,
                              hubDescription);
         }
-        else if (!ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_DESCRIPTION).isEmpty())
+        else if (!configurationManager.getAdcString(ConfigurationManager.HUB_DESCRIPTION).isEmpty())
         {
             inf.setFlagValue(Flags.DESCRIPTION,
-                             ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_DESCRIPTION));
+                             configurationManager.getAdcString(ConfigurationManager.HUB_DESCRIPTION));
         }
 
 
@@ -144,23 +145,25 @@ public class SUPHandler extends AbstractActionHandler<SUP>
     private static INF pingQuery(INF inf)
             throws CommandException, STAException
     {
-        inf.setFlagValue(Flags.HUB_HOST, ConfigurationManager.instance().getString(ConfigurationManager.HUB_LISTEN));
+        ConfigurationManager configurationManager = ConfigurationManager.getInstance();
+
+        inf.setFlagValue(Flags.HUB_HOST, configurationManager.getString(ConfigurationManager.HUB_LISTEN));
         inf.setFlagValue(Flags.HUB_USERS_ONLINE, ClientManager.getInstance().getClientsCount());
         inf.setFlagValue(Flags.HUB_TOTAL_SHARE_SIZE, ClientManager.getInstance().getTotalShare());
         inf.setFlagValue(Flags.HUB_TOTAL_SHARED_FILES, ClientManager.getInstance().getTotalFileCount());
-        inf.setFlagValue(Flags.HUB_MIN_ALLOWED_SHARE_SIZE, 1024 * 1024 * ConfigurationManager.instance().getLong(ConfigurationManager.MIN_SHARE_SIZE));
-        inf.setFlagValue(Flags.HUB_MAX_ALLOWED_SHARE_SIZE, 1024 * 1024 * ConfigurationManager.instance().getLong(
+        inf.setFlagValue(Flags.HUB_MIN_ALLOWED_SHARE_SIZE, 1024 * 1024 * configurationManager.getLong(ConfigurationManager.MIN_SHARE_SIZE));
+        inf.setFlagValue(Flags.HUB_MAX_ALLOWED_SHARE_SIZE, 1024 * 1024 * configurationManager.getLong(
                 ConfigurationManager.MAX_SHARE_SIZE));
-        inf.setFlagValue(Flags.HUB_MIN_ALLOWED_SLOTS, ConfigurationManager.instance().getInt(
+        inf.setFlagValue(Flags.HUB_MIN_ALLOWED_SLOTS, configurationManager.getInt(
                 ConfigurationManager.MIN_SLOT_COUNT));
-        inf.setFlagValue(Flags.HUB_MAX_ALLOWED_SLOTS, ConfigurationManager.instance().getInt(
+        inf.setFlagValue(Flags.HUB_MAX_ALLOWED_SLOTS, configurationManager.getInt(
                 ConfigurationManager.MAX_SLOT_COUNT));
-        inf.setFlagValue(Flags.HUB_MAX_AMOUNT_HUBS_WHERE_NORMAL_USER, ConfigurationManager.instance().getInt(
+        inf.setFlagValue(Flags.HUB_MAX_AMOUNT_HUBS_WHERE_NORMAL_USER, configurationManager.getInt(
                 ConfigurationManager.MAX_HUBS_USERS));
-        inf.setFlagValue(Flags.HUB_MAX_AMOUNT_HUBS_WHERE_REGISTERED_USER, ConfigurationManager.instance().getInt(
+        inf.setFlagValue(Flags.HUB_MAX_AMOUNT_HUBS_WHERE_REGISTERED_USER, configurationManager.getInt(
                 ConfigurationManager.MAX_HUBS_REGISTERED));
-        inf.setFlagValue(Flags.HUB_MAX_AMOUNT_HUBS_WHERE_OP, ConfigurationManager.instance().getInt(ConfigurationManager.MAX_OP_IN_HUB));
-        inf.setFlagValue(Flags.HUB_MAX_ALLOWED_USERS, ConfigurationManager.instance().getInt(ConfigurationManager.MAX_USERS));
+        inf.setFlagValue(Flags.HUB_MAX_AMOUNT_HUBS_WHERE_OP, configurationManager.getInt(ConfigurationManager.MAX_OP_IN_HUB));
+        inf.setFlagValue(Flags.HUB_MAX_ALLOWED_USERS, configurationManager.getInt(ConfigurationManager.MAX_USERS));
         // TODO [lh] Remove Main class usage
         inf.setFlagValue(Flags.HUB_UPTIME, Main.getUptime());
 

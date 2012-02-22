@@ -200,7 +200,7 @@ public class ConfigurationManager extends PropertiesConfiguration
     }
 
 
-    public static synchronized ConfigurationManager instance()
+    public static synchronized ConfigurationManager getInstance()
     {
         if (instance == null)
         {
@@ -210,7 +210,7 @@ public class ConfigurationManager extends PropertiesConfiguration
     }
 
 
-    public static synchronized ConfigurationManager instance(String configDir)
+    public static synchronized ConfigurationManager getInstance(String configDir)
     {
         if (instance == null)
         {

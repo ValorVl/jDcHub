@@ -16,7 +16,7 @@
         response.sendRedirect("index.jsp");
     }
 
-    ConfigurationManager configInstance = ConfigurationManager.instance();
+    ConfigurationManager configInstance = ConfigurationManager.getInstance();
 
     BigTextDataDAOImpl textDataDAO = new BigTextDataDAOImpl();
 

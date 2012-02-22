@@ -13,9 +13,6 @@ import java.io.PrintWriter;
 
 public class Auth extends HttpServlet
 {
-	
-	private static final Logger log = LoggerFactory.getLogger(Auth.class);
-	
 	protected void doPost(HttpServletRequest request,
 						  HttpServletResponse response)
 			throws ServletException, IOException
@@ -23,7 +20,7 @@ public class Auth extends HttpServlet
 		response.setContentType("text/html;charset=UTF-8");
 		PrintWriter out = response.getWriter();
 
-		ConfigurationManager configInstance = ConfigurationManager.instance();
+		ConfigurationManager configInstance = ConfigurationManager.getInstance();
 
 		HttpSession session = request.getSession(true);
 

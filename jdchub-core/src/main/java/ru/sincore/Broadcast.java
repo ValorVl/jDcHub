@@ -73,6 +73,9 @@ public class Broadcast
     /**
      * Creates a new instance of Broadcast , sends to all except the ClientNod
      * received as param.
+     *
+     * @param message raw adc command
+     * @param fromClient wich client sends command
      */
     public void broadcast(String message, AbstractClient fromClient)
     {
@@ -88,20 +91,6 @@ public class Broadcast
         broadcast(message, null);
     }
 
-
-    public void broadcast(String message)
-    {
-        broadcast(message, null);
-    }
-
-
-    public void broadcastTextMessage(String message)
-    {
-        for (AbstractClient toClient : ClientManager.getInstance().getClients())
-        {
-            pool.execute(new ClientSender(message, toClient));
-        }
-    }
 
     /**
      * Send droadcast message depend on given features list
@@ -153,12 +142,6 @@ public class Broadcast
         }
 
 
-        public ClientSender(String message, AbstractClient toClient)
-        {
-            this(message, null, toClient);
-        }
-
-
         public void run()
         {
             boolean doSend = true;
@@ -192,17 +175,16 @@ public class Broadcast
 
             if (toClient.isActive() && doSend)
             {
-                if (fromClient == null)
+                if (fromClient != null)
                 {
-                    toClient.sendMessageFromHub(message);
-                }
-                else
-                {
-                    if ((!message.startsWith("E") && !message.startsWith("B")) && toClient.equals(fromClient))
+                    if ((!message.startsWith("E") && !message.startsWith("B")) &&
+                        toClient.equals(fromClient))
+                    {
                         return;
-
-                    toClient.sendRawCommand(message);
+                    }
                 }
+
+                toClient.sendRawCommand(message);
             }
         }
     }

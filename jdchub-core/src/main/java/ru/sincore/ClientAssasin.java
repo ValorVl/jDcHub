@@ -34,11 +34,6 @@ import ru.sincore.client.AbstractClient;
  */
 public class ClientAssasin extends Thread
 {
-
-    /**
-     * Creates a new instance of ClientAssasin
-     */
-
     private boolean doRun = true;
 
 
@@ -57,8 +52,9 @@ public class ClientAssasin extends Thread
 
     /**
      * Disconnect clients which must be disconnected
-     * @param client
-     * @return
+     *
+     * @param client client wich must be checked for disconnection
+     * @return was client been disconnected
      */
     private boolean disconnectClient(AbstractClient client)
     {
@@ -70,10 +66,10 @@ public class ClientAssasin extends Thread
         }
 
         // remove clients wich have long keep alive timeout
-        if (ConfigurationManager.instance()
+        if (ConfigurationManager.getInstance()
                                 .getBoolean(ConfigurationManager.DISCONNECT_BY_TIMEOUT) &&
             ((System.currentTimeMillis() - client.getLastKeepAlive()) >
-             ConfigurationManager.instance().getLong(ConfigurationManager.MAX_KEEP_ALIVE_TIMEOUT) *
+             ConfigurationManager.getInstance().getLong(ConfigurationManager.MAX_KEEP_ALIVE_TIMEOUT) *
              1000) // from sec to ms
             &&
             ((client.getClientType() & ClientType.BOT) != ClientType.BOT) // don't remove bots
@@ -93,7 +89,7 @@ public class ClientAssasin extends Thread
         {
             try
             {
-                this.sleep(1000);
+                Thread.sleep(1000);
             }
             catch (InterruptedException ex)
             {
@@ -123,17 +119,18 @@ public class ClientAssasin extends Thread
                 if (((client.getInQueueSearch() != null))
                     && (client.isValidated()))
                 {
+                    ConfigurationManager configurationManager = ConfigurationManager.getInstance();
 
                     double xy = 1;
                     for (int i = 0; i < client.getSearchStep(); i++)
                     {
-                        xy *= ((double) ConfigurationManager.instance().getInt(ConfigurationManager.SEARCH_BASE_INTERVAL)) / 1000;
+                        xy *= ((double) configurationManager.getInt(ConfigurationManager.SEARCH_BASE_INTERVAL)) / 1000;
                     }
                     xy *= 1000;
                     long xx = (long) xy;
-                    if (client.getSearchStep() >= ConfigurationManager.instance().getInt(ConfigurationManager.SEARCH_STEPS))
+                    if (client.getSearchStep() >= configurationManager.getInt(ConfigurationManager.SEARCH_STEPS))
                     {
-                        xx = ConfigurationManager.instance().getInt(ConfigurationManager.SEARCH_SPAM_RESET) * 1000;
+                        xx = configurationManager.getInt(ConfigurationManager.SEARCH_SPAM_RESET) * 1000;
                     }
                     if ((currentTime - client.getLastSearch()) > xx)
                     {

@@ -37,7 +37,7 @@ public class AuthImpl implements Auth
         String login = data.getLogin();
         String pwd   = data.getPassword();
 
-        ConfigurationManager configInstance = ConfigurationManager.instance();
+        ConfigurationManager configInstance = ConfigurationManager.getInstance();
         try{
 
 

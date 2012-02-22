@@ -20,7 +20,7 @@ public class ConfigurationManagerTest
     public void setUp()
             throws Exception
     {
-        PropertyConfigurator.configure(ConfigurationManager.instance().getHubConfigDir() + "/log4j.properties");
+        PropertyConfigurator.configure(ConfigurationManager.getInstance().getHubConfigDir() + "/log4j.properties");
     }
 
 
@@ -28,7 +28,7 @@ public class ConfigurationManagerTest
     public void testInstance()
             throws Exception
     {
-        ConfigurationManager manager = ConfigurationManager.instance();
+        ConfigurationManager manager = ConfigurationManager.getInstance();
         System.out.println("Instance: " + manager);
     }
 
@@ -37,7 +37,7 @@ public class ConfigurationManagerTest
     public void testLoad()
             throws Exception
     {
-        ConfigurationManager manager = ConfigurationManager.instance();
+        ConfigurationManager manager = ConfigurationManager.getInstance();
         System.out.println(manager.getKeys());
         Iterator<String> iterator = manager.getKeys();
         while (iterator.hasNext())
@@ -53,7 +53,7 @@ public class ConfigurationManagerTest
     public void testReload()
             throws Exception
     {
-        ConfigurationManager manager = ConfigurationManager.instance();
+        ConfigurationManager manager = ConfigurationManager.getInstance();
         System.out.println("Instance: " + manager);
         manager.reload();
         System.out.println(manager.getKeys());

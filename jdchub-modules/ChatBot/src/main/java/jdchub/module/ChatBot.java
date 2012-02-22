@@ -54,11 +54,13 @@ public class ChatBot extends Bot
 
     public ChatBot()
     {
-        this.setNick(ConfigurationManager.instance().getString("bot_nick"));
+        ConfigurationManager configurationManager = ConfigurationManager.getInstance();
+
+        this.setNick(configurationManager.getString("bot_nick"));
         this.setSid("PBOT");
         this.setCid(CIDGenerator.generate());
-        this.setDescription(AdcUtils.toAdcString(ConfigurationManager.instance().getString("bot_description")));
-        this.setEmail(ConfigurationManager.instance().getString("bot_email"));
+        this.setDescription(AdcUtils.toAdcString(configurationManager.getString("bot_description")));
+        this.setEmail(configurationManager.getString("bot_email"));
         this.setWeight(10);
         this.setClientType(ClientType.BOT);
         this.setValidated();
@@ -91,14 +93,16 @@ public class ChatBot extends Bot
 
     public void start()
     {
+        ConfigurationManager configurationManager = ConfigurationManager.getInstance();
+
         timer = new Timer(true);
 
         timer.schedule(new ClientCountSaver(),
-                       ConfigurationManager.instance().getLong("client_count_delay"),
-                       ConfigurationManager.instance().getLong("client_count_repeat_time"));
+                       configurationManager.getLong("client_count_delay"),
+                       configurationManager.getLong("client_count_repeat_time"));
         timer.schedule(new ShareSizeSaver(),
-                       ConfigurationManager.instance().getLong("share_size_count_delay"),
-                       ConfigurationManager.instance().getLong("share_size_count_repeat_time"));
+                       configurationManager.getLong("share_size_count_delay"),
+                       configurationManager.getLong("share_size_count_repeat_time"));
     }
 
 

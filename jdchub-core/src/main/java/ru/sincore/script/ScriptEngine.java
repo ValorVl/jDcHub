@@ -50,9 +50,7 @@ public class ScriptEngine extends Thread
      */
     private ConcurrentHashMap<String, ScriptExecutionPool> engines = null;
 
-    private boolean isStopped = false;
 
-    
     public ScriptEngine()
     {
         
@@ -87,8 +85,10 @@ public class ScriptEngine extends Thread
 
     private void initializePythonScriptEngine()
     {
-        String scriptsPath = ConfigurationManager.instance().getString(ConfigurationManager.SCRIPTS_LOCATION) + "/py/";
-        int numberOfThreads = ConfigurationManager.instance().getInt(ConfigurationManager.NUMBER_OF_SCRIPTS_INTERPRETERS);
+        ConfigurationManager configurationManager = ConfigurationManager.getInstance();
+
+        String scriptsPath = configurationManager.getString(ConfigurationManager.SCRIPTS_LOCATION) + "/py/";
+        int numberOfThreads = configurationManager.getInt(ConfigurationManager.NUMBER_OF_SCRIPTS_INTERPRETERS);
 
         Properties properties = PySystemState.getBaseProperties();
 
@@ -122,7 +122,7 @@ public class ScriptEngine extends Thread
         }
 
         // execute all scripts
-        File scriptDirectory = new File(ConfigurationManager.instance()
+        File scriptDirectory = new File(ConfigurationManager.getInstance()
                                                             .getString(ConfigurationManager.SCRIPTS_LOCATION));
         for (File enginesDir : scriptDirectory.listFiles())
         {

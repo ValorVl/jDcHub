@@ -50,7 +50,7 @@ public class ModuleMainTest
         Class clazz = URLClassLoader.class;
         Method method = clazz.getDeclaredMethod("addURL", new Class[]{URL.class});
         method.setAccessible(true);
-        method.invoke(classLoader, new Object[] {new File(ConfigurationManager.instance().getHubConfigDir()).toURI().toURL()});
+        method.invoke(classLoader, new Object[] {new File(ConfigurationManager.getInstance().getHubConfigDir()).toURI().toURL()});
 
         moduleMain = new ModuleMain();
     }

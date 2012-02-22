@@ -22,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Messages
 {
     private static final Logger log = Logger.getLogger(Messages.class);
-    private static final ConfigurationManager configurationManager = ConfigurationManager.instance();
+    private static final ConfigurationManager configurationManager = ConfigurationManager.getInstance();
     private static final String defaultLocale = configurationManager.getString(ConfigurationManager.HUB_DEFAULT_LOCALE);
 
     // define server message var
@@ -264,9 +264,9 @@ public class Messages
             loc = new Locale(localeElements[0], localeElements[1]);
         }
 
-        File           serverMessagesDirectory = new File(ConfigurationManager.instance()
+        File           serverMessagesDirectory = new File(ConfigurationManager.getInstance()
                                                           .getHubConfigDir() + "/" + SERVER_MESSAGE_DIRECTORY);
-        File           clientMessagesDirectory = new File(ConfigurationManager.instance()
+        File           clientMessagesDirectory = new File(ConfigurationManager.getInstance()
                                                           .getString(ConfigurationManager.HUB_MESSAGES_FILE_DIR));
 
         URLClassLoader classLoader;

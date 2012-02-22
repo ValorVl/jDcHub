@@ -15,7 +15,7 @@ import java.util.Locale;
  */
 public class HubLocale
 {
-    private static ConfigurationManager configInstance = ConfigurationManager.instance();
+    private static ConfigurationManager configInstance = ConfigurationManager.getInstance();
 
     public static Locale getLocale()
     {

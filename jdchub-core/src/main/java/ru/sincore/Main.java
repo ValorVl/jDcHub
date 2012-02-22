@@ -54,7 +54,7 @@ public class Main
         }
 
         PropertyConfigurator.configure(configDirectory + "/log4j.properties");
-        ConfigurationManager.instance(configDirectory);
+        ConfigurationManager.getInstance(configDirectory);
         HibernateUtils.getSessionFactory();
     }
 
@@ -90,8 +90,7 @@ public class Main
         {
             Thread.sleep(500);
         }
-        catch (InterruptedException ex)
-        {}
+        catch (InterruptedException ex) {/* ignore */}
 
         System.exit(0);
     }

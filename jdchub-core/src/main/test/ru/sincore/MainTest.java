@@ -21,7 +21,7 @@ public class MainTest
     public void setUp()
             throws Exception
     {
-        PropertyConfigurator.configure(ConfigurationManager.instance().getHubConfigDir() + "/log4j.properties");
+        PropertyConfigurator.configure(ConfigurationManager.getInstance().getHubConfigDir() + "/log4j.properties");
     }
 
 
@@ -38,7 +38,7 @@ public class MainTest
     public void testRestart()
             throws Exception
     {
-        // Start Server instance
+        // Start Server getInstance
         Main.main(new String[] {});
 
         log.info("\n\n\nWait for restart\n\n\n");

@@ -98,7 +98,7 @@ public class ScriptCommandHandler extends AbstractCommand
 
         scriptList.append("\nList of all available scripts:\n");
 
-        File scriptDirectory = new File(ConfigurationManager.instance()
+        File scriptDirectory = new File(ConfigurationManager.getInstance()
                                                             .getString(ConfigurationManager.SCRIPTS_LOCATION));
         for (File enginesDir : scriptDirectory.listFiles())
         {

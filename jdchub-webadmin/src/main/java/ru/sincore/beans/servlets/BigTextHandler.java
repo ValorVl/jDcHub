@@ -20,7 +20,7 @@ public class BigTextHandler extends HttpServlet
 		response.setContentType("text/html;charset=UTF-8");
 		PrintWriter out = response.getWriter();
 
-		ConfigurationManager configInstance = ConfigurationManager.instance();
+		ConfigurationManager configInstance = ConfigurationManager.getInstance();
 		BigTextDataDAOImpl bigText = new BigTextDataDAOImpl();
 		
 		

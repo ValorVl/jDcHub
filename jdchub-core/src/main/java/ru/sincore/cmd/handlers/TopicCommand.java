@@ -26,7 +26,6 @@ import ru.sincore.BigTextManager;
 import ru.sincore.Broadcast;
 import ru.sincore.ClientManager;
 import ru.sincore.ConfigurationManager;
-import ru.sincore.Exceptions.STAException;
 import ru.sincore.adc.Flags;
 import ru.sincore.adc.MessageType;
 import ru.sincore.adc.action.actions.INF;
@@ -34,7 +33,6 @@ import ru.sincore.client.AbstractClient;
 import ru.sincore.cmd.AbstractCommand;
 import ru.sincore.i18n.Messages;
 import ru.sincore.util.AdcUtils;
-import ru.sincore.util.ClientUtils;
 import ru.sincore.util.ClientUtils;
 
 /**
@@ -62,7 +60,7 @@ public class TopicCommand extends AbstractCommand
             try
             {
                 // get hub bot sid
-                String botSID = ConfigurationManager.instance()
+                String botSID = ConfigurationManager.getInstance()
                                                      .getString(ConfigurationManager.HUB_SID);
                 // create hub bot inf message with description field only
                 INF inf = new INF();

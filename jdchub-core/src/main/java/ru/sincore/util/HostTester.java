@@ -44,6 +44,8 @@ public class HostTester
     {
         try
         {
+            ConfigurationManager configurationManager = ConfigurationManager.getInstance();
+
             Socket testS = new Socket();
             int x = Host.indexOf(':');
             if (x == -1 || x > (Host.length() - 1))
@@ -68,21 +70,21 @@ public class HostTester
 //            in.readLine();
             String INF = in.readLine();
             String test = "";
-            if (ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_DESCRIPTION).isEmpty())
+            if (configurationManager.getAdcString(ConfigurationManager.HUB_DESCRIPTION).isEmpty())
             {
                 test = "IINF CT32 VE" +
-                       ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_VERSION) +
+                       configurationManager.getAdcString(ConfigurationManager.HUB_VERSION) +
                        " NI" +
-                       ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_NAME);
+                       configurationManager.getAdcString(ConfigurationManager.HUB_NAME);
             }
             else
             {
                 test = "IINF CT32 VE" +
-                       ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_VERSION) +
+                       configurationManager.getAdcString(ConfigurationManager.HUB_VERSION) +
                        " NI" +
-                       ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_NAME) +
+                       configurationManager.getAdcString(ConfigurationManager.HUB_NAME) +
                        " DE" +
-                       ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_DESCRIPTION);
+                       configurationManager.getAdcString(ConfigurationManager.HUB_DESCRIPTION);
             }
             if (!INF.equals(test))
             {
@@ -90,13 +92,13 @@ public class HostTester
                                     INF +
                                     "\n" +
                                     "IINF CT32 VE" +
-                                    ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_VERSION)
+                                    configurationManager.getAdcString(ConfigurationManager.HUB_VERSION)
                                     +
                                     " NI" +
-                                    ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_NAME) +
-                                    ((ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_DESCRIPTION).
+                                    configurationManager.getAdcString(ConfigurationManager.HUB_NAME) +
+                                    ((configurationManager.getAdcString(ConfigurationManager.HUB_DESCRIPTION).
                                             equals("")) ?
-                                     (" DE" + ConfigurationManager.instance().getAdcString(ConfigurationManager.HUB_DESCRIPTION)) :
+                                     (" DE" + configurationManager.getAdcString(ConfigurationManager.HUB_DESCRIPTION)) :
                                      ""));
             }
 

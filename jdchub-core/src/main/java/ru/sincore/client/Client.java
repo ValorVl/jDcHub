@@ -33,11 +33,8 @@ import ru.sincore.ConfigurationManager;
 import ru.sincore.Exceptions.CommandException;
 import ru.sincore.Exceptions.STAException;
 import ru.sincore.adc.Features;
-import ru.sincore.adc.Flags;
-import ru.sincore.adc.MessageType;
 import ru.sincore.adc.State;
 import ru.sincore.adc.action.actions.AbstractAction;
-import ru.sincore.adc.action.actions.INF;
 import ru.sincore.adc.action.actions.ZON;
 import ru.sincore.db.dao.ChatLogDAO;
 import ru.sincore.db.dao.ChatLogDAOImpl;
@@ -194,7 +191,7 @@ public class Client extends AbstractClient
 
     public boolean loadInfo()
     {
-        ClientListPOJO clientInfo = null;
+        ClientListPOJO clientInfo;
         ClientListDAO clientListDAO = new ClientListDAOImpl();
         clientInfo = clientListDAO.getClientByNick(this.getNick());
         if (clientInfo == null)
@@ -299,7 +296,7 @@ public class Client extends AbstractClient
     private void sendNLastMessages()
     {
         ChatLogDAO chatLogDAO = new ChatLogDAOImpl();
-        int lastMessageCount = ConfigurationManager.instance().getInt(ConfigurationManager.LAST_MESSAGES_COUNT);
+        int lastMessageCount = ConfigurationManager.getInstance().getInt(ConfigurationManager.LAST_MESSAGES_COUNT);
         List<ChatLogPOJO> chatLog = chatLogDAO.getLast(lastMessageCount);
 
         // reverse message list (from older to newer)

@@ -51,16 +51,17 @@ public class RSSFeedPublisher
 
     private boolean readUrls(List<URL> feeds)
     {
-        FileInputStream fstream = null;
+        FileInputStream fstream;
         DataInputStream in = null;
-        BufferedReader bufferedReader = null;
+        BufferedReader bufferedReader;
         try
         {
+            ConfigurationManager configurationManager = ConfigurationManager.getInstance();
+
             fstream =
-                    new FileInputStream(ConfigurationManager.instance().getHubConfigDir() +
+                    new FileInputStream(configurationManager.getHubConfigDir() +
                                         "/modules/FEED/" +
-                                        ConfigurationManager.instance()
-                                                            .getString("file_with_feeds_urls"));
+                                        configurationManager.getString("file_with_feeds_urls"));
             in = new DataInputStream(fstream);
             bufferedReader = new BufferedReader(new InputStreamReader(in));
 
@@ -122,7 +123,7 @@ public class RSSFeedPublisher
         // run rss feeders
         for (URL feed : feeds)
         {
-            timer.schedule(new RSSFeeder(feed), 1000, ConfigurationManager.instance().getLong("feed_update_interval"));
+            timer.schedule(new RSSFeeder(feed), 1000, ConfigurationManager.getInstance().getLong("feed_update_interval"));
         }
 
         return true;

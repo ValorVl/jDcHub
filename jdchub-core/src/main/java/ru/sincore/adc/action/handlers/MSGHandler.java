@@ -36,6 +36,7 @@ import ru.sincore.util.STAError;
 public class MSGHandler extends AbstractActionHandler<MSG>
 {
     private static final Logger log = LoggerFactory.getLogger(MSGHandler.class);
+    private ConfigurationManager configurationManager = ConfigurationManager.getInstance();
 
     public MSGHandler(AbstractClient sourceClient, MSG action)
     {
@@ -55,7 +56,7 @@ public class MSGHandler extends AbstractActionHandler<MSG>
 
         // detect chat message flood
         if (this.getMessageRecieveTime() - client.getLastMSG() <
-                ConfigurationManager.instance().getLong(ConfigurationManager.CHAT_MESSAGE_INTERVAL))
+            configurationManager.getLong(ConfigurationManager.CHAT_MESSAGE_INTERVAL))
         {
             client.sendPrivateMessageFromHub(Messages.get(Messages.TOO_FAST_CHATTING,
                                                           client.getExtendedField("LC")));
@@ -68,7 +69,7 @@ public class MSGHandler extends AbstractActionHandler<MSG>
             // detect same chat message flood
             if (client.getLastRawMSG().equals(action.getRawCommand()) &&
                     (this.getMessageRecieveTime() - client.getLastMSG() <
-                    ConfigurationManager.instance().getLong(ConfigurationManager.CHAT_SAME_MESSAGE_SPAM_INTERVAL)))
+                    configurationManager.getLong(ConfigurationManager.CHAT_SAME_MESSAGE_SPAM_INTERVAL)))
             {
                 client.sendPrivateMessageFromHub(Messages.get(Messages.SAME_MESSAGE_FLOOD,
                                                               client.getExtendedField("LC")));
@@ -108,7 +109,7 @@ public class MSGHandler extends AbstractActionHandler<MSG>
             switch (action.getMessageType())
             {
                 case B:
-                    if (ConfigurationManager.instance().getBoolean(ConfigurationManager.USE_WORD_FILTER))
+                    if (configurationManager.getBoolean(ConfigurationManager.USE_WORD_FILTER))
                     {
                         pipeline.process(action);
                     }
@@ -120,8 +121,8 @@ public class MSGHandler extends AbstractActionHandler<MSG>
                     break;
                 case D:
                 case E:
-                    if (ConfigurationManager.instance().getBoolean(ConfigurationManager.USE_WORD_FILTER) &&
-                        ConfigurationManager.instance().getBoolean(ConfigurationManager.USE_WORD_FILTER_IN_PM))
+                    if (configurationManager.getBoolean(ConfigurationManager.USE_WORD_FILTER) &&
+                        configurationManager.getBoolean(ConfigurationManager.USE_WORD_FILTER_IN_PM))
                     {
                         pipeline.process(action);
                     }
@@ -129,7 +130,7 @@ public class MSGHandler extends AbstractActionHandler<MSG>
                     break;
                 case F:
                     // send message dependent from features
-                    if (ConfigurationManager.instance().getBoolean(ConfigurationManager.USE_WORD_FILTER))
+                    if (configurationManager.getBoolean(ConfigurationManager.USE_WORD_FILTER))
                     {
                         pipeline.process(action);
                     }
@@ -171,7 +172,6 @@ public class MSGHandler extends AbstractActionHandler<MSG>
             throws CommandException, STAException
     {
         String normalMessage = action.getMessage();
-        ConfigurationManager configurationManager = ConfigurationManager.instance();
 
         if (normalMessage.startsWith(configurationManager.getString(ConfigurationManager.OP_COMMAND_PREFIX)) ||
             normalMessage.startsWith(configurationManager.getString(ConfigurationManager.USER_COMMAND_PREFIX)))

@@ -15,7 +15,6 @@ import ru.sincore.beans.rest.utils.AccessManager;
 import ru.sincore.beans.rest.utils.Session;
 import ru.sincore.beans.rest.utils.SessionManager;
 import ru.sincore.client.AbstractClient;
-import ru.sincore.client.Client;
 import ru.sincore.db.dao.ClientListDAO;
 import ru.sincore.db.dao.ClientListDAOImpl;
 import ru.sincore.db.pojo.ClientListPOJO;
@@ -42,7 +41,7 @@ public class UserManagmentImpl implements UserManagment
         UsersResponse response = new UsersResponse();
         response.setUsers(new ArrayList<UserItem>());
 
-        /*if (AccessManager.check(request, data, ConfigurationManager.instance().getInt(ConfigurationManager.CLIENT_WEIGHT_SUPER_USER)) == false)
+        /*if (AccessManager.check(request, data, ConfigurationManager.getInstance().getInt(ConfigurationManager.CLIENT_WEIGHT_SUPER_USER)) == false)
         {
             response.setErrorStatus(Constants.Error.NO_ACCESS);
             return Response.status(Response.Status.FORBIDDEN).entity(response).build();
@@ -80,7 +79,7 @@ public class UserManagmentImpl implements UserManagment
         UsersResponse response = new UsersResponse();
         response.setUsers(new ArrayList<UserItem>());
 
-        /*if (AccessManager.check(request, data, ConfigurationManager.instance().getInt(ConfigurationManager.CLIENT_WEIGHT_SUPER_USER)) == false)
+        /*if (AccessManager.check(request, data, ConfigurationManager.getInstance().getInt(ConfigurationManager.CLIENT_WEIGHT_SUPER_USER)) == false)
         {
             response.setErrorStatus(Constants.Error.NO_ACCESS);
             return Response.status(Response.Status.FORBIDDEN).entity(response).build();
@@ -113,7 +112,7 @@ public class UserManagmentImpl implements UserManagment
     {
         CommonResponse response = new CommonResponse();
 
-        /*if (AccessManager.check(request, data, ConfigurationManager.instance().getInt(ConfigurationManager.CLIENT_WEIGHT_SUPER_USER)) == false)
+        /*if (AccessManager.check(request, data, ConfigurationManager.getInstance().getInt(ConfigurationManager.CLIENT_WEIGHT_SUPER_USER)) == false)
         {
             response.setErrorStatus(Constants.Error.NO_ACCESS);
             return Response.status(Response.Status.FORBIDDEN).entity(response).build();
@@ -173,7 +172,7 @@ public class UserManagmentImpl implements UserManagment
     {
         CommonResponse response = new CommonResponse();
 
-        /*if (AccessManager.check(request, data, ConfigurationManager.instance().getInt(ConfigurationManager.CLIENT_WEIGHT_SUPER_USER)) == false)
+        /*if (AccessManager.check(request, data, ConfigurationManager.getInstance().getInt(ConfigurationManager.CLIENT_WEIGHT_SUPER_USER)) == false)
         {
             response.setErrorStatus(Constants.Error.NO_ACCESS);
             return Response.status(Response.Status.FORBIDDEN).entity(response).build();
@@ -201,7 +200,7 @@ public class UserManagmentImpl implements UserManagment
     {
         CommonResponse response = new CommonResponse();
 
-        /*if (AccessManager.check(request, data, ConfigurationManager.instance().getInt(ConfigurationManager.CLIENT_WEIGHT_SUPER_USER)) == false)
+        /*if (AccessManager.check(request, data, ConfigurationManager.getInstance().getInt(ConfigurationManager.CLIENT_WEIGHT_SUPER_USER)) == false)
         {
             response.setErrorStatus(Constants.Error.NO_ACCESS);
             return Response.status(Response.Status.FORBIDDEN).entity(response).build();
@@ -229,7 +228,7 @@ public class UserManagmentImpl implements UserManagment
     {
         CommonResponse response = new CommonResponse();
 
-        if (AccessManager.check(request, data, ConfigurationManager.instance().getInt(ConfigurationManager.CLIENT_WEIGHT_SUPER_USER)) == false)
+        if (AccessManager.check(request, data, ConfigurationManager.getInstance().getInt(ConfigurationManager.CLIENT_WEIGHT_SUPER_USER)) == false)
         {
             response.setErrorStatus(Constants.Error.NO_ACCESS);
             return Response.status(Response.Status.FORBIDDEN).entity(response).build();

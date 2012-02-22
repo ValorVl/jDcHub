@@ -39,7 +39,7 @@ public class BigTextManager
 	private static final Logger log = LoggerFactory.getLogger(BigTextManager.class);
 	private String 	marker 			= Marker.ANY_MARKER;
 
-	private String 	defaultLocale 		= ConfigurationManager.instance().getString(ConfigurationManager.HUB_DEFAULT_LOCALE);
+	private String 	defaultLocale 		= ConfigurationManager.getInstance().getString(ConfigurationManager.HUB_DEFAULT_LOCALE);
 
     public static final String MOTD     = "MOTD";
     public static final String RULES    = "RULES";

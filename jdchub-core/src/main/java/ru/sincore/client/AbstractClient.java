@@ -50,7 +50,7 @@ public abstract class AbstractClient extends ClientInfo
             {
                 ClientUtils.sendMessageToOpChat(this.getNick() +
                                                  " was banned for share < " +
-                                                 ConfigurationManager.instance()
+                                                 ConfigurationManager.getInstance()
                                                                      .getLong(ConfigurationManager.BAN_BY_SHARE_MIN_SHARE) +
                                                  " [client IP=\'" +
                                                  this.getRealIP() +
@@ -60,7 +60,7 @@ public abstract class AbstractClient extends ClientInfo
             }
 
             this.sendPrivateMessageFromHub("You was banned for share < " +
-                                           ConfigurationManager.instance()
+                                           ConfigurationManager.getInstance()
                                                                .getLong(ConfigurationManager.BAN_BY_SHARE_MIN_SHARE));
 
             return true;
@@ -91,14 +91,14 @@ public abstract class AbstractClient extends ClientInfo
     public void sendPrivateMessageFromHub(String message)
     {
         this.sendRawCommand("EMSG " +
-                            ConfigurationManager.instance()
+                            ConfigurationManager.getInstance()
                                                 .getString(ConfigurationManager.HUB_SID) +
                             " " +
                             this.getSid() +
                             " " +
                             AdcUtils.toAdcString(message) +
                             " PM" +
-                            ConfigurationManager.instance()
+                            ConfigurationManager.getInstance()
                                                 .getString(ConfigurationManager.HUB_SID)
                            );
     }
@@ -107,7 +107,7 @@ public abstract class AbstractClient extends ClientInfo
     public void sendMessageFromHub(String message)
     {
         this.sendRawCommand("EMSG " +
-                            ConfigurationManager.instance()
+                            ConfigurationManager.getInstance()
                                                 .getString(ConfigurationManager.HUB_SID) +
                             " " +
                             this.getSid() +

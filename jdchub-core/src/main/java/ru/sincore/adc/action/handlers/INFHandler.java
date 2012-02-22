@@ -35,7 +35,7 @@ import ru.sincore.util.STAError;
 public class INFHandler extends AbstractActionHandler<INF>
 {
     private final static Logger log = LoggerFactory.getLogger(INFHandler.class);
-    ConfigurationManager configurationManager = ConfigurationManager.instance();
+    private ConfigurationManager configurationManager = ConfigurationManager.getInstance();
 
 
     public INFHandler(AbstractClient sourceClient, INF action)
@@ -103,7 +103,7 @@ public class INFHandler extends AbstractActionHandler<INF>
 
                     // disconnect previously connected client
                     // (for example it may be zombie client which waiting 2 hours for tcp_connection_timeout)
-                    if (ConfigurationManager.instance().getBoolean(ConfigurationManager.DISCONNECT_ONLINE_WITH_SAME_CID))
+                    if (configurationManager.getBoolean(ConfigurationManager.DISCONNECT_ONLINE_WITH_SAME_CID))
                     {
                         AbstractClient previouseClient = ClientManager.getInstance().getClientByCID(
                                 action.getCid());
@@ -398,7 +398,6 @@ public class INFHandler extends AbstractActionHandler<INF>
             {
                 log.error(e.toString());
             }
-            return;
         }
         catch (CommandException e)
         {
@@ -762,7 +761,7 @@ public class INFHandler extends AbstractActionHandler<INF>
 
 
     private boolean doProtocolStateChecks()
-            throws STAException, CommandException, STAException
+            throws CommandException, STAException
     {
         try
         {

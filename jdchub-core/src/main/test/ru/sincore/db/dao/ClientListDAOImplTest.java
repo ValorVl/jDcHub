@@ -13,7 +13,7 @@ public class ClientListDAOImplTest
 	@BeforeMethod
 	public void setUp() throws Exception
 	{
-		PropertyConfigurator.configure(ConfigurationManager.instance().getHubConfigDir() + "/log4j.properties");
+		PropertyConfigurator.configure(ConfigurationManager.getInstance().getHubConfigDir() + "/log4j.properties");
 	}
 
 	@Test

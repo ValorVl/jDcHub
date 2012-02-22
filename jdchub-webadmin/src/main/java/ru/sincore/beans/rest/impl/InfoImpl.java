@@ -37,7 +37,7 @@ public class InfoImpl implements Info
             return response;
         }*/
 
-        ConfigurationManager configInstance = ConfigurationManager.instance();
+        ConfigurationManager configInstance = ConfigurationManager.getInstance();
         ClientListDAOImpl clientList = new ClientListDAOImpl();
 
         response.setName(configInstance.getString(ConfigurationManager.HUB_NAME));

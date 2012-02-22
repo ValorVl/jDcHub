@@ -34,7 +34,7 @@ public class ServerManagment extends HttpServlet
 			}else if (action.equals("reload"))
 			{
 
-				boolean loadSt = ConfigurationManager.instance().loadConfigs();
+				boolean loadSt = ConfigurationManager.getInstance().loadConfigs();
 
 				if (loadSt)
 				{

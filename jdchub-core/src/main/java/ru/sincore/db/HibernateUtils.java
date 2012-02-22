@@ -18,7 +18,7 @@ public class HibernateUtils
     {
         try
         {
-            return new Configuration().configure(new File(ConfigurationManager.instance()
+            return new Configuration().configure(new File(ConfigurationManager.getInstance()
                                                                               .getHubConfigDir() +
                                                           "/hibernate.cfg.xml"))
                                       .buildSessionFactory();

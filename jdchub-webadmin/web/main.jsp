@@ -1,6 +1,5 @@
 <%@ page import="ru.sincore.ConfigurationManager" %>
 <%@ page import="ru.sincore.ClientManager" %>
-<%@ page import="ru.sincore.db.HibernateUtils" %>
 <%@ page import="ru.sincore.db.dao.ClientListDAOImpl" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -11,7 +10,7 @@
         response.sendRedirect("index.jsp");
     }
 
-    ConfigurationManager configInstance = ConfigurationManager.instance();
+    ConfigurationManager configInstance = ConfigurationManager.getInstance();
 
     ClientListDAOImpl clientList = new ClientListDAOImpl();
     
