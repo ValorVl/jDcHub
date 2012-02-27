@@ -77,11 +77,11 @@ public class MSG extends AbstractAction
         {
             if (str.startsWith("PM")) // Private message, extract the SID
             {
-                pmSid = str.substring(2);
+                pmSid = str.substring(2, 4);
             }
             else if (str.startsWith("ME")) // /me IRC like message
             {
-                if (str.substring(2).equals("1"))
+                if (str.substring(2).charAt(0) == '1')
                 {
                     toMe = true;
                 }

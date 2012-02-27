@@ -48,54 +48,6 @@ public class MSGHandler extends AbstractActionHandler<MSG>
     public void handle()
             throws STAException
     {
-        if (client.checkMute())
-        {
-            return;
-        }
-
-
-        // detect chat message flood
-        if (this.getMessageRecieveTime() - client.getLastMSG() <
-            configurationManager.getLong(ConfigurationManager.CHAT_MESSAGE_INTERVAL))
-        {
-            client.sendPrivateMessageFromHub(Messages.get(Messages.TOO_FAST_CHATTING,
-                                                          client.getExtendedField("LC")));
-            return;
-        }
-
-
-        try
-        {
-            // detect same chat message flood
-            if (client.getLastRawMSG().equals(action.getRawCommand()) &&
-                    (this.getMessageRecieveTime() - client.getLastMSG() <
-                    configurationManager.getLong(ConfigurationManager.CHAT_SAME_MESSAGE_SPAM_INTERVAL)))
-            {
-                client.sendPrivateMessageFromHub(Messages.get(Messages.SAME_MESSAGE_FLOOD,
-                                                              client.getExtendedField("LC")));
-
-                ClientUtils.sendMessageToOpChat(Messages.get(Messages.SAME_MESSAGE_FLOOD_DETECTED,
-                                                              new String[]
-                                                              {
-                                                                      client.getNick()
-                                                              }));
-
-                // emit signal about same message flood detection
-                Signal.emit(new SameMessageFloodDetectedSignal(client, action.getRawCommand()));
-
-                return;
-            }
-
-            client.setLastRawMSG(action.getRawCommand());
-        }
-        catch (CommandException e)
-        {
-            // ignore
-        }
-
-        // save message timestamp
-        client.setLastMSG(this.getMessageRecieveTime());
-
         try
         {
             action.tryParse();
@@ -103,6 +55,8 @@ public class MSGHandler extends AbstractActionHandler<MSG>
             // try to find actionName in message and execute it
             if (parseAndExecuteCommandInMessage())
                 return;
+
+            detectSpamFlood();
 
             Pipeline<MSG> pipeline = PipelineFactory.getPipeline("MSG");
 
@@ -158,6 +112,52 @@ public class MSGHandler extends AbstractActionHandler<MSG>
             }
 
         }
+    }
+
+
+    private void detectSpamFlood()
+            throws CommandException
+    {
+        if (client.checkMute())
+        {
+            return;
+        }
+
+
+        // detect chat message flood
+        if (this.getMessageRecieveTime() - client.getLastMSG() <
+            configurationManager.getLong(ConfigurationManager.CHAT_MESSAGE_INTERVAL))
+        {
+            client.sendPrivateMessageFromHub(Messages.get(Messages.TOO_FAST_CHATTING,
+                                                          client.getExtendedField("LC")));
+            return;
+        }
+
+
+        // detect same chat message flood
+        if (client.getLastRawMSG().equals(action.getRawCommand()) &&
+            (this.getMessageRecieveTime() - client.getLastMSG() <
+             configurationManager.getLong(ConfigurationManager.CHAT_SAME_MESSAGE_SPAM_INTERVAL)))
+        {
+            client.sendPrivateMessageFromHub(Messages.get(Messages.SAME_MESSAGE_FLOOD,
+                                                          client.getExtendedField("LC")));
+
+            ClientUtils.sendMessageToOpChat(Messages.get(Messages.SAME_MESSAGE_FLOOD_DETECTED,
+                                                         new String[]
+                                                         {
+                                                                 client.getNick()
+                                                         }));
+
+            // emit signal about same message flood detection
+            Signal.emit(new SameMessageFloodDetectedSignal(client, action.getRawCommand()));
+
+            return;
+        }
+
+        client.setLastRawMSG(action.getRawCommand());
+
+        // save message timestamp
+        client.setLastMSG(this.getMessageRecieveTime());
     }
 
 

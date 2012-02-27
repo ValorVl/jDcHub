@@ -229,6 +229,7 @@ public class HubServer
         commandEngine.registerCommand("gag",        new GagCommand());
         commandEngine.registerCommand("nosearch",   new NoSearchCommand());
         commandEngine.registerCommand("noctm",      new NoCtmCommand());
+        commandEngine.registerCommand("me",         new MeCommand());
     }
 
 
