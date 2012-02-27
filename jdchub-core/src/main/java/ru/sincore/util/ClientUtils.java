@@ -21,19 +21,17 @@ package ru.sincore.util;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.Marker;
 import ru.sincore.Broadcast;
 import ru.sincore.ClientManager;
 import ru.sincore.ConfigurationManager;
-import ru.sincore.Exceptions.STAException;
+import ru.sincore.Exceptions.*;
 import ru.sincore.Main;
 import ru.sincore.adc.MessageType;
 import ru.sincore.adc.action.actions.MSG;
 import ru.sincore.client.AbstractClient;
-import ru.sincore.db.dao.BanListDAOImpl;
-import ru.sincore.db.dao.ClientCountDAOImpl;
-import ru.sincore.db.dao.ShareSizeDAOImpl;
+import ru.sincore.db.dao.*;
 import ru.sincore.db.pojo.BanListPOJO;
+import ru.sincore.db.pojo.ClientListPOJO;
 import ru.sincore.i18n.Messages;
 
 import java.util.Calendar;
@@ -46,81 +44,67 @@ import java.util.GregorianCalendar;
 public class ClientUtils
 {
 	private static final Logger log = LoggerFactory.getLogger(ClientUtils.class);
-	private static String marker = Marker.ANY_NON_NULL_MARKER;
 
 	/**
 	 * Method for kick fucking user! Kick is the same as ban for 5 mins.
-	 * @param commandOwner Op nickname which want to ban user
+	 * @param commandOwnerNick Op nickname which want to ban user (must be in db).
 	 * @param clientNick kicked client
-	 * @param banType type of ban: kick, temp ban, perm ban
-     * @param banExpiredDate ban expires date
      * @param reason reason kicked
      * @return status - was client kicked
 	 */
-	public static boolean kickOrBanClient(AbstractClient commandOwner,
-                                       String clientNick,
-                                       int banType,
-									   Date banExpiredDate,
-                                       String reason)
-	{
+    public static boolean kick(String commandOwnerNick,
+                               String clientNick,
+                               String reason)
+            throws
+            UserOfflineException,
+            ClientProtectedException,
+            UserNotFoundException,
+            NotEnoughWeightException
+    {
+        ClientListPOJO commandOwner = new ClientListDAOImpl().getClientByNick(commandOwnerNick);
 
-		AbstractClient client = ClientManager.getInstance().getClientByNick(clientNick);
+        if (commandOwner == null)
+        {
+            throw new UserNotFoundException(commandOwnerNick);
+        }
+
+
+        AbstractClient client = ClientManager.getInstance().getClientByNick(clientNick);
 
 		if (client == null)
 		{
-			commandOwner.sendPrivateMessageFromHub("Client :" + clientNick + " offline now. Can not be kicked or baned!");
-			return false;
+			throw new UserOfflineException(clientNick);
 		}
 
-		boolean isKickable = client.isKickable();
-        int     clientWeight     = client.getWeight();
-        int     kickOwnerWeight  = commandOwner.getWeight();
-
-		BanListPOJO kickedClient = new BanListPOJO();
-
-		BanListDAOImpl banListDAO = new BanListDAOImpl();
-
-		Date startBanDate = new Date();
-		Calendar calendar = new GregorianCalendar();
-
-		calendar.setTime(startBanDate);
-		calendar.add(Calendar.MINUTE, 5);
-
-        if (kickOwnerWeight <= clientWeight)
+        if (!client.isKickable())
         {
-            commandOwner.sendPrivateMessageFromHub("Your weight - " +
-                                                   kickOwnerWeight +
-                                                   " weight of the client you are " +
-                                                   "trying to kick or ban - " +
-                                                   clientWeight +
-                                                   ". Kick or ban clients with bigger weight than yours is unacceptable!");
-            return false;
+            throw new ClientProtectedException(clientNick, "kick");
         }
 
-		if (!isKickable)
-		{
-            commandOwner.sendPrivateMessageFromHub("Client with nick \'" + clientNick + "\' can not be kicked!");
-            return false;
+        // check weight
+        if (commandOwner.getWeight() <= client.getWeight())
+        {
+            throw new NotEnoughWeightException(commandOwner.getWeight(), client.getWeight());
         }
+
+
+        // make kick/ban
+        BanListPOJO kickedClient = new BanListPOJO();
+
+        kickedClient.setBanType(Constants.KICK);
+
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(kickedClient.getDateStart());
+        calendar.add(Calendar.MINUTE, 5);
+        kickedClient.setDateStop(calendar.getTime());
+
+        kickedClient.setNick(clientNick);
 
         kickedClient.setIp(client.getRealIP());
-        kickedClient.setBanType(banType);
-        kickedClient.setDateStart(startBanDate);
-
-        if (banType == Constants.KICK)
-        {
-            kickedClient.setDateStop(calendar.getTime());
-        }
-        else
-        {
-            kickedClient.setDateStop(banExpiredDate);
-        }
 
         kickedClient.setEmail(client.getEmail());
         kickedClient.setHostName("Feature not implemented yet");
-        kickedClient.setNick(client.getNick());
-        kickedClient.setOpNick(commandOwner.getNick());
-        kickedClient.setShareSize(client.getShareSize());
+        kickedClient.setOpNick(commandOwner.getNickName());
 
         if (reason != null)
         {
@@ -131,59 +115,101 @@ public class ClientUtils
             kickedClient.setReason("No\\sreason");
         }
 
-        boolean kickProcedure = banListDAO.addBan(kickedClient);
+        disconnectClient(clientNick);
 
-        if (!kickProcedure)
+        return new BanListDAOImpl().addBan(kickedClient);
+    }
+
+
+    /**
+     * Ban client by nick or ip.
+     * 
+     * @param commandOwnerNick Op nickname which want to ban user (must be in db)
+     * @param clientTag Client nick or ip
+     * @param nickOrIpTag If true, clientTag means nick. If false, clientTag means ip.
+     * @param banType Temp or perm ban.
+     * @param banExpiredDate Ban expiration date.
+     * @param reason Ban reason.
+     * @return Was client banned?
+     */
+    public static boolean ban(String commandOwnerNick,
+                              String clientTag,
+                              boolean nickOrIpTag,
+                              int banType,
+                              Date banExpiredDate,
+                              String reason)
+            throws UserNotFoundException, NotEnoughWeightException
+    {
+        ClientListDAO clientListDAO = new ClientListDAOImpl();
+        ClientListPOJO client = null;
+        ClientListPOJO commandOwner = clientListDAO.getClientByNick(commandOwnerNick);
+
+        if (commandOwner == null)
         {
-            commandOwner.sendPrivateMessageFromHub("Client " +
-                                                   clientNick +
-                                                   " doesn\'t have dropped, can not be kicked!");
-            return false;
+            throw new UserNotFoundException(commandOwnerNick);
         }
-        switch (banType)
+
+        if (nickOrIpTag)
         {
-            case Constants.KICK:
-                client.sendPrivateMessageFromHub("You was kicked by >>" +
-                                                 commandOwner.getNick() +
-                                                 "<< reason : " +
-                                                 reason);
-                sendMessageToOpChat("Client " +
-                                                 client.getNick() +
-                                                 "was kicked by " +
-                                                 commandOwner.getNick() +
-                                                 " with reason : " +
-                                                 reason);
-                break;
+            client = clientListDAO.getClientByNick(clientTag);
+        }
+        else
+        {
+            client = clientListDAO.getClientByIp(clientTag);
+        }
 
-            case Constants.BAN_TEMPORARY:
-                client.sendPrivateMessageFromHub("You was banned by >>" +
-                                                 commandOwner.getNick() +
-                                                 "<< reason : " +
-                                                 reason +
-                                                 " ban expires date :" +
-                                                 banExpiredDate);
-                sendMessageToOpChat("Client " +
-                                                 client.getNick() +
-                                                 " was banned by " +
-                                                 commandOwner.getNick() +
-                                                 " with reason : " +
-                                                 reason +
-                                                 ". Ban expires at " +
-                                                 banExpiredDate);
-                break;
+        if (client == null)
+        {
+            throw new UserNotFoundException(clientTag);
+        }
 
-            case Constants.BAN_PERMANENT:
-                client.sendPrivateMessageFromHub("You was permanently banned by >>" +
-                                                 commandOwner.getNick() +
-                                                 "<< reason : " +
-                                                 reason);
-                sendMessageToOpChat("Client " +
-                                                 client.getNick() +
-                                                 " was permanently banned by " +
-                                                 commandOwner.getNick() +
-                                                 " with reason : " +
-                                                 reason);
-                break;
+        // check weight
+        if (commandOwner.getWeight() <= client.getWeight())
+        {
+            throw new NotEnoughWeightException(commandOwner.getWeight(), client.getWeight());
+        }
+
+
+        // make kick/ban
+        BanListPOJO kickedClient = new BanListPOJO();
+
+        kickedClient.setBanType(banType);
+        kickedClient.setDateStop(banExpiredDate);
+
+        if (nickOrIpTag)
+        {
+            kickedClient.setNick(clientTag);
+        }
+        else
+        {
+            kickedClient.setIp(clientTag);
+        }
+
+        kickedClient.setHostName("Feature not implemented yet");
+        kickedClient.setOpNick(commandOwner.getNickName());
+
+        if (reason != null)
+        {
+            kickedClient.setReason(reason);
+        }
+        else
+        {
+            kickedClient.setReason("No\\sreason");
+        }
+
+        disconnectClient(client.getNickName());
+
+        return new BanListDAOImpl().addBan(kickedClient);
+    }
+    
+    
+    private static void disconnectClient(String nick)
+    {
+        AbstractClient client = ClientManager.getInstance().getClientByNick(nick);
+
+        if (client == null)
+        {
+            return;
         }
 
         try
@@ -199,10 +225,8 @@ public class ClientUtils
 
         //disconnect session
         client.disconnect();
-
-        return true;
     }
-
+    
 
     /**
      * Construct MSG and broadcast it as hub bot' message.

@@ -9,6 +9,7 @@ public interface ClientListDAO
 	boolean addClient(ClientListPOJO params);
 	boolean delClient(String nickName);
 	ClientListPOJO getClientByNick(String nick);
+    ClientListPOJO getClientByIp(String ip);
 	List<ClientListPOJO> getClientList(Boolean regOnly);
 	boolean updateClient(ClientListPOJO object);
 }

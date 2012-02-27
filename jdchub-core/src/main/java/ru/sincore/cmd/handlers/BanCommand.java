@@ -25,6 +25,8 @@ package ru.sincore.cmd.handlers;
 import gnu.getopt.Getopt;
 import gnu.getopt.LongOpt;
 import ru.sincore.ClientManager;
+import ru.sincore.Exceptions.NotEnoughWeightException;
+import ru.sincore.Exceptions.UserNotFoundException;
 import ru.sincore.client.AbstractClient;
 import ru.sincore.cmd.AbstractCommand;
 import ru.sincore.cmd.CommandUtils;
@@ -49,12 +51,14 @@ public class BanCommand extends AbstractCommand
     private String  nick;
     private String  reason;
     private int     banType = Constants.BAN_PERMANENT;
-    private Date    banExpiresDate = new Date();
+    private Date    banExpiresDate;
 
 
     @Override
     public String execute(String cmd, String args, AbstractClient client)
     {
+        banExpiresDate = new Date();
+
         this.client = client;
         this.cmd	= cmd;
         this.args	= args;
@@ -189,12 +193,43 @@ public class BanCommand extends AbstractCommand
             return "Client not found";
         }
 
-        if (ClientUtils.kickOrBanClient(client, nick, banType, banExpiresDate, reason))
+        try
         {
-            return "Successfully banned.";
+            if (!ClientUtils.ban(client.getNick(), nick, true, banType, banExpiresDate, reason))
+            {
+                return "Client was not banned.";
+            }
+        }
+        catch (Exception e)
+        {
+            client.sendPrivateMessageFromHub(e.toString());
+            return "Client was not banned.";
         }
 
-        return "Client was not banned.";
+        switch (banType)
+        {
+            case Constants.BAN_TEMPORARY:
+                ClientUtils.sendMessageToOpChat("Client " +
+                                    nick +
+                                    " was banned by " +
+                                    client.getNick() +
+                                    " with reason : " +
+                                    reason +
+                                    ". Ban expires at " +
+                                    banExpiresDate);
+                break;
+
+            case Constants.BAN_PERMANENT:
+                ClientUtils.sendMessageToOpChat("Client " +
+                                    nick +
+                                    " was permanently banned by " +
+                                    client.getNick() +
+                                    " with reason : " +
+                                    reason);
+                break;
+        }
+
+        return "Successfully banned.";
     }
 
 

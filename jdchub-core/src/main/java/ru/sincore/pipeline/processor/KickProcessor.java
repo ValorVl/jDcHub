@@ -102,12 +102,12 @@ public class KickProcessor implements Processor<MSG>
 
             try
             {
-                ClientUtils.kickOrBanClient(
-                        ClientManager.getInstance().getClientBySID(ConfigurationManager.getInstance().getString(ConfigurationManager.HUB_SID)),
+                ClientUtils.kick(
+                        ConfigurationManager.getInstance().getString(ConfigurationManager.HUB_NAME),
                         sourceClient.getNick(),
-                        Constants.KICK,
-                        null,
-                        Messages.get(Messages.FORBIDDEN_WORD_USAGE_KICK_REASON, sourceClient, (String)sourceClient.getExtendedField("LC")));
+                        Messages.get(Messages.FORBIDDEN_WORD_USAGE_KICK_REASON,
+                                     sourceClient,
+                                     (String) sourceClient.getExtendedField("LC")));
             }
             catch (Exception e)
             {

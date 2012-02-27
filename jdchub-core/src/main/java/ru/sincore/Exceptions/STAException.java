@@ -52,4 +52,4 @@ public class STAException extends Exception
     {
         return this.staCode;
     }
-};
+}

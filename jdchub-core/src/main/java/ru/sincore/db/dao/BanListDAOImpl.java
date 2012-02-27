@@ -89,18 +89,23 @@ public class BanListDAOImpl implements BanListDAO
         Session session = HibernateUtils.getSessionFactory().openSession();
         Transaction tx = session.getTransaction();
 
-        try{
+        try
+        {
             tx.begin();
 
             Query query = session.createQuery("from BanListPOJO where ip = :ip or nick = :nick order by dateStart desc");
             query.setParameter("ip", ip).setParameter("nick", nick);
 
-            BanListPOJO result = (BanListPOJO) query.uniqueResult();
+            List<BanListPOJO> result = (List<BanListPOJO>) query.setMaxResults(1).list();
 
             tx.commit();
 
-            return result;
+            if (result.isEmpty())
+            {
+                return null;
+            }
 
+            return result.get(0);
         }
         catch (Exception ex)
         {

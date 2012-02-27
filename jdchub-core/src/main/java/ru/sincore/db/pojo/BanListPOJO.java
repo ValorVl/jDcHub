@@ -25,7 +25,7 @@ public class BanListPOJO
 	private String hostName;
 
 	@Column(name = "date_start")
-	private Date dateStart;
+	private Date dateStart = new Date();
 
 	@Column(name = "date_stop")
 	private Date dateStop;
@@ -35,9 +35,6 @@ public class BanListPOJO
 
 	@Column(name = "reason", columnDefinition = "TEXT")
 	private String reason;
-
-	@Column(name = "share_size",columnDefinition = "BIGINT")
-	private Long shareSize;
 
 	@Column(name = "email",length = 200,nullable = true)
 	private String email;
@@ -130,16 +127,6 @@ public class BanListPOJO
 	public void setReason(String reason)
 	{
 		this.reason = reason;
-	}
-
-	public Long getShareSize()
-	{
-		return shareSize;
-	}
-
-	public void setShareSize(Long shareSize)
-	{
-		this.shareSize = shareSize;
 	}
 
 	public String getEmail()

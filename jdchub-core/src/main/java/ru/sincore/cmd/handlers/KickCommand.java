@@ -21,9 +21,14 @@ package ru.sincore.cmd.handlers;
 
 import gnu.getopt.Getopt;
 import gnu.getopt.LongOpt;
+import ru.sincore.Exceptions.ClientProtectedException;
+import ru.sincore.Exceptions.NotEnoughWeightException;
+import ru.sincore.Exceptions.UserNotFoundException;
+import ru.sincore.Exceptions.UserOfflineException;
 import ru.sincore.client.AbstractClient;
 import ru.sincore.cmd.AbstractCommand;
 import ru.sincore.cmd.CommandUtils;
+import ru.sincore.util.AdcUtils;
 import ru.sincore.util.ClientUtils;
 import ru.sincore.util.Constants;
 
@@ -97,8 +102,25 @@ public class KickCommand extends AbstractCommand
             return null;
 		}
 
-        ClientUtils.kickOrBanClient(client, nick, Constants.KICK, null, reason);
-        sendError("nick " + nick + " reason " + reason);
+        try
+        {
+            if (!ClientUtils.kick(client.getNick(), nick, reason))
+            {
+                return "Client not kicked!";
+            }
+        }
+        catch (Exception e)
+        {
+            client.sendPrivateMessageFromHub(e.toString());
+            return "Client not kicked!";
+        }
+
+        ClientUtils.sendMessageToOpChat("Client " +
+                            nick +
+                            "was kicked by " +
+                            client.getNick() +
+                            " with reason : " +
+                            reason);
 
         return "Client was kicked";
     }
@@ -108,18 +130,12 @@ public class KickCommand extends AbstractCommand
 	{
 		StringBuilder result = new StringBuilder();
 
-        result.append("\nKick user from hub (equals to ban for 5 min.\n");
+        result.append("\nKick user from hub (equals to ban for 5 min.)\n");
         result.append("Usage: !kick --nick <nick> [--reason <reason>]\n");
         result.append("\tWhere\n");
         result.append("\t\t<nick> - user nick\n");
         result.append("\t\t<reason> - kick reason\n");
 
-		sendError(result.toString());
-	}
-
-
-    private void sendError(String mess)
-	{
-		client.sendPrivateMessageFromHub(mess);
+        client.sendPrivateMessageFromHub(AdcUtils.toAdcString(result.toString()));
 	}
 }

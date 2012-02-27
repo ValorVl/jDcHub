@@ -136,7 +136,39 @@ public class ClientListDAOImpl implements ClientListDAO
 		return null;
 	}
 
-	@Override
+
+    @Override
+    public ClientListPOJO getClientByIp(String ip)
+    {
+        Session session = HibernateUtils.getSessionFactory().openSession();
+        Transaction tx  = session.getTransaction();
+
+        String query = "from ClientListPOJO where realIp =:ip";
+
+        try{
+
+            tx.begin();
+
+            Query request = session.createQuery(query).setParameter("ip", ip);
+
+            ClientListPOJO client = (ClientListPOJO) request.uniqueResult();
+
+            tx.commit();
+
+            return client;
+
+        }
+        catch (Exception ex)
+        {
+            log.error(marker,ex);
+            tx.rollback();
+        }
+
+        return null;
+    }
+
+
+    @Override
 	public List<ClientListPOJO> getClientList(Boolean regOnly)
 	{
 		Session session = HibernateUtils.getSessionFactory().openSession();
