@@ -32,7 +32,6 @@ public class Features
     public static final String BAS0  = "BAS0"; /** BAS0: Obsolete pre-ADC/1.0 protocol version */
     public static final String ADC0  = "ADC0";
     public static final String AUTO  = "AUT0"; /** AUT0: Automatic nat detection traversal */
-    public static final String BBS   = "BBS0"; /** BBS0: Bulletin board system  */
     public static final String UCM0  = "UCM0";
     public static final String UCMD  = "UCMD"; /** UCMD: User commands */
     public static final String ZLIF  = "ZLIF"; /** ZLIF: gzip stream compression */
@@ -40,8 +39,13 @@ public class Features
     public static final String BLOOM = "BLO0"; /** BLO0: Bloom filter */
     public static final String LINK  = "LINK"; /** LINK: Hub link */
     public static final String ADCS  = "ADCS"; /** ADCS: ADC over TLS/SSL */
+    public static final String TCP4  = "TCP4"; /** TCP4: Indicates client supports TCPv4 connections */
+    public static final String TCP6  = "TCP6"; /** TCP6: Indicates client supports TCPv6 connections */
+    public static final String UDP4  = "UDP4"; /** UDP4: Indicates client supports UDPv4 connections */
+    public static final String UDP6  = "UDP6"; /** UDP6: Indicates client supports UDPv6 connections */
 
     //extended
     public static final String PING  = "PING"; /** PING: Hub pinger information extension */
     public static final String SEGA  = "SEGA";
+    public static final String BBS   = "BBS0"; /** BBS0: Bulletin board system  */
 }

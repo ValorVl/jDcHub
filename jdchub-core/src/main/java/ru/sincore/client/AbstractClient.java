@@ -122,7 +122,7 @@ public abstract class AbstractClient extends ClientInfo
      */
     public void onLoggedIn()
     {
-        log.error("Used unimplemented function onLoggedIn!");
+        log.debug("Used unimplemented function onLoggedIn!");
     }
 
 
@@ -131,7 +131,7 @@ public abstract class AbstractClient extends ClientInfo
      */
     public void onConnected()
     {
-        log.error("Used unimplemented function onConnected!");
+        log.debug("Used unimplemented function onConnected!");
     }
 
 
@@ -142,7 +142,7 @@ public abstract class AbstractClient extends ClientInfo
     @Deprecated
     public void sendRawCommand(String rawCommand)
     {
-        log.error("Used unimplemented function sendRawCommand!");
+        log.debug("Used unimplemented function sendRawCommand!");
     }
 
 
@@ -161,7 +161,7 @@ public abstract class AbstractClient extends ClientInfo
 
     public boolean loadInfo()
     {
-        log.error("Used unimplemented function loadInfo!");
+        log.debug("Used unimplemented function loadInfo!");
 
         return false;
     }
@@ -170,6 +170,6 @@ public abstract class AbstractClient extends ClientInfo
     public void storeInfo()
             throws STAException
     {
-        log.error("Used unimplemented function storeInfo!");
+        log.debug("Used unimplemented function storeInfo!");
     }
 }
