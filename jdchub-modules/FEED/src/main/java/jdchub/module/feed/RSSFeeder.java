@@ -250,6 +250,8 @@ public class RSSFeeder extends TimerTask
 
             lastFeedTitle = rssFeedEvent.getPostName();
 
+            log.debug("New RSS feed found.");
+
             EventBusService.publish(rssFeedEvent);
 
             sendNewRssPostMessage(rssFeedEvent);
