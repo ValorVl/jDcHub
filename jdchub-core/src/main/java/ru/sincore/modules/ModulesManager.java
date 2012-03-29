@@ -43,7 +43,6 @@ public class ModulesManager
     //
     // Static interfaces
     //
-
     public static ModulesManager instance()
     {
         return manager;
@@ -53,7 +52,6 @@ public class ModulesManager
     //
     // Non-static interfaces
     //
-
     private void fillClassPath(File file, List<File> list)
     {
         final File[] childs = file.listFiles();
@@ -78,6 +76,33 @@ public class ModulesManager
     }
 
 
+    private File[] findModules()
+    {
+        File modulesDirectory = new File(this.modulesDirectory);
+        File[] moduleJars      = modulesDirectory.listFiles(new FilenameFilter()
+        {
+            @Override
+            public boolean accept(File dir, String name)
+            {
+                return (name.endsWith(".jar"));
+            }
+        });
+
+        if (moduleJars == null)
+        {
+            return null;
+        }
+
+        return moduleJars;
+    }
+
+
+    public Set<String> getModulesNames()
+    {
+        return modules.keySet();
+    }
+    
+    
     private Module getModuleInstance(File moduleJar)
             throws
             MalformedURLException,
@@ -177,12 +202,10 @@ public class ModulesManager
     }
 
 
-    public boolean loadModule(File moduleJar)
+    public boolean loadModule(Module moduleInstance)
     {
         try
         {
-            Module moduleInstance = getModuleInstance(moduleJar);
-
             if (!isModuleEnabled(moduleInstance.getName()))
             {
                 return false;
@@ -237,38 +260,53 @@ public class ModulesManager
         }
         catch (Throwable e)
         {
-            log.error("Error while module " + moduleJar.getName() + " loads: \n" + e.getMessage());
+            log.error("Error while module " + moduleInstance.getName() + " loads: \n" + e.getMessage());
         }
 
         return false;
     }
 
 
+    public boolean loadModule(String moduleName)
+    {
+        unloadModule(moduleName);
+        
+        for (File moduleJar : findModules())
+        {
+            try
+            {
+                Module moduleInstance = getModuleInstance(moduleJar);
+                if (moduleInstance.getName().equals(moduleName))
+                {
+                    return loadModule(moduleInstance);
+                }
+            }
+            catch (Throwable e)
+            {
+                log.error("Error while module jar " + moduleJar.getName() + " loads: \n" + e.getMessage());
+            }
+        }
 
+        return false;
+    }
+    
+    
     public void loadModules()
     {
         unloadModules();
 
-        File modulesDirectory = new File(this.modulesDirectory);
-        File[] moduleJars      = modulesDirectory.listFiles(new FilenameFilter()
+        for (File moduleJar : findModules())
         {
-            @Override
-            public boolean accept(File dir, String name)
+            try
             {
-                return (name.endsWith(".jar"));
+                Module moduleInstance = getModuleInstance(moduleJar);
+                loadModule(moduleInstance);
             }
-        });
-
-        if (moduleJars == null)
-        {
-            return;
+            catch (Throwable e)
+            {
+                log.error("Error while module jar " + moduleJar.getName() + " loads: \n" + e.getMessage());
+            }
         }
-
-        for (File moduleJar : moduleJars)
-        {
-            loadModule(moduleJar);
-        }
-
     }
 
 
@@ -279,7 +317,7 @@ public class ModulesManager
 
         try
         {
-            if (!modules.containsKey(moduleName))
+            if (!isModuleLoaded(moduleName))
             {
                 return false;
             }
@@ -313,6 +351,8 @@ public class ModulesManager
                 {
                     Signal.removeHandler(signalHandler);
                 }
+                
+                modules.remove(moduleName);
             }
         }
         catch (Throwable e)
@@ -402,6 +442,12 @@ public class ModulesManager
         return moduleListDAO.addModule(module);
     }
 
+    
+    public boolean isModuleLoaded(String moduleName)
+    {
+        return modules.containsKey(moduleName);
+    }
+    
 
     // Private module info class
     private class ModuleInfo

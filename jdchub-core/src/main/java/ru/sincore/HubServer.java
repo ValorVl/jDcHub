@@ -230,6 +230,7 @@ public class HubServer
         commandEngine.registerCommand("nosearch",   new NoSearchCommand());
         commandEngine.registerCommand("noctm",      new NoCtmCommand());
         commandEngine.registerCommand("me",         new MeCommand());
+        commandEngine.registerCommand("module",     new ModuleCommand());
     }
 
 
