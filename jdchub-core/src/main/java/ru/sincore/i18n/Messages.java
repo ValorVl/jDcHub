@@ -125,6 +125,8 @@ public class Messages
     public static final String SAME_MESSAGE_FLOOD     = "core.hub.chat.same_message_flood";
     public static final String SAME_MESSAGE_FLOOD_DETECTED = "core.hub.chat.same_message_flood_detected";
 
+    public static final String TOO_FAST_SEARCHING     = "core.hub.search.too_fast_searching";
+
 
     private static Map<String, ResourceBundle> resourcesMap =
                                                     new ConcurrentHashMap<String, ResourceBundle>();
