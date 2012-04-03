@@ -322,6 +322,8 @@ public class INFHandler extends AbstractActionHandler<INF>
                         action.<Boolean>getFlagValue(Flags.HIDDEN, false));
             }
 
+
+            // set features
             if (action.isFlagSet(Flags.FEATURES))
             {
                 for (String feature : action.getFeatures())
@@ -330,6 +332,23 @@ public class INFHandler extends AbstractActionHandler<INF>
                 }
             }
 
+            if (client.isFeature(Features.RXTX))
+            {
+                /**
+                 * RXTX extension.
+                 */
+                if (action.isFlagSet(Flags.RX_BYTES))
+                {
+                    client.setRxBytes(
+                            client.getRxBytes() + action.<Long>getFlagValue(Flags.RX_BYTES, 0L));
+                }
+
+                if (action.isFlagSet(Flags.TX_BYTES))
+                {
+                    client.setTxBytes(
+                            client.getTxBytes() + action.<Long>getFlagValue(Flags.TX_BYTES, 0L));
+                }
+            }
 
             // Minimal validation
             validateMinimalINF();

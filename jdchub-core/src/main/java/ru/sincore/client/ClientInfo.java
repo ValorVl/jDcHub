@@ -27,10 +27,7 @@ import org.apache.mina.core.session.IoSession;
 import ru.sincore.ConfigurationManager;
 import ru.sincore.Exceptions.CommandException;
 import ru.sincore.Exceptions.STAException;
-import ru.sincore.adc.ClientType;
-import ru.sincore.adc.Flags;
-import ru.sincore.adc.MessageType;
-import ru.sincore.adc.State;
+import ru.sincore.adc.*;
 import ru.sincore.adc.action.actions.INF;
 
 import java.util.*;
@@ -356,6 +353,22 @@ public class ClientInfo
      * URL of referer (hub in case of redirect, web page)
      */
     private String redirectUrl;
+
+    /**
+     * RXTX extension.
+     */
+    /**
+     * RX field.
+     * Transmited bytes count
+     */
+    private long txBytes = 0L;
+
+    /**
+     * TX field.
+     * Recieved bytes count
+     */
+    private long rxBytes = 0L;
+
 
     /**
      * Client search step
@@ -1124,6 +1137,30 @@ public class ClientInfo
     }
 
 
+    public long getTxBytes()
+    {
+        return txBytes;
+    }
+
+
+    public void setTxBytes(long txBytes)
+    {
+        this.txBytes = txBytes;
+    }
+
+
+    public long getRxBytes()
+    {
+        return rxBytes;
+    }
+
+
+    public void setRxBytes(long rxBytes)
+    {
+        this.rxBytes = rxBytes;
+    }
+
+
     public int getSearchStep()
     {
         return searchStep;
@@ -1532,6 +1569,12 @@ public class ClientInfo
             if (getMaxUploadSpeed() != null && getMaxUploadSpeed() != 0)
             {
                 binf.setFlagValue(Flags.MAX_UPLOAD_SPEED, getMaxUploadSpeed());
+            }
+
+            if (this.isFeature(Features.RXTX))
+            {
+                binf.setFlagValue(Flags.RX_BYTES, getRxBytes());
+                binf.setFlagValue(Flags.TX_BYTES, getTxBytes());
             }
 
             return binf.getRawCommand();

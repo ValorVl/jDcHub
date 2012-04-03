@@ -171,6 +171,7 @@ public class HubServer
             // Extended
             sup.getFeatures().put(Features.PING,  true);
             sup.getFeatures().put(Features.SEGA,  true);
+            sup.getFeatures().put(Features.RXTX,  true);
             // Test feature
             sup.getFeatures().put(Features.ZLIF,  true);
         }

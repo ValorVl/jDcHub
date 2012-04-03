@@ -124,6 +124,9 @@ public class SUPHandler extends AbstractActionHandler<SUP>
                              configurationManager.getAdcString(ConfigurationManager.HUB_DESCRIPTION));
         }
 
+        inf.setFlagValue(Flags.RXTX_TIME_PERIOD,
+                         ConfigurationManager.getInstance().getLong(
+                                 ConfigurationManager.RXTX_TIME_PERIOD));
 
         // Check client flag isPingExtensionSupports, if true, send PING string
         if (client.isFeature(Features.PING))

@@ -127,7 +127,9 @@ public class INF extends AbstractAction
                      flag.equals(Flags.MAX_UPLOAD_SPEED) ||
                      flag.equals(Flags.MAX_DOWNLOAD_SPEED) ||
                      flag.equals(Flags.AUTOMATIC_SLOT_ALLOCATOR) ||
-                     flag.equals(Flags.MIN_AUTOMATIC_SLOTS))
+                     flag.equals(Flags.MIN_AUTOMATIC_SLOTS) ||
+                     flag.equals(Flags.RX_BYTES) ||
+                     flag.equals(Flags.TX_BYTES))
             {
                 try
                 {

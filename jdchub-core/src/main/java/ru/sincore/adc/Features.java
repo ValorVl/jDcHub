@@ -47,5 +47,8 @@ public class Features
     //extended
     public static final String PING  = "PING"; /** PING: Hub pinger information extension */
     public static final String SEGA  = "SEGA";
+    public static final String RXTX  = "RXTX"; /** RXTX: recieved & transmited bytes extension */
+
+    //depricated extensions
     public static final String BBS   = "BBS0"; /** BBS0: Bulletin board system  */
 }

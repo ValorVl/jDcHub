@@ -110,4 +110,12 @@ public class Flags
     public static final String RES_SIZE          = "SI";
     public static final String RES_SLOTS         = SLOTS;
     public static final String RES_TOKEN         = TOKEN;
+
+
+    //
+    // RXTX extension flags
+    //
+    public static final String RX_BYTES          = "RX";
+    public static final String TX_BYTES          = "TX";
+    public static final String RXTX_TIME_PERIOD  = "TP";
 }

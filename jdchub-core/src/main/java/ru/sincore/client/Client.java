@@ -172,6 +172,8 @@ public class Client extends AbstractClient
         clientInfo.setOverrideFull(this.isOverrideFull());
         clientInfo.setKickable(this.isKickable());
         clientInfo.setRenameable(this.isRenameable());
+        clientInfo.setTxBytes(this.getTxBytes());
+        clientInfo.setRxBytes(this.getRxBytes());
         clientInfo.setLastMessage(this.getLastRawMSG());
         clientInfo.setLoginCount(this.getLoginCount());
         clientInfo.setTimeOnline(this.getTimeOnline());
@@ -211,6 +213,8 @@ public class Client extends AbstractClient
         this.setOverrideFull(clientInfo.getOverrideFull());
         this.setKickable(clientInfo.getKickable());
         this.setRenameable(clientInfo.getRenameable());
+        this.setTxBytes(clientInfo.getTxBytes());
+        this.setRxBytes(clientInfo.getRxBytes());
         this.setLastRawMSG(clientInfo.getLastMessage());
         this.setLoginCount(clientInfo.getLoginCount() + 1);
         this.setTimeOnline(clientInfo.getTimeOnline());
@@ -231,11 +235,8 @@ public class Client extends AbstractClient
         //ok now sending infs of all others to the handler
         ClientManager.getInstance().sendClientsInfsToClient(this);
 
-        //sending inf about itself too
-        this.sendRawCommand(this.getINF());
-
         //ok now must send INF to all clients
-        Broadcast.getInstance().broadcast(this.getINF(), this);
+        Broadcast.getInstance().broadcast(this.getINF(), null);
 
         if (isFeature(Features.UCMD))
         {

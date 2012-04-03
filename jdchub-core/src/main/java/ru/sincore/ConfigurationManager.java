@@ -162,6 +162,9 @@ public class ConfigurationManager extends PropertiesConfiguration
     public static final String SCRIPTS_LOCATION                 = "core.hub.scripts.directory";
     public static final String NUMBER_OF_SCRIPTS_INTERPRETERS   = "core.hub.scripts.interpreter.instances";
 
+    // RXTX extension options
+    public static final String RXTX_TIME_PERIOD             = "core.hub.rxtx_time_period";
+
 
     // Internal options
     public static final String OP_CHAT_CID  = "internal.op_chat_cid";
