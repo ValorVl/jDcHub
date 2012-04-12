@@ -23,13 +23,16 @@
 package jdchub.module.feed;
 
 import com.adamtaft.eb.EventBusService;
+import com.adamtaft.eb.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import ru.sincore.Broadcast;
 import ru.sincore.ClientManager;
 import ru.sincore.ConfigurationManager;
-import ru.sincore.events.NewRssFeedEvent;
+import ru.sincore.client.AbstractClient;
+import ru.sincore.events.ClientConnected;
+import ru.sincore.events.NewRssFeed;
 import ru.sincore.util.AdcUtils;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -55,11 +58,12 @@ public class RSSFeeder extends TimerTask
     private String feedName = null;
     private String feedDescription = null;
     
-    private String lastFeedTitle = null;
+    private NewRssFeed lastFeedPost = null;
 
     public RSSFeeder(URL feedURL)
     {
         this.feedURL = feedURL;
+        EventBusService.subscribe(this);
     }
 
 
@@ -101,9 +105,9 @@ public class RSSFeeder extends TimerTask
      *
      * @return rss feed event, if new post recieved
      */
-    private NewRssFeedEvent getLastPost()
+    private NewRssFeed getLastPost()
     {
-        NewRssFeedEvent rssFeedEvent = new NewRssFeedEvent();
+        NewRssFeed rssFeedEvent = new NewRssFeed();
 
         try
         {
@@ -136,8 +140,9 @@ public class RSSFeeder extends TimerTask
             rssFeedEvent.setPostDescription(getRssPostField(doc, xpath, "description"));
             rssFeedEvent.setLink(getRssPostField(doc, xpath, "link"));
 
-            rssFeedEvent.setPublishTime(convertLocaleSensitiveDateToLong(getRssPostField(doc, xpath, "pubDate")));
-            rssFeedEvent.setEditTime(convertLocaleSensitiveDateToLong(getRssPostField(doc, xpath, "editDate")));
+            rssFeedEvent.setPublishTime(convertLocaleSensitiveDateToLong(getRssPostField(doc,
+                                                                                         xpath,
+                                                                                         "pubDate")));
         }
         catch (Exception e)
         {
@@ -149,7 +154,7 @@ public class RSSFeeder extends TimerTask
     }
 
 
-    private void publishNewRssFeed()
+    private String constructNewRssFeed()
     {
         StringBuilder message = new StringBuilder();
 
@@ -168,19 +173,11 @@ public class RSSFeeder extends TimerTask
         message.append(AdcUtils.toAdcString(this.feedDescription));
         message.append(" ");
 
-        List<String> features = new LinkedList<String>();
-        features.add("FEED");
-
-        Broadcast.getInstance().featuredBroadcast(message.toString(),
-                                                  ClientManager.getInstance().getClientBySID(
-                                                          ConfigurationManager.getInstance().getString(ConfigurationManager.HUB_SID)),
-                                                  features,
-                                                  null);
+        return message.toString();
     }
 
 
-
-    private void sendNewRssPostMessage(NewRssFeedEvent rssFeedEvent)
+    private String constructRssPostMessage(NewRssFeed rssFeed)
     {
         StringBuilder message = new StringBuilder();
 
@@ -191,33 +188,41 @@ public class RSSFeeder extends TimerTask
 
         // add title
         message.append("TI");
-        message.append(AdcUtils.toAdcString(rssFeedEvent.getPostName()));
+        message.append(AdcUtils.toAdcString(rssFeed.getPostName()));
         message.append(" ");
 
         // add description
         message.append("DE");
-        message.append(AdcUtils.toAdcString(rssFeedEvent.getPostDescription()));
+        message.append(AdcUtils.toAdcString(rssFeed.getPostDescription()));
         message.append(" ");
 
         // add link to post
         message.append("LI");
-        message.append(AdcUtils.toAdcString(rssFeedEvent.getLink()));
+        message.append(AdcUtils.toAdcString(rssFeed.getLink()));
         message.append(" ");
 
         // add post date
         message.append("DT");
-        message.append(AdcUtils.toAdcString(Long.toString(rssFeedEvent.getPublishTime())));
+        message.append(AdcUtils.toAdcString(Long.toString(rssFeed.getPublishTime())));
         message.append(" ");
 
         // add post author
         message.append("CR");
-        message.append(AdcUtils.toAdcString(rssFeedEvent.getAuthorName()));
+        message.append(AdcUtils.toAdcString(rssFeed.getAuthorName()));
         message.append(" ");
+
+        return message.toString();
+    }
+
+
+    private void sendNewRssPostMessage(NewRssFeed rssFeedEvent)
+    {
+        String message = constructRssPostMessage(rssFeedEvent);
 
         List<String> features = new LinkedList<String>();
         features.add("FEED");
 
-        Broadcast.getInstance().featuredBroadcast(message.toString(),
+        Broadcast.getInstance().featuredBroadcast(message,
                                                   ClientManager.getInstance().getClientBySID(
                                                           ConfigurationManager.getInstance().getString(
                                                                   ConfigurationManager.HUB_SID)),
@@ -226,29 +231,40 @@ public class RSSFeeder extends TimerTask
     }
 
 
+    @EventHandler
+    public void clientConnectedEventHandler(ClientConnected event)
+    {
+        AbstractClient client = event.getClient();
+
+        if (client.isFeature("FEED") && (lastFeedPost != null))
+        {
+            client.sendRawCommand(constructNewRssFeed());
+            client.sendRawCommand(constructRssPostMessage(lastFeedPost));
+        }
+    }
+
+
     @Override
     public void run()
     {
         try
         {
-            NewRssFeedEvent rssFeedEvent = this.getLastPost();
+            NewRssFeed rssFeedEvent = this.getLastPost();
 
             if (rssFeedEvent == null)
             {
                 return;
             }
 
-            if (lastFeedTitle == null)
-            {
-                this.publishNewRssFeed();
-            }
-
-            if (rssFeedEvent.getPostName().equals(lastFeedTitle))
+            if ((lastFeedPost != null) &&
+                (lastFeedPost.getPostName() != null) &&
+                (!lastFeedPost.getPostName().equals("")) &&
+                (rssFeedEvent.getPostName().equals(lastFeedPost.getPostName())))
             {
                 return;
             }
 
-            lastFeedTitle = rssFeedEvent.getPostName();
+            lastFeedPost = rssFeedEvent;
 
             log.debug("New RSS feed found.");
 

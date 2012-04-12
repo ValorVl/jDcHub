@@ -8,6 +8,6 @@ package ru.sincore.events;
  *         Date: 11.10.11
  *         Time: 12:15
  */
-public class HubStartupEvent
+public class HubStartup
 {
 }

@@ -28,7 +28,7 @@ package ru.sincore.events;
  * @author Alexey 'lh' Antonov
  * @since 2012-02-09
  */
-public class NewRssFeedEvent
+public class NewRssFeed
 {
     /**
      * CR - Name of the author.
@@ -66,31 +66,25 @@ public class NewRssFeedEvent
     private long   publishTime = 0L;
 
     /**
-     * Extended rss feed field.
-     */
-    private long   editTime = 0L;
-
-    /**
      * RM - 1 = Remove feed from aggregator.
      */
     private boolean removeFeed = false;
     
 
-    public NewRssFeedEvent()
+    public NewRssFeed()
     {
 
     }
 
 
-    public NewRssFeedEvent(String  authorName,
-                           String  postName,
-                           String  postDescription,
-                           String  link,
-                           String  feedName,
-                           String  feedDescription,
-                           long    publishTime,
-                           long    editTime,
-                           boolean removeFeed)
+    public NewRssFeed(String authorName,
+                      String postName,
+                      String postDescription,
+                      String link,
+                      String feedName,
+                      String feedDescription,
+                      long publishTime,
+                      boolean removeFeed)
     {
         this.authorName = authorName;
         this.postName   = postName;
@@ -99,7 +93,6 @@ public class NewRssFeedEvent
         this.feedName = feedName;
         this.feedDescription = feedDescription;
         this.publishTime = publishTime;
-        this.editTime = publishTime;
         this.removeFeed = removeFeed;
     }
 
@@ -185,18 +178,6 @@ public class NewRssFeedEvent
     public void setPublishTime(long publishTime)
     {
         this.publishTime = publishTime;
-    }
-
-
-    public long getEditTime()
-    {
-        return editTime;
-    }
-
-
-    public void setEditTime(long editTime)
-    {
-        this.editTime = editTime;
     }
 
 

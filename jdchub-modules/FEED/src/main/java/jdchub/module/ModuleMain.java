@@ -4,9 +4,8 @@ import com.adamtaft.eb.EventBusService;
 import jdchub.module.feed.RSSFeedPublisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.sincore.Main;
-import ru.sincore.events.AdcExtNoMoreSupportedEvent;
-import ru.sincore.events.AdcExtSupportedEvent;
+import ru.sincore.events.AdcExtNoMoreSupported;
+import ru.sincore.events.AdcExtSupported;
 import ru.sincore.modules.Module;
 
 /**
@@ -37,7 +36,7 @@ public class ModuleMain extends Module
             return false;
         }
 
-        EventBusService.publish(new AdcExtSupportedEvent("FEED"));
+        EventBusService.publish(new AdcExtSupported("FEED"));
 
         log.info("Module " + moduleName + " inited");
         return true;
@@ -50,7 +49,7 @@ public class ModuleMain extends Module
         publisher.getTimer().cancel();
         publisher = null;
 
-        EventBusService.publish(new AdcExtNoMoreSupportedEvent("FEED"));
+        EventBusService.publish(new AdcExtNoMoreSupported("FEED"));
 
         log.info("Module " + moduleName + " was deinited");
         return true;

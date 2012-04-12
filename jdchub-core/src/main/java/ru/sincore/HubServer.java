@@ -40,10 +40,10 @@ import ru.sincore.adc.MessageType;
 import ru.sincore.adc.action.actions.SUP;
 import ru.sincore.cmd.CommandEngine;
 import ru.sincore.cmd.handlers.*;
-import ru.sincore.events.AdcExtNoMoreSupportedEvent;
-import ru.sincore.events.AdcExtSupportedEvent;
-import ru.sincore.events.HubShutdownEvent;
-import ru.sincore.events.HubStartupEvent;
+import ru.sincore.events.AdcExtNoMoreSupported;
+import ru.sincore.events.AdcExtSupported;
+import ru.sincore.events.HubShutdown;
+import ru.sincore.events.HubStartup;
 import ru.sincore.modules.ModulesManager;
 import ru.sincore.pipeline.PipelineFactory;
 import ru.sincore.script.ScriptEngine;
@@ -150,7 +150,7 @@ public class HubServer
         System.out.print("\n>");
 
         // Publish startup event
-        EventBusService.publish(new HubStartupEvent());
+        EventBusService.publish(new HubStartup());
 
         assasin = new ClientAssasin();
     }
@@ -243,7 +243,7 @@ public class HubServer
         //TODO realize correctly shutdown server,notify clients, store all collection containers, drop buffers and caches.
         acceptor.unbind();
 
-        EventBusService.publish(new HubShutdownEvent());
+        EventBusService.publish(new HubShutdown());
     }
 
 
@@ -266,7 +266,7 @@ public class HubServer
     
     
     @EventHandler
-    public void handleAdcExtSupportedEvent(AdcExtSupportedEvent event)
+    public void handleAdcExtSupportedEvent(AdcExtSupported event)
     {
         if (sup == null)
         {
@@ -287,7 +287,7 @@ public class HubServer
 
 
     @EventHandler
-    public void handleAdcExtNoMoreSupportedEvent(AdcExtNoMoreSupportedEvent event)
+    public void handleAdcExtNoMoreSupportedEvent(AdcExtNoMoreSupported event)
     {
         if (sup == null)
         {

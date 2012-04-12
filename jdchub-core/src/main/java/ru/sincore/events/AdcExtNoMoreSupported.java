@@ -1,7 +1,7 @@
 /*
-* AdcExtensionSupportedEvent.java
+* AdcExtNoMoreSupportedEvent.java
 *
-* Created on 10 02 2012, 17:04
+* Created on 10 02 2012, 17:06
 *
 * Copyright (C) 2012 Alexey 'lh' Antonov
 *
@@ -26,12 +26,12 @@ package ru.sincore.events;
  * @author Alexey 'lh' Antonov
  * @since 2012-02-10
  */
-public class AdcExtSupportedEvent
+public class AdcExtNoMoreSupported
 {
     private String extensionName;
 
 
-    public AdcExtSupportedEvent(String extensionName)
+    public AdcExtNoMoreSupported(String extensionName)
     {
         this.extensionName = extensionName;
     }

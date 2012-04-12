@@ -30,7 +30,7 @@ import ru.sincore.client.AbstractClient;
 import ru.sincore.db.dao.CmdListDAO;
 import ru.sincore.db.dao.CmdListDAOImpl;
 import ru.sincore.db.pojo.CmdListPOJO;
-import ru.sincore.events.UserCommandEvent;
+import ru.sincore.events.UserCommand;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -223,7 +223,7 @@ public class CommandEngine
 
 
     @EventHandler
-    public void handleUserCommandEvent(UserCommandEvent event)
+    public void handleUserCommandEvent(UserCommand event)
     {
         if (!commandExists(event.getCommand()))
         {

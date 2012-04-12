@@ -22,6 +22,7 @@
 
 package ru.sincore.client;
 
+import com.adamtaft.eb.EventBusService;
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.compression.CompressionFilter;
 import org.slf4j.Logger;
@@ -42,6 +43,7 @@ import ru.sincore.db.dao.ClientListDAO;
 import ru.sincore.db.dao.ClientListDAOImpl;
 import ru.sincore.db.pojo.ChatLogPOJO;
 import ru.sincore.db.pojo.ClientListPOJO;
+import ru.sincore.events.ClientConnected;
 import ru.sincore.i18n.Messages;
 import ru.sincore.signals.ZonAdcActionSignal;
 import ru.sincore.signalservice.Signal;
@@ -263,6 +265,8 @@ public class Client extends AbstractClient
         this.sendNLastMessages();
 
         this.setAdditionalClientStats();
+
+        EventBusService.publish(new ClientConnected(this));
     }
 
 

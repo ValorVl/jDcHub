@@ -26,7 +26,7 @@ import com.adamtaft.eb.EventHandler;
 import jdchub.module.ChatBot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.sincore.events.NewRssFeedEvent;
+import ru.sincore.events.NewRssFeed;
 
 /**
  * Handles newRssFeedEvent and send message to chat.
@@ -47,22 +47,13 @@ public class RssFeeder
 
 
     @EventHandler
-    public void handleRssFeedPostEvent(NewRssFeedEvent newRssFeedEvent)
+    public void handleRssFeedPostEvent(NewRssFeed newRssFeedEvent)
     {
-        log.debug("NewRssFeedEvent handled.");
+        log.debug("NewRssFeed handled.");
 
         StringBuilder message = new StringBuilder();
 
         message.append(newRssFeedEvent.getPostName());
-
-        if (newRssFeedEvent.getPublishTime() == newRssFeedEvent.getEditTime())
-        {
-            message.append(" [New]");
-        }
-        else
-        {
-            message.append(" [Update]");
-        }
 
         message.append('\n');
         message.append(newRssFeedEvent.getLink());

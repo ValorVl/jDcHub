@@ -28,13 +28,13 @@ import ru.sincore.client.AbstractClient;
  * @author Alexey 'lh' Antonov
  * @since 2011-11-24
  */
-public class UserCommandEvent
+public class UserCommand
 {
     String command;
     String args;
     AbstractClient client;
 
-    public UserCommandEvent(String command, String args, AbstractClient fromClient)
+    public UserCommand(String command, String args, AbstractClient fromClient)
     {
         this.command = command;
         this.args = args;
