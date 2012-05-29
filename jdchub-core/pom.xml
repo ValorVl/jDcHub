@@ -190,13 +190,13 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.6.1</version>
+            <version>1.6.4</version>
         </dependency>
 
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
-            <version>1.6.1</version>
+            <version>1.6.4</version>
         </dependency>
 
         <dependency>
@@ -208,7 +208,7 @@
         <dependency>
             <groupId>bouncycastle</groupId>
             <artifactId>bcprov-jdk14</artifactId>
-            <version>138</version>
+            <version>140</version>
         </dependency>
 
         <dependency>
@@ -221,7 +221,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.17</version>
+            <version>5.1.20</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
@@ -236,7 +236,7 @@
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <version>6.1.1</version>
+            <version>6.3.1</version>
         </dependency>
 
 
