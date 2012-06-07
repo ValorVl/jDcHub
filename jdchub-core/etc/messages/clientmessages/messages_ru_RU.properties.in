@@ -3,11 +3,11 @@
 #   cat messages_ru_RU.properties.in | native2ascii > messages_ru_RU.properties
 #
 
-core.reg_message            = Вы бы были зарегистрированы сервером. Пароль не установлен, для входа пароль так же не требуется, но мы рекомендуем установить пароль...
-core.search_spam_detected   = Search ticket Reserved. Please be patient while search is being processed. Do NOT close this window or start other search or you will.
+core.reg_message            = Вы были зарегистрированы сервером. Пароль не установлен, для входа пароль также не требуется, но мы рекомендуем всё-таки его установить..
+core.search_spam_detected   = Поисковый запрос отправлен. Пожалуйста, дождитесь окончания поиска. НЕ ЗАКРЫВАЙТЕ это окно и не начинайте новый поиск.
 tiger.error                 = Не найдена ни одна совместимая Hash функция. Используется TIGER.
-core.reg_fail_message       = {0} - вы уже зарегистрированы! Невозможно повторно зарегестрироваться.
-core.login_error_message    = Ошибка входа
+core.reg_fail_message       = {0} - вы уже зарегистрированы! Невозможно повторно зарегистрироваться.
+core.login_error_message    = Ошибка входа. Введён неверный ник и/или пароль.
 
 core.hub_is_full = Хаб переполнен. Сейчас в сети: {0}.
 core.generic_kick_discronnect_ban_message = Вы были кикнуты или забанены. Прощевайте...
