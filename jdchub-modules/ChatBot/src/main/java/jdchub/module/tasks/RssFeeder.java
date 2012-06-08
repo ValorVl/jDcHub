@@ -51,12 +51,10 @@ public class RssFeeder
     {
         log.debug("NewRssFeed handled.");
 
-        StringBuilder message = new StringBuilder();
+        StringBuilder message = new StringBuilder(newRssFeedEvent.getPostName());
 
-        message.append(newRssFeedEvent.getPostName());
-
-        message.append('\n');
-        message.append(newRssFeedEvent.getLink());
+        message.append(' ');
+        message.append(newRssFeedEvent.getLink().trim());
 
         parent.sendMessage(message.toString());
     }
