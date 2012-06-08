@@ -100,6 +100,7 @@ public class SUPHandler extends AbstractActionHandler<SUP>
         sid.setSourceSID(client.getSid());
         client.sendRawCommand(sid.getRawCommand());
 
+        client.setState(State.IDENTIFY);
 
         INF inf = new INF();
         inf.setMessageType(MessageType.I);

@@ -70,7 +70,7 @@ public class INFHandler extends AbstractActionHandler<INF>
 
             if (action.isFlagSet(Flags.PID))
             {
-                if (client.getState() != State.PROTOCOL)
+                if (client.getState() != State.IDENTIFY)
                 {
                     new STAError(client,
                                  Constants.STA_SEVERITY_RECOVERABLE,
@@ -84,7 +84,7 @@ public class INFHandler extends AbstractActionHandler<INF>
             if (action.isFlagSet(Flags.CID))
             {
                 log.debug("Client CID: " + action.getCid());
-                if (client.getState() != State.PROTOCOL)
+                if (client.getState() != State.IDENTIFY)
                 {
                     new STAError(client,
                                  Constants.STA_SEVERITY_RECOVERABLE,
@@ -130,7 +130,20 @@ public class INFHandler extends AbstractActionHandler<INF>
             }
 
 
-            // TODO: _must_ nick be present?
+            // NI field in IDENTIFY state required!
+            if ((client.getState() == State.IDENTIFY) && !action.isFlagSet(Flags.NICK))
+            {
+                new STAError(client,
+                             Constants.STA_SEVERITY_FATAL +
+                             Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
+                             Messages.NICK_MISSING,
+                             "FM",
+                             "NI").send();
+
+                return;
+            }
+
+
             if (action.isFlagSet(Flags.NICK))
             {
                 // TODO: nick validation
@@ -151,7 +164,7 @@ public class INFHandler extends AbstractActionHandler<INF>
                 }
 
 
-                if (client.getState() != State.PROTOCOL)
+                if (client.getState() != State.IDENTIFY)
                 {
                     // TODO change nick to new nick
                     // save information about it into db
@@ -367,7 +380,7 @@ public class INFHandler extends AbstractActionHandler<INF>
 
             // now must check if hub is full...
             //otherwise is already connected, no point in checking this
-            if (client.getState() == State.PROTOCOL)
+            if (client.getState() == State.IDENTIFY)
             {
                 if (configurationManager.getInt(ConfigurationManager.MAX_USERS) <=
                     ClientManager.getInstance().getClientsCount() &&
@@ -397,7 +410,7 @@ public class INFHandler extends AbstractActionHandler<INF>
             }
 
 
-            if (client.getState() == State.PROTOCOL && doProtocolStateChecks() == false)
+            if (client.getState() == State.IDENTIFY && doProtocolStateChecks() == false)
             {
                 return;
             }
@@ -424,6 +437,10 @@ public class INFHandler extends AbstractActionHandler<INF>
         }
         catch (STAException e)
         {
+            if (client.getState() != State.NORMAL)
+            {
+                client.disconnect();
+            }
             log.error(e.toString());
         }
 
@@ -443,7 +460,7 @@ public class INFHandler extends AbstractActionHandler<INF>
             new STAError(client,
                          Constants.STA_SEVERITY_FATAL +
                          Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
-                         Messages.MISSING_FIELD,
+                         Messages.NICK_MISSING,
                          "FM",
                          "NI").send();
             return false;
@@ -453,7 +470,7 @@ public class INFHandler extends AbstractActionHandler<INF>
             new STAError(client,
                          Constants.STA_SEVERITY_FATAL +
                          Constants.STA_REQUIRED_INF_FIELD_BAD_MISSING,
-                         Messages.MISSING_FIELD,
+                         Messages.NICK_MISSING,
                          "FM",
                          "NI").send();
             return false;

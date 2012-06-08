@@ -44,7 +44,6 @@ public class Messages
     public static final String DONE                   = "core.server.message.done";
     public static final String HUB_INFO_MESSAGE       = "core.server.message.hub_info";
 
-
     // Client messages
     public static final String REG_MESSAGE            = "core.reg_message";
 	public static final String REG_FAIL_MESSAGE       = "core.reg_fail_message";
@@ -90,6 +89,7 @@ public class Messages
     public static final String EMPTY_PASSWORD         = "core.protocol.empty_password";
     public static final String PASSWORD_REQUIRED      = "core.protocol.password_required";
     public static final String AUTHENTICATED          = "core.protocol.authenticated";
+    public static final String NICK_MISSING           = "core.protocol.missing_nick";
     public static final String NICK_TOO_SMALL         = "core.protocol.nick_too_small";
     public static final String NICK_TOO_LARGE         = "core.protocol.nick_too_large";
     public static final String MISSING_FIELD          = "core.protocol.missing_field";
