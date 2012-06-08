@@ -28,6 +28,7 @@ import ru.sincore.Exceptions.UserOfflineException;
 import ru.sincore.client.AbstractClient;
 import ru.sincore.cmd.AbstractCommand;
 import ru.sincore.cmd.CommandUtils;
+import ru.sincore.i18n.Messages;
 import ru.sincore.util.AdcUtils;
 import ru.sincore.util.ClientUtils;
 import ru.sincore.util.Constants;
@@ -115,13 +116,13 @@ public class KickCommand extends AbstractCommand
             return "Client not kicked!";
         }
 
-        ClientUtils.sendMessageToOpChat("Client " +
-                            nick +
-                            "was kicked by " +
-                            client.getNick() +
-                            " with reason : " +
-                            reason);
-
+        ClientUtils.sendMessageToOpChat(Messages.get("core.opchat.client_kick",
+                                                     new Object[]
+                                                     {
+                                                             nick,
+                                                             client.getNick(),
+                                                             reason
+                                                     }));
         return "Client was kicked";
     }
 

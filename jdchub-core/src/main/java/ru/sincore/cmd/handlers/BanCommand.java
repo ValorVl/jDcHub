@@ -209,23 +209,24 @@ public class BanCommand extends AbstractCommand
         switch (banType)
         {
             case Constants.BAN_TEMPORARY:
-                ClientUtils.sendMessageToOpChat("Client " +
-                                    nick +
-                                    " was banned by " +
-                                    client.getNick() +
-                                    " with reason : " +
-                                    reason +
-                                    ". Ban expires at " +
-                                    banExpiresDate);
+                ClientUtils.sendMessageToOpChat(Messages.get("core.opchat.client_ban_temp",
+                                                             new Object[]
+                                                             {
+                                                                     nick,
+                                                                     client.getNick(),
+                                                                     reason,
+                                                                     banExpiresDate
+                                                             }));
                 break;
 
             case Constants.BAN_PERMANENT:
-                ClientUtils.sendMessageToOpChat("Client " +
-                                    nick +
-                                    " was permanently banned by " +
-                                    client.getNick() +
-                                    " with reason : " +
-                                    reason);
+                ClientUtils.sendMessageToOpChat(Messages.get("core.opchat.client_ban_perm",
+                                                             new Object[]
+                                                             {
+                                                                     nick,
+                                                                     client.getNick(),
+                                                                     reason
+                                                             }));
                 break;
         }
 

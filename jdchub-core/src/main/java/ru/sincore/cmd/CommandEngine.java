@@ -31,6 +31,7 @@ import ru.sincore.db.dao.CmdListDAO;
 import ru.sincore.db.dao.CmdListDAOImpl;
 import ru.sincore.db.pojo.CmdListPOJO;
 import ru.sincore.events.UserCommand;
+import ru.sincore.i18n.Messages;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -87,7 +88,7 @@ public class CommandEngine
         }
         else
         {
-            client.sendPrivateMessageFromHub("You don\'t have anough rights!");
+            client.sendPrivateMessageFromHub(Messages.get(Messages.LOW_WEIGHT));
             commandExecutionResult = "Client don\'t have anough rights!";
         }
 
@@ -228,7 +229,7 @@ public class CommandEngine
         if (!commandExists(event.getCommand()))
         {
              // say to client command doesn't exist
-            event.getClient().sendPrivateMessageFromHub("Command not found!");
+            event.getClient().sendPrivateMessageFromHub(Messages.get("core.commands.not_found"));
             return;
         }
 

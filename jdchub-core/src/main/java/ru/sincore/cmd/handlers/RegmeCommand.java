@@ -116,13 +116,17 @@ public class RegmeCommand extends AbstractCommand
             return "Error occured: " + e.toString();
         }
 
-        client.sendPrivateMessageFromHub("\n" +
-                                         client.getNick() +
-                                         " You was successfully registered!\nPlease reconnect to hub and enter your password.");
+        client.sendPrivateMessageFromHub(Messages.get("core.client.registred",
+                                                      new Object[]
+                                                      {
+                                                              client.getNick()
+                                                      }));
 
-        ClientUtils.sendMessageToOpChat("Client " +
-                                        client.getNick() +
-                                        " now registred");
+        ClientUtils.sendMessageToOpChat(Messages.get("core.opchat.client_registred",
+                                                     new Object[]
+                                                     {
+                                                             client.getNick()
+                                                     }));
 
         return "Successfully registred";
     }

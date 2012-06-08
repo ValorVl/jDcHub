@@ -28,6 +28,7 @@ import ru.sincore.ConfigurationManager;
 import ru.sincore.Exceptions.CommandException;
 import ru.sincore.Exceptions.STAException;
 import ru.sincore.adc.action.actions.AbstractAction;
+import ru.sincore.i18n.Messages;
 import ru.sincore.util.AdcUtils;
 import ru.sincore.util.Constants;
 import ru.sincore.util.ClientUtils;
@@ -48,20 +49,25 @@ public abstract class AbstractClient extends ClientInfo
             // don't send same banned by share message to op chat
             if (! ((Boolean) this.getAdditionalStat(Constants.BANNED_BY_SHARE_MESSAGE_SENT)))
             {
-                ClientUtils.sendMessageToOpChat(this.getNick() +
-                                                 " was banned for share < " +
-                                                 ConfigurationManager.getInstance()
-                                                                     .getLong(ConfigurationManager.BAN_BY_SHARE_MIN_SHARE) +
-                                                 " [client IP=\'" +
-                                                 this.getRealIP() +
-                                                 "\']");
+                ClientUtils.sendMessageToOpChat(Messages.get("core.opchat.ban_for_share",
+                                                             new Object[]
+                                                             {
+                                                                     this.getNick(),
+                                                                     ConfigurationManager.getInstance()
+                                                                                         .getLong(ConfigurationManager.BAN_BY_SHARE_MIN_SHARE),
+                                                                     this.getRealIP()
+                                                             }));
 
                 this.setAdditionalStat(Constants.BANNED_BY_SHARE_MESSAGE_SENT, new Boolean(true));
             }
 
-            this.sendPrivateMessageFromHub("You was banned for share < " +
-                                           ConfigurationManager.getInstance()
-                                                               .getLong(ConfigurationManager.BAN_BY_SHARE_MIN_SHARE));
+            this.sendPrivateMessageFromHub(Messages.get("core.client.ban_for_share",
+                                                        new Object[]
+                                                        {
+                                                                ConfigurationManager.getInstance()
+                                                                                    .getLong(ConfigurationManager.BAN_BY_SHARE_MIN_SHARE)
+                                                        },
+                                                        (String) this.getExtendedField("LC")));
 
             return true;
         }

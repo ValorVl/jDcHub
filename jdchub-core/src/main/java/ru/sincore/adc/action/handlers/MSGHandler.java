@@ -179,7 +179,7 @@ public class MSGHandler extends AbstractActionHandler<MSG>
             if (normalMessage.startsWith(configurationManager.getString(ConfigurationManager.OP_COMMAND_PREFIX)) &&
                     (client.getWeight() < configurationManager.getInt(ConfigurationManager.CLIENT_WEIGHT_REGISTRED) + 1))
             {
-                client.sendPrivateMessageFromHub("You don\'t have anough rights to use Op commands.");
+                client.sendPrivateMessageFromHub(Messages.get("core.commands.you_need_more_weight"));
                 return true;
             }
 

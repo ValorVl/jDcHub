@@ -54,7 +54,12 @@ public class TopicCommand extends AbstractCommand
         BigTextManager bigTextManager = new BigTextManager();
         if (bigTextManager.setText(BigTextManager.TOPIC, AdcUtils.toAdcString(args)))
         {
-            ClientUtils.sendMessageToOpChat("New topic set by " + client.getNick() + " : " + args);
+            ClientUtils.sendMessageToOpChat(Messages.get("core.commands.topic.changed",
+                                                         new Object[]
+                                                         {
+                                                                 client.getNick(),
+                                                                 args
+                                                         }));
 
             // send new description of hub bot to all clients
             try

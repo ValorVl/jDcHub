@@ -158,7 +158,11 @@ public class ChangePassCommand extends AbstractCommand
                                                                               .getExtendedField("LC")));
         clientToChangePassword.disconnect();
 
-        ClientUtils.sendMessageToOpChat(clientToChangePassword.getNick() + " changed password.");
+        ClientUtils.sendMessageToOpChat(Messages.get("core.opchat.client_changed_password",
+                                                     new Object[]
+                                                     {
+                                                             clientToChangePassword.getNick()
+                                                     }));
         return result;
     }
 
