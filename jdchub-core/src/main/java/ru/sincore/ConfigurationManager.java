@@ -501,7 +501,7 @@ public class ConfigurationManager extends PropertiesConfiguration
 
         if (!this.containsKey(REDIRECT_URL))
         {
-            this.setProperty(REDIRECT_URL, "http://localhost:8080");
+            this.setProperty(REDIRECT_URL, "adc://localhost:" + this.getInt(HUB_PORT));
         }
 
         if (!this.containsKey(OP_COMMAND_PREFIX))
