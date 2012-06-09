@@ -57,25 +57,25 @@ public class PipelineTest
         processor.setMatcher("gay");
         processor.setParameter("*");
 
-        msgPipeline.addProcessor("replace_gay", processor);
+        msgPipeline.addProcessor(processor);
 
         processor = new ReplaceProcessor();
         processor.setMatcher("fuck");
         processor.setParameter("...");
 
-        msgPipeline.addProcessor("replace_fuck", processor);
+        msgPipeline.addProcessor(processor);
 
         processor = new ReplaceProcessor();
         processor.setMatcher("bitch");
         processor.setParameter(">_<");
 
-        msgPipeline.addProcessor("replace_bitch", processor);
+        msgPipeline.addProcessor(processor);
 
         processor = new ReplaceProcessor();
         processor.setMatcher("ass");
         processor.setParameter("o_O");
 
-        msgPipeline.addProcessor("replace_ass", processor);
+        msgPipeline.addProcessor(processor);
 
         msgPipeline.process(msg);
 

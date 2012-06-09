@@ -22,8 +22,12 @@ package ru.sincore.util;
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.sincore.TigerImpl.Base32;
 
+import java.text.CharacterIterator;
+import java.text.StringCharacterIterator;
 import java.util.regex.Pattern;
 
 /**
@@ -41,16 +45,57 @@ abstract public class AdcUtils
 														   "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." +
 														   "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b");
 
+    private static final Logger log = LoggerFactory.getLogger(AdcUtils.class);
+
 	public static String fromAdcString(String adcString)
     {
         if (adcString == null)
             return null;
 
-        return adcString.replaceAll("\\\\s", " ")
-                   .replaceAll("\\\\n", "\n")
-                   .replaceAll("\\\\\\\\", "\\\\")
-                   .replaceAll("\\\\ ", "\\\\s")
-                   .replaceAll("\\\\\\n", "\\\\n");
+        StringCharacterIterator iterator = new StringCharacterIterator(adcString);
+        StringBuilder result = new StringBuilder();
+
+        for(char c = iterator.first(); c != CharacterIterator.DONE; c = iterator.next())
+        {
+            if (Character.valueOf(c).equals('\\'))
+            {
+                c = iterator.next();
+                if (c == CharacterIterator.DONE)
+                {
+                    log.error("Invalid string : \'" +
+                             adcString +
+                             "\'");
+                    return "invalid string";
+                }
+
+                switch (c)
+                {
+                    case 's':
+                        result.append(' ');
+                        break;
+                    case 'n':
+                        result.append('\n');
+                        break;
+                    case '\\':
+                        result.append('\\');
+                        break;
+                    default:
+                        log.error("Invalid escape sequence in string : \'" +
+                                  adcString +
+                                  "\'");
+                        return "invalid string";
+                }
+            }
+            else
+                result.append(c);
+        }
+
+        return result.toString();
+//        return adcString.replaceAll("\\\\s", " ")
+//                        .replaceAll("\\\\n", "\n")
+//                        .replaceAll("\\\\\\\\", "\\\\")
+//                        .replaceAll("\\\\ ", "\\\\s")
+//                        .replaceAll("\\\\\\n", "\\\\n");
     }
 
     public static String toAdcString(String normalString)
