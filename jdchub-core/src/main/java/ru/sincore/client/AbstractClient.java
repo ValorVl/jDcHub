@@ -53,8 +53,11 @@ public abstract class AbstractClient extends ClientInfo
                                                              new Object[]
                                                              {
                                                                      this.getNick(),
-                                                                     ConfigurationManager.getInstance()
-                                                                                         .getLong(ConfigurationManager.BAN_BY_SHARE_MIN_SHARE),
+                                                                     ClientUtils.humanReadableByteCount(
+                                                                             ConfigurationManager.getInstance()
+                                                                                                 .getLong(
+                                                                                                         ConfigurationManager.BAN_BY_SHARE_MIN_SHARE),
+                                                                             false),
                                                                      this.getRealIP()
                                                              }));
 
@@ -64,8 +67,11 @@ public abstract class AbstractClient extends ClientInfo
             this.sendPrivateMessageFromHub(Messages.get("core.client.ban_for_share",
                                                         new Object[]
                                                         {
-                                                                ConfigurationManager.getInstance()
-                                                                                    .getLong(ConfigurationManager.BAN_BY_SHARE_MIN_SHARE)
+                                                                ClientUtils.humanReadableByteCount(
+                                                                        ConfigurationManager.getInstance()
+                                                                                            .getLong(
+                                                                                                    ConfigurationManager.BAN_BY_SHARE_MIN_SHARE),
+                                                                        false)
                                                         },
                                                         (String) this.getExtendedField("LC")));
 
