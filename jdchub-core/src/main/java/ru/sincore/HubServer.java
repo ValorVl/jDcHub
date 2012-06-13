@@ -232,6 +232,7 @@ public class HubServer
         commandEngine.registerCommand("noctm",      new NoCtmCommand());
         commandEngine.registerCommand("me",         new MeCommand());
         commandEngine.registerCommand("module",     new ModuleCommand());
+        commandEngine.registerCommand("rules",      new RulesCommand());
     }
 
 
