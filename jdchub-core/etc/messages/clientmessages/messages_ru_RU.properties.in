@@ -32,6 +32,8 @@ core.client_info_header = \n >> Ваша информация:
 # {7} - registered by...
 # {8} - total time online
 # {9} - maximum time online
+# {10} - RX
+# {11} - TX
 core.registered_client_info = \
 \n >> Ник : {0} \
 \n >> Класс: {1} \
@@ -42,7 +44,10 @@ core.registered_client_info = \
 \n >> Зарегистрирован с: {6} \
 \n >> Зарегистрирован: {7} \
 \n >> Общее время в сети: {8} \
-\n >> Максимальная продолжительность в сети: {9}\n
+\n >> Максимальная продолжительность в сети: {9}\
+\n >> Скачал: {10}\
+\n >> Раздал: {11}\n
+
 
 core.unregistered_client_info = \
 \n >> Ник : {0} \

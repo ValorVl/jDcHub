@@ -307,7 +307,9 @@ public class ClientUtils
                                          client.getRegistrationDate(),
                                          client.getRegistratorNick(),
                                          onlinePeriodStr,
-                                         maxOnlinePeriodStr
+                                         maxOnlinePeriodStr,
+                                         humanReadableByteCount(client.getRxBytes(), false),
+                                         humanReadableByteCount(client.getTxBytes(), false)
                                  },
                                  (String)client.getExtendedField("LC"));
         }
