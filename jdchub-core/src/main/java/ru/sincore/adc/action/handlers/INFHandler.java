@@ -172,7 +172,10 @@ public class INFHandler extends AbstractActionHandler<INF>
             }
 
             // load info about newly connected client
-            client.loadInfo();
+            if (client.getState() == State.IDENTIFY)
+            {
+                client.loadInfo();
+            }
 
 
             if (action.isFlagSet(Flags.ADDR_IPV4))
@@ -361,6 +364,11 @@ public class INFHandler extends AbstractActionHandler<INF>
                     client.setTxBytes(
                             client.getTxBytes() + action.<Long>getFlagValue(Flags.TX_BYTES, 0L));
                 }
+
+                log.debug("RXTX: rx = " +
+                          action.<Long>getFlagValue(Flags.RX_BYTES, 0L) +
+                         ", tx = " +
+                         action.<Long>getFlagValue(Flags.TX_BYTES, 0L));
             }
 
             // Minimal validation
