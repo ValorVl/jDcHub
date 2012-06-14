@@ -1,6 +1,8 @@
 <%@ page import="java.util.Set" %>
 <%@ page import="java.util.Iterator" %>
 <%@ page import="ru.sincore.pipeline.PipelineFactory" %>
+<%@ page import="ru.sincore.db.dao.PipelineRulesDAOImpl" %>
+<%@ page import="ru.sincore.db.pojo.PipelineRulesPOJO" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -59,8 +61,40 @@
                 <td colspan="2"><button id="add" type="button">Add</button></td>
             </tr>
         </table>
-        <div id="out"></div>
     </form>
 </div>
+
+<div id="out"></div>
+
+<%
+    PipelineRulesDAOImpl pipelineDao = new PipelineRulesDAOImpl("MSG");
+
+%>
+<form action="bad_words.jsp" accept-charset="UTF-8" enctype="application/x-www-form-urlencoded"
+      method="post">
+    <div style="text-align: right; width: 100%;">
+        <button id="del" type="submit">Del</button>
+    </div>
+    <table rules="all" width="100%" align="left" id="rules">
+        <%
+            for (PipelineRulesPOJO row : pipelineDao.getRules())
+            {
+        %>
+        <tr data-id="<%= row.getId() %>">
+            <td><%= row.getMatcher()%>
+            </td>
+
+            <td><%= row.getProcessor()%>
+            </td>
+
+            <td><%= row.getParam()%>
+            </td>
+
+            <td><input type="checkbox" name="ids[]" value="<%= row.getId() %>"></td>
+        </tr>
+        <%}%>
+    </table>
+</form>
+
 </body>
 </html>

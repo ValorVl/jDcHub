@@ -20,19 +20,22 @@ public class BwDel extends HttpServlet
 
 		try{
 
-			String[] id = request.getParameterValues("id");
+			String[] ids = request.getParameterValues("id[]");
 
-			if (id == null)
+			if ((ids == null) || (ids.length == 0))
 			{
 				return;
 			}
 
 			PipelineRulesDAOImpl pipelineRulesDAO = new PipelineRulesDAOImpl("MSG");
 
-			for (int i = 0; i < id.length;i++)
+			for (String id : ids)
 			{
-
+                Long idAsLong = Long.parseLong(id);
+                pipelineRulesDAO.deleteRule(idAsLong);
 			}
+
+            out.write("Deleted!");
 
 		}finally {
 			out.close();

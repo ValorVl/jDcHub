@@ -44,6 +44,7 @@ public class BigTextManager
     public static final String MOTD     = "MOTD";
     public static final String RULES    = "RULES";
     public static final String TOPIC    = "TOPIC";
+    public static final String FAQ      = "FAQ";
 
 
     /**

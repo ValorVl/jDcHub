@@ -9,8 +9,6 @@ $(document).ready(
     function ()
     {
 
-        $("#out").load("../simples/bwbody.jsp")
-
         $("#add").click(function ()
            {
            $.ajax({
@@ -23,4 +21,25 @@ $(document).ready(
                       }
                   })
            })
+
+        $("#del").click(function ()
+                        {
+                            var blabla = new Array();
+                            $('input[name="ids[]"]').each(function(){
+                                if($(this).is(':checked')) blabla.push($(this).val());
+                            });
+                            $.ajax({
+                                       type:"POST",
+                                       url:"../bwdel",
+                                       data:{ "id": blabla },
+                                       success:function (data)
+                                       {
+                                           $("#out").html(data);
+                                           for(var i=0; i<blabla.length; i++) {
+                                               $('#rules tr[data-id=' +blabla[i] + ']').fadeOut();
+                                           }
+                                       }
+                                   })
+                            return false;
+                        })
     })

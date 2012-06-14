@@ -153,6 +153,8 @@ public class INFHandler extends AbstractActionHandler<INF>
                     new STAError(client,
                                  Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_NICK_TAKEN,
                                  Messages.NICK_TAKEN).send();
+
+                    client.disconnect();
                     return;
                 }
 

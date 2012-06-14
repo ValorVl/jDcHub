@@ -58,6 +58,13 @@ public class BigTextHandler extends HttpServlet
 						bigText.updateData("RULES",selectedLocale, AdcUtils.toAdcString(messageBody.trim()));
 					}
 				}
+                else if (actionSrc.equals("faq"))
+                {
+                    if (!selectedLocale.isEmpty() && !messageBody.isEmpty())
+                    {
+                        bigText.updateData("FAQ",selectedLocale, AdcUtils.toAdcString(messageBody.trim()));
+                    }
+                }
 				else {
 					out.print("Unknown src :"+actionSrc);
 				}
@@ -99,7 +106,18 @@ public class BigTextHandler extends HttpServlet
 						out.print(AdcUtils.fromAdcString(body));
 					}
 				}
-				else {
+                else if (actionSrc.equals("faq"))
+                {
+                    if (!id.isEmpty())
+                    {
+                        String body = bigText.getData("FAQ",id);
+                        out.print(AdcUtils.fromAdcString(body));
+                    }else {
+                        String body = bigText.getData("FAQ",configInstance.getString(ConfigurationManager.HUB_DEFAULT_LOCALE));
+                        out.print(AdcUtils.fromAdcString(body));
+                    }
+                }
+                else {
 					out.print("Unknown src :"+actionSrc);
 				}
 			}else

@@ -34,6 +34,7 @@
                    <li><a href="hubmanage/motd.jsp"><span class="hm-menu">Manage MOTD</span></a></li>
                    <li><a href="hubmanage/rules.jsp"><span class="hm-menu">Manage RULES</span></a></li>
                    <li><a href="hubmanage/topic.jsp"><span class="hm-menu">Manage TOPIC</span></a></li>
+                   <li><a href="hubmanage/faq.jsp"><span class="hm-menu">Manage FAQ</span></a></li>
                </ul>
        </div>
   </body>

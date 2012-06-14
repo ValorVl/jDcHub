@@ -233,6 +233,7 @@ public class HubServer
         commandEngine.registerCommand("me",         new MeCommand());
         commandEngine.registerCommand("module",     new ModuleCommand());
         commandEngine.registerCommand("rules",      new RulesCommand());
+        commandEngine.registerCommand("faq",        new FAQCommand());
     }
 
 
