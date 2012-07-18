@@ -50,7 +50,7 @@ import java.util.StringTokenizer;
  * @author Alexey 'lh' Antonov
  * @since 2011-09-06
  */
-public class SessionManager extends IoHandlerAdapter
+public class    SessionManager extends IoHandlerAdapter
 {
     private static final Logger log = LoggerFactory.getLogger(SessionManager.class);
 

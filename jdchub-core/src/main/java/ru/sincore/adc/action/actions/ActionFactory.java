@@ -37,6 +37,8 @@ public class ActionFactory
         parsers.put("STA", STA.class);
         parsers.put("SUP", SUP.class);
         parsers.put("RES", RES.class);
+        parsers.put("NAT", NAT.class);
+        parsers.put("RNT", RNT.class);
     }
 
 

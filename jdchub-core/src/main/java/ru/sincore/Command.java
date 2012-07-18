@@ -71,6 +71,8 @@ public class Command
         handlers.put("ZON", new ActionHandlerInfo(ZONHandler.class, ZON.class, ZonAdcActionSignal.class));
         handlers.put("ZOF", new ActionHandlerInfo(ZOFHandler.class, ZOF.class, ZofAdcActionSignal.class));
         handlers.put("RES", new ActionHandlerInfo(RESHandler.class, RES.class, null));
+        handlers.put("NAT", new ActionHandlerInfo(NATHandler.class, NAT.class, null));
+        handlers.put("RNT", new ActionHandlerInfo(RNTHandler.class, RNT.class, null));
     }
 
     /**

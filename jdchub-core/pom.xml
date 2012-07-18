@@ -18,8 +18,8 @@
     <description>Java adc++ hub Core</description>
     <packaging>jar</packaging>
 
-    <build>
         <plugins>
+            <build>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-clean-plugin</artifactId>
