@@ -62,7 +62,7 @@ public class STAError
     public STAError(AbstractClient client, int errorCode, String messageId)
             throws STAException
     {
-        log.debug("Hub sent to client \"" +
+        log.info("Hub sent to client \"" +
                   client.getNick() +
                   "\"(" +
                   client.getSid() +
@@ -87,7 +87,7 @@ public class STAError
      */
     public STAError(AbstractClient client, int errorCode, String messageId, String prefix, String flag)
     {
-        log.debug("Hub sent to client \"" +
+        log.info("Hub sent to client \"" +
                   client.getNick() +
                   "\"(" +
                   client.getSid() +
@@ -122,7 +122,7 @@ public class STAError
     public STAError(AbstractClient client, int errorCode, String messageId, Object values)
             throws STAException
     {
-        log.debug("Hub sent to client \"" +
+        log.info("Hub sent to client \"" +
                   client.getNick() +
                   "\"(" +
                   client.getSid() +
@@ -147,7 +147,7 @@ public class STAError
      */
     public STAError(AbstractClient client, int errorCode, String messageId, Object values, String prefix, String flag)
     {
-        log.debug("Hub sent to client \"" +
+        log.info("Hub sent to client \"" +
                   client.getNick() +
                   "\"(" +
                   client.getSid() +

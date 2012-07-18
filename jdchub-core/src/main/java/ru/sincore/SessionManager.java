@@ -76,7 +76,7 @@ public class    SessionManager extends IoHandlerAdapter
         {
             if (t instanceof java.io.IOException)
             {
-                log.debug(t.getMessage());
+                log.error(t.getMessage());
                 return;
             }
             String throwableMessage = t.getMessage();
@@ -91,13 +91,13 @@ public class    SessionManager extends IoHandlerAdapter
                 if ((throwableMessage.contains("BufferDataException: Line is too long")))
                 {
                     new STAError(client,
-                                 100,
+                                 Constants.STA_SEVERITY_RECOVERABLE,
                                  Messages.MESSAGE_TOO_LONG,
                                  throwableMessage);
                 }
                 else
                 {
-                    log.debug(throwableMessage);
+                    log.error(throwableMessage);
                 }
             }
         }
@@ -152,7 +152,6 @@ public class    SessionManager extends IoHandlerAdapter
     public void sessionClosed(IoSession session)
             throws Exception
     {
-        log.debug("Session closed.");
         Client currentClient = (Client)(session.getAttribute(Constants.SESSION_ATTRIBUTE_CLIENT));
         session.removeAttribute(Constants.SESSION_ATTRIBUTE_CLIENT);
         ClientManager.getInstance().removeClient(currentClient);
@@ -169,10 +168,11 @@ public class    SessionManager extends IoHandlerAdapter
         currentClient.increaseTimeOnline(System.currentTimeMillis() -
                                          currentClient.getLoggedIn().getTime());
 
-        log.info(currentClient.getNick() +
-                 " with SID " +
+        log.info("[DISCONNECTED] Client " +
+                 currentClient.getNick() +
+                 " with SID [" +
                  currentClient.getSid() +
-                 " just quited.");
+                 "] disconnected.");
 
         currentClient.storeInfo();
     }
@@ -189,11 +189,16 @@ public class    SessionManager extends IoHandlerAdapter
         StringTokenizer ST = new StringTokenizer(session.getRemoteAddress().toString(), "/:");
 
         String realIp = ST.nextToken();
-        log.debug("Client real IP: " + realIp);
 
 		newClient.setRealIP(realIp);
         newClient.setSid(SIDGenerator.generateUnique());
         newClient.setLoggedIn(new Date());
+
+        log.info("[CONNECTED] Client with SID [" +
+                  newClient.getSid() +
+                  "] and real IP[" +
+                  realIp +
+                  "] connected.");
 
         /**
          * Client will be moved from uninitialized to regular map after

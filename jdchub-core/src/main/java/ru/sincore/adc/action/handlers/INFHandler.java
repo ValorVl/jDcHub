@@ -56,7 +56,7 @@ public class INFHandler extends AbstractActionHandler<INF>
 
             if (!client.getSid().equals(action.getSourceSID()))
             {
-                log.debug("SID " +
+                log.error("SID " +
                          client.getSid() +
                          " not equal to " +
                          action.getSourceSID());
@@ -94,7 +94,7 @@ public class INFHandler extends AbstractActionHandler<INF>
 
                 if (ClientManager.getInstance().getClientByCID(action.getCid()) != null)
                 {
-                    log.debug("CID " +
+                    log.info("CID " +
                               action.getCid() +
                               " already taken by client " +
                              ClientManager.getInstance().getClientByCID(action.getCid()).getNick() +
@@ -123,7 +123,9 @@ public class INFHandler extends AbstractActionHandler<INF>
             }
             else if (client.getState() != State.NORMAL)
             {
-                log.info("CID does not set by client.");
+                log.info("CID does not set by client with SID [" +
+                        client.getSid() +
+                        "]");
                 new STAError(client, Constants.STA_SEVERITY_FATAL + Constants.STA_ACCESS_DENIED,
                              Messages.INVALID_CID).send();
                 return;
