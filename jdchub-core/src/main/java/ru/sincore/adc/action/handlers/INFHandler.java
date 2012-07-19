@@ -83,7 +83,11 @@ public class INFHandler extends AbstractActionHandler<INF>
 
             if (action.isFlagSet(Flags.CID))
             {
-                log.debug("Client CID: " + action.getCid());
+                log.info("Client with SID [" +
+                         client.getSid() +
+                         "] and IP [" +
+                         client.getRealIP() +
+                         "] CID: " + action.getCid());
                 if (client.getState() != State.IDENTIFY)
                 {
                     new STAError(client,
@@ -92,7 +96,8 @@ public class INFHandler extends AbstractActionHandler<INF>
                     return;
                 }
 
-                if (ClientManager.getInstance().getClientByCID(action.getCid()) != null)
+                if ((ClientManager.getInstance().getClientByCID(action.getCid()) != null) ||
+                    (ClientManager.getInstance().getUninitializedClientByCID(action.getCid()) != null))
                 {
                     log.info("CID " +
                               action.getCid() +
@@ -161,6 +166,12 @@ public class INFHandler extends AbstractActionHandler<INF>
                 }
 
                 client.setNick(action.getNick());
+                log.info("Client with SID " +
+                        "[" +
+                        client.getSid() +
+                        "]" +
+                        " get nick " +
+                        client.getNick());
 
                 if (!validateNick())
                 {

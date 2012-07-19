@@ -98,7 +98,7 @@ public class MSGHandler extends AbstractActionHandler<MSG>
         }
         catch (CommandException e)
         {
-            log.debug(e.toString());
+            log.error("Error handled : " + e.toString());
         }
         catch (STAException staException)
         {

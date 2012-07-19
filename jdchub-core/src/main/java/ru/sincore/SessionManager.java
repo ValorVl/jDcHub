@@ -50,7 +50,7 @@ import java.util.StringTokenizer;
  * @author Alexey 'lh' Antonov
  * @since 2011-09-06
  */
-public class    SessionManager extends IoHandlerAdapter
+public class SessionManager extends IoHandlerAdapter
 {
     private static final Logger log = LoggerFactory.getLogger(SessionManager.class);
 
@@ -76,7 +76,14 @@ public class    SessionManager extends IoHandlerAdapter
         {
             if (t instanceof java.io.IOException)
             {
-                log.error(t.getMessage());
+                log.error("[SESSION ERROR] client [" +
+                          client.getNick() +
+                          ", " +
+                          session.getRemoteAddress() +
+                          "] error : " +
+                          t.getMessage());
+
+                client.disconnect();
                 return;
             }
             String throwableMessage = t.getMessage();
@@ -97,13 +104,23 @@ public class    SessionManager extends IoHandlerAdapter
                 }
                 else
                 {
-                    log.error(throwableMessage);
+                    log.error("[SESSION ERROR] client [" +
+                              client.getNick() +
+                              ", " +
+                              session.getRemoteAddress() +
+                              "] error : " +
+                              throwableMessage);
                 }
             }
         }
         catch (Exception e)
         {
-            log.debug("Funny exception in exceptionCaught(), here is the stack trace:", e);
+            log.error("[SESSION ERROR] client [" +
+                      client.getNick() +
+                      ", " +
+                      session.getRemoteAddress() +
+                      "] error : " +
+                      "Funny exception in exceptionCaught(), here is the stack trace:", e);
         }
     }
 
@@ -126,11 +143,11 @@ public class    SessionManager extends IoHandlerAdapter
             {
                 return;
             }
-			log.debug(stex.toString());
+			log.error(stex.toString());
         }
         catch (CommandException cfex)
         {
-			log.debug(cfex.toString());
+			log.error(cfex.toString());
         }
 
     }
@@ -138,7 +155,6 @@ public class    SessionManager extends IoHandlerAdapter
     public void messageSent(IoSession session, Object message)
             throws Exception
     {
-        //session.getFilterChain().
         log.debug("Outgoing message from hub : \'" + message.toString() + "\'");
     }
 
@@ -172,6 +188,8 @@ public class    SessionManager extends IoHandlerAdapter
                  currentClient.getNick() +
                  " with SID [" +
                  currentClient.getSid() +
+                 "] and ip [" +
+                 session.getRemoteAddress() +
                  "] disconnected.");
 
         currentClient.storeInfo();
@@ -195,10 +213,10 @@ public class    SessionManager extends IoHandlerAdapter
         newClient.setLoggedIn(new Date());
 
         log.info("[CONNECTED] Client with SID [" +
-                  newClient.getSid() +
-                  "] and real IP[" +
-                  realIp +
-                  "] connected.");
+                 newClient.getSid() +
+                 "] and real IP[" +
+                 realIp +
+                 "] connected.");
 
         /**
          * Client will be moved from uninitialized to regular map after

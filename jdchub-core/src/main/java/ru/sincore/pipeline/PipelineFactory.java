@@ -102,7 +102,7 @@ public class PipelineFactory
         }
         catch (Exception ex)
         {
-            log.debug(ex.toString());
+            log.error(ex.toString());
         }
 
         return processor;
@@ -145,7 +145,7 @@ public class PipelineFactory
             }
             catch (Exception ex)
             {
-                log.debug(ex.toString());
+                log.error(ex.toString());
             }
         }
 

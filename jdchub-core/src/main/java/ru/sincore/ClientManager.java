@@ -217,6 +217,20 @@ public final class ClientManager
     }
 
 
+    synchronized public AbstractClient getUninitializedClientByCID(String cid)
+    {
+        for (AbstractClient client : uninitializedClients.values())
+        {
+            if (client.getCid().equals(cid))
+            {
+                return client;
+            }
+        }
+
+        return null;
+    }
+
+
     public AbstractClient getClientByCID(String cid)
     {
         String sid = sidByCID.get(cid);
@@ -341,15 +355,15 @@ public final class ClientManager
 
         if (removedClient == null)
         {
-            log.debug("User with sid = \'" + client.getSid() + "\' not in clientsBySID.");
+            log.error("User with sid = \'" + client.getSid() + "\' not in clientsBySID.");
         }
         else
         {
             sidByNick.remove(removedClient.getNick());
 
-            log.debug("User with nick = \'" + removedClient.getNick() +
-                      "\' and sid = \'" + removedClient.getSid() +
-                      "\' was removed.");
+            log.debug("Client " + removedClient.getNick() +
+                      " with SID [" + removedClient.getSid() +
+                      "] was removed.");
         }
 
         return removedClient != null;
