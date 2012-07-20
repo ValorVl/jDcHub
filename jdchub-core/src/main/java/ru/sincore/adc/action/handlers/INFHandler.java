@@ -96,22 +96,26 @@ public class INFHandler extends AbstractActionHandler<INF>
                     return;
                 }
 
-                if ((ClientManager.getInstance().getClientByCID(action.getCid()) != null) ||
-                    (ClientManager.getInstance().getUninitializedClientByCID(action.getCid()) != null))
+                //check for already connected clients with same CID
+                AbstractClient previouseClient = ClientManager.getInstance().getClientByCID(action.getCid());
+                if (previouseClient == null)
+                {
+                    previouseClient = ClientManager.getInstance().getUninitializedClientByCID(action.getCid());
+                }
+
+                if (previouseClient != null)
                 {
                     log.info("CID " +
-                              action.getCid() +
-                              " already taken by client " +
-                             ClientManager.getInstance().getClientByCID(action.getCid()).getNick() +
+                             action.getCid() +
+                             " already taken by client " +
+                             previouseClient.getNick() +
                              " with SID " +
-                             ClientManager.getInstance().getClientByCID(action.getCid()).getSid());
+                             previouseClient.getSid());
 
                     // disconnect previously connected client
                     // (for example it may be zombie client which waiting 2 hours for tcp_connection_timeout)
                     if (configurationManager.getBoolean(ConfigurationManager.DISCONNECT_ONLINE_WITH_SAME_CID))
                     {
-                        AbstractClient previouseClient = ClientManager.getInstance().getClientByCID(
-                                action.getCid());
                         previouseClient.sendPrivateMessageFromHub(Messages.get(Messages.DISCONNECT_BY_CID_TAKEN,
                                                                                previouseClient.getExtendedField(
                                                                                        "LC")));

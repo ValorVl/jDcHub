@@ -355,11 +355,19 @@ public final class ClientManager
 
         if (removedClient == null)
         {
-            log.error("User with sid = \'" + client.getSid() + "\' not in clientsBySID.");
+            log.error("Client " + client.getNick() + " with SID [" + client.getSid() + "] not in clientsBySID.");
         }
         else
         {
-            sidByNick.remove(removedClient.getNick());
+            if (sidByNick.remove(removedClient.getNick()) == null)
+            {
+                log.error("Client " + client.getNick() + " with SID [" + client.getSid() + "] not in sidByNick.");
+            }
+
+            if (sidByCID.remove(removedClient.getCid()) == null)
+            {
+                log.error("Client " + client.getNick() + " with SID [" + client.getSid() + "] not in sidByCID.");
+            }
 
             log.debug("Client " + removedClient.getNick() +
                       " with SID [" + removedClient.getSid() +

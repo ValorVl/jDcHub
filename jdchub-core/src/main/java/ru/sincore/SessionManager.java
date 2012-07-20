@@ -71,6 +71,8 @@ public class SessionManager extends IoHandlerAdapter
     public void exceptionCaught(IoSession session, Throwable t)
             throws Exception
     {
+        super.exceptionCaught(session, t);
+
         AbstractClient client = (AbstractClient) session.getAttribute(Constants.SESSION_ATTRIBUTE_CLIENT);
         try
         {
@@ -110,6 +112,8 @@ public class SessionManager extends IoHandlerAdapter
                               session.getRemoteAddress() +
                               "] error : " +
                               throwableMessage);
+
+                    client.disconnect();
                 }
             }
         }
