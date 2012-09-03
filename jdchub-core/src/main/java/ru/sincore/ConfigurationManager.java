@@ -68,6 +68,10 @@ public class ConfigurationManager extends PropertiesConfiguration
     public static final String MAX_DESCRIPTION_CHAR_COUNT = "core.hub.max_description_char_count";
 	public static final String MIN_PASSWORD_LEN           = "core.hub.min_password_len";
 
+    public static final String THREADS_CORE_POOL_SIZE     = "core.hub.threads.core_pool_size";
+    public static final String THREADS_MAXIMUM_POOL_SIZE  = "core.hub.threads.maximum_pool_size";
+    public static final String THREADS_KEEP_ALIVE_TIME    = "core.hub.threads.keep_alive_time";
+
              // Maximum description char count
     public static final String MAX_OP_IN_HUB              = "core.hub.max_op_in_chat";
             // Maximum OP in chat (needed ?)
