@@ -123,8 +123,9 @@ public class INFHandler extends AbstractActionHandler<INF>
                     }
 
                     new STAError(client,
-                                 Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_CID_TAKEN,
+                                 Constants.STA_SEVERITY_FATAL + Constants.STA_CID_TAKEN,
                                  Messages.CID_TAKEN).send();
+                    client.disconnect();
                     return;
                 }
 
