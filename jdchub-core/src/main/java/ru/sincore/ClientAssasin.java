@@ -58,6 +58,8 @@ public class ClientAssasin extends Thread
      */
     private boolean disconnectClient(AbstractClient client)
     {
+        client.flushBuffer();
+
         // remove clients that must be disconnected
         if (client.isMustBeDisconnected())
         {
@@ -89,16 +91,23 @@ public class ClientAssasin extends Thread
         {
             try
             {
-                Thread.sleep(1000);
+                Thread.sleep(100);
             }
             catch (InterruptedException ex)
             {
                 // ignored
             }
 
+            ConfigurationManager configurationManager = ConfigurationManager.getInstance();
 
             for (AbstractClient client : ClientManager.getInstance().getUninitializedClients())
             {
+                if (System.currentTimeMillis() - client.getLastBufferFlushTime() >
+                    configurationManager.getLong(ConfigurationManager.MESSAGE_BUFFER_FLUSH_PERIOD))
+                {
+                    client.flushBuffer();
+                }
+
                 if (disconnectClient(client))
                 {
                     // do something with just disconnected clients
@@ -111,6 +120,12 @@ public class ClientAssasin extends Thread
             {
                 long currentTime = System.currentTimeMillis();
 
+                if (currentTime - client.getLastBufferFlushTime() >
+                    configurationManager.getLong(ConfigurationManager.MESSAGE_BUFFER_FLUSH_PERIOD))
+                {
+                    client.flushBuffer();
+                }
+
                 if (disconnectClient(client))
                 {
                     continue;
@@ -119,8 +134,6 @@ public class ClientAssasin extends Thread
                 if (((client.getInQueueSearch() != null))
                     && (client.isValidated()))
                 {
-                    ConfigurationManager configurationManager = ConfigurationManager.getInstance();
-
                     double xy = 1;
                     for (int i = 0; i < client.getSearchStep(); i++)
                     {

@@ -22,6 +22,7 @@
 
 package ru.sincore.client;
 
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.sincore.ConfigurationManager;
@@ -41,6 +42,8 @@ public abstract class AbstractClient extends ClientInfo
 {
     private static final Logger log = LoggerFactory.getLogger(AbstractClient.class);
 
+    @Getter
+    protected long lastBufferFlushTime = System.currentTimeMillis();
 
     public boolean checkBannedByShare()
     {
@@ -148,10 +151,14 @@ public abstract class AbstractClient extends ClientInfo
 
 
     /**
-     * @deprecated use sendAdcAction() instead
-     * @param rawCommand
+     * Flush buffer to socket (send it to client)
      */
-    @Deprecated
+    public void flushBuffer()
+    {
+        log.debug("Used unimplemented function flushBuffer!");
+    }
+
+
     public void sendRawCommand(String rawCommand)
     {
         log.debug("Used unimplemented function sendRawCommand!");

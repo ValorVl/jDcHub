@@ -71,14 +71,14 @@ public class GagCommand extends AbstractCommand
             {
                 clientAbout.setMute(false);
                 ClientUtils.sendMessageToOpChat("Client with nick \'" +
-                                                 client.getNick() +
+                                                clientAbout.getNick() +
                                                  "\' have been ungaged! (Now can use CHAT functions)");
             }
             else
             {
                 clientAbout.setMute(true);
                 ClientUtils.sendMessageToOpChat("Client with nick \'" +
-                                                 client.getNick() +
+                                                clientAbout.getNick() +
                                                  "\' have been gaged! (Now can\'t use CHAT functions)");
             }
         }

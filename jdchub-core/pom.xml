@@ -226,6 +226,13 @@
             <scope>compile</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>0.10.4</version>
+            <scope>compile</scope>
+        </dependency>
+
         <!-- SQLite3: http://www.xerial.org/trac/Xerial/wiki/SQLiteJDBC -->
         <dependency>
             <groupId>org.xerial</groupId>

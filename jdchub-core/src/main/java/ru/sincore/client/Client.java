@@ -23,6 +23,7 @@
 package ru.sincore.client;
 
 import com.adamtaft.eb.EventBusService;
+import lombok.Getter;
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.compression.CompressionFilter;
 import org.slf4j.Logger;
@@ -71,22 +72,33 @@ public class Client extends AbstractClient
      */
     private IoSession session;
 
+    /**
+     * Client message buffer
+     */
+    private StringBuffer messageBuffer = new StringBuffer(ConfigurationManager.getInstance()
+                                                                              .getInt(ConfigurationManager.MESSAGE_BUFFER_SIZE));
 
-//    public void sendPM(AbstractClient fromClient, String rawMessage)
-//    {
-//        session.write(rawMessage);
-//    }
-//
-//
-//    public void sendMessage(String rawMessage)
-//    {
-//        session.write(rawMessage);
-//    }
+    @Override
+    public void flushBuffer()
+    {
+        if (messageBuffer.length() != 0)
+        {
+            session.write(messageBuffer.toString());
+            messageBuffer = new StringBuffer(ConfigurationManager.getInstance()
+                                                                 .getInt(ConfigurationManager.MESSAGE_BUFFER_SIZE));
+            lastBufferFlushTime = System.currentTimeMillis();
+        }
+    }
+
 
     @Override
     public void sendRawCommand(String rawCommand)
     {
-        session.write(rawCommand);
+        if (messageBuffer.length() + rawCommand.length() > messageBuffer.capacity())
+        {
+            flushBuffer();
+        }
+        messageBuffer.append(rawCommand + "\n");
     }
 
 
@@ -95,7 +107,7 @@ public class Client extends AbstractClient
     {
         try
         {
-            session.write(action.getRawCommand());
+            sendRawCommand(action.getRawCommand());
         }
         catch (CommandException e)
         {
@@ -240,17 +252,12 @@ public class Client extends AbstractClient
         //ok now must send INF to all clients
         Broadcast.getInstance().broadcast(this.getINF(), null);
 
-        if (isFeature(Features.UCMD))
+        if (isFeature(Features.UCMD) || isFeature(Features.UCM0))
         {
             //ok, he is ucmd ok, so
             this.sendRawCommand("ICMD Test CT1 TTTest");
         }
 
-        if (isFeature(Features.ZLIF))
-        {
-            this.enableCompression();
-        }
-        
         sendMessageFromHub(ClientUtils.getHubInfo(this));
 
         // send MOTD
@@ -266,13 +273,21 @@ public class Client extends AbstractClient
 
         this.setAdditionalClientStats();
 
+        // TODO [lh] enable back compressing outgoing messages
+//        if (isFeature(Features.ZLIF))
+//        {
+//            this.enableCompression();
+//        }
+
         EventBusService.publish(new ClientConnected(this));
     }
 
 
     private void enableCompression()
     {
+        this.flushBuffer();
         this.sendRawCommand("IZON");
+        this.flushBuffer();
         session.getFilterChain().addFirst(Constants.ZLIB_FILTER,
                                           new CompressionFilter(false,
                                                                 true,

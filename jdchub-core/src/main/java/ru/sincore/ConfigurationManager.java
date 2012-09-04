@@ -72,6 +72,9 @@ public class ConfigurationManager extends PropertiesConfiguration
     public static final String THREADS_MAXIMUM_POOL_SIZE  = "core.hub.threads.maximum_pool_size";
     public static final String THREADS_KEEP_ALIVE_TIME    = "core.hub.threads.keep_alive_time";
 
+    public static final String MESSAGE_BUFFER_SIZE        = "core.hub.message_buffer.size";
+    public static final String MESSAGE_BUFFER_FLUSH_PERIOD= "core.hub.message_buffer.flush_period";
+
              // Maximum description char count
     public static final String MAX_OP_IN_HUB              = "core.hub.max_op_in_chat";
             // Maximum OP in chat (needed ?)
@@ -337,6 +340,16 @@ public class ConfigurationManager extends PropertiesConfiguration
 		{
 			this.setProperty(MIN_PASSWORD_LEN,0);
 		}
+
+        if (!this.containsKey(MESSAGE_BUFFER_SIZE))
+        {
+            this.setProperty(MESSAGE_BUFFER_SIZE, 1024);
+        }
+
+        if (!this.containsKey(MESSAGE_BUFFER_FLUSH_PERIOD))
+        {
+            this.setProperty(MESSAGE_BUFFER_FLUSH_PERIOD, 500);
+        }
 
         if (!this.containsKey(HUB_LISTEN))
         {
