@@ -40,7 +40,7 @@ public class Bot extends AbstractClient
     public void removeSession(boolean immediately)
     {
         // construct IQUI message
-        ClientManager.getInstance().removeClient(this);
+        ClientManager.getInstance().removeRegularClient(this);
         // broadcast bot quited message
         Broadcast.getInstance().broadcast("IQUI " + this.getSid(), this);
     }

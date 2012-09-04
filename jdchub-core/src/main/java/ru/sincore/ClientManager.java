@@ -341,7 +341,7 @@ public final class ClientManager
     }
 
 
-    synchronized public boolean removeClient(AbstractClient client)
+    synchronized public boolean removeUninitializedClient(AbstractClient client)
     {
         if (uninitializedClients.remove(client.getSid()) != null)
         {
@@ -351,6 +351,12 @@ public final class ClientManager
             return true;
         }
 
+        return false;
+    }
+
+
+    synchronized public boolean removeRegularClient(AbstractClient client)
+    {
         AbstractClient removedClient = clientsBySID.remove(client.getSid());
 
         if (removedClient == null)

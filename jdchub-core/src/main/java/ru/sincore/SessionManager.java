@@ -174,10 +174,25 @@ public class SessionManager extends IoHandlerAdapter
     {
         Client currentClient = (Client)(session.getAttribute(Constants.SESSION_ATTRIBUTE_CLIENT));
         session.removeAttribute(Constants.SESSION_ATTRIBUTE_CLIENT);
-        ClientManager.getInstance().removeClient(currentClient);
 
-        // broadcast client quited message
-        Broadcast.getInstance().broadcast("IQUI " + currentClient.getSid(), currentClient);
+        if (ClientManager.getInstance().removeRegularClient(currentClient))
+        {
+            // broadcast client quited message
+            Broadcast.getInstance().broadcast("IQUI " + currentClient.getSid(), currentClient);
+        }
+        else if (ClientManager.getInstance().removeUninitializedClient(currentClient))
+        {
+            //remove uninitialized client and nobody needs to know about that client
+        }
+        else
+        {
+            log.error("[SESSION ERROR] client [" +
+                      currentClient.getNick() +
+                      ", " +
+                      session.getRemoteAddress() +
+                      "]  not found.");
+        }
+
 
         /** calling plugins...*/
         // Publish async event
