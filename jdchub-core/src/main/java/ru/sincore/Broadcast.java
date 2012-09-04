@@ -28,7 +28,8 @@ import org.slf4j.LoggerFactory;
 import ru.sincore.client.AbstractClient;
 
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Provides broadcasts and feature broadcasts constructors to all connected
@@ -50,18 +51,12 @@ public class Broadcast
     // final protected ExecutorService pool;
     // final private ThreadFactory tfactory;
     static Broadcast _instance = null;
-    private final ThreadPoolExecutor pool;
+    private final ExecutorService pool;
 
 
     private Broadcast()
     {
-        ConfigurationManager cm = ConfigurationManager.getInstance();
-        pool = new ThreadPoolExecutor(cm.getInt(ConfigurationManager.THREADS_CORE_POOL_SIZE),
-                                      cm.getInt(ConfigurationManager.THREADS_MAXIMUM_POOL_SIZE),
-                                      cm.getInt(ConfigurationManager.THREADS_KEEP_ALIVE_TIME),
-                                      TimeUnit.SECONDS,
-                                      new LinkedBlockingQueue<Runnable>(100));
-        pool.prestartAllCoreThreads();
+        pool = Executors.newCachedThreadPool();
     }
 
 
