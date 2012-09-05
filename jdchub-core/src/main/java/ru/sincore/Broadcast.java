@@ -77,16 +77,16 @@ public class Broadcast
      * @param message raw adc command
      * @param fromClient wich client sends command
      */
-    public void broadcast(String message, AbstractClient fromClient)
+    public synchronized void broadcast(String message, AbstractClient fromClient)
     {
         for (AbstractClient toClient : ClientManager.getInstance().getClients())
         {
-            pool.execute(new ClientSender(message, fromClient, toClient));
+            pool.submit(new MessageSender(message, fromClient, toClient));
         }
     }
 
 
-    public void broadcast(String message, int state)
+    public synchronized void broadcast(String message, int state)
     {
         broadcast(message, null);
     }
@@ -107,85 +107,11 @@ public class Broadcast
     {
         for (AbstractClient toClient : ClientManager.getInstance().getClients())
         {
-            pool.execute(new ClientSender(message, fromClient, toClient, requiredFeatures, excludedFeatures));
-        }
-    }
-
-
-    private class ClientSender implements Runnable
-    {
-        private String            message = "";
-        private AbstractClient    fromClient = null;
-        private AbstractClient    toClient = null;
-        private boolean           featured = false;
-        private List<String>      requiredFeatures = null;
-        private List<String>      excludedFeatures = null;
-
-
-        public ClientSender(String message, AbstractClient fromClient, AbstractClient toClient,
-                            List<String> requiredFeatures, List<String> excludedFeatures)
-        {
-            this.message = message;
-            this.fromClient = fromClient;
-            this.toClient = toClient;
-
-            this.featured = true;
-            this.requiredFeatures = requiredFeatures;
-            this.excludedFeatures = excludedFeatures;
-        }
-
-
-        public ClientSender(String message, AbstractClient fromClient, AbstractClient toClient)
-        {
-            this(message, fromClient, toClient, null, null);
-            this.featured = false;
-        }
-
-
-        public void run()
-        {
-            boolean doSend = true;
-
-            if (featured)
-            {
-                if (requiredFeatures != null)
-                {
-                    for (String feature : requiredFeatures)
-                    {
-                        if (!toClient.isFeature(feature))
-                        {
-                            doSend = false;
-                            break;
-                        }
-                    }
-                }
-
-                if (excludedFeatures != null)
-                {
-                    for (String feature : excludedFeatures)
-                    {
-                        if (toClient.isFeature(feature))
-                        {
-                            doSend = false;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            if (toClient.isActive() && doSend)
-            {
-                if (fromClient != null)
-                {
-                    if ((!message.startsWith("E") && !message.startsWith("B")) &&
-                        toClient.equals(fromClient))
-                    {
-                        return;
-                    }
-                }
-
-                toClient.sendRawCommand(message);
-            }
+            pool.submit(new MessageSender(message,
+                                          fromClient,
+                                          toClient,
+                                          requiredFeatures,
+                                          excludedFeatures));
         }
     }
 }
