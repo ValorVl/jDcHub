@@ -23,7 +23,6 @@
 package ru.sincore.client;
 
 import com.adamtaft.eb.EventBusService;
-import lombok.Getter;
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.compression.CompressionFilter;
 import org.slf4j.Logger;
@@ -79,7 +78,7 @@ public class Client extends AbstractClient
                                                                               .getInt(ConfigurationManager.MESSAGE_BUFFER_SIZE));
 
     @Override
-    public void flushBuffer()
+    public synchronized void flushBuffer()
     {
         if (messageBuffer.length() != 0)
         {
@@ -92,9 +91,9 @@ public class Client extends AbstractClient
 
 
     @Override
-    public void sendRawCommand(String rawCommand)
+    public synchronized void sendRawCommand(String rawCommand)
     {
-        if (messageBuffer.length() + rawCommand.length() > messageBuffer.capacity())
+        if (messageBuffer.length() + rawCommand.length() + 1 >= messageBuffer.capacity())
         {
             flushBuffer();
         }
@@ -103,7 +102,7 @@ public class Client extends AbstractClient
 
 
     @Override
-    public void sendAdcAction(AbstractAction action)
+    public synchronized void sendAdcAction(AbstractAction action)
     {
         try
         {

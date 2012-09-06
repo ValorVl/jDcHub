@@ -88,12 +88,12 @@ public class INFHandler extends AbstractActionHandler<INF>
                          "] and IP [" +
                          client.getRealIP() +
                          "] CID: " + action.getCid());
-                if (client.getState() != State.IDENTIFY)
+
+                if (client.getState() == State.NORMAL)
                 {
-                    new STAError(client,
-                                 Constants.STA_SEVERITY_RECOVERABLE,
-                                 Messages.CANT_CHANGE_CID).send();
-                    return;
+                        new STAError(client,
+                                     Constants.STA_SEVERITY_RECOVERABLE,
+                                     Messages.CANT_CHANGE_CID).send();
                 }
 
                 //check for already connected clients with same CID
@@ -123,21 +123,20 @@ public class INFHandler extends AbstractActionHandler<INF>
                     }
 
                     new STAError(client,
-                                 Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_CID_TAKEN,
+                                 Constants.STA_SEVERITY_FATAL + Constants.STA_CID_TAKEN,
                                  Messages.CID_TAKEN).send();
-                    return;
                 }
 
                 client.setCid(action.getCid());
             }
-            else if (client.getState() != State.NORMAL)
+            else if (client.getState() == State.IDENTIFY)
             {
+                // Error, cause in IDENTIFY state CID field must be represented
                 log.info("CID does not set by client with SID [" +
-                        client.getSid() +
-                        "]");
+                         client.getSid() +
+                         "]");
                 new STAError(client, Constants.STA_SEVERITY_FATAL + Constants.STA_ACCESS_DENIED,
                              Messages.INVALID_CID).send();
-                return;
             }
 
 
@@ -150,8 +149,6 @@ public class INFHandler extends AbstractActionHandler<INF>
                              Messages.NICK_MISSING,
                              "FM",
                              "NI").send();
-
-                return;
             }
 
 
@@ -162,11 +159,8 @@ public class INFHandler extends AbstractActionHandler<INF>
                 if (ClientManager.getInstance().getClientByNick(action.getNick()) != null)
                 {
                     new STAError(client,
-                                 Constants.STA_SEVERITY_RECOVERABLE + Constants.STA_NICK_TAKEN,
+                                 Constants.STA_SEVERITY_FATAL + Constants.STA_NICK_TAKEN,
                                  Messages.NICK_TAKEN).send();
-
-                    client.disconnect();
-                    return;
                 }
 
                 client.setNick(action.getNick());
@@ -217,7 +211,6 @@ public class INFHandler extends AbstractActionHandler<INF>
                                  Messages.WRONG_IP_ADDRESS,
                                  "I4",
                                  client.getRealIP()).send();
-                    return;
                 }
             }
             else
@@ -238,7 +231,6 @@ public class INFHandler extends AbstractActionHandler<INF>
                                  Constants.STA_SEVERITY_FATAL +
                                  Constants.STA_GENERIC_LOGIN_ERROR,
                                  Messages.CT_FIELD_DISALLOWED).send();
-                    return;
                 }
             }
 
@@ -395,15 +387,7 @@ public class INFHandler extends AbstractActionHandler<INF>
 
 
             // Check for ban:
-            try
-            {
-                isBanned();
-            }
-            catch (STAException ex)
-            {
-                client.disconnect();
-                return;
-            }
+            isBanned();
 
             // now must check if hub is full...
             //otherwise is already connected, no point in checking this
@@ -442,8 +426,8 @@ public class INFHandler extends AbstractActionHandler<INF>
                 return;
             }
 
-
-            Broadcast.getInstance().broadcast(action.getRawCommand(), client);
+            // TODO [lh] check if this broadcast is needed
+            //Broadcast.getInstance().broadcast(action.getRawCommand(), client);
         }
         catch (NumberFormatException nfe)
         {
@@ -464,10 +448,7 @@ public class INFHandler extends AbstractActionHandler<INF>
         }
         catch (STAException e)
         {
-            if (client.getState() != State.NORMAL)
-            {
-                client.disconnect();
-            }
+            client.disconnect();
             log.error(e.toString());
         }
 

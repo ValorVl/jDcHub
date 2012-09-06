@@ -25,6 +25,7 @@
 
 package ru.sincore;
 
+import org.apache.mina.core.buffer.BufferDataException;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
@@ -82,27 +83,36 @@ public class SessionManager extends IoHandlerAdapter
                           client.getNick() +
                           ", " +
                           session.getRemoteAddress() +
-                          "] error : " +
-                          t.getMessage());
+                          "] IOException error : " +
+                          t.toString());
 
                 client.disconnect();
                 return;
             }
+
+            if (t instanceof BufferDataException)
+            {
+                log.error("[SESSION ERROR] client [" +
+                          client.getNick() +
+                          ", " +
+                          session.getRemoteAddress() +
+                          "] BufferDataException error : " +
+                          t.toString());
+
+                new STAError(client,
+                             Constants.STA_SEVERITY_RECOVERABLE,
+                             Messages.MESSAGE_TOO_LONG,
+                             t.toString());
+                return;
+            }
+
             String throwableMessage = t.getMessage();
             if (throwableMessage != null)
             {
-                if (throwableMessage.contains("java.nio.charset.MalformedInputException"))
+                if ((throwableMessage.contains("java.nio.charset.MalformedInputException")))
                 {
 //                ((ClientHandler) (session.getAttribute("client")))
 //                        .sendFromBot("Unicode Exception. Your client sent non-Unicode chars. Ignored.");
-                    return;
-                }
-                if ((throwableMessage.contains("BufferDataException: Line is too long")))
-                {
-                    new STAError(client,
-                                 Constants.STA_SEVERITY_RECOVERABLE,
-                                 Messages.MESSAGE_TOO_LONG,
-                                 throwableMessage);
                 }
                 else
                 {
@@ -111,7 +121,7 @@ public class SessionManager extends IoHandlerAdapter
                               ", " +
                               session.getRemoteAddress() +
                               "] error : " +
-                              throwableMessage);
+                              t.toString());
 
                     client.disconnect();
                 }
