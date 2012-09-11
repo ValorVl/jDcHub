@@ -53,28 +53,31 @@ class MessageSender implements Runnable
     {
         boolean doSend = true;
 
-        if (featured)
+        if (ConfigurationManager.getInstance().getBoolean(ConfigurationManager.FEATURED_BROADCAST))
         {
-            if (requiredFeatures != null)
+            if (featured)
             {
-                for (String feature : requiredFeatures)
+                if (requiredFeatures != null)
                 {
-                    if (!toClient.isFeature(feature))
+                    for (String feature : requiredFeatures)
                     {
-                        doSend = false;
-                        break;
+                        if (!toClient.isFeature(feature))
+                        {
+                            doSend = false;
+                            break;
+                        }
                     }
                 }
-            }
 
-            if (excludedFeatures != null)
-            {
-                for (String feature : excludedFeatures)
+                if (excludedFeatures != null)
                 {
-                    if (toClient.isFeature(feature))
+                    for (String feature : excludedFeatures)
                     {
-                        doSend = false;
-                        break;
+                        if (toClient.isFeature(feature))
+                        {
+                            doSend = false;
+                            break;
+                        }
                     }
                 }
             }

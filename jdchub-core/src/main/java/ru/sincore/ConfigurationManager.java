@@ -114,6 +114,8 @@ public class ConfigurationManager extends PropertiesConfiguration
     //Interval until search_steps is being reset, seconds		  (?)
     public static final String SEARCH_SPAM_RESET         = "core.hub.search_spam_reset";
 
+    public static final String FEATURED_BROADCAST        = "core.hub.broadcast.featured";
+
     // Timeouts
     public static final String HUB_LOGIN_TIMEOUT      = "core.hub.login.timeout";
     // Time in millisecond to kick duration
