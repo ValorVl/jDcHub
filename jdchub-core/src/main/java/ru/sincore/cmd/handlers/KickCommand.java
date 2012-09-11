@@ -137,6 +137,6 @@ public class KickCommand extends AbstractCommand
         result.append("\t\t<nick> - user nick\n");
         result.append("\t\t<reason> - kick reason\n");
 
-        client.sendPrivateMessageFromHub(AdcUtils.toAdcString(result.toString()));
+        client.sendPrivateMessageFromHub(result.toString());
 	}
 }
