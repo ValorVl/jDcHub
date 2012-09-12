@@ -37,8 +37,9 @@ public class SCHHandler extends AbstractActionHandler<SCH>
         if (this.getMessageRecieveTime() - client.getLastSearch() <
             ConfigurationManager.getInstance().getLong(ConfigurationManager.SEARCH_BASE_INTERVAL))
         {
-            client.sendPrivateMessageFromHub(Messages.get(Messages.TOO_FAST_SEARCHING,
-                                                          client.getExtendedField("LC")));
+            // Error send disabled. Let's clients be quiete =)
+//            client.sendPrivateMessageFromHub(Messages.get(Messages.TOO_FAST_SEARCHING,
+//                                                          client.getExtendedField("LC")));
             return true;
         }
 
