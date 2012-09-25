@@ -40,7 +40,7 @@ public class SCH extends AbstractAction
             throws CommandException
     {
         // Small optimisation: check parsing state before do any action
-        if (isParsed == false)
+        if (!isParsed)
         {
             return super.getRawCommand();
         }

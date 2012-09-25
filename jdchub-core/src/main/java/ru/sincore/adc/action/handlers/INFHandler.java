@@ -163,6 +163,15 @@ public class INFHandler extends AbstractActionHandler<INF>
                                  Messages.NICK_TAKEN).send();
                 }
 
+                if (action.getNick().startsWith("+") ||
+                    action.getNick().startsWith("!") ||
+                        action.getNick().startsWith("/"))
+                {
+                    new STAError(client,
+                                 Constants.STA_SEVERITY_FATAL + Constants.STA_NICK_INVALID,
+                                 Messages.NICK_CONTAINS_INVALID_SYMBOLS).send();
+                }
+
                 client.setNick(action.getNick());
                 log.info("Client with SID " +
                         "[" +
