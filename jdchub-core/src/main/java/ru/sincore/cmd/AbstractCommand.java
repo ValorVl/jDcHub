@@ -2,6 +2,7 @@ package ru.sincore.cmd;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.sincore.Exceptions.STAException;
 import ru.sincore.client.AbstractClient;
 
 public abstract class AbstractCommand
@@ -17,7 +18,8 @@ public abstract class AbstractCommand
 	private Boolean logs;
 
 
-	public abstract String execute(String cmd,String args, AbstractClient client);
+	public abstract String execute(String cmd,String args, AbstractClient client)
+            throws STAException;
 
 	Boolean validateRights(Integer clientRightWeight)
 	{

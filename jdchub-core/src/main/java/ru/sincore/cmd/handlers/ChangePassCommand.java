@@ -25,7 +25,10 @@ package ru.sincore.cmd.handlers;
 import gnu.getopt.Getopt;
 import gnu.getopt.LongOpt;
 import ru.sincore.ClientManager;
+import ru.sincore.Exceptions.STAException;
+import ru.sincore.adc.State;
 import ru.sincore.client.AbstractClient;
+import ru.sincore.client.Client;
 import ru.sincore.cmd.AbstractCommand;
 import ru.sincore.cmd.CommandUtils;
 import ru.sincore.i18n.Messages;
@@ -48,6 +51,7 @@ public class ChangePassCommand extends AbstractCommand
 
     @Override
     public String execute(String cmd, String args, AbstractClient client)
+            throws STAException
     {
         this.client = client;
         this.cmd	= cmd;
@@ -110,15 +114,28 @@ public class ChangePassCommand extends AbstractCommand
 
 
     private String changePassword()
+            throws STAException
     {
         String result = null;
         AbstractClient clientToChangePassword = null;
+        boolean isClientOffline = false;
 
         // if nick is not null and client is op
         // get client password change for
         if (nick != null && client.isOp())
         {
             clientToChangePassword = ClientManager.getInstance().getClientByNick(nick);
+            if (clientToChangePassword == null)
+            {
+                clientToChangePassword = new Client();
+                clientToChangePassword.setNick(nick);
+                clientToChangePassword.setState(State.NORMAL);
+                clientToChangePassword.loadInfo();
+                clientToChangePassword.setLoggedIn(clientToChangePassword.getLastLogin());
+                clientToChangePassword.setShareSize(0L);
+                clientToChangePassword.setSharedFiles(0L);
+                isClientOffline = true;
+            }
         }
         else
         {
@@ -152,11 +169,19 @@ public class ChangePassCommand extends AbstractCommand
         }
 
         clientToChangePassword.setPassword(newPassword);
-        clientToChangePassword.sendPrivateMessageFromHub(Messages.get(Messages.PASSWORD_CHANGED,
-                                                                      newPassword,
-                                                                      (String)clientToChangePassword
-                                                                              .getExtendedField("LC")));
-        clientToChangePassword.disconnect();
+
+        if (!isClientOffline)
+        {
+            clientToChangePassword.sendPrivateMessageFromHub(Messages.get(Messages.PASSWORD_CHANGED,
+                                                                          newPassword,
+                                                                          (String)clientToChangePassword
+                                                                                  .getExtendedField("LC")));
+            clientToChangePassword.disconnect();
+        }
+        else
+        {
+            clientToChangePassword.storeInfo();
+        }
 
         ClientUtils.sendMessageToOpChat(Messages.get("core.opchat.client_changed_password",
                                                      new Object[]

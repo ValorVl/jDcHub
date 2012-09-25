@@ -83,6 +83,7 @@ public class CommandEngine
             catch (Exception e)
             {
                 CommandLogger.log(cmdExecutor, args, client, e.toString());
+                client.sendPrivateMessageFromHub("Exception caught:" + e.toString());
                 return;
             }
         }
