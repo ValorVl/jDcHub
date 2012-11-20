@@ -11,7 +11,7 @@
     </parent>
 
     <groupId>ru.sincore.jdchub.modules.one-jar</groupId>
-    <artifactId>ChatBot</artifactId>
+    <artifactId>Commands</artifactId>
 
     <build>
         <plugins>

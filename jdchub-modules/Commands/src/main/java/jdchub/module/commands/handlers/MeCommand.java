@@ -1,7 +1,7 @@
 /*
-* FAQCommand.java
+* MeCommand.java
 *
-* Created on 14 06 2012, 11:57
+* Created on 27 02 2012, 15:48
 *
 * Copyright (C) 2012 Alexey 'lh' Antonov
 *
@@ -20,24 +20,38 @@
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-package ru.sincore.cmd.handlers;
+package jdchub.module.commands.handlers;
 
-import ru.sincore.BigTextManager;
+import ru.sincore.Command;
+import ru.sincore.adc.MessageType;
+import ru.sincore.adc.action.actions.MSG;
 import ru.sincore.client.AbstractClient;
 import ru.sincore.cmd.AbstractCommand;
-import ru.sincore.util.AdcUtils;
 
 /**
  * @author Alexey 'lh' Antonov
- * @since 2012-06-14
+ * @since 2012-02-27
  */
-public class FAQCommand extends AbstractCommand
+public class MeCommand extends AbstractCommand
 {
     @Override
     public String execute(String cmd, String args, AbstractClient client)
     {
-        BigTextManager bigTextManager = new BigTextManager();
-        client.sendMessageFromHub(AdcUtils.fromAdcString(bigTextManager.getText(BigTextManager.FAQ)));
-        return "FAQ shown.";
+        try
+        {
+            MSG bmsg = new MSG();
+            bmsg.setMessageType(MessageType.B);
+            bmsg.setSourceSID(client.getSid());
+            bmsg.setMessage(args);
+            bmsg.setToMe(true);
+
+            Command.handle(client, bmsg.getRawCommand());
+        }
+        catch (Exception e)
+        {
+            return e.toString();
+        }
+
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

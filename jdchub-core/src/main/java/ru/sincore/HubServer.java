@@ -187,7 +187,7 @@ public class HubServer
 
     private void initScriptEngine()
     {
-        log.info("Initializing CommandEngine...");
+        log.info("Initializing ScriptEngine...");
 
         if (scriptEngine != null)
         {
@@ -214,27 +214,12 @@ public class HubServer
 
         commandEngine = new CommandEngine();
 
-        // register default handlers
         commandEngine.registerCommand("about",      new AboutCommand());
         commandEngine.registerCommand("help",       new HelpCommand());
-        commandEngine.registerCommand("regme",      new RegmeCommand());
-        commandEngine.registerCommand("info",       new InfoCommand());
-        commandEngine.registerCommand("kick",       new KickCommand());
-        commandEngine.registerCommand("grant",      new GrantCommand());
+        commandEngine.registerCommand("module",     new ModuleCommand());
         commandEngine.registerCommand("reload",     new ReloadCommand());
         commandEngine.registerCommand("restart",    new RestartCommand());
         commandEngine.registerCommand("shutdown",   new ShutdownCommand());
-        commandEngine.registerCommand("broadcast",  new BroadcastCommand());
-        commandEngine.registerCommand("changepass", new ChangePassCommand());
-        commandEngine.registerCommand("topic",      new TopicCommand());
-        commandEngine.registerCommand("ban",        new BanCommand());
-        commandEngine.registerCommand("gag",        new GagCommand());
-        commandEngine.registerCommand("nosearch",   new NoSearchCommand());
-        commandEngine.registerCommand("noctm",      new NoCtmCommand());
-        commandEngine.registerCommand("me",         new MeCommand());
-        commandEngine.registerCommand("module",     new ModuleCommand());
-        commandEngine.registerCommand("rules",      new RulesCommand());
-        commandEngine.registerCommand("faq",        new FAQCommand());
     }
 
 

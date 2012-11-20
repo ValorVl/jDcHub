@@ -1,5 +1,7 @@
 package ru.sincore.modules;
 
+import ru.sincore.Main;
+
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -85,7 +87,6 @@ public abstract class Module implements Runnable
     }
 
 
-
     public void run()
     {
         if (moduleClassLoader != null)
@@ -105,5 +106,26 @@ public abstract class Module implements Runnable
 
             try { Thread.sleep(1000); } catch (InterruptedException e) {}
         }
+    }
+
+
+    protected boolean waitServerInitialization(long timeout)
+    {
+        int retries = 5;
+        long miniTimeouts = timeout / retries;
+        int startsCount = 0;
+        while (Main.getServer() == null)
+        {
+            if (startsCount > retries)
+            {
+                return false;
+            }
+
+            try { Thread.sleep(miniTimeouts); } catch (InterruptedException e) {}
+
+            startsCount++;
+        }
+
+        return true;
     }
 }

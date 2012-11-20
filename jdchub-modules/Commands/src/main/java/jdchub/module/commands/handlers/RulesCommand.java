@@ -1,9 +1,9 @@
 /*
-* BroadcastCommand.java
+* RulesCommand.java
 *
-* Created on 25 11 2011, 16:48
+* Created on 13 06 2012, 16:40
 *
-* Copyright (C) 2011 Alexey 'lh' Antonov
+* Copyright (C) 2012 Alexey 'lh' Antonov
 *
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
@@ -20,46 +20,24 @@
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-package ru.sincore.cmd.handlers;
+package jdchub.module.commands.handlers;
 
+import ru.sincore.BigTextManager;
 import ru.sincore.client.AbstractClient;
 import ru.sincore.cmd.AbstractCommand;
-import ru.sincore.util.ClientUtils;
+import ru.sincore.util.AdcUtils;
 
 /**
  * @author Alexey 'lh' Antonov
- * @since 2011-11-25
+ * @since 2012-06-13
  */
-public class BroadcastCommand extends AbstractCommand
+public class RulesCommand extends AbstractCommand
 {
-    private AbstractClient client;
-
     @Override
     public String execute(String cmd, String args, AbstractClient client)
     {
-        this.client = client;
-
-        if (args.equals("") || args.isEmpty())
-        {
-            showHelp();
-            return null;
-        }
-
-        ClientUtils.broadcastTextMessageFromHub(args);
-
-        return null;
-    }
-
-
-    private void showHelp()
-    {
-        StringBuilder result = new StringBuilder();
-
-        result.append("\nBroadcast message as PM from hub.\n");
-        result.append("Usage: !broadcast <message>\n");
-        result.append("\tWhere\n");
-        result.append("\t\t<message> - text message\n");
-
-        client.sendPrivateMessageFromHub(result.toString());
+        BigTextManager bigTextManager = new BigTextManager();
+        client.sendMessageFromHub(AdcUtils.fromAdcString(bigTextManager.getText(BigTextManager.RULES)));
+        return "Rules shown.";
     }
 }

@@ -1,7 +1,7 @@
 /*
-* NoCtmCommand.java
+* GagCommand.java
 *
-* Created on 13 02 2012, 16:13
+* Created on 13 02 2012, 16:11
 *
 * Copyright (C) 2012 Alexey 'lh' Antonov
 *
@@ -20,18 +20,19 @@
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-package ru.sincore.cmd.handlers;
+package jdchub.module.commands.handlers;
 
 import ru.sincore.ClientManager;
 import ru.sincore.client.AbstractClient;
 import ru.sincore.cmd.AbstractCommand;
+import ru.sincore.util.ClientUtils;
 import ru.sincore.util.ClientUtils;
 
 /**
  * @author Alexey 'lh' Antonov
  * @since 2012-02-13
  */
-public class NoCtmCommand extends AbstractCommand
+public class GagCommand extends AbstractCommand
 {
     private AbstractClient  client;
     private String          cmd;
@@ -66,19 +67,19 @@ public class NoCtmCommand extends AbstractCommand
                 return result;
             }
 
-            if (clientAbout.isNoTransfer())
+            if (clientAbout.isMute())
             {
-                clientAbout.setNoTransfer(false);
+                clientAbout.setMute(false);
                 ClientUtils.sendMessageToOpChat("Client with nick \'" +
-                                                 client.getNick() +
-                                                 "\' now can connect to other users.");
+                                                clientAbout.getNick() +
+                                                 "\' have been ungaged! (Now can use CHAT functions)");
             }
             else
             {
-                clientAbout.setNoTransfer(true);
+                clientAbout.setMute(true);
                 ClientUtils.sendMessageToOpChat("Client with nick \'" +
-                                                 client.getNick() +
-                                                 "\' now can\'t connect to other users");
+                                                clientAbout.getNick() +
+                                                 "\' have been gaged! (Now can\'t use CHAT functions)");
             }
         }
 
@@ -90,8 +91,8 @@ public class NoCtmCommand extends AbstractCommand
     {
         StringBuilder message = new StringBuilder();
 
-        message.append("\nSwitch off/on (if function was switched off) connection functions for client\n");
-        message.append("Usage: !noctm <nick>\n");
+        message.append("\nSwitch off/on (if functions was offed) chat functions for client until he reconnects to hub.\n");
+        message.append("Usage: !gag <nick>\n");
         message.append("\tWhere <nick> - client nick\n");
 
         client.sendPrivateMessageFromHub(message.toString());

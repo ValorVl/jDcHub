@@ -1,4 +1,4 @@
-package ru.sincore.cmd.handlers;
+package jdchub.module.commands.handlers;
 
 /*
  * jDcHub ADC HubSoft

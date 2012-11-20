@@ -26,8 +26,9 @@ public class ModuleMain extends Module
     @Override
     public boolean init()
     {
-        log.info("Module " + moduleName + " inited");
+        log.info("[" + moduleName + " module]: start initialization...");
         handler = new LcExtensionHandler();
+        log.info("[" + moduleName + " module]: successfuly initialized.");
         return true;
     }
 

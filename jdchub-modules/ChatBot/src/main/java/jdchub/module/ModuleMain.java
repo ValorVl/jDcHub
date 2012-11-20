@@ -47,13 +47,14 @@ public class ModuleMain extends Module
     @Override
     public boolean init()
     {
+        log.info("[" + moduleName + " module]: start initialization...");
         bot = new ChatBot();
 
         ClientManager.getInstance().addClient(bot);
 
         bot.start();
 
-        log.info("Module " + moduleName + " inited");
+        log.info("[" + moduleName + " module]: successfuly initialized.");
         return true;
     }
 

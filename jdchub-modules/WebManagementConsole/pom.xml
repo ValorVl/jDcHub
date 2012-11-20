@@ -7,7 +7,7 @@
     <parent>
       <groupId>ru.sincore.jdchub.modules</groupId>
       <artifactId>jdchub-modules</artifactId>
-      <version>0.3.0-SNAPSHOT</version>
+      <version>0.9.0</version>
     </parent>
 
     <groupId>ru.sincore.jdchub.modules.directory-jar</groupId>
@@ -17,6 +17,8 @@
         <jetty-version>8.0.4.v20111024</jetty-version>
         <jetty-hightide-version>8.0.4.v20111024</jetty-hightide-version>
         <resteasy-version>2.3.1.GA</resteasy-version>
+        <maven.compiler.source>1.6</maven.compiler.source>
+        <maven.compiler.target>1.6</maven.compiler.target>
     </properties>
 
     <repositories>
@@ -75,29 +77,6 @@
                 </configuration>
             </plugin>
 
-            <!--
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.2</version>
-                <executions>
-                    <execution>
-                        <id>copy-dependencies</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
-                            <overWriteReleases>false</overWriteReleases>
-                            <overWriteSnapshots>false</overWriteSnapshots>
-                            <overWriteIfNewer>true</overWriteIfNewer>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            -->
-
             <plugin>
                 <artifactId>maven-surefire-report-plugin</artifactId>
                 <version>2.8</version>
@@ -142,7 +121,7 @@
         <dependency>
             <groupId>ru.sincore.jdchub</groupId>
             <artifactId>jdchub-core</artifactId>
-            <version>0.3.0-SNAPSHOT</version>
+            <version>0.9.0</version>
             <scope>provided</scope>
         </dependency>
 

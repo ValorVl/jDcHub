@@ -21,6 +21,8 @@
 
     <properties>
         <resteasy-version>2.3.1.GA</resteasy-version>
+        <maven.compiler.source>1.6</maven.compiler.source>
+        <maven.compiler.target>1.6</maven.compiler.target>
     </properties>
 
     <repositories>
@@ -151,14 +153,14 @@
         <dependency>
             <groupId>ru.sincore.jdchub</groupId>
             <artifactId>jdchub-core</artifactId>
-            <version>0.3.0-SNAPSHOT</version>
+            <version>0.9.0</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>ru.sincore.jdchub.modules.directory-jar</groupId>
             <artifactId>WebManagementConsole</artifactId>
-            <version>0.3.0-SNAPSHOT</version>
+            <version>0.9.0</version>
             <scope>provided</scope>
         </dependency>
 
@@ -175,4 +177,5 @@
         </dependency>
 
     </dependencies>
+
 </project>

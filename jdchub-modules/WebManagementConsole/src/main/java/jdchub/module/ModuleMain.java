@@ -44,6 +44,7 @@ public class ModuleMain extends Module
     @Override
     public boolean init()
     {
+        log.info("[" + moduleName + " module]: start initialization...");
         try
         {
             XmlConfiguration configuration = new XmlConfiguration(
@@ -61,7 +62,7 @@ public class ModuleMain extends Module
             return false;
         }
 
-        log.info("Module " + moduleName + " inited");
+        log.info("[" + moduleName + " module]: successfuly initialized.");
 
         return server.isRunning();
     }

@@ -1,4 +1,4 @@
-package ru.sincore.cmd.handlers;
+package jdchub.module.commands.handlers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -20,7 +20,7 @@
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-package ru.sincore.cmd.handlers;
+package jdchub.module.commands.handlers;
 
 import ru.sincore.ClientManager;
 import ru.sincore.client.AbstractClient;

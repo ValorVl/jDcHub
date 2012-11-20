@@ -181,11 +181,21 @@ public class CommandEngine
             return false;
         }
 
-        CmdListDAO cmdListDAO = new CmdListDAOImpl();
-
-        return cmdListDAO.delCommand(name);
+        return true;
     }
 
+
+    public boolean deleteCommand(String name)
+    {
+        if (unregisterCommand(name))
+        {
+            CmdListDAO cmdListDAO = new CmdListDAOImpl();
+
+            return cmdListDAO.delCommand(name);
+        }
+
+        return false;
+    }
 
     /**
      * Command will be still registred, but disabled

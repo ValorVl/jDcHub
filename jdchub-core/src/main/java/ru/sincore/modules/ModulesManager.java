@@ -255,7 +255,7 @@ public class ModulesManager
             ModuleInfo moduleInfo = new ModuleInfo(moduleInstance, isInited);
 
             modules.put(name, moduleInfo);
-
+            log.info("Module " + moduleInstance.getName() + " successfuly loaded.");
             return true;
         }
         catch (Throwable e)
@@ -293,20 +293,32 @@ public class ModulesManager
     
     public void loadModules()
     {
-        unloadModules();
+        log.info("Modules loading started.");
 
-        for (File moduleJar : findModules())
+        new Thread(new Runnable()
         {
-            try
+            @Override
+            public void run()
             {
-                Module moduleInstance = getModuleInstance(moduleJar);
-                loadModule(moduleInstance);
+                unloadModules();
+
+                for (File moduleJar : findModules())
+                {
+                    try
+                    {
+                        Module moduleInstance = getModuleInstance(moduleJar);
+                        loadModule(moduleInstance);
+                    }
+                    catch (Throwable e)
+                    {
+                        log.error("Error while module jar " +
+                                  moduleJar.getName() +
+                                  " loads: \n" +
+                                  e.getMessage());
+                    }
+                }
             }
-            catch (Throwable e)
-            {
-                log.error("Error while module jar " + moduleJar.getName() + " loads: \n" + e.getMessage());
-            }
-        }
+        }).start();
     }
 
 
