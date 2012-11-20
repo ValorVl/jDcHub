@@ -158,7 +158,7 @@ public class CommandEngine
 
         commandContainer.put(name, command);
 
-        log.debug("Command \'" + name + "\' was successfully registred.");
+        log.info("Command \'" + name + "\' was registred.");
     }
 
 
@@ -181,6 +181,7 @@ public class CommandEngine
             return false;
         }
 
+        log.info("Command \'" + name + "\' was unregistred.");
         return true;
     }
 
