@@ -18,6 +18,9 @@ package ru.sincore.db.pojo;
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 
 /**
@@ -28,123 +31,51 @@ import javax.persistence.*;
 public class ChatListPOJO
 {
 
-	@Id
+    @Getter
+    @Setter
+    @Id
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long 		id;
 
-	//Client (user) type, 1=bot,32=hub
+    @Getter
+    @Setter
+    //Client (user) type, 1=bot,32=hub
 	@Column(name = "type", length = 2, nullable = false)
 	private Integer		type = 1;
 
-	@Column(name = "chat_name", columnDefinition = "VARCHAR(100)", nullable = false)
+    @Getter
+    @Setter
+    @Column(name = "chat_name", columnDefinition = "VARCHAR(100)", nullable = false)
 	private String 		chatName;
 
-	@Column(name = "chat_description", columnDefinition = "TEXT", nullable = false)
+    @Getter
+    @Setter
+    @Column(name = "chat_description", columnDefinition = "TEXT", nullable = false)
 	private String 		chatDescription =" ";
 
-	@Column(name = "weight",length = 3,nullable = false)
+    @Getter
+    @Setter
+    @Column(name = "weight",length = 3,nullable = false)
 	private Integer 	rightWeight = 0;
 
-	@Column(name = "sid",columnDefinition = "VARCHAR(4)", nullable = false)
+    @Getter
+    @Setter
+    @Column(name = "sid",columnDefinition = "VARCHAR(4)", nullable = false)
 	private String		chatCid;
 
-	@Column(name = "enabled", columnDefinition = "TINYINT(1)", nullable = false)
+    @Getter
+    @Setter
+    @Column(name = "enabled", columnDefinition = "TINYINT(1)", nullable = false)
 	private Boolean		enabled = false;
 
-	@Column(name = "chat_owner", length = 255, nullable = true)
+    @Getter
+    @Setter
+    @Column(name = "chat_owner", length = 255, nullable = true)
 	private String		chatOwner =" ";
 
-	@Column(name = "chat_handler", columnDefinition = "VARCHAR(250)", nullable = true)
+    @Getter
+    @Setter
+    @Column(name = "chat_handler", columnDefinition = "VARCHAR(250)", nullable = true)
 	private String		chatHandler =" ";
-
-	public Long getId()
-	{
-		return id;
-	}
-
-	public void setId(Long id)
-	{
-		this.id = id;
-	}
-
-	public Integer getType()
-	{
-		return type;
-	}
-
-	public void setType(Integer type)
-	{
-		this.type = type;
-	}
-
-	public String getChatName()
-	{
-		return chatName;
-	}
-
-	public void setChatName(String chatName)
-	{
-		this.chatName = chatName;
-	}
-
-	public String getChatDescription()
-	{
-		return chatDescription;
-	}
-
-	public void setChatDescription(String chatDescription)
-	{
-		this.chatDescription = chatDescription;
-	}
-
-	public Integer getRightWeight()
-	{
-		return rightWeight;
-	}
-
-	public void setRightWeight(Integer rightWeight)
-	{
-		this.rightWeight = rightWeight;
-	}
-
-	public String getChatCid()
-	{
-		return chatCid;
-	}
-
-	public void setChatCid(String chatCid)
-	{
-		this.chatCid = chatCid;
-	}
-
-	public Boolean getEnabled()
-	{
-		return enabled;
-	}
-
-	public void setEnabled(Boolean enabled)
-	{
-		this.enabled = enabled;
-	}
-
-	public String getChatOwner()
-	{
-		return chatOwner;
-	}
-
-	public void setChatOwner(String chatOwner)
-	{
-		this.chatOwner = chatOwner;
-	}
-
-	public String getChatHandler()
-	{
-		return chatHandler;
-	}
-
-	public void setChatHandler(String chatHandler)
-	{
-		this.chatHandler = chatHandler;
-	}
 }

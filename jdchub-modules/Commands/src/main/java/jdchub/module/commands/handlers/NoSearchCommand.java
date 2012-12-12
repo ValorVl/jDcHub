@@ -39,9 +39,9 @@ public class NoSearchCommand extends AbstractCommand
 
 
     @Override
-    public String execute(String cmd, String args, AbstractClient client)
+    public String execute(String cmd, String args, AbstractClient commandOwner)
     {
-        this.client = client;
+        this.client = commandOwner;
         this.cmd	= cmd;
         this.args	= args;
 
@@ -62,7 +62,7 @@ public class NoSearchCommand extends AbstractCommand
             if (clientAbout == null)
             {
                 String result = "Client with nick \'" + args + "\' not found!";
-                client.sendPrivateMessageFromHub(result);
+                commandOwner.sendPrivateMessageFromHub(result);
                 return result;
             }
 
@@ -70,14 +70,14 @@ public class NoSearchCommand extends AbstractCommand
             {
                 clientAbout.setNoSearch(false);
                 ClientUtils.sendMessageToOpChat("Client with nick \'" +
-                                                 client.getNick() +
+                                                 commandOwner.getNick() +
                                                  "\' now can use SEARCH functions");
             }
             else
             {
                 clientAbout.setNoSearch(true);
                 ClientUtils.sendMessageToOpChat("Client with nick \'" +
-                                                 client.getNick() +
+                                                 commandOwner.getNick() +
                                                  "\' now can\'t use SEARCH functions");
             }
         }

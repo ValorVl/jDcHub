@@ -250,7 +250,7 @@ public class SessionManager extends IoHandlerAdapter
         /**
          * Client will be moved from uninitialized to regular map after
          * handshacke will be done.
-         * See {@link ru.sincore.adc.action_obsolete.INF#parseIncoming()}
+         * See {@link ru.sincore.adc.action.handlers.INFHandler#handle()}
          */
         ClientManager.getInstance().addNewClient(newClient);
     }

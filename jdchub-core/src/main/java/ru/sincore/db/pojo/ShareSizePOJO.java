@@ -22,6 +22,9 @@
 
 package ru.sincore.db.pojo;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -36,50 +39,20 @@ import java.util.Date;
 @Table(name = "share_size")
 public class ShareSizePOJO implements Serializable
 {
+    @Getter
+    @Setter
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
 
+    @Getter
+    @Setter
     @Column(name = "timestamp", columnDefinition = "DATETIME", nullable = false)
     private Date timestamp = new Date();
 
+    @Getter
+    @Setter
     @Column(name = "share_size",columnDefinition = "BIGINT DEFAULT 0")
     private Long shareSize = 0L;
-
-
-    public Long getId()
-    {
-        return id;
-    }
-
-
-    public void setId(Long id)
-    {
-        this.id = id;
-    }
-
-
-    public Date getTimestamp()
-    {
-        return timestamp;
-    }
-
-
-    public void setTimestamp(Date timestamp)
-    {
-        this.timestamp = timestamp;
-    }
-
-
-    public Long getShareSize()
-    {
-        return shareSize;
-    }
-
-
-    public void setShareSize(Long shareSize)
-    {
-        this.shareSize = shareSize;
-    }
 }

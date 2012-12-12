@@ -443,7 +443,7 @@ public class ModulesManager
 
         if (module != null)
         {
-            return module.isEnabled();
+            return module.getEnabled();
         }
 
         module = new ModuleListPOJO();

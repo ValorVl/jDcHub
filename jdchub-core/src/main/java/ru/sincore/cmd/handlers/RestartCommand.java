@@ -52,11 +52,11 @@ public class RestartCommand extends AbstractCommand
 
 
     @Override
-    public String execute(String cmd, String args, AbstractClient client)
+    public String execute(String cmd, String args, AbstractClient commandOwner)
     {
         this.cmd = cmd;
         this.args = args;
-        this.client = client;
+        this.client = commandOwner;
 
         this.message = null;
 
@@ -89,7 +89,7 @@ public class RestartCommand extends AbstractCommand
             }
         }
 
-        ClientUtils.sendMessageToOpChat(client.getNick() + " called !restart command.");
+        ClientUtils.sendMessageToOpChat(commandOwner.getNick() + " called !restart command.");
 
         restartHub();
 

@@ -28,8 +28,11 @@ import org.slf4j.LoggerFactory;
 import ru.sincore.adc.ClientType;
 import ru.sincore.adc.State;
 import ru.sincore.client.*;
+import ru.sincore.util.SubnetUtils;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -231,6 +234,13 @@ public final class ClientManager
     }
 
 
+    /**
+     * Return client with {@link AbstractClient#cid} equals to sid
+     *
+     * @param cid Client CID {@link AbstractClient#cid}
+     *
+     * @return {@link AbstractClient}
+     */
     public AbstractClient getClientByCID(String cid)
     {
         String sid = sidByCID.get(cid);
@@ -244,11 +254,10 @@ public final class ClientManager
 
 
     /**
-     * Return client with {@link Client#nick} equals to nick
+     * Return client with {@link AbstractClient#nick} equals to nick
      *
      * @param nick Client nick (NI)
-     *
-     * @return Client
+     * @return {@link AbstractClient}
      */
     public AbstractClient getClientByNick(String nick)
     {
@@ -263,15 +272,52 @@ public final class ClientManager
 
 
     /**
-     * Return client with {@link Client#sid} equals to sid
+     * Return client with {@link AbstractClient#sid} equals to sid
      *
-     * @param sid Client SID {@link ru.sincore.client.Client#sid}
-     *
-     * @return Client
+     * @param sid Client SID {@link AbstractClient#sid}
+     * @return {@link AbstractClient}
      */
     public AbstractClient getClientBySID(String sid)
     {
         return clientsBySID.get(sid);
+    }
+
+
+    /**
+     * Return client with {@link AbstractClient#ipAddressV4} equals to ip
+     *
+     * @param ip Client ip (v4)
+     * @return {@link AbstractClient}
+     */
+    public AbstractClient getClientByIPv4(String ip)
+    {
+        for (AbstractClient client : clientsBySID.values())
+        {
+            if (client.getIpAddressV4().equals(ip))
+                return client;
+        }
+
+        return null;
+    }
+
+
+    /**
+     * Return all clients which ips is in ip range described by subnetUtils
+     *
+     * @param subnetUtils describes ip range by address and mask
+     * @return {@link AbstractClient}
+     */
+    public List<AbstractClient> getClientsByNetwork(SubnetUtils subnetUtils)
+    {
+        List<AbstractClient> clients =  new ArrayList<AbstractClient>();
+
+        for (AbstractClient client : clientsBySID.values())
+        {
+            if (subnetUtils.getInfo().isInRange(client.getRealIP()))
+                clients.add(client);
+        }
+
+        return clients;
     }
 
 

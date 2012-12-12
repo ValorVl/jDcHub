@@ -18,6 +18,9 @@ package ru.sincore.db.pojo;
  * ****************************************************************************
  */
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -26,57 +29,25 @@ import java.util.Date;
 @Table(name = "chat_log")
 public class ChatLogPOJO implements Serializable
 {
-	@Id
+    @Getter
+    @Setter
+    @Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id",columnDefinition = "INTEGER")
 	private Long id;
 
-	@Column(name = "nickname")
+    @Getter
+    @Setter
+    @Column(name = "nickname")
 	private String nickName;
 
-	@Column(name = "send_date")
+    @Getter
+    @Setter
+    @Column(name = "send_date")
 	private Date sendDate;
 
-	@Column(name = "message",columnDefinition = "TEXT")
+    @Getter
+    @Setter
+    @Column(name = "message",columnDefinition = "TEXT")
 	private String message;
-
-	public Long getId()
-	{
-		return id;
-	}
-
-	public void setId(Long id)
-	{
-		this.id = id;
-	}
-
-	public Date getSendDate()
-	{
-		return sendDate;
-	}
-
-	public void setSendDate(Date sendDate)
-	{
-		this.sendDate = sendDate;
-	}
-
-	public String getNickName()
-	{
-		return nickName;
-	}
-
-	public void setNickName(String nickName)
-	{
-		this.nickName = nickName;
-	}
-
-	public String getMessage()
-	{
-		return message;
-	}
-
-	public void setMessage(String message)
-	{
-		this.message = message;
-	}
 }

@@ -49,6 +49,8 @@ public class ModuleMain extends Module
         commandEngine.registerCommand("changepass", new ChangePassCommand());
         commandEngine.registerCommand("topic",      new TopicCommand());
         commandEngine.registerCommand("ban",        new BanCommand());
+        commandEngine.registerCommand("banlist",    new BanlistCommand());
+        commandEngine.registerCommand("unban",      new UnbanCommand());
         commandEngine.registerCommand("gag",        new GagCommand());
         commandEngine.registerCommand("nosearch",   new NoSearchCommand());
         commandEngine.registerCommand("noctm",      new NoCtmCommand());
@@ -76,6 +78,8 @@ public class ModuleMain extends Module
         commandEngine.unregisterCommand("changepass");
         commandEngine.unregisterCommand("topic");
         commandEngine.unregisterCommand("ban");
+        commandEngine.unregisterCommand("banlist");
+        commandEngine.unregisterCommand("unban");
         commandEngine.unregisterCommand("gag");
         commandEngine.unregisterCommand("nosearch");
         commandEngine.unregisterCommand("noctm");

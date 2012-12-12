@@ -43,9 +43,9 @@ public class HelpCommand extends AbstractCommand
 	}
 
 	@Override
-	public String execute(String cmd, String args, AbstractClient client)
+	public String execute(String cmd, String args, AbstractClient commandOwner)
 	{
-		this.client = client;
+		this.client = commandOwner;
 		this.args   = args;
 		this.cmd	= cmd;
 
@@ -65,7 +65,7 @@ public class HelpCommand extends AbstractCommand
 
 		for(CmdListPOJO entry : cmdList.getCommandList())
 		{
-            if (!entry.isEnabled() || (client.getWeight() < entry.getCommandWeight()))
+            if (!entry.getEnabled() || (client.getWeight() < entry.getCommandWeight()))
             {
                 continue;
             }

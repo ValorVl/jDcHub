@@ -35,17 +35,17 @@ import ru.sincore.cmd.AbstractCommand;
 public class MeCommand extends AbstractCommand
 {
     @Override
-    public String execute(String cmd, String args, AbstractClient client)
+    public String execute(String cmd, String args, AbstractClient commandOwner)
     {
         try
         {
             MSG bmsg = new MSG();
             bmsg.setMessageType(MessageType.B);
-            bmsg.setSourceSID(client.getSid());
+            bmsg.setSourceSID(commandOwner.getSid());
             bmsg.setMessage(args);
             bmsg.setToMe(true);
 
-            Command.handle(client, bmsg.getRawCommand());
+            Command.handle(commandOwner, bmsg.getRawCommand());
         }
         catch (Exception e)
         {

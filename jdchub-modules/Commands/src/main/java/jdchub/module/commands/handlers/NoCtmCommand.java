@@ -39,9 +39,9 @@ public class NoCtmCommand extends AbstractCommand
 
 
     @Override
-    public String execute(String cmd, String args, AbstractClient client)
+    public String execute(String cmd, String args, AbstractClient commandOwner)
     {
-        this.client = client;
+        this.client = commandOwner;
         this.cmd	= cmd;
         this.args	= args;
 
@@ -62,7 +62,7 @@ public class NoCtmCommand extends AbstractCommand
             if (clientAbout == null)
             {
                 String result = "Client with nick \'" + args + "\' not found!";
-                client.sendPrivateMessageFromHub(result);
+                commandOwner.sendPrivateMessageFromHub(result);
                 return result;
             }
 
@@ -70,14 +70,14 @@ public class NoCtmCommand extends AbstractCommand
             {
                 clientAbout.setNoTransfer(false);
                 ClientUtils.sendMessageToOpChat("Client with nick \'" +
-                                                 client.getNick() +
+                                                 commandOwner.getNick() +
                                                  "\' now can connect to other users.");
             }
             else
             {
                 clientAbout.setNoTransfer(true);
                 ClientUtils.sendMessageToOpChat("Client with nick \'" +
-                                                 client.getNick() +
+                                                 commandOwner.getNick() +
                                                  "\' now can\'t connect to other users");
             }
         }

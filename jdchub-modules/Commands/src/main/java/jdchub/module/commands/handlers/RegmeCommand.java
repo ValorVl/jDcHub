@@ -43,22 +43,22 @@ public class RegmeCommand extends AbstractCommand
 
 
 	@Override
-	public String execute(String cmd, String args, AbstractClient client)
+	public String execute(String cmd, String args, AbstractClient commandOwner)
 	{
 
-		this.client = client;
+		this.client = commandOwner;
 		this.cmd	= cmd;
 		this.args	= args;
 
         String result = null;
 
 		// Check client weight and flag "isReg", if weight > 0 and flag true, registration procedure not allowed.
-		if (client.isRegistred() && client.getWeight() > 0)
+		if (commandOwner.isRegistred() && commandOwner.getWeight() > 0)
 		{
             result = Messages.get(Messages.REG_FAIL_MESSAGE,
-                                                          client.getNick(),
-                                                          (String)client.getExtendedField("LC"));
-            client.sendPrivateMessageFromHub(result);
+                                                          commandOwner.getNick(),
+                                                          (String) commandOwner.getExtendedField("LC"));
+            commandOwner.sendPrivateMessageFromHub(result);
 		}
 		else
 		{

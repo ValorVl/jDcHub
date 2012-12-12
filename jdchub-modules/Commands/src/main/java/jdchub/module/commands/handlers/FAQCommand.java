@@ -34,10 +34,10 @@ import ru.sincore.util.AdcUtils;
 public class FAQCommand extends AbstractCommand
 {
     @Override
-    public String execute(String cmd, String args, AbstractClient client)
+    public String execute(String cmd, String args, AbstractClient commandOwner)
     {
         BigTextManager bigTextManager = new BigTextManager();
-        client.sendMessageFromHub(AdcUtils.fromAdcString(bigTextManager.getText(BigTextManager.FAQ)));
+        commandOwner.sendMessageFromHub(AdcUtils.fromAdcString(bigTextManager.getText(BigTextManager.FAQ)));
         return "FAQ shown.";
     }
 }

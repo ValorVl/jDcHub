@@ -34,10 +34,10 @@ import ru.sincore.util.AdcUtils;
 public class RulesCommand extends AbstractCommand
 {
     @Override
-    public String execute(String cmd, String args, AbstractClient client)
+    public String execute(String cmd, String args, AbstractClient commandOwner)
     {
         BigTextManager bigTextManager = new BigTextManager();
-        client.sendMessageFromHub(AdcUtils.fromAdcString(bigTextManager.getText(BigTextManager.RULES)));
+        commandOwner.sendMessageFromHub(AdcUtils.fromAdcString(bigTextManager.getText(BigTextManager.RULES)));
         return "Rules shown.";
     }
 }

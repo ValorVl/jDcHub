@@ -22,6 +22,9 @@
 
 package ru.sincore.db.pojo;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -36,50 +39,20 @@ import java.util.Date;
 @Table(name = "client_count")
 public class ClientCountPOJO implements Serializable
 {
+    @Getter
+    @Setter
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
 
+    @Getter
+    @Setter
     @Column(name = "timestamp", columnDefinition = "DATETIME", nullable = false)
     private Date timestamp = new Date();
 
+    @Getter
+    @Setter
     @Column(name = "count", columnDefinition = "INTEGER DEFAULT 0")
     private Long count = 0L;
-
-
-    public Long getId()
-    {
-        return id;
-    }
-
-
-    public void setId(Long id)
-    {
-        this.id = id;
-    }
-
-
-    public Date getTimestamp()
-    {
-        return timestamp;
-    }
-
-
-    public void setTimestamp(Date timestamp)
-    {
-        this.timestamp = timestamp;
-    }
-
-
-    public Long getCount()
-    {
-        return count;
-    }
-
-
-    public void setCount(Long count)
-    {
-        this.count = count;
-    }
 }

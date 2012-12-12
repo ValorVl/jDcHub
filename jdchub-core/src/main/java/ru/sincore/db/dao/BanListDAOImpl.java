@@ -93,7 +93,9 @@ public class BanListDAOImpl implements BanListDAO
         {
             tx.begin();
 
-            Query query = session.createQuery("from BanListPOJO where ip = :ip or nick = :nick order by dateStart desc");
+            Query query = session.createQuery(
+                    "from BanListPOJO where nick = :nick or inet_aton(:ip) between inet_aton_net(ip) and inet_aton_bc(ip) order by dateStop desc"
+                                             );
             query.setParameter("ip", ip).setParameter("nick", nick);
 
             List<BanListPOJO> result = (List<BanListPOJO>) query.setMaxResults(1).list();

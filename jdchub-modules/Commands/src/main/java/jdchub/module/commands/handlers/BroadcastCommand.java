@@ -35,9 +35,9 @@ public class BroadcastCommand extends AbstractCommand
     private AbstractClient client;
 
     @Override
-    public String execute(String cmd, String args, AbstractClient client)
+    public String execute(String cmd, String args, AbstractClient commandOwner)
     {
-        this.client = client;
+        this.client = commandOwner;
 
         if (args.equals("") || args.isEmpty())
         {

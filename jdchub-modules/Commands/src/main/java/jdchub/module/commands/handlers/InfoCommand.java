@@ -39,9 +39,9 @@ public class InfoCommand extends AbstractCommand
 
 
     @Override
-    public String execute(String cmd, String args, AbstractClient client)
+    public String execute(String cmd, String args, AbstractClient commandOwner)
     {
-        this.client = client;
+        this.client = commandOwner;
         this.cmd	= cmd;
         this.args	= args;
 
@@ -51,8 +51,8 @@ public class InfoCommand extends AbstractCommand
         if (args == null || args.isEmpty())
         {
             // send info client's stats
-            info.append(ClientUtils.getClientStats(client));
-            client.sendPrivateMessageFromHub(info.toString());
+            info.append(ClientUtils.getClientStats(commandOwner));
+            commandOwner.sendPrivateMessageFromHub(info.toString());
         }
         else if ((args.equals("?")))
         {
@@ -66,12 +66,12 @@ public class InfoCommand extends AbstractCommand
             if (clientAbout == null)
             {
                 String result = "Client with nick \'" + args + "\' not found!";
-                client.sendPrivateMessageFromHub(result);
+                commandOwner.sendPrivateMessageFromHub(result);
                 return result;
             }
 
             info.append(ClientUtils.getClientStats(clientAbout));
-            client.sendPrivateMessageFromHub(info.toString());
+            commandOwner.sendPrivateMessageFromHub(info.toString());
         }
 
         return info.toString();

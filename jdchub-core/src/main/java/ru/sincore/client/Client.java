@@ -168,7 +168,7 @@ public class Client extends AbstractClient
         // set password
         clientInfo.setPassword(this.getPassword());
 
-        if (!clientInfo.isRegistred())
+        if (!clientInfo.getRegistred())
         {
             clientInfo.setRegDate(this.getRegistrationDate());
             clientInfo.setRegOwner(this.getRegistratorNick());
@@ -183,7 +183,7 @@ public class Client extends AbstractClient
         clientInfo.setOverrideShare(this.isOverrideShare());
         clientInfo.setOverrideSpam(this.isOverrideSpam());
         clientInfo.setOverrideFull(this.isOverrideFull());
-        clientInfo.setKickable(this.isKickable());
+        clientInfo.setIsKickable(this.isKickable());
         clientInfo.setRenameable(this.isRenameable());
         clientInfo.setTxBytes(this.getTxBytes());
         clientInfo.setRxBytes(this.getRxBytes());
@@ -214,7 +214,7 @@ public class Client extends AbstractClient
 
         this.setWeight(clientInfo.getWeight());
         this.setPassword(clientInfo.getPassword());
-        this.setRegistred(clientInfo.isRegistred());
+        this.setRegistred(clientInfo.getRegistred());
         this.setClientTypeByWeight(clientInfo.getWeight());
         this.setLastNick(clientInfo.getLastNick());
         this.setLastLogin(clientInfo.getLastLogIn());
@@ -224,7 +224,7 @@ public class Client extends AbstractClient
         this.setOverrideShare(clientInfo.getOverrideShare());
         this.setOverrideSpam(clientInfo.getOverrideSpam());
         this.setOverrideFull(clientInfo.getOverrideFull());
-        this.setKickable(clientInfo.getKickable());
+        this.setKickable(clientInfo.getIsKickable());
         this.setRenameable(clientInfo.getRenameable());
         this.setTxBytes(clientInfo.getTxBytes());
         this.setRxBytes(clientInfo.getRxBytes());

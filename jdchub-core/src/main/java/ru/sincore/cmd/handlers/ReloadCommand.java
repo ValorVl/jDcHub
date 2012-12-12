@@ -37,9 +37,9 @@ public class ReloadCommand extends AbstractCommand
 
 
     @Override
-    public String execute(String cmd, String args, AbstractClient client)
+    public String execute(String cmd, String args, AbstractClient commandOwner)
     {
-        ClientUtils.sendMessageToOpChat(client.getNick() + " called !reload command.");
+        ClientUtils.sendMessageToOpChat(commandOwner.getNick() + " called !reload command.");
 
         ClientUtils.broadcastTextMessageFromHub("Hub will be freezed due to configs loading...");
 
@@ -56,12 +56,12 @@ public class ReloadCommand extends AbstractCommand
         if (ConfigurationManager.getInstance().loadConfigs())
         {
             result = "Configs reloaded.";
-            client.sendPrivateMessageFromHub(result);
+            commandOwner.sendPrivateMessageFromHub(result);
         }
         else
         {
             result = "Configs doesn\'t reloaded. See logs for more information.";
-            client.sendPrivateMessageFromHub(result);
+            commandOwner.sendPrivateMessageFromHub(result);
         }
 
         return result;

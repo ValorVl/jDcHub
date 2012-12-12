@@ -33,7 +33,7 @@ import ru.sincore.cmd.AbstractCommand;
 public class AboutCommand extends AbstractCommand
 {
     @Override
-    public String execute(String cmd, String args, AbstractClient client)
+    public String execute(String cmd, String args, AbstractClient commandOwner)
     {
         AbstractClient clientAbout = ClientManager.getInstance().getClientByNick(args);
 
@@ -72,7 +72,7 @@ public class AboutCommand extends AbstractCommand
         about.append("\tPietricica\n");
         about.append("\tMr. Pretorian\n");
 
-        client.sendMessageFromHub(about.toString());
+        commandOwner.sendMessageFromHub(about.toString());
 
         return null;
     }

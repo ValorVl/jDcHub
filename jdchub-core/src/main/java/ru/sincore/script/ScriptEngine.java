@@ -156,7 +156,7 @@ public class ScriptEngine extends Thread
                     scriptInfoDAO.addScriptInfo(scriptInfoPOJO);
                 }
 
-                if (scriptInfoPOJO.isEnabled())
+                if (scriptInfoPOJO.getEnabled())
                 {
                     ScriptTask task = new ScriptTask();
                     task.setEngineType(enginesDir.getName());

@@ -17,13 +17,13 @@ public class StubCommand extends AbstractCommand
 	}
 
 	@Override
-	public String execute(String cmd, String args, AbstractClient client)
+	public String execute(String cmd, String args, AbstractClient commandOwner)
 	{
 		log.info("Cmd : "+cmd+" args : "+args);
 
-        client.sendPrivateMessageFromHub("Debug : cmd" + cmd +
+        commandOwner.sendPrivateMessageFromHub("Debug : cmd" + cmd +
                                          " | args : " + args +
-                                         " | client : " + client.getNick());
+                                         " | client : " + commandOwner.getNick());
 
         return null;
     }

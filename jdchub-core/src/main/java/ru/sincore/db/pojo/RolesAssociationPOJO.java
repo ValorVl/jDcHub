@@ -18,6 +18,9 @@ package ru.sincore.db.pojo;
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -26,18 +29,8 @@ import javax.persistence.Table;
 @Table(name = "roles_association")
 public class RolesAssociationPOJO
 {
+    @Getter
+    @Setter
     @Id
     private Long id;
-
-
-    public Long getId()
-    {
-        return id;
-    }
-
-
-    public void setId(Long id)
-    {
-        this.id = id;
-    }
 }

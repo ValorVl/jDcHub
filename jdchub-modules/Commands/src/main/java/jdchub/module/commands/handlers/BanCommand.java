@@ -24,15 +24,15 @@ package jdchub.module.commands.handlers;
 
 import gnu.getopt.Getopt;
 import gnu.getopt.LongOpt;
+import org.apache.commons.lang.StringUtils;
 import ru.sincore.ClientManager;
-import ru.sincore.Exceptions.NotEnoughWeightException;
-import ru.sincore.Exceptions.UserNotFoundException;
 import ru.sincore.client.AbstractClient;
 import ru.sincore.cmd.AbstractCommand;
 import ru.sincore.cmd.CommandUtils;
 import ru.sincore.i18n.Messages;
 import ru.sincore.util.ClientUtils;
 import ru.sincore.util.Constants;
+import ru.sincore.util.SubnetUtils;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -44,38 +44,38 @@ import java.util.GregorianCalendar;
  */
 public class BanCommand extends AbstractCommand
 {
-    private String cmd;
-    private String args;
-    private AbstractClient client;
+    private AbstractClient commandOwner;
 
-    private String  nick;
-    private String  reason;
-    private int     banType = Constants.BAN_PERMANENT;
-    private Date    banExpiresDate;
+    private String nick;
+    private String reason;
+    private int banType = Constants.BAN_PERMANENT;
+    private Date   banExpiresDate;
+    private String ip;
+    private String mask;
 
 
     @Override
-    public String execute(String cmd, String args, AbstractClient client)
+    public String execute(String cmd, String args, AbstractClient commandOwner)
     {
         banExpiresDate = new Date();
 
-        this.client = client;
-        this.cmd	= cmd;
-        this.args	= args;
+        this.commandOwner = commandOwner;
 
-        this.nick	= null;
+        this.nick = null;
 
-        this.reason	= null;
+        this.reason = null;
 
         LongOpt[] longOpts = new LongOpt[3];
 
         longOpts[0] = new LongOpt("nick", LongOpt.REQUIRED_ARGUMENT, null, 'n');
         longOpts[1] = new LongOpt("reason", LongOpt.REQUIRED_ARGUMENT, null, 'r');
         longOpts[2] = new LongOpt("time", LongOpt.REQUIRED_ARGUMENT, null, 't');
+        longOpts[3] = new LongOpt("ip", LongOpt.REQUIRED_ARGUMENT, null, 'i');
+        longOpts[4] = new LongOpt("mask", LongOpt.REQUIRED_ARGUMENT, null, 'm');
 
         String[] argArray = CommandUtils.strArgToArray(args);
 
-        Getopt getopt = new Getopt(cmd, argArray, "n:r:", longOpts);
+        Getopt getopt = new Getopt(cmd, argArray, "n:r:t:i:m:", longOpts);
 
         if (argArray.length < 1)
         {
@@ -95,6 +95,14 @@ public class BanCommand extends AbstractCommand
 
                 case 'r':
                     this.reason = getopt.getOptarg();
+                    break;
+
+                case 'i':
+                    this.ip = getopt.getOptarg();
+                    break;
+
+                case 'm':
+                    this.mask = getopt.getOptarg();
                     break;
 
                 case 't':
@@ -175,59 +183,148 @@ public class BanCommand extends AbstractCommand
 
     private void showError(String message)
     {
-        client.sendPrivateMessageFromHub(message);
+        commandOwner.sendPrivateMessageFromHub(message);
     }
 
 
     private String ban()
     {
-        if (nick == null || nick.isEmpty() || nick.equals(""))
-        {
-            showError("--nick parameter is required!");
-            return "--nick parameter is required!";
-        }
+        SubnetUtils subnetUtils = null;
 
-        if (ClientManager.getInstance().getClientByNick(nick) == null)
+        if (!StringUtils.isEmpty(this.nick))
         {
-            showError("Client with nick \'" + nick + "\' not found.");
-            return "Client not found";
+            if (ClientManager.getInstance().getClientByNick(this.nick) == null)
+            {
+                showError("Client with nick \'" + this.nick + "\' not found.");
+                return "Client not found";
+            }
+        }
+        else if (!StringUtils.isEmpty(this.ip))
+        {
+            if (this.ip.contains("/"))
+            {
+                try
+                {
+                    subnetUtils = new SubnetUtils(this.ip);
+                }
+                catch (IllegalArgumentException e)
+                {
+                    showError("Invalid ip : " + e.toString());
+                    return "Invalid ip : " + e.toString();
+                }
+
+                this.ip = subnetUtils.getInfo().getAddress();
+                this.mask = subnetUtils.getInfo().getNetmask();
+            }
+            else
+            {
+                if (StringUtils.isEmpty(this.mask))
+                {
+                    this.mask = "255.255.255.255";
+                }
+
+                try
+                {
+                    subnetUtils = new SubnetUtils(this.ip, this.mask);
+                }
+                catch (IllegalArgumentException e)
+                {
+                    showError("Invalid ip or mask : " + e.toString());
+                    return "Invalid ip or mask : " + e.toString();
+                }
+            }
+
+            if (ClientManager.getInstance().getClientByIPv4(this.ip) == null)
+            {
+                showError("Client with ip \'" + this.ip + "\' not found.");
+                return "Client not found";
+            }
+
+        }
+        else
+        {
+            showError("--nick or --ip parameter is required!");
+            return "--nick or --ip parameter is required!";
         }
 
         try
         {
-            if (!ClientUtils.ban(client.getNick(), nick, true, banType, banExpiresDate, reason))
+            if (subnetUtils == null)
             {
-                return "Client was not banned.";
+                if (!ClientUtils.ban(commandOwner.getNick(), nick, banType, banExpiresDate, reason))
+                {
+                    return "Client was not banned.";
+                }
+            }
+            else
+            {
+                if (!ClientUtils.ban(commandOwner.getNick(),
+                                     subnetUtils,
+                                     banType,
+                                     banExpiresDate,
+                                     reason))
+                {
+                    return "IP was not banned.";
+                }
             }
         }
         catch (Exception e)
         {
-            client.sendPrivateMessageFromHub(e.toString());
+            commandOwner.sendPrivateMessageFromHub(e.toString());
             return "Client was not banned.";
         }
 
-        switch (banType)
+        if (subnetUtils == null)
         {
-            case Constants.BAN_TEMPORARY:
-                ClientUtils.sendMessageToOpChat(Messages.get("core.opchat.client_ban_temp",
-                                                             new Object[]
-                                                             {
-                                                                     nick,
-                                                                     client.getNick(),
-                                                                     reason,
-                                                                     banExpiresDate
-                                                             }));
-                break;
+            switch (banType)
+            {
+                case Constants.BAN_TEMPORARY:
+                    ClientUtils.sendMessageToOpChat(Messages.get("core.opchat.client_ban_temp",
+                                                                 new Object[]
+                                                                         {
+                                                                                 nick,
+                                                                                 commandOwner.getNick(),
+                                                                                 reason,
+                                                                                 banExpiresDate
+                                                                         }));
+                    break;
 
-            case Constants.BAN_PERMANENT:
-                ClientUtils.sendMessageToOpChat(Messages.get("core.opchat.client_ban_perm",
-                                                             new Object[]
-                                                             {
-                                                                     nick,
-                                                                     client.getNick(),
-                                                                     reason
-                                                             }));
-                break;
+                case Constants.BAN_PERMANENT:
+                    ClientUtils.sendMessageToOpChat(Messages.get("core.opchat.client_ban_perm",
+                                                                 new Object[]
+                                                                         {
+                                                                                 nick,
+                                                                                 commandOwner.getNick(),
+                                                                                 reason
+                                                                         }));
+                    break;
+            }
+        }
+        else
+        {
+            switch (banType)
+            {
+                case Constants.BAN_TEMPORARY:
+                    ClientUtils.sendMessageToOpChat(Messages.get("core.opchat.ip_ban_temp",
+                                                                 new Object[]
+                                                                         {
+                                                                                 subnetUtils.getInfo().getCidrSignature(),
+                                                                                 commandOwner.getNick(),
+                                                                                 reason,
+                                                                                 banExpiresDate
+                                                                         }));
+                    break;
+
+                case Constants.BAN_PERMANENT:
+                    ClientUtils.sendMessageToOpChat(Messages.get("core.opchat.ip_ban_perm",
+                                                                 new Object[]
+                                                                         {
+                                                                                 subnetUtils.getInfo().getCidrSignature(),
+                                                                                 commandOwner.getNick(),
+                                                                                 reason
+                                                                         }));
+                    break;
+            }
         }
 
         return "Successfully banned.";
@@ -236,6 +333,7 @@ public class BanCommand extends AbstractCommand
 
     private void showHelp()
     {
-        client.sendPrivateMessageFromHub(Messages.get("core.commands.ban.help_text", client.isFeature("LC")));
+        commandOwner.sendPrivateMessageFromHub(Messages.get("core.commands.ban.help_text",
+                                                      commandOwner.isFeature("LC")));
     }
 }

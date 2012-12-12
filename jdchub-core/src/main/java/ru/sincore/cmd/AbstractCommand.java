@@ -18,7 +18,7 @@ public abstract class AbstractCommand
 	private Boolean logs;
 
 
-	public abstract String execute(String cmd,String args, AbstractClient client)
+	public abstract String execute(String cmd,String args, AbstractClient commandOwner)
             throws STAException;
 
 	Boolean validateRights(Integer clientRightWeight)

@@ -51,9 +51,9 @@ public class GrantCommand extends AbstractCommand
 
 
 	@Override
-	public String execute(String cmd, String args, AbstractClient client)
+	public String execute(String cmd, String args, AbstractClient commandOwner)
 	{
-        this.client = client;
+        this.client = commandOwner;
         this.cmd	= cmd;
         this.args	= args;
 
@@ -89,7 +89,7 @@ public class GrantCommand extends AbstractCommand
                 case ':':
                     sendError(Messages.get(Messages.ARGUMENT_REQUIRED,
                                            (char)getopt.getOptopt(),
-                                           (String)client.getExtendedField("LC")));
+                                           (String) commandOwner.getExtendedField("LC")));
                     break;
 
                 case '?':
@@ -117,7 +117,7 @@ public class GrantCommand extends AbstractCommand
                     catch (NumberFormatException nfe)
                     {
                         sendError(Messages.get(Messages.INVALID_WEIGHT,
-                                                   (String)client.getExtendedField("LC")));
+                                                   (String) commandOwner.getExtendedField("LC")));
                     }
                     break;
 

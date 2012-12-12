@@ -21,12 +21,12 @@ import ru.sincore.cmd.AbstractCommand;
 public class StatsCommand extends AbstractCommand
 {
     @Override
-    public String execute(String cmd, String args, AbstractClient client)
+    public String execute(String cmd, String args, AbstractClient commandOwner)
     {
         StringBuilder info = new StringBuilder();
         info.append("\n Hub status:\n");
 
-        client.sendPrivateMessageFromHub(info.toString());
+        commandOwner.sendPrivateMessageFromHub(info.toString());
 
         return "Info shawn";
     }

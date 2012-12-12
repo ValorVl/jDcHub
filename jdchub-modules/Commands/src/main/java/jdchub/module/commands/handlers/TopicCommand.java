@@ -42,12 +42,12 @@ import ru.sincore.util.ClientUtils;
 public class TopicCommand extends AbstractCommand
 {
     @Override
-    public String execute(String cmd, String args, AbstractClient client)
+    public String execute(String cmd, String args, AbstractClient commandOwner)
     {
         if (args == null || args.isEmpty() || args.equals(""))
         {
-            client.sendPrivateMessageFromHub(Messages.get("core.commands.topic.help_text",
-                                                          (String) client.getExtendedField("LC")));
+            commandOwner.sendPrivateMessageFromHub(Messages.get("core.commands.topic.help_text",
+                                                          (String) commandOwner.getExtendedField("LC")));
             return "Help shown";
         }
 
@@ -57,7 +57,7 @@ public class TopicCommand extends AbstractCommand
             ClientUtils.sendMessageToOpChat(Messages.get("core.commands.topic.changed",
                                                          new Object[]
                                                          {
-                                                                 client.getNick(),
+                                                                 commandOwner.getNick(),
                                                                  args
                                                          }));
 
@@ -90,7 +90,7 @@ public class TopicCommand extends AbstractCommand
         }
         else
         {
-            client.sendPrivateMessageFromHub("New topic not set.");
+            commandOwner.sendPrivateMessageFromHub("New topic not set.");
             return "New topic not set.";
         }
     }

@@ -589,8 +589,11 @@ public class INFHandler extends AbstractActionHandler<INF>
                 new STAError(client,
                              Constants.STA_SEVERITY_FATAL + Constants.STA_PERMANENTLY_BANNED,
                              Messages.PERM_BAN_MESSAGE,
-                             new Object[]{banInfo.getOpNick(),
-                                          banInfo.getReason()}).send();
+                             new Object[]
+                                     {
+                                             banInfo.getOpNick(),
+                                             banInfo.getReason()
+                                     }).send();
                 return true;
             }
 
@@ -607,9 +610,12 @@ public class INFHandler extends AbstractActionHandler<INF>
                 new STAError(client,
                              Constants.STA_SEVERITY_FATAL + Constants.STA_TEMP_BANNED,
                              Messages.BAN_MESSAGE,
-                             new Object[]{ banInfo.getOpNick(),
-                                           banInfo.getReason(),
-                                           timeLeftString },
+                             new Object[]
+                                     {
+                                             banInfo.getOpNick(),
+                                             banInfo.getReason(),
+                                             timeLeftString
+                                     },
                              "TL",
                              Long.toString(timeLeft / 1000)).send();
 

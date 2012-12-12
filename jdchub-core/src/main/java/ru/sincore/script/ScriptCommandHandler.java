@@ -51,9 +51,9 @@ public class ScriptCommandHandler extends AbstractCommand
 
 
     @Override
-    public String execute(String cmd, String args, AbstractClient client)
+    public String execute(String cmd, String args, AbstractClient commandOwner)
     {
-        this.client = client;
+        this.client = commandOwner;
         this.cmd	= cmd;
         this.args	= args;
 

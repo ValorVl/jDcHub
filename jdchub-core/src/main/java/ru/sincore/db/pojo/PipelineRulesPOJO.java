@@ -21,6 +21,9 @@
 
 package ru.sincore.db.pojo;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 
 /**
@@ -30,80 +33,30 @@ import javax.persistence.*;
 @Table(name = "pipeline_rules")
 public class PipelineRulesPOJO
 {
-	@Id
+    @Getter
+    @Setter
+    @Id
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long    id;
 
+    @Getter
+    @Setter
     @Column(name = "pipeline", columnDefinition = "TEXT")
     private String  pipeline;
-    
-	@Column(name = "matcher", columnDefinition = "TEXT")
+
+    @Getter
+    @Setter
+    @Column(name = "matcher", columnDefinition = "TEXT")
 	private String  matcher;
 
+    @Getter
+    @Setter
     @Column(name = "processor", columnDefinition = "TEXT")
     private String  processor;
 
+    @Getter
+    @Setter
     @Column(name = "param", columnDefinition = "TEXT")
     private String  param;
-
-
-    public Long getId()
-    {
-        return id;
-    }
-
-
-    public void setId(Long id)
-    {
-        this.id = id;
-    }
-
-
-    public String getPipeline()
-    {
-        return pipeline;
-    }
-
-
-    public void setPipeline(String pipeline)
-    {
-        this.pipeline = pipeline;
-    }
-
-
-    public String getMatcher()
-    {
-        return matcher;
-    }
-
-
-    public void setMatcher(String matcher)
-    {
-        this.matcher = matcher;
-    }
-
-
-    public String getProcessor()
-    {
-        return processor;
-    }
-
-
-    public void setProcessor(String processor)
-    {
-        this.processor = processor;
-    }
-
-
-    public String getParam()
-    {
-        return param;
-    }
-
-
-    public void setParam(String param)
-    {
-        this.param = param;
-    }
 }

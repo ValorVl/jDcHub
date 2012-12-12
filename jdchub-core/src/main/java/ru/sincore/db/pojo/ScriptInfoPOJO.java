@@ -22,6 +22,9 @@
 
 package ru.sincore.db.pojo;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -33,77 +36,25 @@ import java.io.Serializable;
 @Table(name = "script_info")
 public class ScriptInfoPOJO implements Serializable
 {
+    @Getter
+    @Setter
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    
+
+    @Getter
+    @Setter
     @Column(name = "name", columnDefinition = "VARCHAR(50)", nullable = false, unique = true)
     private String name;
 
+    @Getter
+    @Setter
     @Column(name = "args", columnDefinition = "VARCHAR(50)", nullable = true, unique = false)
     private String args;
 
+    @Getter
+    @Setter
     @Column(name = "enabled",columnDefinition = "TINYINT(1) DEFAULT 1")
     private Boolean enabled = true;
-
-
-    public Long getId()
-    {
-        return id;
-    }
-
-
-    public void setId(Long id)
-    {
-        this.id = id;
-    }
-
-
-    public String getName()
-    {
-        return name;
-    }
-
-
-    public void setName(String name)
-    {
-        this.name = name;
-    }
-
-
-    public String getArgs()
-    {
-        return args;
-    }
-
-
-    public void setArgs(String args)
-    {
-        this.args = args;
-    }
-
-
-    public Boolean isEnabled()
-    {
-        return enabled;
-    }
-
-
-    public void setEnabled(Boolean enabled)
-    {
-        this.enabled = enabled;
-    }
-
-
-    public void enable()
-    {
-        this.setEnabled(true);
-    }
-
-
-    public void disable()
-    {
-        this.setEnabled(false);
-    }
 }

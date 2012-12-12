@@ -152,9 +152,9 @@ public class CommandEngine
         command.setCmdArgs(commandPojo.getCommandArgs());
         command.setCmdDescription(commandPojo.getCommandDescription());
         command.setCmdSyntax(commandPojo.getCommandSyntax());
-        command.setEnabled(commandPojo.isEnabled());
+        command.setEnabled(commandPojo.getEnabled());
         command.setCmdWeight(commandPojo.getCommandWeight());
-        command.setLogs(commandPojo.isLogs());
+        command.setLogs(commandPojo.getLogs());
 
         commandContainer.put(name, command);
 

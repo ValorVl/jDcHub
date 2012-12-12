@@ -39,16 +39,16 @@ public class ModuleCommand extends AbstractCommand
 
 
     @Override
-    public String execute(String cmd, String args, AbstractClient client)
+    public String execute(String cmd, String args, AbstractClient commandOwner)
     {
-        this.client = client;
+        this.client = commandOwner;
         this.cmd	= cmd;
         this.args	= args;
 
         if (args.isEmpty() || args.equals(""))
         {
-            client.sendPrivateMessageFromHub(Messages.get("core.commands.module.help_text",
-                                                          (String) client.getExtendedField("LC")));
+            commandOwner.sendPrivateMessageFromHub(Messages.get("core.commands.module.help_text",
+                                                          (String) commandOwner.getExtendedField("LC")));
             return "Help shown";
         }
         
@@ -69,7 +69,7 @@ public class ModuleCommand extends AbstractCommand
                 message.append("\n");
             }
 
-            client.sendPrivateMessageFromHub(message.toString());
+            commandOwner.sendPrivateMessageFromHub(message.toString());
             return "Modules listed";
         }
         else if (commandAction.equals("start"))
@@ -77,12 +77,12 @@ public class ModuleCommand extends AbstractCommand
             // load and start (or restart) module with specific name
             if (commandArgs.length < 2)
             {
-                client.sendPrivateMessageFromHub(Messages.get("core.commands.argument_required",
+                commandOwner.sendPrivateMessageFromHub(Messages.get("core.commands.argument_required",
                                                               new Object[]
                                                               {
                                                                       "start"
                                                               },
-                                                              (String) client.getExtendedField("LC")));
+                                                              (String) commandOwner.getExtendedField("LC")));
                 return "Not enough arguments";
             }
 
@@ -103,12 +103,12 @@ public class ModuleCommand extends AbstractCommand
             // unload module with specific name
             if (commandArgs.length < 2)
             {
-                client.sendPrivateMessageFromHub(Messages.get("core.commands.argument_required",
+                commandOwner.sendPrivateMessageFromHub(Messages.get("core.commands.argument_required",
                                                               new Object[]
                                                               {
                                                                       "stop"
                                                               },
-                                                              (String) client.getExtendedField("LC")));
+                                                              (String) commandOwner.getExtendedField("LC")));
                 return "Not enough arguments";
             }
 

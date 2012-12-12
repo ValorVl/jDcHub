@@ -37,6 +37,7 @@ import ru.sincore.i18n.Messages;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 /**
  *  @author Valor
@@ -61,7 +62,7 @@ public class ClientUtils
             UserNotFoundException,
             NotEnoughWeightException
     {
-        ClientListPOJO commandOwner = new ClientListDAOImpl().getClientByNick(commandOwnerNick);
+        AbstractClient commandOwner = ClientManager.getInstance().getClientByNick(commandOwnerNick);
 
         if (commandOwner == null)
         {
@@ -89,35 +90,35 @@ public class ClientUtils
 
 
         // make kick/ban
-        BanListPOJO kickedClient = new BanListPOJO();
+        BanListPOJO kick = new BanListPOJO();
 
-        kickedClient.setBanType(Constants.KICK);
+        kick.setBanType(Constants.KICK);
 
         Calendar calendar = new GregorianCalendar();
-        calendar.setTime(kickedClient.getDateStart());
+        calendar.setTime(kick.getDateStart());
         calendar.add(Calendar.MINUTE, 5);
-        kickedClient.setDateStop(calendar.getTime());
+        kick.setDateStop(calendar.getTime());
 
-        kickedClient.setNick(clientNick);
+        kick.setNick(clientNick);
 
-        kickedClient.setIp(client.getRealIP());
+        kick.setIp(null);
 
-        kickedClient.setEmail(client.getEmail());
-        kickedClient.setHostName("Feature not implemented yet");
-        kickedClient.setOpNick(commandOwner.getNickName());
+        kick.setEmail(client.getEmail());
+        kick.setHostName("Feature not implemented yet");
+        kick.setOpNick(commandOwner.getNick());
 
         if (reason != null)
         {
-            kickedClient.setReason(reason);
+            kick.setReason(reason);
         }
         else
         {
-            kickedClient.setReason("No\\sreason");
+            kick.setReason("No\\sreason");
         }
 
-        disconnectClient(clientNick);
+        disconnectClient(client);
 
-        return new BanListDAOImpl().addBan(kickedClient);
+        return new BanListDAOImpl().addBan(kick);
     }
 
 
@@ -125,23 +126,79 @@ public class ClientUtils
      * Ban client by nick or ip.
      * 
      * @param commandOwnerNick Op nickname which want to ban user (must be in db)
-     * @param clientTag Client nick or ip
-     * @param nickOrIpTag If true, clientTag means nick. If false, clientTag means ip.
+     * @param clientNick Client nick
      * @param banType Temp or perm ban.
      * @param banExpiredDate Ban expiration date.
      * @param reason Ban reason.
      * @return Was client banned?
      */
     public static boolean ban(String commandOwnerNick,
-                              String clientTag,
-                              boolean nickOrIpTag,
+                              String clientNick,
+                              int banType,
+                              Date banExpiredDate,
+                              String reason)
+            throws UserNotFoundException, NotEnoughWeightException, UserOfflineException
+    {
+        AbstractClient client = null;
+        AbstractClient commandOwner = ClientManager.getInstance().getClientByNick(commandOwnerNick);
+
+        if (commandOwner == null)
+        {
+            throw new UserOfflineException(commandOwnerNick);
+        }
+
+        client = ClientManager.getInstance().getClientByNick(clientNick);
+
+        // check weight
+        if ((client != null) && (commandOwner.getWeight() <= client.getWeight()))
+        {
+            throw new NotEnoughWeightException(commandOwner.getWeight(), client.getWeight());
+        }
+
+
+        // make kick/ban
+        BanListPOJO ban = new BanListPOJO();
+
+        ban.setBanType(banType);
+        ban.setDateStop(banExpiredDate);
+        ban.setNick(clientNick);
+        ban.setHostName("Feature not implemented yet");
+        ban.setOpNick(commandOwner.getNick());
+        ban.setIp(null);
+
+        if (reason != null)
+        {
+            ban.setReason(reason);
+        }
+        else
+        {
+            ban.setReason("No\\sreason");
+        }
+
+        disconnectClient(client);
+
+        return new BanListDAOImpl().addBan(ban);
+    }
+
+
+    /**
+     * Ban client by nick or ip.
+     *
+     * @param commandOwnerNick Op nickname which want to ban user (must be in db)
+     * @param subnetUtils describes ip range for ban by address and mask
+     * @param banType Temp or perm ban.
+     * @param banExpiredDate Ban expiration date.
+     * @param reason Ban reason.
+     * @return Was client banned?
+     */
+    public static boolean ban(String commandOwnerNick,
+                              SubnetUtils subnetUtils,
                               int banType,
                               Date banExpiredDate,
                               String reason)
             throws UserNotFoundException, NotEnoughWeightException
     {
         ClientListDAO clientListDAO = new ClientListDAOImpl();
-        ClientListPOJO client = null;
         ClientListPOJO commandOwner = clientListDAO.getClientByNick(commandOwnerNick);
 
         if (commandOwner == null)
@@ -149,69 +206,48 @@ public class ClientUtils
             throw new UserNotFoundException(commandOwnerNick);
         }
 
-        if (nickOrIpTag)
-        {
-            client = clientListDAO.getClientByNick(clientTag);
-        }
-        else
-        {
-            client = clientListDAO.getClientByIp(clientTag);
-        }
+        List<AbstractClient> clients = ClientManager.getInstance().getClientsByNetwork(subnetUtils);
 
-        if (client == null)
+        if (!clients.isEmpty())
         {
-            throw new UserNotFoundException(clientTag);
+            // check weight
+            for (AbstractClient client : clients)
+            {
+                if (commandOwner.getWeight() <= client.getWeight())
+                {
+                    clients.remove(client);
+                }
+            }
         }
-
-        // check weight
-        if (commandOwner.getWeight() <= client.getWeight())
-        {
-            throw new NotEnoughWeightException(commandOwner.getWeight(), client.getWeight());
-        }
-
 
         // make kick/ban
-        BanListPOJO kickedClient = new BanListPOJO();
+        BanListPOJO ban = new BanListPOJO();
 
-        kickedClient.setBanType(banType);
-        kickedClient.setDateStop(banExpiredDate);
-
-        if (nickOrIpTag)
-        {
-            kickedClient.setNick(clientTag);
-        }
-        else
-        {
-            kickedClient.setIp(clientTag);
-        }
-
-        kickedClient.setHostName("Feature not implemented yet");
-        kickedClient.setOpNick(commandOwner.getNickName());
+        ban.setBanType(banType);
+        ban.setDateStop(banExpiredDate);
+        ban.setNick(null);
+        ban.setHostName("Feature not implemented yet");
+        ban.setOpNick(commandOwner.getNickName());
+        ban.setIp(subnetUtils.getInfo().getCidrSignature());
 
         if (reason != null)
         {
-            kickedClient.setReason(reason);
+            ban.setReason(reason);
         }
         else
         {
-            kickedClient.setReason("No\\sreason");
+            ban.setReason("No\\sreason");
         }
 
-        disconnectClient(client.getNickName());
+        for (AbstractClient client : clients)
+            disconnectClient(client);
 
-        return new BanListDAOImpl().addBan(kickedClient);
+        return new BanListDAOImpl().addBan(ban);
     }
-    
-    
-    private static void disconnectClient(String nick)
+
+
+    private static void disconnectClient(AbstractClient client)
     {
-        AbstractClient client = ClientManager.getInstance().getClientByNick(nick);
-
-        if (client == null)
-        {
-            return;
-        }
-
         try
         {
             new STAError(client,

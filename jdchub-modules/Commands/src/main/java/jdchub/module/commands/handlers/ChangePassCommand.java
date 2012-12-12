@@ -50,17 +50,17 @@ public class ChangePassCommand extends AbstractCommand
     private String nick;
 
     @Override
-    public String execute(String cmd, String args, AbstractClient client)
+    public String execute(String cmd, String args, AbstractClient commandOwner)
             throws STAException
     {
-        this.client = client;
+        this.client = commandOwner;
         this.cmd	= cmd;
         this.args	= args;
 
-        if (!client.isRegistred())
+        if (!commandOwner.isRegistred())
         {
             String result = Messages.get(Messages.REGISTER_BEFOR_CHANGE_PASSWORD,
-                                         (String) client.getExtendedField("LC"));
+                                         (String) commandOwner.getExtendedField("LC"));
             sendError(result);
             return null;
         }
