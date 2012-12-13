@@ -65,6 +65,11 @@ public final class Constants
     public static final int BAN_TEMPORARY                       = 1;
     public static final int BAN_PERMANENT                       = 2;
 
+    // Ban show types
+    public static final int ALL                                 = 0;
+    public static final int ACTIVE                              = 1;
+    public static final int EXPIRED                             = 2;
+
 	//Other const block
 	public static final String EMPTY_STR 						= "";
 

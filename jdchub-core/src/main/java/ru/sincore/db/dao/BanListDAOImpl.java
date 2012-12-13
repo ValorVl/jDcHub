@@ -1,5 +1,6 @@
 package ru.sincore.db.dao;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -7,7 +8,9 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import ru.sincore.db.HibernateUtils;
 import ru.sincore.db.pojo.BanListPOJO;
+import ru.sincore.util.Constants;
 
+import java.util.Date;
 import java.util.List;
 
 public class BanListDAOImpl implements BanListDAO
@@ -54,7 +57,7 @@ public class BanListDAOImpl implements BanListDAO
 	 * @return BanListPOJO object
 	 */
 	@Override
-	public List<BanListPOJO> getBan(String nick, String ip)
+	public BanListPOJO getBan(String nick, String ip)
 	{
 		Session session = HibernateUtils.getSessionFactory().openSession();
 		Transaction tx = session.getTransaction();
@@ -62,16 +65,33 @@ public class BanListDAOImpl implements BanListDAO
 		try{
 			tx.begin();
 
-			Query query = session.createQuery("from BanListPOJO where ip = :ip or nick = :nick");
-			query.setParameter("ip", ip).setParameter("nick", nick);
+			Query query;
 
-			List<BanListPOJO> result 		= (List<BanListPOJO>) query.list();
+            if (!StringUtils.isEmpty(nick))
+            {
+                query = session.createQuery("from BanListPOJO where nick = :nick and dateStop > :currentDate order by dateStop desc");
+                query.setParameter("nick", nick);
+                query.setParameter("currentDate", new Date());
+            }
+            else if (!StringUtils.isEmpty(ip))
+            {
+                query = session.createQuery("from BanListPOJO where dateStop > :currentDate and (inet_aton(:ip) between inet_aton_net(ip) and inet_aton_bc(ip)) order by dateStop desc");
+                query.setParameter("ip", ip);
+                query.setParameter("currentDate", new Date());
+            }
+            else
+                return null;
+
+			List<BanListPOJO> result = (List<BanListPOJO>) query.setMaxResults(1).list();
 
 			tx.commit();
 
+            if ((result == null) || result.isEmpty())
+            {
+                return null;
+            }
 
-			return result;
-
+            return result.get(0);
 		}
         catch (Exception ex)
 		{
@@ -96,13 +116,13 @@ public class BanListDAOImpl implements BanListDAO
             Query query = session.createQuery(
                     "from BanListPOJO where nick = :nick or inet_aton(:ip) between inet_aton_net(ip) and inet_aton_bc(ip) order by dateStop desc"
                                              );
-            query.setParameter("ip", ip).setParameter("nick", nick);
+            query.setParameter("nick", nick).setParameter("ip", ip);
 
             List<BanListPOJO> result = (List<BanListPOJO>) query.setMaxResults(1).list();
 
             tx.commit();
 
-            if (result.isEmpty())
+            if ((result == null) || result.isEmpty())
             {
                 return null;
             }
@@ -150,14 +170,46 @@ public class BanListDAOImpl implements BanListDAO
 		return null;
 	}
 
-	/**
-	 * Returns a list of all cases ban user
-	 * @param nick nickname hub user
-	 * @return Bans list
-	 */
-	@Override
-	public List<BanListPOJO> userBanList(String nick)
-	{
-		return null;  //TODO Coming soon
-	}
+
+    @Override
+    public List<BanListPOJO> getAllBans(int banShowType, int page, int count)
+    {
+        Session session = HibernateUtils.getSessionFactory().openSession();
+        Transaction tx = session.getTransaction();
+
+        try{
+            tx.begin();
+
+            StringBuilder queryString = new StringBuilder();
+            queryString.append("from BanListPOJO ");
+
+            if (banShowType == Constants.ACTIVE)
+                queryString.append("where dateStop > :currentDate ");
+            else if (banShowType == Constants.EXPIRED)
+                queryString.append("where dateStop <= :currentDate ");
+
+            queryString.append("order by dateStart desc");
+
+            Query query = session.createQuery(queryString.toString());
+
+            if (banShowType == Constants.ACTIVE || banShowType == Constants.EXPIRED)
+                query.setParameter("currentDate", new Date());
+
+            query.setFirstResult(page*count);
+            query.setMaxResults(count);
+
+            List<BanListPOJO> result = (List<BanListPOJO>) query.list();
+
+            tx.commit();
+
+            return result;
+
+        }catch (HibernateException ex)
+        {
+            log.error(ex);
+            tx.rollback();
+        }
+
+        return null;
+    }
 }
