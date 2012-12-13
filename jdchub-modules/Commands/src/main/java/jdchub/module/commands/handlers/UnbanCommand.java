@@ -11,12 +11,14 @@
 
 package jdchub.module.commands.handlers;
 
+import org.apache.commons.lang.StringUtils;
 import ru.sincore.Exceptions.STAException;
 import ru.sincore.client.AbstractClient;
 import ru.sincore.cmd.AbstractCommand;
 import ru.sincore.db.dao.BanListDAO;
 import ru.sincore.db.dao.BanListDAOImpl;
 import ru.sincore.db.pojo.BanListPOJO;
+import ru.sincore.i18n.Messages;
 
 /**
  * @author Alexey 'lh' Antonov
@@ -32,6 +34,12 @@ public class UnbanCommand extends AbstractCommand
             throws STAException
     {
         this.commandOwner = commandOwner;
+
+        if (StringUtils.isEmpty(args))
+        {
+            showHelp();
+            return "Help shown.";
+        }
 
         int banId;
 
@@ -73,5 +81,12 @@ public class UnbanCommand extends AbstractCommand
     private void showMessage(String message)
     {
         commandOwner.sendPrivateMessageFromHub(message);
+    }
+
+
+    private void showHelp()
+    {
+        commandOwner.sendPrivateMessageFromHub(Messages.get("core.commands.unban.help_text",
+                                                            commandOwner.isFeature("LC")));
     }
 }
