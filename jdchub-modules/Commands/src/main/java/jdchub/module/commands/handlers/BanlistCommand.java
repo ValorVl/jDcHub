@@ -138,9 +138,14 @@ public class BanlistCommand extends AbstractCommand
         StringBuilder result = new StringBuilder();
         result.append("List of 10 bans from ").append(page*10).append(" :\n");
 
+        SimpleDateFormat
+                dateFormat = new SimpleDateFormat("dd MMM yyyy HH:mm:ss z", Locale.US);
+
         for (BanListPOJO ban : banList)
         {
             result.append(ban.getId()).append(" - ");
+
+            result.append(dateFormat.format(ban.getDateStart())).append(" - ");
 
             if (banShowType == Constants.ALL)
             {
@@ -163,8 +168,6 @@ public class BanlistCommand extends AbstractCommand
 
             result.append(" - ");
 
-            SimpleDateFormat
-                    dateFormat = new SimpleDateFormat("dd MMM yyyy HH:mm:ss z", Locale.US);
             result.append(dateFormat.format(ban.getDateStop()));
 
             result.append(" - ");
@@ -190,7 +193,14 @@ public class BanlistCommand extends AbstractCommand
 
         if (arg != null)
         {
-            page = Integer.valueOf(arg);
+            try
+            {
+                page = Integer.valueOf(arg);
+            }
+            catch (NumberFormatException e)
+            {
+                page = 1;
+            }
 
             if (page < 1)
             {

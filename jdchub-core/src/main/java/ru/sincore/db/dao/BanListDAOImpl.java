@@ -62,7 +62,8 @@ public class BanListDAOImpl implements BanListDAO
 		Session session = HibernateUtils.getSessionFactory().openSession();
 		Transaction tx = session.getTransaction();
 
-		try{
+		try
+        {
 			tx.begin();
 
 			Query query;
@@ -150,7 +151,8 @@ public class BanListDAOImpl implements BanListDAO
 		Session session = HibernateUtils.getSessionFactory().openSession();
 		Transaction tx = session.getTransaction();
 
-		try{
+		try
+        {
 			tx.begin();
 
 			Query query = session.createQuery("from BanListPOJO order by dateStart desc");
@@ -161,7 +163,8 @@ public class BanListDAOImpl implements BanListDAO
 
 			return result;
 
-		}catch (HibernateException ex)
+		}
+        catch (HibernateException ex)
 		{
 			log.error(ex);
 			tx.rollback();
@@ -177,7 +180,8 @@ public class BanListDAOImpl implements BanListDAO
         Session session = HibernateUtils.getSessionFactory().openSession();
         Transaction tx = session.getTransaction();
 
-        try{
+        try
+        {
             tx.begin();
 
             StringBuilder queryString = new StringBuilder();
@@ -204,12 +208,63 @@ public class BanListDAOImpl implements BanListDAO
 
             return result;
 
-        }catch (HibernateException ex)
+        }
+        catch (HibernateException ex)
         {
             log.error(ex);
             tx.rollback();
         }
 
         return null;
+    }
+
+
+    @Override
+    public BanListPOJO remove(int id)
+    {
+        Session session = HibernateUtils.getSessionFactory().openSession();
+        Transaction tx = session.getTransaction();
+
+        BanListPOJO resultCopy = null;
+        try
+        {
+            tx.begin();
+
+            Query query = session.createQuery("from BanListPOJO where id = :id");
+            query.setParameter("id", id);
+
+            BanListPOJO result = (BanListPOJO) query.uniqueResult();
+
+            tx.commit();
+
+            if (result != null)
+            {
+                resultCopy = new BanListPOJO();
+                resultCopy.setId(result.getId());
+                resultCopy.setBanType(result.getBanType());
+                resultCopy.setDateStart(result.getDateStart());
+                resultCopy.setHostName(result.getHostName());
+                resultCopy.setNick(result.getNick());
+                resultCopy.setIp(result.getIp());
+                resultCopy.setDateStop(result.getDateStop());
+                resultCopy.setOpNick(result.getOpNick());
+                resultCopy.setReason(result.getReason());
+                resultCopy.setEmail(result.getEmail());
+
+
+                tx.begin();
+
+                result.setDateStop(new Date());
+                session.saveOrUpdate(resultCopy);
+                tx.commit();
+            }
+        }
+        catch (HibernateException ex)
+        {
+            log.error(ex);
+            tx.rollback();
+        }
+
+        return resultCopy;
     }
 }

@@ -12,4 +12,5 @@ public interface BanListDAO
 	//Integer delBan(String nick);
 	List<BanListPOJO> lsBan(Integer rowCount);
     List<BanListPOJO> getAllBans(int banShowType, int page, int count);
+    BanListPOJO remove(int id);
 }
