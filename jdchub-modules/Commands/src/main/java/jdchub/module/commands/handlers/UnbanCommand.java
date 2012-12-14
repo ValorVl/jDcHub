@@ -41,11 +41,11 @@ public class UnbanCommand extends AbstractCommand
             return "Help shown.";
         }
 
-        int banId;
+        Long banId;
 
         try
         {
-            banId = Integer.valueOf(args);
+            banId = Long.valueOf(args);
         }
         catch (NumberFormatException e)
         {

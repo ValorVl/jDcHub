@@ -23,6 +23,7 @@
 package ru.sincore;
 
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.sincore.adc.ClientType;
@@ -313,7 +314,9 @@ public final class ClientManager
 
         for (AbstractClient client : clientsBySID.values())
         {
-            if (subnetUtils.getInfo().isInRange(client.getRealIP()))
+            String ip = client.getRealIP();
+            if (!StringUtils.isEmpty(ip) &&
+                subnetUtils.getInfo().isInRange(client.getRealIP()))
                 clients.add(client);
         }
 

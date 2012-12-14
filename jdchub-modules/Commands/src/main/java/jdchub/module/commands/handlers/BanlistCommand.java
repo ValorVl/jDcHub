@@ -42,7 +42,7 @@ public class BanlistCommand extends AbstractCommand
     {
         this.commandOwner = commandOwner;
 
-        LongOpt[] longOpts = new LongOpt[3];
+        LongOpt[] longOpts = new LongOpt[6];
 
         longOpts[0] = new LongOpt("help", LongOpt.NO_ARGUMENT, null, 'h');
         longOpts[1] = new LongOpt("show", LongOpt.OPTIONAL_ARGUMENT, null, 's');
@@ -81,12 +81,18 @@ public class BanlistCommand extends AbstractCommand
                     return "Help shown.";
 
                 case 's':
-                default:
                     return show(getPage(getopt.getOptarg()), Constants.ALL);
+
+                default:
+                    showMessage("Invalid args. Read help:\n");
+                    showHelp();
+                    return "Invalid args. Help shown.";
             }
         }
+        else
+            show(0, Constants.ALL);
 
-        return "Command executed, but nothing happend.";
+        return "Command executed.";
     }
 
 
@@ -149,13 +155,20 @@ public class BanlistCommand extends AbstractCommand
 
             if (banShowType == Constants.ALL)
             {
-                if ((ban.getDateStop().getTime() - System.currentTimeMillis()) > 0)
+                if (ban.getBanType() == Constants.BAN_PERMANENT)
                 {
                     result.append("active");
                 }
                 else
                 {
-                    result.append("expired");
+                    if ((ban.getDateStop().getTime() - System.currentTimeMillis()) > 0)
+                    {
+                        result.append("active");
+                    }
+                    else
+                    {
+                        result.append("expired");
+                    }
                 }
 
                 result.append(" - ");

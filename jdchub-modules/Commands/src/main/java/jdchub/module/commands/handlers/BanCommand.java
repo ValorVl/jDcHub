@@ -65,7 +65,7 @@ public class BanCommand extends AbstractCommand
 
         this.reason = null;
 
-        LongOpt[] longOpts = new LongOpt[3];
+        LongOpt[] longOpts = new LongOpt[5];
 
         longOpts[0] = new LongOpt("nick", LongOpt.REQUIRED_ARGUMENT, null, 'n');
         longOpts[1] = new LongOpt("reason", LongOpt.REQUIRED_ARGUMENT, null, 'r');
