@@ -50,7 +50,7 @@ public class Auth extends HttpServlet
 			String password = client.getPassword();
 			String cid = client.getCid();
 			Integer weight = client.getWeight();
-			Boolean isReg = client.isRegistred();
+			Boolean isReg = client.getRegistred();
 			String  ip = client.getCurrentIp();
 
 			if (!pwd.equals(password))

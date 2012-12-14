@@ -95,7 +95,7 @@ public class UserManagmentImpl implements UserManagment
                 item.setNick(AdcUtils.fromAdcString(client.getNickName()));
                 //item.setEmail(AdcUtils.fromAdcString(client.getEmail()));
                 item.setIp(client.getRealIp());
-                item.setRegistered(client.isRegistred());
+                item.setRegistered(client.getRegistred());
                 item.setSharedFilesCount(client.getSharedFilesCount());
                 item.setShareSize(client.getShareSize());
 
