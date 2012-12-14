@@ -396,7 +396,8 @@ public class INFHandler extends AbstractActionHandler<INF>
 
 
             // Check for ban:
-            isBanned();
+            if (!client.isOp())
+                isBanned();
 
             // now must check if hub is full...
             //otherwise is already connected, no point in checking this
