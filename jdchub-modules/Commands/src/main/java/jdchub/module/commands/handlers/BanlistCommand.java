@@ -234,7 +234,8 @@ public class BanlistCommand extends AbstractCommand
     private void showHelp()
     {
         commandOwner.sendPrivateMessageFromHub(Messages.get("core.commands.banlist.help_text",
-                                                            commandOwner.isFeature("LC")));
+                                                            (String) commandOwner.getExtendedField(
+                                                                    "LC")));
     }
 
 }

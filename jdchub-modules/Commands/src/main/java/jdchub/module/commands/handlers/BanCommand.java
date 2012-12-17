@@ -334,6 +334,7 @@ public class BanCommand extends AbstractCommand
     private void showHelp()
     {
         commandOwner.sendPrivateMessageFromHub(Messages.get("core.commands.ban.help_text",
-                                                      commandOwner.isFeature("LC")));
+                                                            (String) commandOwner.getExtendedField(
+                                                                    "LC")));
     }
 }

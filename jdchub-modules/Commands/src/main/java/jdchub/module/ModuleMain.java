@@ -58,6 +58,7 @@ public class ModuleMain extends Module
         commandEngine.registerCommand("rules",      new RulesCommand());
         commandEngine.registerCommand("faq",        new FAQCommand());
         commandEngine.registerCommand("stats",      new StatsCommand());
+        commandEngine.registerCommand("time",       new TimeCommand());
 
         log.info("[" + moduleName + " module]: successfuly initialized.");
         return true;
@@ -87,6 +88,7 @@ public class ModuleMain extends Module
         commandEngine.unregisterCommand("rules");
         commandEngine.unregisterCommand("faq");
         commandEngine.unregisterCommand("stats");
+        commandEngine.unregisterCommand("time");
 
         log.info("[" + moduleName + " module]: successfuly deinited.");
         return true;

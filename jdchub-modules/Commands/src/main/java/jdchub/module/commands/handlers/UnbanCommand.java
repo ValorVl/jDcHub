@@ -87,6 +87,7 @@ public class UnbanCommand extends AbstractCommand
     private void showHelp()
     {
         commandOwner.sendPrivateMessageFromHub(Messages.get("core.commands.unban.help_text",
-                                                            commandOwner.isFeature("LC")));
+                                                            (String) commandOwner.getExtendedField(
+                                                                    "LC")));
     }
 }
