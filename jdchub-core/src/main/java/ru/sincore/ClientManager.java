@@ -294,7 +294,7 @@ public final class ClientManager
     {
         for (AbstractClient client : clientsBySID.values())
         {
-            if (client.getIpAddressV4().equals(ip))
+            if (ip.equals(client.getIpAddressV4()))
                 return client;
         }
 

@@ -233,13 +233,6 @@ public class BanCommand extends AbstractCommand
                     return "Invalid ip or mask : " + e.toString();
                 }
             }
-
-            if (ClientManager.getInstance().getClientByIPv4(this.ip) == null)
-            {
-                showError("Client with ip \'" + this.ip + "\' not found.");
-                return "Client not found";
-            }
-
         }
         else
         {
