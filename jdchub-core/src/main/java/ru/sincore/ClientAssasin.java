@@ -108,6 +108,9 @@ public class ClientAssasin extends Thread
                     client.flushBuffer();
                 }
 
+                if ((System.currentTimeMillis() - client.getConnectTime()) > configurationManager.getLong(ConfigurationManager.HUB_LOGIN_TIMEOUT)*1000)
+                    client.disconnect();
+
                 if (disconnectClient(client))
                 {
                     // do something with just disconnected clients
