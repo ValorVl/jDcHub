@@ -20,7 +20,7 @@
     </distributionManagement>
 
     <properties>
-        <resteasy-version>2.3.1.GA</resteasy-version>
+        <resteasy-version>3.0.11.Final</resteasy-version>
         <maven.compiler.source>1.6</maven.compiler.source>
         <maven.compiler.target>1.6</maven.compiler.target>
     </properties>
